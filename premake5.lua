@@ -1,6 +1,6 @@
 workspace "DuckEngine"
 	architecture "x64"
-    startproject "Sandbox"
+    startproject "DuckEditor"
 
 	configurations
 	{
@@ -14,6 +14,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "DuckEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "DuckEngine/vendor/Glad/include"
 IncludeDir["glm"] = "DuckEngine/vendor/glm"
+IncludeDir["ImGui"] = "DuckEngine/vendor/imgui"
 IncludeDir["assimp"] = "DuckEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "DuckEngine/vendor/stb_image"
 
@@ -21,6 +22,7 @@ group "Dependance"
 	include "DuckEngine/vendor/GLFW"
 	include "DuckEngine/vendor/Glad"
 	include "DuckEngine/vendor/assimp"
+	include "DuckEngine/vendor/imgui"
 
 group ""
 
@@ -53,6 +55,7 @@ project "DuckEngine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}"
 	}
@@ -62,6 +65,7 @@ project "DuckEngine"
 		"GLFW",
 		"Glad",
 		"assimp",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -84,8 +88,8 @@ project "DuckEngine"
 		runtime "Release"
 		optimize "on"
 
-project "Sandbox"
-	location "Sandbox"
+project "DuckEditor"
+	location "DuckEditor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -104,8 +108,8 @@ project "Sandbox"
 	{
 		"DuckEngine/src",
 		"DuckEngine/vendor",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.GLFW}"
 	}
 
 	links

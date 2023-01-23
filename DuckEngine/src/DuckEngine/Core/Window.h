@@ -11,6 +11,19 @@ namespace DuckEngine {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
+		struct WindowData
+		{
+			std::string Title;
+			unsigned int Width, Height;
+			bool VSync;
+
+			EventCallbackFn EventCallback;
+
+			WindowData(const std::string& title = "Duck Engine", uint32_t width = 1280, uint32_t height = 720, bool vsync = false)
+				: Title(title), Width(width), Height(height), VSync(vsync)
+			{}
+		};
+
 		Window();
 		virtual ~Window();
 
@@ -29,20 +42,6 @@ namespace DuckEngine {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
-
-		struct WindowData
-		{
-			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
-
-			EventCallbackFn EventCallback;
-
-			WindowData(const std::string& title = "Duck Engine", uint32_t width = 1280, uint32_t height = 720, bool vsync = false)
-				: Title(title), Width(width), Height(height), VSync(vsync)
-			{}
-		};
-
 		WindowData m_Data;
 	};
 

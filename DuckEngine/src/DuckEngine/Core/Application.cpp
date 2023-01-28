@@ -15,7 +15,7 @@ namespace DuckEngine
 		m_Window->SetVSync(false);
 
 		m_ImGuiLayer = new ImGuiLayer();
-		m_ImGuiLayer->OnAttach();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -28,14 +28,22 @@ namespace DuckEngine
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
 		dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
+		dispatcher.Dispatch<MouseMovedEvent>(std::bind(&Application::OnMouseMove, this, std::placeholders::_1));
 
-		m_Layer->OnEvent(e);
+		for (Layer* layer : m_LayerManager)
+			layer->OnEvent(e);
 	}
 
-	void Application::SetLayer(Layer* layer)
+	void Application::PushLayer(Layer* layer)
 	{
-		m_Layer = layer;
-		m_Layer->OnAttach();
+		m_LayerManager.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* layer)
+	{
+		m_LayerManager.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	void Application::Close()
@@ -47,10 +55,15 @@ namespace DuckEngine
 	{
 		while (m_Running)
 		{
-			m_Layer->OnUpdate();
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerManager)
+					layer->OnUpdate();
+			}
 
 			m_ImGuiLayer->Begin();
-			m_Layer->OnImGuiRender();
+			for (Layer* layer : m_LayerManager)
+				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
@@ -74,6 +87,13 @@ namespace DuckEngine
 		m_Minimized = false;
 		Renderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
+		return false;
+	}
+
+	bool Application::OnMouseMove(MouseMovedEvent& e) {
+		Window::WindowData& data = *(Window::WindowData*)glfwGetWindowUserPointer(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()));
+		data.MousePos.x = e.GetX();
+		data.MousePos.y = e.GetY();
 		return false;
 	}
 }

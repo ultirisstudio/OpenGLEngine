@@ -1,9 +1,52 @@
 #include "depch.h"
-#include "Renderer.h"
-#include "glad/glad.h"
+#include <DuckEngine/Renderer/Renderer.h>
+#include <glad/glad.h>
+#include <DuckEngine/Tools/Log.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "DuckEngine/Core/Application.h"
 
-namespace DuckEngine
-{
+namespace DuckEngine {
+	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
+
+	Shader* Renderer::CreateShader(Material& material)
+	{
+		return m_SceneData.m_shaderGenerator.generateShader(material);
+	}
+
+	const glm::mat4& Renderer::getViewMatrix()
+	{
+		return m_SceneData.m_viewMatrix;
+	}
+
+	const glm::mat4& Renderer::getProjectionMatrix()
+	{
+		return m_SceneData.m_projectionMatrix;
+	}
+
+	void Renderer::BeginScene(Camera* camera)
+	{
+		m_SceneData.m_viewMatrix = camera->getViewMatrix();
+		m_SceneData.m_projectionMatrix = camera->getProjectionMatrix();
+	}
+
+	void Renderer::UpdateMatrix(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+	{
+		m_SceneData.m_viewMatrix = viewMatrix;
+		m_SceneData.m_projectionMatrix = projectionMatrix;
+	}
+
+	void Renderer::EndScene()
+	{
+	}
+
+	std::shared_ptr<RenderModel> Renderer::CreateRenderModel(const std::string& path)
+	{
+		Model* model = new Model();
+		Material* material = new Material();
+		model->load(path);
+		return std::make_shared<RenderModel>(*material, *CreateShader(*material), *model);
+	}
+
 	void Renderer::Clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}

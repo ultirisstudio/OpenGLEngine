@@ -8,7 +8,11 @@ namespace DuckEngine {
 	{
 		None = 0,
 		WindowClose,
-		WindowResize
+		WindowResize,
+		MouseButtonPressed,
+		MouseButtonReleased,
+		MouseMoved,
+		MouseScrolled
 	};
 
 	class Event

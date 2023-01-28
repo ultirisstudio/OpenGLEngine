@@ -110,6 +110,7 @@ project "DuckEditor"
 		"DuckEngine/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.assimp}",
 		"%{IncludeDir.GLFW}"
 	}
 

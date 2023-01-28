@@ -3,6 +3,7 @@
 #include "depch.h"
 #include <GLFW/glfw3.h>
 #include "DuckEngine/Events/Event.h"
+#include <glm/glm.hpp>
 
 namespace DuckEngine {
 	
@@ -16,11 +17,12 @@ namespace DuckEngine {
 			std::string Title;
 			unsigned int Width, Height;
 			bool VSync;
+			glm::uvec2 MousePos;
 
 			EventCallbackFn EventCallback;
 
 			WindowData(const std::string& title = "Duck Engine", uint32_t width = 1280, uint32_t height = 720, bool vsync = false)
-				: Title(title), Width(width), Height(height), VSync(vsync)
+				: Title(title), Width(width), Height(height), VSync(vsync), MousePos(glm::uvec2(0.0f, 0.0f))
 			{}
 		};
 

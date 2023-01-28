@@ -4,3 +4,4 @@
 #include "DuckEngine/Core/Layer.h"
 #include "DuckEngine/ImGui/ImGuiLayer.h"
 #include "DuckEngine/Renderer/Renderer.h"
+#include "DuckEngine/Renderer/Framebuffer.h"

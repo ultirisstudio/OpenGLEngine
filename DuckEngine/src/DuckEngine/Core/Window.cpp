@@ -1,6 +1,7 @@
 #include "depch.h"
 #include "DuckEngine/Core/Window.h"
 #include "DuckEngine/Events/ApplicationEvent.h"
+#include "DuckEngine/Events/MouseEvent.h"
 #include <glad/glad.h>
 
 namespace DuckEngine {
@@ -31,6 +32,7 @@ namespace DuckEngine {
 			return;
 		}
 
+		glEnable(GL_DEPTH_TEST);
 		glViewport(0, 0, m_Data.Width, m_Data.Height);
 
 		SetVSync(true);
@@ -52,6 +54,43 @@ namespace DuckEngine {
 			data.Height = height;
 
 			WindowResizeEvent event(width, height);
+			data.EventCallback(event);
+		});
+
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				MouseButtonPressedEvent event(button);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				MouseButtonReleasedEvent event(button);
+				data.EventCallback(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			data.EventCallback(event);
+		});
+
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			MouseMovedEvent event((double)xPos, (double)yPos);
 			data.EventCallback(event);
 		});
 	}

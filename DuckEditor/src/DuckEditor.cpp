@@ -4,15 +4,15 @@
 
 namespace DuckEngine
 {
-	class UltirisEditor : public Application
+	class DuckEditor : public Application
 	{
 	public:
-		UltirisEditor() : Application("Duck Editor")
+		DuckEditor() : Application("Duck Editor")
 		{
-			SetLayer(new Editor());
+			PushLayer(new Editor());
 		}
 
-		~UltirisEditor()
+		~DuckEditor()
 		{
 
 		}
@@ -20,6 +20,6 @@ namespace DuckEngine
 
 	Application* CreateApplication()
 	{
-		return new UltirisEditor();
+		return new DuckEditor();
 	}
 }

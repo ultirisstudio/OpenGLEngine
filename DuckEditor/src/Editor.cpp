@@ -95,16 +95,22 @@ namespace DuckEngine
 		{
 			if (ImGui::BeginMenu("Fichier"))
 			{
-				ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-				ImGui::MenuItem("Padding", NULL, &opt_padding);
+				if (ImGui::MenuItem("Ouvrir"));
 				ImGui::Separator();
 				if (ImGui::MenuItem("Fermer")) DuckEngine::Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Object"))
+			if (ImGui::BeginMenu("Objects"))
 			{
 				if (ImGui::MenuItem("Create cube")) AddGameObject();
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Options"))
+			{
+				ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+				ImGui::MenuItem("Padding", NULL, &opt_padding);
 				ImGui::EndMenu();
 			}
 

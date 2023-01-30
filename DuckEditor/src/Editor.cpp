@@ -14,25 +14,12 @@ namespace DuckEngine
 	{
 		m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
 
-		renderModel = Renderer::CreateRenderModel("src/Models/cube.obj");
-		renderModel_2 = Renderer::CreateRenderModel("src/Models/cube.obj");
+		model.load("src/Models/cube.obj");
 
 		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
-
-		m_Position[0] = 0.0f;
-		m_Position[1] = 0.0f;
-		m_Position[2] = 0.0f;
-
-		m_Rotation[0] = 0.0f;
-		m_Rotation[1] = 0.0f;
-		m_Rotation[2] = 0.0f;
-
-		m_Scale[0] = 1.0f;
-		m_Scale[1] = 1.0f;
-		m_Scale[2] = 1.0f;
 	}
 
 	void Editor::OnDetach()
@@ -51,15 +38,10 @@ namespace DuckEngine
 
 		Renderer::BeginScene(m_Camera);
 
-		renderModel->draw();
-		renderModel_2->draw();
-
-		renderModel->setPosition(glm::vec3(m_Position[0], m_Position[1], m_Position[2]));
-		renderModel->setRotation(glm::vec3(m_Rotation[0], m_Rotation[1], m_Rotation[2]));
-		renderModel->setScale(glm::vec3(m_Scale[0], m_Scale[1], m_Scale[2]));
-
-		float t = glfwGetTime();
-		renderModel->rotate(glm::vec3(t * 50.0f));
+		for (GameObject* object : m_Objects) {
+			object->Render();
+			object->Draw();
+		}
 
 		Renderer::EndScene();
 
@@ -120,6 +102,12 @@ namespace DuckEngine
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Object"))
+			{
+				if (ImGui::MenuItem("Create cube")) AddGameObject();
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 
@@ -144,16 +132,57 @@ namespace DuckEngine
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		ImGui::Begin("Cube");
-		ImGui::Text("Transform");
-		ImGui::SliderFloat3("Position", m_Position, -100.0f, 100.0f);
-		ImGui::Text("Rotation");
-		ImGui::SliderFloat3("Rotation", m_Rotation, 0.0f, 180.0f);
-		ImGui::Text("Scale");
-		ImGui::SliderFloat3("Scale", m_Scale, 0.1f, 100.0f);
+		ImGui::Begin("Inspector");
+
+		if (m_InspectorId >= 0) {
+			for (int i = 0; i < m_Objects.size(); i++) {
+				if (m_InspectorId == m_Objects[i]->m_Id) {
+					m_Objects[i]->DrawInspector();
+				}
+			}
+		}
+
 		ImGui::End();
 
-		ImGui::Begin("Statistiques");
+		ImGui::Begin("Scene");
+
+		static int selection_mask = 0x02;
+		int node_clicked = -1;
+
+		if (ImGui::TreeNode("Objects"))
+		{
+			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
+			for (int i = 0; i < m_Objects.size(); i++)
+			{
+				ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
+				bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->m_Name);
+				if (ImGui::IsItemClicked())
+				{
+					node_clicked = i;
+					m_InspectorId = i;
+				}
+
+				if (opened)
+				{
+					ImGui::TreePop();
+				}
+
+				if (node_clicked != -1)
+				{
+					if (ImGui::GetIO().KeyCtrl)
+						selection_mask ^= (1 << node_clicked); 
+					else
+						selection_mask = (1 << node_clicked);
+				}
+			}
+			ImGui::TreePop();
+			ImGui::PopStyleVar();
+		}
+
+		ImGui::End();
+
+		ImGui::Begin("Contenu");
+
 		ImGui::End();
 
 		ImGui::End();
@@ -162,5 +191,9 @@ namespace DuckEngine
 	void Editor::OnEvent(Event& e)
 	{
 		m_Camera->OnEvent(e);
+	}
+	void Editor::AddGameObject()
+	{
+		m_Objects.push_back(new GameObject(0 + m_Objects.size(), model));
 	}
 }

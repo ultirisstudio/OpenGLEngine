@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DuckEngine.h"
+#include "GameObject.h"
 
 namespace DuckEngine
 {
@@ -15,16 +16,16 @@ namespace DuckEngine
 		void OnUpdate() override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
+
+		void AddGameObject();
 	private:
 		Camera* m_Camera;
 		Framebuffer* m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
-		std::shared_ptr<RenderModel> renderModel;
-		std::shared_ptr<RenderModel> renderModel_2;
+		Model model;
+		std::vector<GameObject*> m_Objects;
 	private:
-		float m_Position[3];
-		float m_Rotation[3];
-		float m_Scale[3];
+		int m_InspectorId;
 	};
 }

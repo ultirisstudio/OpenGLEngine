@@ -14,7 +14,7 @@ namespace DuckEngine
 	{
 		m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
 
-		model.load("src/Models/cube.obj");
+		model.load("src/Models/cube.obj");;
 
 		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);

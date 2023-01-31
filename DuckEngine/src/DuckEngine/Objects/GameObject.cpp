@@ -1,10 +1,14 @@
+#include "depch.h"
 #include "GameObject.h"
 #include "imgui.h"
+#include <glad/glad.h>
 
 namespace DuckEngine
 {
-	GameObject::GameObject(int id, Model& model) : m_Id(id), m_Name("Cube"), m_RenderModel(*Renderer::CreateRenderModel(&model, new Material()))
+	GameObject::GameObject(int id, const std::string& name, Model& model, Texture& texture) : m_Id(id), m_Name(name), m_RenderModel(*Renderer::CreateRenderModel(&model, &m_Shader, new Material())), m_Texture(texture)
 	{
+		m_Shader.LoadFromFile("Shaders/texture.vert", "Shaders/texture.frag");
+
 		m_Position[0] = 0.0f;
 		m_Position[1] = 0.0f;
 		m_Position[2] = 0.0f;
@@ -27,6 +31,10 @@ namespace DuckEngine
 
 	void GameObject::Draw()
 	{
+		glActiveTexture(GL_TEXTURE0);
+		m_Texture.bind();
+		m_RenderModel.SetUniforms();
+		m_Shader.setUniform("uTexture", 0);
 		m_RenderModel.draw();
 	}
 	void GameObject::DrawInspector()
@@ -38,16 +46,15 @@ namespace DuckEngine
 		std::stringstream sstm;
 		sstm << "Object_" << m_Id;
 		std::string result = sstm.str();
-		ImGui::InputText(result.c_str(), m_Name, IM_ARRAYSIZE(m_Name));
+		ImGui::InputText(result.c_str(), GetName(), 10);
 
 		ImGui::Separator();
 
 		ImGui::Text("Position");
-		ImGui::SliderFloat3("Position", m_Position, -100.0f, 100.0f, "%0.1f");
-
+		ImGui::DragFloat3("Position", m_Position, 0.1f, -1000.0f, 1000.0f);
 		ImGui::Text("Rotation");
-		ImGui::SliderFloat3("Rotation", m_Rotation, 0.0f, 180.0f, "%0.1f");
+		ImGui::DragFloat3("Rotation", m_Rotation, 0.1f, 0.0f, 180.0f);
 		ImGui::Text("Scale");
-		ImGui::SliderFloat3("Scale", m_Scale, 0.1f, 100.0f, "%0.1f");
+		ImGui::DragFloat3("Scale", m_Scale, 0.1f, 100.0f);
 	}
 }

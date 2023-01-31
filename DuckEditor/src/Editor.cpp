@@ -14,7 +14,12 @@ namespace DuckEngine
 	{
 		m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
 
-		model.load("src/Models/cube.obj");;
+		cube.load("Models/cube.obj");
+		sphere.load("Models/sphere.obj");
+		plane.load("Models/plane.obj");
+
+		m_Skybox = Renderer::CreateSkybox(cube);
+		m_Texture = Renderer::CreateTexture("Textures/diffuse.png");
 
 		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -42,6 +47,8 @@ namespace DuckEngine
 			object->Render();
 			object->Draw();
 		}
+
+		m_Skybox->Draw();
 
 		Renderer::EndScene();
 
@@ -95,7 +102,7 @@ namespace DuckEngine
 		{
 			if (ImGui::BeginMenu("Fichier"))
 			{
-				if (ImGui::MenuItem("Ouvrir"));
+				if (ImGui::MenuItem("Ouvrir")) m_FileBrowser.OpenFile();
 				ImGui::Separator();
 				if (ImGui::MenuItem("Fermer")) DuckEngine::Application::Get().Close();
 				ImGui::EndMenu();
@@ -103,7 +110,9 @@ namespace DuckEngine
 
 			if (ImGui::BeginMenu("Objects"))
 			{
-				if (ImGui::MenuItem("Create cube")) AddGameObject();
+				if (ImGui::MenuItem("Create cube")) AddGameObject(CUBE);
+				if (ImGui::MenuItem("Create sphere")) AddGameObject(SPHERE);
+				if (ImGui::MenuItem("Create plane")) AddGameObject(PLANE);
 				ImGui::EndMenu();
 			}
 
@@ -142,7 +151,7 @@ namespace DuckEngine
 
 		if (m_InspectorId >= 0) {
 			for (int i = 0; i < m_Objects.size(); i++) {
-				if (m_InspectorId == m_Objects[i]->m_Id) {
+				if (m_InspectorId == m_Objects[i]->GetID()) {
 					m_Objects[i]->DrawInspector();
 				}
 			}
@@ -161,7 +170,7 @@ namespace DuckEngine
 			for (int i = 0; i < m_Objects.size(); i++)
 			{
 				ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
-				bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->m_Name);
+				bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->GetName());
 				if (ImGui::IsItemClicked())
 				{
 					node_clicked = i;
@@ -191,6 +200,10 @@ namespace DuckEngine
 
 		ImGui::End();
 
+		ImGui::Begin("Open Resource Infos");
+		ImGui::Text("Selected file: %s\nFile path: %s\n\n", m_FileBrowser.GetInfos().sSelectedFile.c_str(), m_FileBrowser.GetInfos().sFilePath.c_str());
+		ImGui::End();
+
 		ImGui::End();
 	}
 
@@ -198,8 +211,19 @@ namespace DuckEngine
 	{
 		m_Camera->OnEvent(e);
 	}
-	void Editor::AddGameObject()
+	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
-		m_Objects.push_back(new GameObject(0 + m_Objects.size(), model));
+		switch (type)
+		{
+		case CUBE:
+			m_Objects.push_back(new GameObject(m_Objects.size(), "cube", cube, *m_Texture));
+			break;
+		case SPHERE:
+			m_Objects.push_back(new GameObject(m_Objects.size(), "sphere", sphere, *m_Texture));
+			break;
+		case PLANE:
+			m_Objects.push_back(new GameObject(m_Objects.size(), "plane", plane, *m_Texture));
+			break;
+		}
 	}
 }

@@ -3,6 +3,8 @@
 #include <DuckEngine/Renderer/RenderModel.h>
 #include <DuckEngine/Renderer/Camera.h>
 #include <DuckEngine/Shader/ShaderGenerator.h>
+#include <DuckEngine/Renderer/Skybox.h>
+#include <DuckEngine/Resources/Texture.h>
 
 namespace DuckEngine
 {
@@ -28,6 +30,9 @@ namespace DuckEngine
 		static void EndScene();
 
 		static std::shared_ptr<RenderModel> CreateRenderModel(Model* model, Material* material);
+		static std::shared_ptr<RenderModel> CreateRenderModel(Model* model, Shader* shader, Material* material);
+		static std::shared_ptr<Skybox> CreateSkybox(Model& mode);
+		static std::shared_ptr<Texture> CreateTexture(const std::string& path);
 
 		static void Clear();
 		static void ClearColor(const glm::vec4& color);

@@ -44,6 +44,21 @@ namespace DuckEngine {
 		return std::make_shared<RenderModel>(*material, *CreateShader(*material), *model);
 	}
 
+	std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Shader* shader, Material* material)
+	{
+		return std::make_shared<RenderModel>(*material, *shader, *model);
+	}
+
+	std::shared_ptr<Skybox> Renderer::CreateSkybox(Model& mode)
+	{
+		return std::make_shared<Skybox>(mode);
+	}
+
+	std::shared_ptr<Texture> Renderer::CreateTexture(const std::string& path)
+	{
+		return std::make_shared<Texture>(path);
+	}
+
 	void Renderer::Clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}

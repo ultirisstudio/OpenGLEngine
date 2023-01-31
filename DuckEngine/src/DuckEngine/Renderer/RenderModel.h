@@ -13,6 +13,7 @@ namespace DuckEngine
 	public:
 		RenderModel(Material& material, Shader& shader, Model& model);
 
+		void SetUniforms();
 		void draw() const override;
 	};
 }

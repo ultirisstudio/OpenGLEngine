@@ -14,10 +14,14 @@ namespace DuckEngine
 		unsigned int m_id;
 
 		unsigned int createShader(const std::string& source, unsigned int type);
+		unsigned int ReadShader(const std::string& path, unsigned int type);
 
 	public:
+		Shader();
 		Shader(const std::string& vs, const std::string& fs, const std::string& gs = "");
 		~Shader();
+
+		void LoadFromFile(const std::string& path_vs, const std::string& path_fs);
 
 		void setUniform(const std::string& name, bool value) const;
 		void setUniform(const std::string& name, unsigned int value) const;

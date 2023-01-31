@@ -9,10 +9,11 @@ namespace DuckEngine
 	public:
 		struct FileInfo
 		{
-			std::string sSelectedFile;
-			std::string sFilePath;
+			std::string m_SelectedFile;
+			std::string m_FilePath;
+			std::string m_FileExtension;
 
-			FileInfo() : sSelectedFile(""), sFilePath("") {}
+			FileInfo() : m_SelectedFile(""), m_FilePath(""), m_FileExtension("") {}
 		};
 
 		FileBrowser();

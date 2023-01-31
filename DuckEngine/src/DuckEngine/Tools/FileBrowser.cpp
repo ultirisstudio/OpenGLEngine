@@ -48,15 +48,18 @@ namespace DuckEngine
 
 		std::wstring path(f_Path);
 		std::string c(path.begin(), path.end());
-		m_FileInfos.sFilePath = c;
+		m_FileInfos.m_FilePath = c;
 
-		const size_t slash = m_FileInfos.sFilePath.find_last_of("/\\");
-		m_FileInfos.sSelectedFile = m_FileInfos.sFilePath.substr(slash + 1);
+		const size_t slash = m_FileInfos.m_FilePath.find_last_of("/\\");
+		m_FileInfos.m_SelectedFile = m_FileInfos.m_FilePath.substr(slash + 1);
 
 		CoTaskMemFree(f_Path);
 		f_Files->Release();
 		f_FileSystem->Release();
 		CoUninitialize();
+
+		m_FileInfos.m_FileExtension = m_FileInfos.m_SelectedFile.substr(m_FileInfos.m_SelectedFile.find_last_of(".") + 1);
+		
 		return TRUE;
 	}
 }

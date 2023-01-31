@@ -16,6 +16,7 @@ namespace DuckEngine
 		Texture(const std::string& path);
 		~Texture();
 
+		unsigned int GetID() const { return m_id; }
 		std::string getPath() const;
 
 		void bind() const;

@@ -5,7 +5,7 @@
 
 namespace DuckEngine
 {
-	Editor::Editor() : Layer("Editor")
+	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false)
 	{
 		
 	}
@@ -20,6 +20,7 @@ namespace DuckEngine
 
 		m_Skybox = Renderer::CreateSkybox(cube);
 		m_Texture = Renderer::CreateTexture("Textures/diffuse.png");
+		m_TexturePNGIcon = Renderer::CreateTexture("Textures/texture_png.png");
 
 		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -102,7 +103,7 @@ namespace DuckEngine
 		{
 			if (ImGui::BeginMenu("Fichier"))
 			{
-				if (ImGui::MenuItem("Ouvrir")) m_FileBrowser.OpenFile();
+				if (ImGui::MenuItem("Ouvrir")) OpenExternalFile();
 				ImGui::Separator();
 				if (ImGui::MenuItem("Fermer")) DuckEngine::Application::Get().Close();
 				ImGui::EndMenu();
@@ -128,6 +129,9 @@ namespace DuckEngine
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
+		if (ImGui::IsWindowHovered()) { m_ViewportFocus = true; }
+		if (ImGui::IsWindowFocused()) { m_ViewportFocus = true; }
+		else { m_ViewportFocus = false; }
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -197,11 +201,17 @@ namespace DuckEngine
 		ImGui::End();
 
 		ImGui::Begin("Contenu");
-
+		ImGui::Image((void*)m_TexturePNGIcon->GetID(), ImVec2{ 64.0f, 64.0f });
+		if (ImGui::IsItemClicked(1))
+		{
+			std::cout << "IMAGE" << std::endl;
+		}
+		ImGui::SameLine();
+		ImGui::Image((void*)m_TexturePNGIcon->GetID(), ImVec2{ 64.0f, 64.0f });
 		ImGui::End();
 
 		ImGui::Begin("Open Resource Infos");
-		ImGui::Text("Selected file: %s\nFile path: %s\n\n", m_FileBrowser.GetInfos().sSelectedFile.c_str(), m_FileBrowser.GetInfos().sFilePath.c_str());
+		ImGui::Text("Selected file: %s\nFile path: %s\nFile extension: %s\n", m_FileBrowser.GetInfos().m_SelectedFile.c_str(), m_FileBrowser.GetInfos().m_FilePath.c_str(), m_FileBrowser.GetInfos().m_FileExtension.c_str());
 		ImGui::End();
 
 		ImGui::End();
@@ -209,7 +219,8 @@ namespace DuckEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		m_Camera->OnEvent(e);
+		if (m_ViewportFocus)
+			m_Camera->OnEvent(e);
 	}
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
@@ -225,5 +236,11 @@ namespace DuckEngine
 			m_Objects.push_back(new GameObject(m_Objects.size(), "plane", plane, *m_Texture));
 			break;
 		}
+	}
+	void Editor::OpenExternalFile()
+	{
+		m_FileBrowser.OpenFile();
+		test.load(m_FileBrowser.GetInfos().m_FilePath);
+		m_Objects.push_back(new GameObject(m_Objects.size(), "cube", test, *m_Texture));
 	}
 }

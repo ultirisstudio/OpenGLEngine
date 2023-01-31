@@ -33,13 +33,18 @@ namespace DuckEngine
 		Model sphere;
 		Model plane;
 
+		Model test;
+
 		std::vector<GameObject*> m_Objects;
 
 		FileBrowser m_FileBrowser;
+		void OpenExternalFile();
 	private:
 		std::shared_ptr<Skybox> m_Skybox;
 		std::shared_ptr<Texture> m_Texture;
+		std::shared_ptr<Texture> m_TexturePNGIcon;
 	private:
 		int m_InspectorId;
+		bool m_ViewportFocus;
 	};
 }

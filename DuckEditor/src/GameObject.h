@@ -20,7 +20,7 @@ namespace DuckEngine
 		std::string m_Name;
 		RenderModel m_RenderModel;
 		Shader m_Shader;
-		Texture m_Texture;;
+		Texture m_Texture;
 
 		float m_Position[3];
 		float m_Rotation[3];

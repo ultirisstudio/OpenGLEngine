@@ -29,10 +29,11 @@ namespace DuckEngine
 		static void UpdateMatrix(glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
 		static void EndScene();
 
-		static std::shared_ptr<RenderModel> CreateRenderModel(Model* model, Material* material);
+		//static std::shared_ptr<RenderModel> CreateRenderModel(Model* model, Material* material);
 		static std::shared_ptr<RenderModel> CreateRenderModel(Model* model, Shader* shader, Material* material);
 		static std::shared_ptr<Skybox> CreateSkybox(Model& mode);
 		static std::shared_ptr<Texture> CreateTexture(const std::string& path);
+		static std::shared_ptr<Model> CreateModel(const std::string& path);
 
 		static void Clear();
 		static void ClearColor(const glm::vec4& color);

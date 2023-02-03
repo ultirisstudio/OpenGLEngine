@@ -52,5 +52,7 @@ namespace DuckEngine
 		void Update();
 		void OnEvent(Event& e);
 		void OnResize(float width, float height);
+
+		bool m_CameraFocus;
 	};
 }

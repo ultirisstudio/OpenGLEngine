@@ -11,5 +11,3 @@
 
 #include "DuckEngine/Tools/Tree.h"
 #include "DuckEngine/Tools/FileBrowser.h"
-
-#include "DuckEngine/Objects/GameObject.h"

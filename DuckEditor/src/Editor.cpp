@@ -5,7 +5,7 @@
 
 namespace DuckEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false)
+	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false), m_ContentBrowserPanel()
 	{
 		
 	}
@@ -14,13 +14,12 @@ namespace DuckEngine
 	{
 		m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
 
-		cube.load("Models/cube.obj");
-		sphere.load("Models/sphere.obj");
-		plane.load("Models/plane.obj");
+		cube = Renderer::CreateModel("Assets/Models/cube.obj");
+		sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
+		plane = Renderer::CreateModel("Assets/Models/plane.obj");
 
-		m_Skybox = Renderer::CreateSkybox(cube);
-		m_Texture = Renderer::CreateTexture("Textures/diffuse.png");
-		m_TexturePNGIcon = Renderer::CreateTexture("Textures/texture_png.png");
+		m_Skybox = Renderer::CreateSkybox(*cube);
+		m_Texture = Renderer::CreateTexture("Assets/Textures/diffuse.png");
 
 		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -41,6 +40,11 @@ namespace DuckEngine
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
 		m_Camera->Update();
+
+		if (m_ViewportFocus)
+			m_Camera->m_CameraFocus = true;
+		else
+			m_Camera->m_CameraFocus = false;
 
 		Renderer::BeginScene(m_Camera);
 
@@ -129,10 +133,10 @@ namespace DuckEngine
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
-		if (ImGui::IsWindowHovered()) { m_ViewportFocus = true; }
-		if (ImGui::IsWindowFocused()) { m_ViewportFocus = true; }
-		else { m_ViewportFocus = false; }
+		if (ImGui::IsWindowHovered()) { m_ViewportFocus = true; } else { m_ViewportFocus = false; }
+
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
 			if (m_frameBuffer)
@@ -148,7 +152,20 @@ namespace DuckEngine
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::filesystem::path file = path;
+				AddGameObject(file.string());
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::End();
+
 		ImGui::PopStyleVar();
 
 		ImGui::Begin("Inspector");
@@ -168,47 +185,55 @@ namespace DuckEngine
 		static int selection_mask = 0x02;
 		int node_clicked = -1;
 
-		if (ImGui::TreeNode("Objects"))
+		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
+		for (int i = 0; i < m_Objects.size(); i++)
 		{
-			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
-			for (int i = 0; i < m_Objects.size(); i++)
+			ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
+			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->GetName());
+			if (ImGui::IsItemClicked())
 			{
-				ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
-				bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->GetName());
-				if (ImGui::IsItemClicked())
-				{
-					node_clicked = i;
-					m_InspectorId = i;
-				}
-
-				if (opened)
-				{
-					ImGui::TreePop();
-				}
-
-				if (node_clicked != -1)
-				{
-					if (ImGui::GetIO().KeyCtrl)
-						selection_mask ^= (1 << node_clicked); 
-					else
-						selection_mask = (1 << node_clicked);
-				}
+				node_clicked = i;
+				m_InspectorId = m_Objects[i]->GetID();
 			}
-			ImGui::TreePop();
-			ImGui::PopStyleVar();
+
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::MenuItem("Delete Object")) {
+					m_Objects.erase(m_Objects.begin() + i);
+				}
+				ImGui::EndPopup();
+			}
+
+			if (opened)
+			{
+				ImGui::TreePop();
+			}
+
+			if (node_clicked != -1)
+			{
+				if (ImGui::GetIO().KeyCtrl)
+					selection_mask ^= (1 << node_clicked); 
+				else
+					selection_mask = (1 << node_clicked);
+			}
 		}
+		ImGui::PopStyleVar();
 
-		ImGui::End();
-
-		ImGui::Begin("Contenu");
-		ImGui::Image((void*)m_TexturePNGIcon->GetID(), ImVec2{ 64.0f, 64.0f });
-		if (ImGui::IsItemClicked(1))
+		if (ImGui::BeginDragDropTarget())
 		{
-			std::cout << "IMAGE" << std::endl;
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::filesystem::path file = path;
+				AddGameObject(file.string());
+			}
+			ImGui::EndDragDropTarget();
 		}
-		ImGui::SameLine();
-		ImGui::Image((void*)m_TexturePNGIcon->GetID(), ImVec2{ 64.0f, 64.0f });
+
 		ImGui::End();
+
+
+		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::Begin("Open Resource Infos");
 		ImGui::Text("Selected file: %s\nFile path: %s\nFile extension: %s\n", m_FileBrowser.GetInfos().m_SelectedFile.c_str(), m_FileBrowser.GetInfos().m_FilePath.c_str(), m_FileBrowser.GetInfos().m_FileExtension.c_str());
@@ -219,28 +244,56 @@ namespace DuckEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		if (m_ViewportFocus)
-			m_Camera->OnEvent(e);
+		m_Camera->OnEvent(e);
 	}
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
 		switch (type)
 		{
 		case CUBE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "cube", cube, *m_Texture));
+			m_Objects.push_back(new GameObject(m_Objects.size(), "cube", *cube, *m_Texture));
 			break;
 		case SPHERE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "sphere", sphere, *m_Texture));
+			m_Objects.push_back(new GameObject(m_Objects.size(), "sphere", *sphere, *m_Texture));
 			break;
 		case PLANE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "plane", plane, *m_Texture));
+			m_Objects.push_back(new GameObject(m_Objects.size(), "plane", *plane, *m_Texture));
 			break;
 		}
 	}
+
+	void Editor::AddGameObject(const std::string& file)
+	{
+		const size_t slash = file.find_last_of("/\\");
+		const std::string m_SelectedFile = file.substr(slash + 1);
+
+		size_t lastindex = m_SelectedFile.find_last_of(".");
+		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
+
+		std::cout << file << std::endl;
+		std::cout << m_SelectedFile << " - " << m_FileName << std::endl;
+
+		m_Models.emplace(m_FileName, Renderer::CreateModel(file));
+
+		m_Objects.push_back(new GameObject(m_Objects.size(), m_FileName, *m_Models.at(m_FileName), *m_Texture));
+	}
+
 	void Editor::OpenExternalFile()
 	{
 		m_FileBrowser.OpenFile();
-		test.load(m_FileBrowser.GetInfos().m_FilePath);
-		m_Objects.push_back(new GameObject(m_Objects.size(), "cube", test, *m_Texture));
+
+		std::filesystem::path sourceFile = m_FileBrowser.GetInfos().m_FilePath;
+		std::filesystem::path targetParent = "Assets";
+		auto target = targetParent / sourceFile.filename();
+
+		try
+		{
+			std::filesystem::create_directories(targetParent);
+			std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
+		}
+		catch (std::exception& e)
+		{
+			std::cout << e.what();
+		}
 	}
 }

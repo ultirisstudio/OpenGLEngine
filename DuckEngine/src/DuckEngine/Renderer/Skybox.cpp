@@ -11,7 +11,7 @@ namespace DuckEngine
 		m_CubeMapModel = Renderer::CreateRenderModel(&model, &m_CubeMapShader, nullptr);
 		m_CubeMapModel->scale(glm::vec3(15.0f));
 
-		m_CubeMap.Load({ "Skybox/right.jpg", "Skybox/left.jpg", "Skybox/top.jpg", "Skybox/bottom.jpg", "Skybox/front.jpg", "Skybox/back.jpg" });
+		m_CubeMap.Load({ "Assets/Skybox/right.jpg", "Assets/Skybox/left.jpg", "Assets/Skybox/top.jpg", "Assets/Skybox/bottom.jpg", "Assets/Skybox/front.jpg", "Assets/Skybox/back.jpg" });
 	}
 
 	void DuckEngine::Skybox::Draw()

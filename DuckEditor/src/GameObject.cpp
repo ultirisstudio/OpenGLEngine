@@ -1,7 +1,6 @@
 #include "depch.h"
 #include "GameObject.h"
 #include "imgui.h"
-#include <glad/glad.h>
 
 namespace DuckEngine
 {
@@ -31,7 +30,7 @@ namespace DuckEngine
 
 	void GameObject::Draw()
 	{
-		glActiveTexture(GL_TEXTURE0);
+		m_RenderModel.BindTexture();
 		m_Texture.bind();
 		m_RenderModel.SetUniforms();
 		m_Shader.setUniform("uTexture", 0);
@@ -50,11 +49,17 @@ namespace DuckEngine
 
 		ImGui::Separator();
 
-		ImGui::Text("Position");
-		ImGui::DragFloat3("Position", m_Position, 0.1f, -1000.0f, 1000.0f);
-		ImGui::Text("Rotation");
-		ImGui::DragFloat3("Rotation", m_Rotation, 0.1f, 0.0f, 180.0f);
-		ImGui::Text("Scale");
-		ImGui::DragFloat3("Scale", m_Scale, 0.1f, 100.0f);
+
+		if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
+		{
+			ImGui::Text("Position: "); ImGui::SameLine();
+			ImGui::DragFloat3("##Position", m_Position, 0.1f, -1000.0f, 1000.0f);
+			ImGui::Text("Rotation: "); ImGui::SameLine();
+			ImGui::DragFloat3("##Rotation", m_Rotation, 0.1f, 0.0f, 180.0f);
+			ImGui::Text("Scale: "); ImGui::SameLine();
+			ImGui::DragFloat3("##Scale", m_Scale, 0.1f, 100.0f);
+
+			ImGui::TreePop();
+		}
 	}
 }

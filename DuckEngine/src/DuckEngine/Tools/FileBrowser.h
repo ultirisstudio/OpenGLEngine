@@ -12,8 +12,9 @@ namespace DuckEngine
 			std::string m_SelectedFile;
 			std::string m_FilePath;
 			std::string m_FileExtension;
+			std::string m_FileName;
 
-			FileInfo() : m_SelectedFile(""), m_FilePath(""), m_FileExtension("") {}
+			FileInfo() : m_SelectedFile(""), m_FilePath(""), m_FileExtension(""), m_FileName("") {}
 		};
 
 		FileBrowser();

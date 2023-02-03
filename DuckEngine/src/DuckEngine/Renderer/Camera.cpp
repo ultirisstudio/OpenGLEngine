@@ -29,7 +29,8 @@ namespace DuckEngine
 		m_minFov(15.0f),
 		m_maxFov(95.0f),
 		m_sensitivity(0.01f),
-		m_projectionMatrix(1.0f)
+		m_projectionMatrix(1.0f),
+		m_CameraFocus(false)
 	{
 
 	}
@@ -97,7 +98,8 @@ namespace DuckEngine
 		m_lastMousePos.x = data.MousePos.x;
 		m_lastMousePos.y = data.MousePos.y;
 
-		m_moving = true;
+		if (m_CameraFocus)
+			m_moving = true;
 		return false;
 	}
 

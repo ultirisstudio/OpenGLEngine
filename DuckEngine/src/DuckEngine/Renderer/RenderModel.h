@@ -14,6 +14,7 @@ namespace DuckEngine
 		RenderModel(Material& material, Shader& shader, Model& model);
 
 		void SetUniforms();
+		void BindTexture();
 		void draw() const override;
 	};
 }

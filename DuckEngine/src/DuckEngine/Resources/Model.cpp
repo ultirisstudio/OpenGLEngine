@@ -6,82 +6,85 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-DuckEngine::Mesh* DuckEngine::Model::loadMesh(const aiMesh* mesh, const aiScene* scene)
+namespace DuckEngine
 {
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-
-	vertices.reserve(mesh->mNumVertices);
-
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+	Mesh* DuckEngine::Model::loadMesh(const aiMesh* mesh, const aiScene* scene)
 	{
-		Vertex vertex;
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
 
-		vertex.position.x = mesh->mVertices[i].x;
-		vertex.position.y = mesh->mVertices[i].y;
-		vertex.position.z = mesh->mVertices[i].z;
+		vertices.reserve(mesh->mNumVertices);
 
-		vertex.normal.x = mesh->mNormals[i].x;
-		vertex.normal.y = mesh->mNormals[i].y;
-		vertex.normal.z = mesh->mNormals[i].z;
-
-		if (mesh->mTextureCoords[0])
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
-			vertex.texCoord.x = mesh->mTextureCoords[0][i].x;
-			vertex.texCoord.y = mesh->mTextureCoords[0][i].y;
+			Vertex vertex;
+
+			vertex.position.x = mesh->mVertices[i].x;
+			vertex.position.y = mesh->mVertices[i].y;
+			vertex.position.z = mesh->mVertices[i].z;
+
+			vertex.normal.x = mesh->mNormals[i].x;
+			vertex.normal.y = mesh->mNormals[i].y;
+			vertex.normal.z = mesh->mNormals[i].z;
+
+			if (mesh->mTextureCoords[0])
+			{
+				vertex.texCoord.x = mesh->mTextureCoords[0][i].x;
+				vertex.texCoord.y = mesh->mTextureCoords[0][i].y;
+			}
+			else
+			{
+				vertex.texCoord.x = 0.0f;
+				vertex.texCoord.y = 0.0f;
+			}
+
+			vertices.push_back(vertex);
 		}
-		else
+
+		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
-			vertex.texCoord.x = 0.0f;
-			vertex.texCoord.y = 0.0f;
+			aiFace face = mesh->mFaces[i];
+			for (unsigned int j = 0; j < face.mNumIndices; j++)
+				indices.push_back(face.mIndices[j]);
 		}
 
-		vertices.push_back(vertex);
+		return new Mesh(vertices, indices);
 	}
 
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+	void Model::loadNode(const aiNode* node, const aiScene* scene)
 	{
-		aiFace face = mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			indices.push_back(face.mIndices[j]);
+		for (unsigned int i = 0; i < node->mNumMeshes; i++)
+			m_meshes.push_back(loadMesh(scene->mMeshes[node->mMeshes[i]], scene));
+
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+			loadNode(node->mChildren[i], scene);
 	}
 
-	return new Mesh(vertices, indices);
-}
-
-void DuckEngine::Model::loadNode(const aiNode* node, const aiScene* scene)
-{
-	for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		m_meshes.push_back(loadMesh(scene->mMeshes[node->mMeshes[i]], scene));
-
-	for (unsigned int i = 0; i < node->mNumChildren; i++)
-		loadNode(node->mChildren[i], scene);
-}
-
-void DuckEngine::Model::load(const std::string& path)
-{
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	Model::Model(const std::string& path)
 	{
-		Log::error("Failed to load model at", path, ":", importer.GetErrorString());
-		return;
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			Log::error("Failed to load model at", path, ":", importer.GetErrorString());
+			return;
+		}
+
+		loadNode(scene->mRootNode, scene);
 	}
 
-	loadNode(scene->mRootNode, scene);
-}
+	Model::~Model()
+	{
+		for (Mesh* mesh : m_meshes)
+			delete mesh;
 
-void DuckEngine::Model::free()
-{
-	for (Mesh* mesh : m_meshes)
-		delete mesh;
+		m_meshes.clear();
+	}
 
-	m_meshes.clear();
-}
-
-void DuckEngine::Model::draw() const
-{
-	for (Mesh* mesh : m_meshes)
-		mesh->draw();
+	void Model::draw() const
+	{
+		for (Mesh* mesh : m_meshes)
+			mesh->draw();
+	}
 }

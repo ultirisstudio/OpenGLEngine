@@ -11,7 +11,7 @@
 
 namespace DuckEngine
 {
-	class Model : public Resource
+	class Model
 	{
 	private:
 		std::list<Mesh*> m_meshes;
@@ -20,8 +20,8 @@ namespace DuckEngine
 		void loadNode(const aiNode* node, const aiScene* scene);
 
 	public:
-		void load(const std::string& path) override;
-		void free() override;
+		Model(const std::string& path);
+		~Model();
 
 		void draw() const;
 	};

@@ -15,11 +15,13 @@ namespace DuckEngine
 		{
 			format = GL_RGBA;
 			internalFormat = GL_RGBA;
+			stbi_set_flip_vertically_on_load(true);
 		}
 		else
 		{
 			format = GL_RGB;
 			internalFormat = GL_RGB;
+			stbi_set_flip_vertically_on_load(false);
 		}
 
 		int width, height, nbChannels;

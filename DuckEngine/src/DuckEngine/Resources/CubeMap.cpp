@@ -25,6 +25,8 @@ namespace DuckEngine
 
 		for (unsigned int i = 0; i < paths.size(); i++)
 		{
+			stbi_set_flip_vertically_on_load(false);
+
 			int width, height, nbChannels;
 			unsigned char* data;
 

@@ -59,6 +59,9 @@ namespace DuckEngine
 		CoUninitialize();
 
 		m_FileInfos.m_FileExtension = m_FileInfos.m_SelectedFile.substr(m_FileInfos.m_SelectedFile.find_last_of(".") + 1);
+
+		size_t lastindex = m_FileInfos.m_SelectedFile.find_last_of(".");
+		m_FileInfos.m_FileName = m_FileInfos.m_SelectedFile.substr(0, lastindex);
 		
 		return TRUE;
 	}

@@ -39,10 +39,10 @@ namespace DuckEngine {
 	{
 	}
 
-	std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Material* material)
-	{
-		return std::make_shared<RenderModel>(*material, *CreateShader(*material), *model);
-	}
+	//std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Material* material)
+	//{
+	//	return std::make_shared<RenderModel>(*material, *CreateShader(*material), *model);
+	//}
 
 	std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Shader* shader, Material* material)
 	{
@@ -57,6 +57,11 @@ namespace DuckEngine {
 	std::shared_ptr<Texture> Renderer::CreateTexture(const std::string& path)
 	{
 		return std::make_shared<Texture>(path);
+	}
+
+	std::shared_ptr<Model> Renderer::CreateModel(const std::string& path)
+	{
+		return std::make_shared<Model>(path);
 	}
 
 	void Renderer::Clear() {

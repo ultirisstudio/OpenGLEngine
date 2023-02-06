@@ -34,6 +34,7 @@ namespace DuckEngine
 		glm::mat4 getViewMatrix() const;
 		glm::mat4 getProjectionMatrix() const;
 
+		glm::mat4 GetTransform();
 		glm::vec3 getPosition() const;
 		float getFov() const;
 

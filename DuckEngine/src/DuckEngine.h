@@ -5,6 +5,8 @@
 
 #include "DuckEngine/ImGui/ImGuiLayer.h"
 
+#include "DuckEngine/Entity/Entity.h"
+
 #include "DuckEngine/Renderer/Renderer.h"
 #include "DuckEngine/Renderer/Framebuffer.h"
 #include "DuckEngine/Renderer/Skybox.h"

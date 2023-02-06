@@ -44,15 +44,15 @@ namespace DuckEngine {
 	//	return std::make_shared<RenderModel>(*material, *CreateShader(*material), *model);
 	//}
 
-	std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Shader* shader, Material* material)
+	/*std::shared_ptr<RenderModel> Renderer::CreateRenderModel(Model* model, Shader* shader, Material* material)
 	{
 		return std::make_shared<RenderModel>(*material, *shader, *model);
 	}
 
-	std::shared_ptr<Skybox> Renderer::CreateSkybox(Model& mode)
+	std::shared_ptr<Skybox> Renderer::CreateSkybox(Model& model)
 	{
-		return std::make_shared<Skybox>(mode);
-	}
+		return std::make_shared<Skybox>(model);
+	}*/
 
 	std::shared_ptr<Texture> Renderer::CreateTexture(const std::string& path)
 	{
@@ -62,6 +62,11 @@ namespace DuckEngine {
 	std::shared_ptr<Model> Renderer::CreateModel(const std::string& path)
 	{
 		return std::make_shared<Model>(path);
+	}
+
+	std::shared_ptr<Material> Renderer::CreateMaterial(const std::string& path)
+	{
+		return std::make_shared<Material>(path);
 	}
 
 	void Renderer::Clear() {

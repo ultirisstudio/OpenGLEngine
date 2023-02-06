@@ -1,20 +1,22 @@
 #pragma once
 
-#include <DuckEngine/Renderer/Element.h>
+#include <DuckEngine/Resources/Material.h>
 #include <DuckEngine/Resources/Model.h>
-
+/*
 namespace DuckEngine
 {
-	class RenderModel : public Element
+	class RenderModel
 	{
-	public:
+	private:
 		Model* m_Model;
+		Material* m_Material;
+		Shader* m_Shader;
 
 	public:
 		RenderModel(Material& material, Shader& shader, Model& model);
 
 		void SetUniforms();
 		void BindTexture();
-		void draw() const override;
+		void draw() const;
 	};
-}
+}*/

@@ -1,27 +1,19 @@
 #pragma once
 
-#include <DuckEngine/Resources/Resource.h>
-
-#include <glm/glm.hpp>
-
-#include <map>
+#include <DuckEngine/Resources/Texture.h>
 
 namespace DuckEngine
 {
-	class Material : public Resource
+	class Material
 	{
 	private:
-		std::map<std::string, glm::vec3> m_vec3s;
-		std::map<std::string, float> m_floats;
+		std::shared_ptr<Texture> m_DiffuseTexture;
 
 	public:
-		void load(const std::string& path) override;
-		void free() override;
+		Material(const std::string& path);
+		~Material();
 
-		void addVec3(const std::string& id, const glm::vec3& value);
-		void addFloat(const std::string& id, float value);
-		
-		glm::vec3 getVec3(const std::string& id);
-		float getFloat(const std::string& id);
+		Texture& GetDiffuseTexture();
+		void SetDiffuseTexture(const std::string& path);
 	};
 }

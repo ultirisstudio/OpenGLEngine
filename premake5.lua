@@ -17,6 +17,7 @@ IncludeDir["glm"] = "DuckEngine/vendor/glm"
 IncludeDir["ImGui"] = "DuckEngine/vendor/imgui"
 IncludeDir["assimp"] = "DuckEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "DuckEngine/vendor/stb_image"
+IncludeDir["ImGuizmo"] = "DuckEngine/vendor/ImGuizmo"
 
 group "Dependance"
 	include "DuckEngine/vendor/GLFW"
@@ -44,7 +45,9 @@ project "DuckEngine"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp"
+		"%{prj.name}/vendor/stb_image/**.cpp",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	includedirs
@@ -55,7 +58,8 @@ project "DuckEngine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -66,6 +70,9 @@ project "DuckEngine"
 		"ImGui",
 		"opengl32.lib"
 	}
+	
+	filter "files:DuckEngine/vendor/ImGuizmo/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
@@ -109,7 +116,8 @@ project "DuckEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -117,7 +125,7 @@ project "DuckEditor"
 		"DuckEngine",
 		"ImGui"
 	}
-
+	
 	filter "system:windows"
 		systemversion "latest"
 		

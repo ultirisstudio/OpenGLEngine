@@ -10,7 +10,7 @@ namespace DuckEngine
 	{
 		
 	}
-	void CubeMap::Load(std::vector<std::string> paths)
+	void CubeMap::Load(std::array<std::string, 6> paths)
 	{
 		glGenTextures(1, &m_ID);
 

@@ -45,6 +45,11 @@ namespace DuckEngine
 		return m_projectionMatrix;
 	}
 
+	glm::mat4 Camera::GetTransform()
+	{
+		return glm::translate(glm::mat4(1.0f), m_position);
+	}
+
 	glm::vec3 Camera::getPosition() const
 	{
 		return m_position;

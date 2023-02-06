@@ -1,6 +1,5 @@
 #pragma once
 
-#include <DuckEngine/Resources/Resource.h>
 #include <DuckEngine/Resources/Mesh.h>
 
 #include <assimp/scene.h>

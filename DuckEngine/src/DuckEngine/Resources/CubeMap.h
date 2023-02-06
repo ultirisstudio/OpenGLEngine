@@ -10,7 +10,7 @@ namespace DuckEngine
 	public:
 		CubeMap();
 
-		void Load(std::vector<std::string> paths);
+		void Load(std::array<std::string, 6> paths);
 		void Bind();
 
 		unsigned int GetID() { return m_ID; }

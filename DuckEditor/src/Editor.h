@@ -1,9 +1,8 @@
 #pragma once
 
-#include <DuckEngine/Core/Layer.h>
-
-#include "GameObject.h"
+#include "DuckEngine.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/EntityPropertiePanel.h"
 
 namespace DuckEngine
 {
@@ -29,18 +28,16 @@ namespace DuckEngine
 		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
 	private:
-		Camera* m_Camera;
-		Framebuffer* m_frameBuffer;
+		std::shared_ptr<Camera> m_Camera;
+		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
 		std::shared_ptr<Model> cube;
 		std::shared_ptr<Model> sphere;
 		std::shared_ptr<Model> plane;
 
-		std::shared_ptr<Model> test;
-		std::shared_ptr<Model> temp_model;
-
-		std::vector<GameObject*> m_Objects;
+		std::vector<Entity*> m_Entities;
+		Entity* m_SelectedEntity;
 
 		std::map<std::string, std::shared_ptr<Model>> m_Models;
 
@@ -48,11 +45,12 @@ namespace DuckEngine
 		void OpenExternalFile();
 
 		ContentBrowserPanel m_ContentBrowserPanel;
+		EntityPropertiePanel m_EntityPropertiePanel;
 	private:
-		std::shared_ptr<Skybox> m_Skybox;
+		//std::shared_ptr<Skybox> m_Skybox;
 		std::shared_ptr<Texture> m_Texture;
 	private:
-		int m_InspectorId;
 		bool m_ViewportFocus;
+		bool HasSelected = false;
 	};
 }

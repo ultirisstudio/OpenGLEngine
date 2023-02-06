@@ -5,26 +5,35 @@
 
 namespace DuckEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false), m_ContentBrowserPanel()
+	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
 	{
 		
 	}
 
 	void Editor::OnAttach()
 	{
-		m_Camera = new Camera(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
+		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
 
 		cube = Renderer::CreateModel("Assets/Models/cube.obj");
 		sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
 		plane = Renderer::CreateModel("Assets/Models/plane.obj");
 
-		m_Skybox = Renderer::CreateSkybox(*cube);
+		//m_Skybox = Renderer::CreateSkybox(*cube);
 		m_Texture = Renderer::CreateTexture("Assets/Textures/diffuse.png");
 
-		m_frameBuffer = new Framebuffer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		m_frameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
+
+		Entity* m_Entity = new Entity();
+		m_Entity->SetId(m_Entities.size());
+		m_Entity->SetName("Entity");
+		m_Entity->AddComponent<TransformComponent>();
+		m_Entity->AddComponent<ModelComponent>("Assets/Models/cube.obj");
+		m_Entity->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		m_Entity->AddComponent<RenderComponent>();
+		m_Entities.push_back(m_Entity);
 	}
 
 	void Editor::OnDetach()
@@ -46,14 +55,11 @@ namespace DuckEngine
 		else
 			m_Camera->m_CameraFocus = false;
 
-		Renderer::BeginScene(m_Camera);
+		Renderer::BeginScene(m_Camera.get());
 
-		for (GameObject* object : m_Objects) {
-			object->Render();
-			object->Draw();
+		for (Entity* entity : m_Entities) {
+			entity->Draw();
 		}
-
-		m_Skybox->Draw();
 
 		Renderer::EndScene();
 
@@ -109,15 +115,24 @@ namespace DuckEngine
 			{
 				if (ImGui::MenuItem("Ouvrir")) OpenExternalFile();
 				ImGui::Separator();
-				if (ImGui::MenuItem("Fermer")) DuckEngine::Application::Get().Close();
+				if (ImGui::MenuItem("Fermer"))
+					DuckEngine::Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Objects"))
+			if (ImGui::BeginMenu("Create"))
 			{
-				if (ImGui::MenuItem("Create cube")) AddGameObject(CUBE);
-				if (ImGui::MenuItem("Create sphere")) AddGameObject(SPHERE);
-				if (ImGui::MenuItem("Create plane")) AddGameObject(PLANE);
+				if (ImGui::MenuItem("Create new GameObject"))
+				{
+					Entity* temp = new Entity();
+					temp->SetId(m_Entities.size());
+					temp->SetName("GameObject");
+					m_Entities.push_back(temp);
+				}
+
+				if (ImGui::MenuItem("Create new Cube")) AddGameObject(CUBE);
+				if (ImGui::MenuItem("Create new Sphere")) AddGameObject(SPHERE);
+				if (ImGui::MenuItem("Create new Plane")) AddGameObject(PLANE);
 				ImGui::EndMenu();
 			}
 
@@ -139,9 +154,7 @@ namespace DuckEngine
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
-			if (m_frameBuffer)
-				delete m_frameBuffer;
-			m_frameBuffer = new Framebuffer((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+			m_frameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 			m_frameBuffer->setDepthAttachment();
 			m_frameBuffer->Create();
@@ -170,13 +183,8 @@ namespace DuckEngine
 
 		ImGui::Begin("Inspector");
 
-		if (m_InspectorId >= 0) {
-			for (int i = 0; i < m_Objects.size(); i++) {
-				if (m_InspectorId == m_Objects[i]->GetID()) {
-					m_Objects[i]->DrawInspector();
-				}
-			}
-		}
+		if (m_SelectedEntity)
+			m_EntityPropertiePanel.OnImGuiRender(m_SelectedEntity);
 
 		ImGui::End();
 
@@ -186,20 +194,23 @@ namespace DuckEngine
 		int node_clicked = -1;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
-		for (int i = 0; i < m_Objects.size(); i++)
+		
+		for (int i = 0; i < m_Entities.size(); i++)
 		{
 			ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
-			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Objects[i]->GetName());
+			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Entities[i]->GetName());
 			if (ImGui::IsItemClicked())
 			{
 				node_clicked = i;
-				m_InspectorId = m_Objects[i]->GetID();
+				m_SelectedEntity = m_Entities[i];
 			}
 
 			if (ImGui::BeginPopupContextItem())
 			{
 				if (ImGui::MenuItem("Delete Object")) {
-					m_Objects.erase(m_Objects.begin() + i);
+					m_Entities.erase(m_Entities.begin() + i);
+					m_SelectedEntity = nullptr;
+					node_clicked = -1;
 				}
 				ImGui::EndPopup();
 			}
@@ -212,11 +223,12 @@ namespace DuckEngine
 			if (node_clicked != -1)
 			{
 				if (ImGui::GetIO().KeyCtrl)
-					selection_mask ^= (1 << node_clicked); 
+					selection_mask ^= (1 << node_clicked);
 				else
 					selection_mask = (1 << node_clicked);
 			}
 		}
+		
 		ImGui::PopStyleVar();
 
 		if (ImGui::BeginDragDropTarget())
@@ -248,18 +260,29 @@ namespace DuckEngine
 	}
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
+		Entity* temp = new Entity();
+		temp->SetId(m_Entities.size());
+		temp->AddComponent<TransformComponent>();
+		temp->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		temp->AddComponent<RenderComponent>();
+
 		switch (type)
 		{
 		case CUBE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "cube", *cube, *m_Texture));
+			temp->SetName("Cube");
+			temp->AddComponent<ModelComponent>("Assets/Models/cube.obj");
 			break;
 		case SPHERE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "sphere", *sphere, *m_Texture));
+			temp->SetName("Sphere");
+			temp->AddComponent<ModelComponent>("Assets/Models/sphere.obj");
 			break;
 		case PLANE:
-			m_Objects.push_back(new GameObject(m_Objects.size(), "plane", *plane, *m_Texture));
+			temp->SetName("Plane");
+			temp->AddComponent<ModelComponent>("Assets/Models/plane.obj");
 			break;
 		}
+
+		m_Entities.push_back(temp);
 	}
 
 	void Editor::AddGameObject(const std::string& file)
@@ -270,12 +293,16 @@ namespace DuckEngine
 		size_t lastindex = m_SelectedFile.find_last_of(".");
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
-		std::cout << file << std::endl;
-		std::cout << m_SelectedFile << " - " << m_FileName << std::endl;
-
 		m_Models.emplace(m_FileName, Renderer::CreateModel(file));
 
-		m_Objects.push_back(new GameObject(m_Objects.size(), m_FileName, *m_Models.at(m_FileName), *m_Texture));
+		Entity* temp = new Entity();
+		temp->SetId(m_Entities.size());
+		temp->SetName(m_FileName);
+		temp->AddComponent<TransformComponent>();
+		temp->AddComponent<ModelComponent>(file);
+		temp->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		temp->AddComponent<RenderComponent>();
+		m_Entities.push_back(temp);
 	}
 
 	void Editor::OpenExternalFile()

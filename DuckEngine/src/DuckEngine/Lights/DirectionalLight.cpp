@@ -3,16 +3,5 @@
 
 namespace DuckEngine
 {
-	void DirectionalLight::load(const std::string& path)
-	{
-		if (path.empty())
-			return;
-
-		return;
-	}
-
-	void DirectionalLight::free()
-	{
-
-	}
+	
 }

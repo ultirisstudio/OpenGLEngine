@@ -1,7 +1,9 @@
 #include "Editor.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 namespace DuckEngine
 {
@@ -173,6 +175,28 @@ namespace DuckEngine
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		/////////////////////////////////////////////////////////////////////////////////////////////
+
+		/*if (m_SelectedEntity)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			const glm::mat4& cameraProjection = m_Camera->getProjectionMatrix();
+			glm::mat4 cameraView = glm::inverse(m_Camera->GetTransform());
+
+			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.GetTransform();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
+		}*/
+
+		/////////////////////////////////////////////////////////////////////////////////////////////
 
 		if (ImGui::BeginDragDropTarget())
 		{

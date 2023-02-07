@@ -1,6 +1,5 @@
 #include "depch.h"
 #include <DuckEngine/Renderer/Camera.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <DuckEngine/Core/Window.h>
@@ -62,7 +61,9 @@ namespace DuckEngine
 
 	glm::mat4 Camera::GetTransform()
 	{
-		return glm::translate(glm::mat4(1.0f), m_position);
+		//glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(m_pitch, m_yaw, 0)));
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_pitch, { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), m_yaw, { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 });
+		return glm::translate(glm::mat4(1.f), m_position) * rotation;
 	}
 
 	glm::vec3 Camera::getPosition() const

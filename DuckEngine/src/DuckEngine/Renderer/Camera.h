@@ -3,6 +3,8 @@
 #include "DuckEngine/Events/Event.h"
 #include <DuckEngine/Events/MouseEvent.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace DuckEngine
 {
@@ -20,6 +22,8 @@ namespace DuckEngine
 
 		float m_yaw;
 		float m_pitch;
+
+		//glm::vec3(m_pitch, m_yaw, 0)
 
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };
 		glm::vec2 m_ViewportPos = { 1.0f, 1.0f };

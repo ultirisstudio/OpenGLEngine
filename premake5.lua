@@ -24,6 +24,7 @@ group "Dependance"
 	include "DuckEngine/vendor/Glad"
 	include "DuckEngine/vendor/assimp"
 	include "DuckEngine/vendor/imgui"
+	include "DuckEngine/vendor/ImGuizmo"
 
 group ""
 
@@ -45,9 +46,7 @@ project "DuckEngine"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
-		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
-		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
+		"%{prj.name}/vendor/stb_image/**.cpp"
 	}
 
 	includedirs
@@ -57,6 +56,7 @@ project "DuckEngine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.ImGuizmo}"
@@ -68,6 +68,7 @@ project "DuckEngine"
 		"Glad",
 		"assimp",
 		"ImGui",
+		"ImGuizmo",
 		"opengl32.lib"
 	}
 	
@@ -115,6 +116,7 @@ project "DuckEditor"
 		"DuckEngine/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.ImGuizmo}"

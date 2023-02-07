@@ -5,8 +5,7 @@
 #include <glad/glad.h>
 #include <DuckEngine/Core/Window.h>
 #include "DuckEngine/Core/Application.h"
-#include "GLFW/glfw3.h"
-
+/*
 namespace DuckEngine
 {
 	template <typename T>
@@ -17,37 +16,23 @@ namespace DuckEngine
 
 	void Camera::updateViewMatrix()
 	{
-		m_viewMatrix = glm::lookAt(m_position, m_position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
+		m_viewMatrix = glm::lookAt(m_position, m_target, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	Camera::Camera(const glm::vec3& position) :
-		m_viewMatrix(glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f))),
-		m_target(glm::vec3(0.0f, 0.0f, -1.0f)),
-		m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-		m_yaw(-90.0f),
-		m_pitch(0.0f),
+	Camera::Camera(const glm::vec3& position, const glm::vec3& target) :
+		m_viewMatrix(glm::lookAt(position, target, glm::vec3(0.0f, 1.0f, 0.0f))),
 		m_position(position),
+		m_target(target),
 		m_lastMousePos(0),
 		m_moving(false),
 		m_fov(45.0f),
 		m_minFov(15.0f),
 		m_maxFov(95.0f),
-		m_sensitivity(0.1f),
+		m_sensitivity(0.01f),
 		m_projectionMatrix(1.0f),
 		m_CameraFocus(false)
 	{
-		UpdateCameraVectors();
-	}
 
-	void Camera::UpdateCameraVectors()
-	{
-		glm::vec3 front;
-		front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		front.y = sin(glm::radians(m_pitch));
-		front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		m_target = glm::normalize(front);
-		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
-		m_up = glm::normalize(glm::cross(m_right, m_target));
 	}
 
 	glm::mat4 Camera::getViewMatrix() const
@@ -97,36 +82,16 @@ namespace DuckEngine
 		m_lastMousePos.x = e.GetX();
 		m_lastMousePos.y = e.GetY();
 
-		if (m_pitch > 89.0f)
-			m_pitch = 89.0f;
-		if (m_pitch < -89.0f)
-			m_pitch = -89.0f;
+		float cosAngle = glm::dot(glm::vec3(-glm::transpose(m_viewMatrix)[2]), glm::vec3(0.0f, 1.0f, 0.0f));
+		if (cosAngle * sgn(offsetY) > 0.99f)
+			offsetY = 0.0f;
 
-		if (e.GetX() > (m_ViewportPos.x + m_ViewportSize.x))
-		{
-			glfwSetCursorPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), m_ViewportPos.x, e.GetY());
-			m_lastMousePos.x = m_ViewportPos.x;
-		}
-		if (e.GetX() < (m_ViewportPos.x))
-		{
-			glfwSetCursorPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), m_ViewportPos.x + m_ViewportSize.x, e.GetY());
-			m_lastMousePos.x = m_ViewportPos.x + m_ViewportSize.x;
-		}
-		if (e.GetY() > (m_ViewportPos.y + m_ViewportSize.y))
-		{
-			glfwSetCursorPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), e.GetX(), m_ViewportPos.y);
-			m_lastMousePos.y = m_ViewportPos.y;
-		}
-		if (e.GetY() < (m_ViewportPos.y))
-		{
-			glfwSetCursorPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), e.GetX(), m_ViewportPos.y + m_ViewportSize.y);
-			m_lastMousePos.y = m_ViewportPos.y + m_ViewportSize.y;
-		}
+		glm::mat4x4 rotationMatrix(1.0f);
+		rotationMatrix = glm::rotate(rotationMatrix, offsetX, glm::vec3(0.0f, 1.0f, 0.0f));
+		rotationMatrix = glm::rotate(rotationMatrix, offsetY, glm::vec3(glm::transpose(m_viewMatrix)[0]));
+		m_position = (rotationMatrix * glm::vec4((m_position - m_target), 1.0f)) + glm::vec4(m_target, 1.0f);
 
-		m_yaw -= offsetX;
-		m_pitch += offsetY;
-
-		updateViewMatrix(); UpdateCameraVectors();
+		updateViewMatrix();
 
 		return false;
 	}
@@ -167,11 +132,11 @@ namespace DuckEngine
 		updateViewMatrix();
 	}
 
-	/*void Camera::setTarget(const glm::vec3& target)
+	void Camera::setTarget(const glm::vec3& target)
 	{
 		m_target = target;
 		updateViewMatrix();
-	}*/
+	}
 
 	void Camera::setFov(float fov)
 	{
@@ -199,16 +164,10 @@ namespace DuckEngine
 		m_ViewportSize.y = height;
 	}
 
-	void Camera::GetViewportPos(float x, float y)
-	{
-		m_ViewportPos.x = x;
-		m_ViewportPos.y = y;
-	}
-
 	void Camera::Update()
 	{
 		m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100.0f);
 		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 		Renderer::UpdateMatrix(m_viewMatrix, m_projectionMatrix);
 	}
-}
+}*/

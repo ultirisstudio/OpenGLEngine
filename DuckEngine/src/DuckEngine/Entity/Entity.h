@@ -31,9 +31,9 @@ namespace DuckEngine
 		T& AddComponent(TArgs&&... mArgs) {
 			T* component(new T(std::forward <TArgs>(mArgs)...));
 
-			std::shared_ptr<Component> uPtr { component };
+			//std::shared_ptr<Component> uPtr { component };
 
-			m_Components.emplace_back(std::move(uPtr));
+			//m_Components.emplace_back(std::move(uPtr));
 			m_ComponentsArray[GetComponentTypeID<T>()] = component;
 			m_ComponentsBitset[GetComponentTypeID<T>()] = true;
 
@@ -42,12 +42,9 @@ namespace DuckEngine
 
 		template<typename T>
 		void RemoveComponent() {
-			for (int i = 0; i < m_Components.size(); i++)
-			{
-				m_Components.erase(std::remove(m_Components.begin(), m_Components.end(), m_Components[0]), m_Components.end());
-				m_ComponentsArray[GetComponentTypeID<T>()] = nullptr;
-				m_ComponentsBitset[GetComponentTypeID<T>()] = false;
-			}
+			delete m_ComponentsArray[GetComponentTypeID<T>()];
+			m_ComponentsArray[GetComponentTypeID<T>()] = nullptr;
+			m_ComponentsBitset[GetComponentTypeID<T>()] = false;
 		}
 
 		template<typename T>
@@ -59,7 +56,7 @@ namespace DuckEngine
 		std::string m_Name;
 		unsigned int m_Id;
 
-		std::vector<std::shared_ptr<Component>> m_Components;
+		//std::vector<std::shared_ptr<Component>> m_Components;
 		std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
 		std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;
 	};

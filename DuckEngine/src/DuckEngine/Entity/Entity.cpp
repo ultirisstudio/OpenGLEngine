@@ -7,25 +7,28 @@ namespace DuckEngine
 {
 	void Entity::Draw()
 	{
-		if (HasComponent<RenderComponent>())
+		if (HasComponent<RenderComponent>() && HasComponent<ModelComponent>() && HasComponent<MaterialComponent>())
 		{
-			Material& material = GetComponent<MaterialComponent>().GetMaterial();
-			Model& model = GetComponent<ModelComponent>().GetModel();
-			glm::mat4& transform = GetComponent<TransformComponent>().GetTransform();
-			Shader& shader = GetComponent<RenderComponent>().GetShader();
+			if (GetComponent<ModelComponent>().GetPtr())
+			{
+				Material& material = GetComponent<MaterialComponent>().GetMaterial();
+				Model& model = GetComponent<ModelComponent>().GetModel();
+				glm::mat4& transform = GetComponent<TransformComponent>().GetTransform();
+				Shader& shader = GetComponent<RenderComponent>().GetShader();
 
-			glActiveTexture(GL_TEXTURE0);
-			material.GetDiffuseTexture().bind();
+				glActiveTexture(GL_TEXTURE0);
+				material.GetDiffuseTexture().bind();
 
 
-			shader.use();
+				shader.use();
 
-			shader.setUniform("uModel", transform);
-			shader.setUniform("uView", Renderer::getViewMatrix());
-			shader.setUniform("uProjection", Renderer::getProjectionMatrix());
-			shader.setUniform("uTexture", 0);
+				shader.setUniform("uModel", transform);
+				shader.setUniform("uView", Renderer::getViewMatrix());
+				shader.setUniform("uProjection", Renderer::getProjectionMatrix());
+				shader.setUniform("uTexture", 0);
 
-			model.draw();
+				model.draw();
+			}
 		}
 
 		if (HasComponent<SkyboxComponent>())

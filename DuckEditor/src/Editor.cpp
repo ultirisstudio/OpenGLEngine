@@ -12,7 +12,7 @@ namespace DuckEngine
 
 	void Editor::OnAttach()
 	{
-		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0));
+		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
 
 		cube = Renderer::CreateModel("Assets/Models/cube.obj");
 		sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
@@ -127,6 +127,7 @@ namespace DuckEngine
 					Entity* temp = new Entity();
 					temp->SetId(m_Entities.size());
 					temp->SetName("GameObject");
+					temp->AddComponent<TransformComponent>();
 					m_Entities.push_back(temp);
 				}
 
@@ -151,6 +152,9 @@ namespace DuckEngine
 		if (ImGui::IsWindowHovered()) { m_ViewportFocus = true; } else { m_ViewportFocus = false; }
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
+		int x, y;
+		glfwGetWindowPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &x, &y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -162,6 +166,7 @@ namespace DuckEngine
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 			m_Camera->OnResize(viewportPanelSize.x, viewportPanelSize.y);
+			m_Camera->GetViewportPos(viewportPanelPos.x-x, viewportPanelPos.y-y);
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });

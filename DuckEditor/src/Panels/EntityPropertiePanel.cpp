@@ -30,13 +30,6 @@ namespace DuckEngine
 
 			if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
 			{
-				if (ImGui::BeginPopupContextItem())
-				{
-					if (ImGui::MenuItem("Delete Component")) {
-						
-					}
-					ImGui::EndPopup();
-				}
 				ImGui::Text("Position: "); ImGui::SameLine();
 				ImGui::DragFloat3("##Position", glm::value_ptr(tc.Position), 0.1f, -1000.0f, 1000.0f);
 				ImGui::Text("Rotation: "); ImGui::SameLine();
@@ -56,11 +49,13 @@ namespace DuckEngine
 			{
 				if (ImGui::BeginPopupContextItem())
 				{
-					if (ImGui::MenuItem("Delete Component")) {
-
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<ModelComponent>();
 					}
 					ImGui::EndPopup();
 				}
+
 				ImGui::Text("Model: "); ImGui::SameLine();
 				ImGui::ImageButton((ImTextureID)m_ModelTexture->GetID(), { 24.0f, 24.0f }, { 0, 1 }, { 1, 0 });
 
@@ -71,6 +66,7 @@ namespace DuckEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
+
 						mc.SetModel(file);
 					}
 					ImGui::EndDragDropTarget();
@@ -88,13 +84,16 @@ namespace DuckEngine
 			{
 				if (ImGui::BeginPopupContextItem())
 				{
-					if (ImGui::MenuItem("Delete Component")) {
-
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<MaterialComponent>();
 					}
 					ImGui::EndPopup();
 				}
+
 				ImGui::Text("Diffuse texture: "); //ImGui::SameLine();
-				ImGui::ImageButton((ImTextureID)mc.GetMaterial().GetDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+				if (entity->HasComponent<MaterialComponent>())
+					ImGui::ImageButton((ImTextureID)mc.GetMaterial().GetDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 
 				if (ImGui::BeginDragDropTarget())
 				{
@@ -121,8 +120,9 @@ namespace DuckEngine
 			{
 				if (ImGui::BeginPopupContextItem())
 				{
-					if (ImGui::MenuItem("Delete Component")) {
-
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<SkyboxComponent>();
 					}
 					ImGui::EndPopup();
 				}
@@ -138,8 +138,9 @@ namespace DuckEngine
 			{
 				if (ImGui::BeginPopupContextItem())
 				{
-					if (ImGui::MenuItem("Delete Component")) {
-
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<RenderComponent>();
 					}
 					ImGui::EndPopup();
 				}
@@ -161,7 +162,7 @@ namespace DuckEngine
 
 			if (!entity->HasComponent<ModelComponent>()) {
 				if (ImGui::MenuItem("Model Component")) {
-					entity->AddComponent<ModelComponent>("Assets/Models/cube.obj");
+					entity->AddComponent<ModelComponent>();
 				}
 			}
 

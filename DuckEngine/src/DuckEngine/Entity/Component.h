@@ -63,6 +63,8 @@ namespace DuckEngine
 		
 		Model& GetModel() { return *m_Model; }
 		void SetModel(const std::string& path) { m_Model = Renderer::CreateModel(path); }
+
+		Model* GetPtr() { return m_Model.get(); }
 	};
 
 	class MaterialComponent : public Component

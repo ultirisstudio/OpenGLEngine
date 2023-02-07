@@ -8,7 +8,7 @@ RenderComponent::RenderComponent() : m_Shader()
 
 void RenderComponent::Draw()
 {
-	if (entity->HasComponent<RenderComponent>() && entity->HasComponent<ModelComponent>() && entity->HasComponent<MaterialComponent>())
+	if (entity->HasComponent<ModelComponent>() && entity->HasComponent<MaterialComponent>())
 	{
 		if (entity->GetComponent<ModelComponent>().GetPtr())
 		{

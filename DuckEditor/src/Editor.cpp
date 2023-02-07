@@ -58,7 +58,10 @@ namespace DuckEngine
 		Renderer::BeginScene(m_Camera.get());
 
 		for (Entity* entity : m_Entities) {
-			entity->Draw();
+			if (entity->HasComponent<RenderComponent>())
+			{
+				entity->GetComponent<RenderComponent>().Draw();
+			}
 		}
 
 		Renderer::EndScene();

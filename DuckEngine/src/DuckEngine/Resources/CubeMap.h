@@ -11,6 +11,9 @@ namespace DuckEngine
 		CubeMap();
 
 		void Load(std::array<std::string, 6> paths);
+		void ActiveTexture();
+		void BeginDrawModel();
+		void EndDrawModel();
 		void Bind();
 
 		unsigned int GetID() { return m_ID; }

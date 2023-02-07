@@ -42,6 +42,22 @@ namespace DuckEngine
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
+
+	void CubeMap::ActiveTexture()
+	{
+		glActiveTexture(GL_TEXTURE0);
+	}
+
+	void CubeMap::BeginDrawModel()
+	{
+		glDepthFunc(GL_LEQUAL);
+	}
+
+	void CubeMap::EndDrawModel()
+	{
+		glDepthFunc(GL_LESS);
+	}
+
 	void CubeMap::Bind()
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);

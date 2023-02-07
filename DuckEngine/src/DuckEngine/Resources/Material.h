@@ -13,6 +13,7 @@ namespace DuckEngine
 		Material(const std::string& path);
 		~Material();
 
+		void ActiveTexture();
 		Texture& GetDiffuseTexture();
 		void SetDiffuseTexture(const std::string& path);
 	};

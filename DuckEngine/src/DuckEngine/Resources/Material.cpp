@@ -1,6 +1,7 @@
 #include "depch.h"
 #include <DuckEngine/Resources/Material.h>
 #include <DuckEngine/Renderer/Renderer.h>
+#include <glad/glad.h>
 
 namespace DuckEngine
 {
@@ -12,6 +13,11 @@ namespace DuckEngine
 	Material::~Material()
 	{
 
+	}
+
+	void Material::ActiveTexture()
+	{
+		glActiveTexture(GL_TEXTURE0);
 	}
 
 	Texture& Material::GetDiffuseTexture()

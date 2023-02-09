@@ -73,13 +73,62 @@ public:
 class MaterialComponent : public Component
 {
 private:
+	std::shared_ptr<DuckEngine::Texture> m_DefaultTexture;
+	std::shared_ptr<DuckEngine::Texture> m_NoTexture;
+
 	std::shared_ptr<DuckEngine::Material> m_Material;
 public:
-	MaterialComponent() = default;
-	MaterialComponent(const std::string& path) { m_Material = DuckEngine::Renderer::CreateMaterial(path); }
+	MaterialComponent()
+	{
+		m_Material = DuckEngine::Renderer::CreateMaterial();
+		m_DefaultTexture = DuckEngine::Renderer::CreateTexture("Assets/Textures/white_texture.jpg");
+		m_NoTexture = DuckEngine::Renderer::CreateTexture("Assets/Textures/3d-modeling.png");
+	}
 
 	DuckEngine::Material& GetMaterial() { return *m_Material; }
-	void SetMaterial(const std::string& path) { m_Material = DuckEngine::Renderer::CreateMaterial(path); }
+
+	DuckEngine::Texture& GetDefaultTexture() { return *m_DefaultTexture; }
+	DuckEngine::Texture& GetNoTexture() { return *m_NoTexture; }
+
+	DuckEngine::Texture& GetDiffuseTexture()
+	{
+		if (m_Material->GetDiffuseTexture())
+		{
+			return *m_Material->GetDiffuseTexture();
+		}
+
+		return *m_DefaultTexture;
+	}
+
+	DuckEngine::Texture& GetEditorDiffuseTexture()
+	{
+		if (m_Material->GetDiffuseTexture())
+		{
+			return *m_Material->GetDiffuseTexture();
+		}
+
+		return *m_NoTexture;
+	}
+
+	DuckEngine::Texture& GetEditorNormalTexture()
+	{
+		if (m_Material->GetNormalTexture())
+		{
+			return *m_Material->GetNormalTexture();
+		}
+
+		return *m_NoTexture;
+	}
+
+	bool HasTexture()
+	{
+		if (m_Material->GetDiffuseTexture() || m_Material.get()->GetNormalTexture() || m_Material.get()->GetSpecularTexture())
+		{
+			return true;
+		}
+
+		return false;
+	}
 };
 
 class RenderComponent : public Component

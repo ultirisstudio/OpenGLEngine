@@ -8,13 +8,22 @@ namespace DuckEngine
 	{
 	private:
 		std::shared_ptr<Texture> m_DiffuseTexture;
+		std::shared_ptr<Texture> m_NormalTexture;
+		std::shared_ptr<Texture> m_SpecularTexture;
 
 	public:
-		Material(const std::string& path);
+		Material();
 		~Material();
 
 		void ActiveTexture();
-		Texture& GetDiffuseTexture();
+
+		Texture* GetDiffuseTexture();
 		void SetDiffuseTexture(const std::string& path);
+
+		Texture* GetNormalTexture();
+		void SetNormalTexture(const std::string& path);
+
+		Texture* GetSpecularTexture();
+		void SetSpecularTexture(const std::string& path);
 	};
 }

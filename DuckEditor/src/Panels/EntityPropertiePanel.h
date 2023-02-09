@@ -12,6 +12,5 @@ namespace DuckEngine
 		void OnImGuiRender(Entity* entity);
 	private:
 		std::shared_ptr<Texture> m_ModelTexture;
-		std::shared_ptr<Texture> m_WhiteTexture;
 	};
 }

@@ -5,9 +5,9 @@
 
 namespace DuckEngine
 {
-	Material::Material(const std::string& path)
+	Material::Material()
 	{
-		m_DiffuseTexture = Renderer::CreateTexture(path);
+		
 	}
 
 	Material::~Material()
@@ -20,13 +20,33 @@ namespace DuckEngine
 		glActiveTexture(GL_TEXTURE0);
 	}
 
-	Texture& Material::GetDiffuseTexture()
+	Texture* Material::GetDiffuseTexture()
 	{
-		return *m_DiffuseTexture;
+		return m_DiffuseTexture.get();
 	}
 
 	void Material::SetDiffuseTexture(const std::string& path)
 	{
 		m_DiffuseTexture = Renderer::CreateTexture(path);
+	}
+
+	Texture* Material::GetNormalTexture()
+	{
+		return m_NormalTexture.get();
+	}
+
+	void Material::SetNormalTexture(const std::string& path)
+	{
+		m_NormalTexture = Renderer::CreateTexture(path);
+	}
+
+	Texture* Material::GetSpecularTexture()
+	{
+		return m_SpecularTexture.get();
+	}
+
+	void Material::SetSpecularTexture(const std::string& path)
+	{
+		m_SpecularTexture = Renderer::CreateTexture(path);
 	}
 }

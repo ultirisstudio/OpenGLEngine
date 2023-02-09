@@ -57,10 +57,20 @@ namespace DuckEngine
 			else if (GetFileExtension(directoryEntry) == "png")
 			{
 				icon = m_FilePNGIcon;
+				//std::filesystem::path relativePath(path);
+				//std::string itemPath = relativePath.string();
+				//m_Temp = Renderer::CreateTexture(itemPath);
+				//icon = m_Temp;
+				//std::cout << itemPath << std::endl;
 			}
 			else if (GetFileExtension(directoryEntry) == "jpg")
 			{
 				icon = m_FileJPGIcon;
+				//std::filesystem::path relativePath(path);
+				//std::string itemPath = relativePath.string();
+				//m_Temp = Renderer::CreateTexture(itemPath);
+				//icon = m_Temp;
+				//std::cout << itemPath << std::endl;
 			}
 			else
 			{
@@ -69,6 +79,15 @@ namespace DuckEngine
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			ImGui::ImageButton((ImTextureID)icon->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::MenuItem("Delete"))
+				{
+					std::cout << filenameString.c_str() << std::endl;
+				}
+				ImGui::EndPopup();
+			}
 
 			if (ImGui::BeginDragDropSource())
 			{

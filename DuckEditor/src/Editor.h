@@ -32,14 +32,14 @@ namespace DuckEngine
 		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
-		std::shared_ptr<Model> cube;
-		std::shared_ptr<Model> sphere;
-		std::shared_ptr<Model> plane;
+		//std::shared_ptr<Model> cube;
+		//std::shared_ptr<Model> sphere;
+		//std::shared_ptr<Model> plane;
 
 		std::vector<Entity*> m_Entities;
 		Entity* m_SelectedEntity;
 
-		std::map<std::string, std::shared_ptr<Model>> m_Models;
+		//std::map<std::string, std::shared_ptr<Model>> m_Models;
 
 		FileBrowser m_FileBrowser;
 		void OpenExternalFile();

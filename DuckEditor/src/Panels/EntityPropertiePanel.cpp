@@ -8,7 +8,6 @@ namespace DuckEngine
 	EntityPropertiePanel::EntityPropertiePanel()
 	{
 		m_ModelTexture = Renderer::CreateTexture("Icons/texture_obj.png");
-		m_WhiteTexture = Renderer::CreateTexture("Assets/Textures/white_texture.jpg");
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(Entity* entity)
@@ -92,9 +91,7 @@ namespace DuckEngine
 				}
 
 				ImGui::Text("Diffuse texture: "); //ImGui::SameLine();
-				if (entity->HasComponent<MaterialComponent>())
-					ImGui::ImageButton((ImTextureID)mc.GetMaterial().GetDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
-
+				ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -102,7 +99,22 @@ namespace DuckEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.SetMaterial(file);
+						mc.GetMaterial().SetDiffuseTexture(file);
+
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				ImGui::Text("Normal texture: "); //ImGui::SameLine();
+				ImGui::ImageButton((ImTextureID)mc.GetEditorNormalTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+					{
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::filesystem::path filesys = path;
+						std::string file = filesys.string();
+						mc.GetMaterial().SetNormalTexture(file);
 
 					}
 					ImGui::EndDragDropTarget();
@@ -168,7 +180,7 @@ namespace DuckEngine
 
 			if (!entity->HasComponent<MaterialComponent>()) {
 				if (ImGui::MenuItem("Material Component")) {
-					entity->AddComponent<MaterialComponent>("Assets/Textures/white_texture.jpg");
+					entity->AddComponent<MaterialComponent>();
 				}
 			}
 

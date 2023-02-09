@@ -18,7 +18,7 @@ void RenderComponent::Draw()
 			DuckEngine::Shader& shader = entity->GetComponent<RenderComponent>().GetShader();
 
 			material.ActiveTexture();
-			material.GetDiffuseTexture().bind();
+			entity->GetComponent<MaterialComponent>().GetDiffuseTexture().bind();
 
 			shader.use();
 

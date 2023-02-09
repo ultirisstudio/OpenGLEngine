@@ -16,9 +16,9 @@ namespace DuckEngine
 	{
 		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
 
-		cube = Renderer::CreateModel("Assets/Models/cube.obj");
-		sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
-		plane = Renderer::CreateModel("Assets/Models/plane.obj");
+		//cube = Renderer::CreateModel("Assets/Models/cube.obj");
+		//sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
+		//plane = Renderer::CreateModel("Assets/Models/plane.obj");
 
 		//m_Skybox = Renderer::CreateSkybox(*cube);
 		m_Texture = Renderer::CreateTexture("Assets/Textures/diffuse.png");
@@ -32,8 +32,9 @@ namespace DuckEngine
 		m_Entity->SetId(m_Entities.size());
 		m_Entity->SetName("Entity");
 		m_Entity->AddComponent<TransformComponent>();
-		m_Entity->AddComponent<ModelComponent>("Assets/Models/cube.obj");
-		m_Entity->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		m_Entity->AddComponent<ModelComponent>("Assets/Models/BackPack.obj");
+		m_Entity->AddComponent<MaterialComponent>();
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/1001_albedo.jpg");
 		m_Entity->AddComponent<RenderComponent>();
 		m_Entities.push_back(m_Entity);
 	}
@@ -295,7 +296,8 @@ namespace DuckEngine
 		Entity* temp = new Entity();
 		temp->SetId(m_Entities.size());
 		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		temp->AddComponent<MaterialComponent>();
+		temp->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/diffuse.png");
 		temp->AddComponent<RenderComponent>();
 
 		switch (type)
@@ -325,14 +327,15 @@ namespace DuckEngine
 		size_t lastindex = m_SelectedFile.find_last_of(".");
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
-		m_Models.emplace(m_FileName, Renderer::CreateModel(file));
+		//m_Models.emplace(m_FileName, Renderer::CreateModel(file));
 
 		Entity* temp = new Entity();
 		temp->SetId(m_Entities.size());
 		temp->SetName(m_FileName);
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>(file);
-		temp->AddComponent<MaterialComponent>("Assets/Textures/diffuse.png");
+		temp->AddComponent<MaterialComponent>();
+		temp->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/diffuse.png");
 		temp->AddComponent<RenderComponent>();
 		m_Entities.push_back(temp);
 	}

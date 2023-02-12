@@ -188,8 +188,9 @@ namespace DuckEngine
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			const glm::mat4& cameraProjection = m_Camera->getProjectionMatrix();
+			glm::mat4 cameraProjection = m_Camera->getProjectionMatrix();
 			glm::mat4 cameraView = glm::inverse(m_Camera->GetTransform());
+			cameraView[1, 1] *= -1;
 
 			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();

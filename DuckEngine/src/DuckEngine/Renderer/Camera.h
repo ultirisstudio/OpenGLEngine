@@ -43,7 +43,7 @@ namespace DuckEngine
 		Camera(const glm::vec3& position);
 
 		glm::mat4 getViewMatrix() const;
-		glm::mat4 getProjectionMatrix() const;
+		const glm::mat4& getProjectionMatrix() const;
 
 		glm::mat4 GetTransform();
 		glm::vec3 getPosition() const;

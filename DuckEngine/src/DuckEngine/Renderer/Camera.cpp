@@ -54,7 +54,7 @@ namespace DuckEngine
 		return m_viewMatrix;
 	}
 
-	glm::mat4 Camera::getProjectionMatrix() const
+	const glm::mat4& Camera::getProjectionMatrix() const
 	{
 		return m_projectionMatrix;
 	}
@@ -62,7 +62,7 @@ namespace DuckEngine
 	glm::mat4 Camera::GetTransform()
 	{
 		//glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(m_pitch, m_yaw, 0)));
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_pitch, { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), m_yaw, { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 });
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(m_pitch), { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), glm::radians(m_yaw), { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 });
 		return glm::translate(glm::mat4(1.f), m_position) * rotation;
 	}
 
@@ -135,7 +135,7 @@ namespace DuckEngine
 	bool Camera::OnMousePressed(MouseButtonPressedEvent& e)
 	{
 		Window::WindowData& data = *(Window::WindowData*)glfwGetWindowUserPointer(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()));
-
+		
 		m_lastMousePos.x = data.MousePos.x;
 		m_lastMousePos.y = data.MousePos.y;
 

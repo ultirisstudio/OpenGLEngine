@@ -17,7 +17,8 @@ IncludeDir["glm"] = "DuckEngine/vendor/glm"
 IncludeDir["ImGui"] = "DuckEngine/vendor/imgui"
 IncludeDir["assimp"] = "DuckEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "DuckEngine/vendor/stb_image"
-IncludeDir["ImGuizmo"] = "DuckEngine/vendor/ImGuizmo"
+IncludeDir["ImGuizmo"] = "DuckEngine/vendor/ImGuizmo" 
+IncludeDir["DuckShading"] = "DuckEngine/vendor/DuckShading"
 
 group "Dependance"
 	include "DuckEngine/vendor/GLFW"
@@ -25,6 +26,7 @@ group "Dependance"
 	include "DuckEngine/vendor/assimp"
 	include "DuckEngine/vendor/imgui"
 	include "DuckEngine/vendor/ImGuizmo"
+	include "DuckEngine/vendor/DuckShading"
 
 group ""
 
@@ -56,10 +58,10 @@ project "DuckEngine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.DuckShading}"
 	}
 
 	links
@@ -69,6 +71,7 @@ project "DuckEngine"
 		"assimp",
 		"ImGui",
 		"ImGuizmo",
+		"DuckShading",
 		"opengl32.lib"
 	}
 	
@@ -118,14 +121,12 @@ project "DuckEditor"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.GLFW}"
 	}
 
 	links
 	{
-		"DuckEngine",
-		"ImGui"
+		"DuckEngine"
 	}
 	
 	filter "system:windows"

@@ -5,6 +5,8 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
+#include <DuckEngine/Shader/Generators/ShaderGenerator.h>
+
 namespace DuckEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
@@ -34,9 +36,58 @@ namespace DuckEngine
 		m_Entity->AddComponent<TransformComponent>();
 		m_Entity->AddComponent<ModelComponent>("Assets/Models/BackPack.obj");
 		m_Entity->AddComponent<MaterialComponent>();
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/1001_albedo.jpg");
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3(0.1f));
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/1001_albedo.jpg");
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3(1.0f));
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		m_Entity->AddComponent<RenderComponent>();
+		m_Entity->GetComponent<RenderComponent>().GenerateShader();
 		m_Entities.push_back(m_Entity);
+
+		/*Material material;
+		material.addVec3("ambient", glm::vec3(0.1f));
+		material.addVec3("diffuse", glm::vec3(0.6f));
+		material.addVec3("specular", glm::vec3(1.0f));
+		material.addFloat("shininess", 32.0f);
+
+		ShaderGenerator shaderGenerator(material, ShaderType::BPhong);
+
+		//std::cout << shaderGenerator.generateVertexShader() << std::endl;
+		//std::cout << shaderGenerator.generateFragmentShader() << std::endl;
+
+		const std::string& vs =
+		"#version 330 core\n"
+		"layout(location = 0) in vec3 vPosition;\n"
+		"layout(location = 2) in vec2 vTexCoords;\n"
+		"out VS_OUT\n"
+		"{\n"
+		"	vec2 fTexCoords;\n"
+		"} vs_out;\n"
+		"uniform mat4 uModel;\n"
+		"uniform mat4 uView;\n"
+		"uniform mat4 uProjection;\n"
+		"void main()\n"
+		"{\n"
+		"	vs_out.fTexCoords = vTexCoords;\n"
+		"	gl_Position = uProjection * uView * uModel * vec4(vPosition, 1.0f);\n"
+		"}";
+
+		const std::string& fs =
+		"#version 330 core\n"
+		"in VS_OUT\n"
+		"{\n"
+		"	vec2 fTexCoords;\n"
+		"} fs_in;\n"
+		"out vec4 color;\n"
+		"uniform sampler2D uTexture;\n"
+		"void main()\n"
+		"{\n"
+		"	color = vec4(texture(uTexture, fs_in.fTexCoords).rgb, 1.0f);\n"
+		"}";
+
+		Shader shader;
+		shader.LoadFromSource(shaderGenerator.generateVertexShader(), shaderGenerator.generateFragmentShader(), shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
+		*/
 	}
 
 	void Editor::OnDetach()
@@ -278,8 +329,11 @@ namespace DuckEngine
 
 		ImGui::End();
 
-
 		m_ContentBrowserPanel.OnImGuiRender();
+
+		m_MaterialCreatorPanel.OnImGuiRender();
+
+		m_SequencerTestPanel.OnImGuiRender();
 
 		ImGui::Begin("Open Resource Infos");
 		ImGui::Text("Selected file: %s\nFile path: %s\nFile extension: %s\n", m_FileBrowser.GetInfos().m_SelectedFile.c_str(), m_FileBrowser.GetInfos().m_FilePath.c_str(), m_FileBrowser.GetInfos().m_FileExtension.c_str());
@@ -298,7 +352,9 @@ namespace DuckEngine
 		temp->SetId(m_Entities.size());
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
 		temp->AddComponent<RenderComponent>();
 
 		switch (type)
@@ -336,7 +392,9 @@ namespace DuckEngine
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>(file);
 		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().SetDiffuseTexture("Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
 		temp->AddComponent<RenderComponent>();
 		m_Entities.push_back(temp);
 	}

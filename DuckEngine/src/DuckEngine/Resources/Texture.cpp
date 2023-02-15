@@ -5,6 +5,12 @@
 
 namespace DuckEngine
 {
+	Texture::Texture() :
+		m_id(0)
+	{
+		
+	}
+
 	Texture::Texture(const std::string& path) :
 		m_id(0),
 		m_path(path)
@@ -43,6 +49,7 @@ namespace DuckEngine
 
 		stbi_image_free(data);
 	}
+
 	Texture::~Texture()
 	{
 		glDeleteTextures(1, &m_id);

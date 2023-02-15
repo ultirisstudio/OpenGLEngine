@@ -1,16 +1,24 @@
 #include "depch.h"
-#include <DuckEngine/Renderer/Renderer.h>
+
 #include <glad/glad.h>
-#include <DuckEngine/Tools/Log.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include "DuckEngine/Core/Application.h"
+
+#include <DuckEngine/Core/Application.h>
+#include <DuckEngine/Renderer/Renderer.h>
+#include <DuckEngine/Shader/Generators/ShaderGenerator.h>
+#include <DuckEngine/Tools/Log.h>
 
 namespace DuckEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
 
 	Shader* Renderer::CreateShader(Material& material)
 	{
-		return m_SceneData.m_shaderGenerator.generateShader(material);
+		ShaderGenerator shaderGenerator(material, ShaderType::BPhong);
+		Shader shader;
+		std::cout << shaderGenerator.generateVertexShader() << std::endl;
+		std::cout << shaderGenerator.generateFragmentShader() << std::endl;
+		shader.LoadFromSource(shaderGenerator.generateVertexShader(), shaderGenerator.generateFragmentShader(), shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
+		return &shader;
 	}
 
 	const glm::mat4& Renderer::getViewMatrix()

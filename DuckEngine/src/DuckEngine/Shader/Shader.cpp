@@ -99,49 +99,24 @@ namespace DuckEngine
 		return shader;
 	}
 
-	Shader::Shader()
+	Shader::Shader() : m_id(0)
 	{
 
-	}
-
-	Shader::Shader(const std::string& vs, const std::string& fs, const std::string& gs) : m_id(0)
-	{
-		if (vs.empty() || fs.empty())
-			return;
-
-		unsigned int vertexShader = createShader(vs, GL_VERTEX_SHADER);
-		unsigned int geometryShader = gs.empty() ? 0 : createShader(gs, GL_GEOMETRY_SHADER);
-		unsigned int fragmentShader = createShader(fs, GL_FRAGMENT_SHADER);
-
-		m_id = glCreateProgram();
-
-		glAttachShader(m_id, vertexShader);
-		if (geometryShader != 0)
-			glAttachShader(m_id, geometryShader);
-		glAttachShader(m_id, fragmentShader);
-
-		glLinkProgram(m_id);
-
-		int linkStatus;
-		glGetProgramiv(m_id, GL_LINK_STATUS, &linkStatus);
-		if (!linkStatus)
-		{
-			char error[512];
-			glGetProgramInfoLog(m_id, 512, NULL, error);
-
-			std::string errorMessage("Failed to link shader : ");
-			Log::error(errorMessage + error);
-		}
-
-		glDeleteShader(vertexShader);
-		if (geometryShader != 0)
-			glDeleteShader(geometryShader);
-		glDeleteShader(fragmentShader);
 	}
 
 	Shader::~Shader()
 	{
 		glDeleteProgram(m_id);
+	}
+
+	ShaderRenderInfo& Shader::GetVertexRenderInfo()
+	{
+		return m_VertexRenderInfo;
+	}
+
+	ShaderRenderInfo& Shader::GetFragmentRenderInfo()
+	{
+		return m_FragmentRenderInfo;
 	}
 
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs)
@@ -163,6 +138,39 @@ namespace DuckEngine
 			char error[512];
 			glGetProgramInfoLog(m_id, 512, NULL, error);
 			std::cout << "Failed to link shader : " << error << std::endl;
+		}
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+	}
+
+	void Shader::LoadFromSource(const std::string& vs, const std::string& fs, ShaderRenderInfo vertexRenderInfo, ShaderRenderInfo fragmentRenderInfo)
+	{
+		m_VertexRenderInfo = vertexRenderInfo;
+		m_FragmentRenderInfo = fragmentRenderInfo;
+
+		if (vs.empty() || fs.empty())
+			return;
+
+		unsigned int vertexShader = createShader(vs, GL_VERTEX_SHADER);
+		unsigned int fragmentShader = createShader(fs, GL_FRAGMENT_SHADER);
+
+		m_id = glCreateProgram();
+
+		glAttachShader(m_id, vertexShader);
+		glAttachShader(m_id, fragmentShader);
+
+		glLinkProgram(m_id);
+
+		int linkStatus;
+		glGetProgramiv(m_id, GL_LINK_STATUS, &linkStatus);
+		if (!linkStatus)
+		{
+			char error[512];
+			glGetProgramInfoLog(m_id, 512, NULL, error);
+
+			std::string errorMessage("Failed to link shader : ");
+			Log::error(errorMessage + error);
 		}
 
 		glDeleteShader(vertexShader);

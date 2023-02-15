@@ -1,10 +1,10 @@
 #pragma once
 
-#include <DuckEngine/Renderer/RenderModel.h>
 #include <DuckEngine/Renderer/Camera.h>
-#include <DuckEngine/Shader/ShaderGenerator.h>
 #include <DuckEngine/Renderer/Skybox.h>
 #include <DuckEngine/Resources/Texture.h>
+#include <DuckEngine/Resources/Model.h>
+#include <DuckEngine/Shader/Materials/Material.h>
 
 namespace DuckEngine
 {
@@ -15,8 +15,6 @@ namespace DuckEngine
 		{
 			glm::mat4 m_viewMatrix;
 			glm::mat4 m_projectionMatrix;
-
-			ShaderGenerator m_shaderGenerator;
 		};
 		static SceneData m_SceneData;
 

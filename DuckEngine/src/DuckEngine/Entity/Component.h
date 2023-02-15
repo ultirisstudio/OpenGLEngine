@@ -1,7 +1,6 @@
 #pragma once
 
 #include <DuckEngine/Renderer/Renderer.h>
-#include <DuckEngine/Resources/Material.h>
 #include <DuckEngine/Resources/Model.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -78,6 +77,10 @@ private:
 
 	std::shared_ptr<DuckEngine::Material> m_Material;
 public:
+	glm::vec3 DiffuseColor = { 0.0f,0.0f,0.0f };
+	glm::vec3 AmbientColor = { 0.0f,0.0f,0.0f };
+	bool UseDiffuseTexture;
+
 	MaterialComponent()
 	{
 		m_Material = DuckEngine::Renderer::CreateMaterial();
@@ -90,44 +93,24 @@ public:
 	DuckEngine::Texture& GetDefaultTexture() { return *m_DefaultTexture; }
 	DuckEngine::Texture& GetNoTexture() { return *m_NoTexture; }
 
-	DuckEngine::Texture& GetDiffuseTexture()
-	{
-		if (m_Material->GetDiffuseTexture())
-		{
-			return *m_Material->GetDiffuseTexture();
-		}
-
-		return *m_DefaultTexture;
-	}
-
 	DuckEngine::Texture& GetEditorDiffuseTexture()
 	{
-		if (m_Material->GetDiffuseTexture())
+		if (m_Material->hasTexture("diffuse"))
 		{
-			return *m_Material->GetDiffuseTexture();
+			return *m_Material->getTexture("diffuse");
 		}
 
 		return *m_NoTexture;
 	}
 
-	DuckEngine::Texture& GetEditorNormalTexture()
+	DuckEngine::Texture& GetEditorSpecularTexture()
 	{
-		if (m_Material->GetNormalTexture())
+		if (m_Material->hasTexture("specular"))
 		{
-			return *m_Material->GetNormalTexture();
+			return *m_Material->getTexture("specular");
 		}
 
 		return *m_NoTexture;
-	}
-
-	bool HasTexture()
-	{
-		if (m_Material->GetDiffuseTexture() || m_Material.get()->GetNormalTexture() || m_Material.get()->GetSpecularTexture())
-		{
-			return true;
-		}
-
-		return false;
 	}
 };
 
@@ -140,6 +123,7 @@ public:
 	RenderComponent();
 
 	void Draw();
+	void GenerateShader();
 	DuckEngine::Shader& GetShader() { return m_Shader; }
 };
 

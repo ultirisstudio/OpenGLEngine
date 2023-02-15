@@ -13,6 +13,7 @@ namespace DuckEngine
 		std::string m_path;
 
 	public:
+		Texture();
 		Texture(const std::string& path);
 		~Texture();
 

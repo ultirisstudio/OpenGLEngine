@@ -90,7 +90,11 @@ namespace DuckEngine
 					ImGui::EndPopup();
 				}
 
-				ImGui::Text("Diffuse texture: "); //ImGui::SameLine();
+				ImGui::Text("Ambient texture: ");
+				ImGui::Text("AmbientColor: "); //ImGui::SameLine();
+				ImGui::ColorEdit3("##AmbientColor", glm::value_ptr(mc.AmbientColor));
+
+				ImGui::Text("Diffuse texture: ");
 				ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
 				{
@@ -99,14 +103,19 @@ namespace DuckEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.GetMaterial().SetDiffuseTexture(file);
-
+						mc.GetMaterial().addTexture("diffuse", file);
+						entity->GetComponent<RenderComponent>().GenerateShader();
 					}
 					ImGui::EndDragDropTarget();
 				}
+				ImGui::SameLine();
+				ImGui::Checkbox("UseDiffuseTexture", &mc.UseDiffuseTexture);
 
-				ImGui::Text("Normal texture: "); //ImGui::SameLine();
-				ImGui::ImageButton((ImTextureID)mc.GetEditorNormalTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
+				ImGui::Text("DiffuseColor: "); //ImGui::SameLine();
+				ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(mc.DiffuseColor));
+
+				ImGui::Text("Specular texture: "); //ImGui::SameLine();
+				ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -114,8 +123,8 @@ namespace DuckEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.GetMaterial().SetNormalTexture(file);
-
+						mc.GetMaterial().addTexture("specular", file);
+						entity->GetComponent<RenderComponent>().GenerateShader();
 					}
 					ImGui::EndDragDropTarget();
 				}

@@ -1,9 +1,11 @@
 #include "depch.h"
-#include "Component.h"
+#include <DuckEngine/Entity/Component.h>
+#include <DuckEngine/Shader/Generators/ShaderGenerator.h>
+#include <glad/glad.h>
 
 RenderComponent::RenderComponent() : m_Shader()
 {
-	m_Shader.LoadFromFile("Shaders/texture.vert", "Shaders/texture.frag");
+	
 }
 
 void RenderComponent::Draw()
@@ -17,17 +19,80 @@ void RenderComponent::Draw()
 			glm::mat4& transform = entity->GetComponent<TransformComponent>().GetTransform();
 			DuckEngine::Shader& shader = entity->GetComponent<RenderComponent>().GetShader();
 
-			material.ActiveTexture();
-			entity->GetComponent<MaterialComponent>().GetDiffuseTexture().bind();
+			int nat = 0;
 
 			shader.use();
 
 			shader.setUniform("uModel", transform);
 			shader.setUniform("uView", DuckEngine::Renderer::getViewMatrix());
 			shader.setUniform("uProjection", DuckEngine::Renderer::getProjectionMatrix());
-			shader.setUniform("uTexture", 0);
+
+			for (auto& i : shader.GetFragmentRenderInfo().getRenderInfo())
+			{
+				if (i.first == "uMaterial.ambient")
+				{
+					if (i.second == "vec3")
+					{
+						shader.setUniform(i.first, entity->GetComponent<MaterialComponent>().AmbientColor);
+					}
+					else if (i.second == "sampler2D")
+					{
+						glActiveTexture(nat);
+						material.getTexture("ambient")->bind();
+						shader.setUniform(i.first, nat);
+						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
+						nat++;
+					}
+				}
+				else if (i.first == "uMaterial.diffuse")
+				{
+					if (i.second == "vec3")
+					{
+						shader.setUniform(i.first, glm::vec3(0.1f));
+					}
+					else if (i.second == "sampler2D")
+					{
+						glActiveTexture(nat);
+						material.getTexture("diffuse")->bind();
+						shader.setUniform(i.first, nat);
+						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
+						nat++;
+					}
+				}
+				else if (i.first == "uMaterial.specular")
+				{
+					if (i.second == "vec3")
+					{
+						shader.setUniform(i.first, glm::vec3(0.1f));
+					}
+					else if (i.second == "sampler2D")
+					{
+						glActiveTexture(nat);
+						material.getTexture("specular")->bind();
+						shader.setUniform(i.first, nat);
+						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
+						nat++;
+					}
+				}
+				else if (i.first == "uMaterial.shininess")
+				{
+					shader.setUniform(i.first, material.getFloat("shininess"));
+				}
+			}
+
+			shader.setUniform("uPointLight.ambient", glm::vec3(0.2f));
+			shader.setUniform("uPointLight.diffuse", glm::vec3(0.8f));
+			shader.setUniform("uPointLight.specular", glm::vec3(1.0f));
+			shader.setUniform("uPointLight.position", glm::vec3({0.0f, 1.5f, 2.0f}));
+			shader.setUniform("uPointLight.constant", 1.0f);
+			shader.setUniform("uPointLight.linear", 0.2f);
+			shader.setUniform("uPointLight.quadratic", 0.08f);
+
+			shader.setUniform("uViewPos", glm::vec3(2.0f));
 
 			model.draw();
+
+			
 		}
 	}
 
@@ -47,4 +112,16 @@ void RenderComponent::Draw()
 		sc.m_Model->draw();
 		sc.m_CubeMap.EndDrawModel();
 	}
+}
+
+void RenderComponent::GenerateShader()
+{
+	DuckEngine::ShaderGenerator shaderGenerator(entity->GetComponent<MaterialComponent>().GetMaterial(), DuckEngine::ShaderType::BPhong);
+	const std::string& vs = shaderGenerator.generateVertexShader();
+	const std::string& fs = shaderGenerator.generateFragmentShader();
+
+	//std::cout << vs << std::endl;
+	//std::cout << fs << std::endl;
+
+	m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
 }

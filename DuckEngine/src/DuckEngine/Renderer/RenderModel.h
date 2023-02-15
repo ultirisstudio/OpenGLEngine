@@ -1,7 +1,7 @@
 #pragma once
 
-#include <DuckEngine/Resources/Material.h>
-#include <DuckEngine/Resources/Model.h>
+//#include <DuckEngine/Resources/Material.h>
+//#include <DuckEngine/Resources/Model.h>
 /*
 namespace DuckEngine
 {

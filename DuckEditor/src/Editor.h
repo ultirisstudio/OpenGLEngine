@@ -3,6 +3,8 @@
 #include "DuckEngine.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
+#include "Panels/MaterialCreatorPanel.h"
+#include "Panels/SequencerTestPanel.h"
 
 namespace DuckEngine
 {
@@ -46,6 +48,8 @@ namespace DuckEngine
 
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
+		MaterialCreatorPanel m_MaterialCreatorPanel;
+		SequencerTestPanel m_SequencerTestPanel;
 	private:
 		//std::shared_ptr<Skybox> m_Skybox;
 		std::shared_ptr<Texture> m_Texture;

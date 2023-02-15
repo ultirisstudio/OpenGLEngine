@@ -77,9 +77,10 @@ private:
 
 	std::shared_ptr<DuckEngine::Material> m_Material;
 public:
-	glm::vec3 DiffuseColor = { 0.0f,0.0f,0.0f };
-	glm::vec3 AmbientColor = { 0.0f,0.0f,0.0f };
+	//glm::vec3 DiffuseColor = { 0.0f,0.0f,0.0f };
+	//glm::vec3 AmbientColor = { 0.0f,0.0f,0.0f };
 	bool UseDiffuseTexture;
+	bool UseSpecularTexture;
 
 	MaterialComponent()
 	{

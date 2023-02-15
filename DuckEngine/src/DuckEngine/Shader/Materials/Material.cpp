@@ -22,12 +22,12 @@ namespace DuckEngine
 
 	void Material::addFloat(const std::string& id, float value)
 	{
-		m_floats[id] = value;
+		m_floats[id] = std::make_shared<float>(value);
 	}
 
 	void Material::addVec3(const std::string& id, glm::vec3 value)
 	{
-		m_vec3s[id] = value;
+		m_vec3s[id] = std::make_shared<glm::vec3>(value);
 	}
 
 	void Material::addTexture(const std::string& id, const std::string& file)
@@ -37,15 +37,20 @@ namespace DuckEngine
 
 	void Material::addCubemap(const std::string& id, CubeMap value)
 	{
-		m_cubemaps[id] = value;
+		m_cubemaps[id] = std::make_shared<CubeMap>();
 	}
 
-	float Material::getFloat(const std::string& id) const
+	void Material::addBoolean(const std::string& id, bool value)
+	{
+		m_booleans[id] = std::make_shared<bool>(value);
+	}
+
+	std::shared_ptr<float> Material::getFloat(const std::string& id) const
 	{
 		return m_floats.at(id);
 	}
 
-	glm::vec3 Material::getVec3(const std::string& id) const
+	std::shared_ptr<glm::vec3> Material::getVec3(const std::string& id) const
 	{
 		return m_vec3s.at(id);
 	}
@@ -55,9 +60,14 @@ namespace DuckEngine
 		return m_textures.at(id);
 	}
 
-	CubeMap Material::getCubemap(const std::string& id) const
+	std::shared_ptr<CubeMap> Material::getCubemap(const std::string& id) const
 	{
 		return m_cubemaps.at(id);
+	}
+
+	std::shared_ptr<bool> Material::getBoolean(const std::string& id) const
+	{
+		return m_booleans.at(id);
 	}
 
 	bool Material::hasProperty(const std::string& property) const
@@ -81,5 +91,10 @@ namespace DuckEngine
 	bool Material::hasCubemap(const std::string& property) const
 	{
 		return m_cubemaps.find(property) != m_cubemaps.cend();
+	}
+
+	bool Material::hasBoolean(const std::string& property) const
+	{
+		return m_booleans.find(property) != m_booleans.cend();
 	}
 }

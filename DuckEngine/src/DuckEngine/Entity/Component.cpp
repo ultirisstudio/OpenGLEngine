@@ -33,11 +33,11 @@ void RenderComponent::Draw()
 				{
 					if (i.second == "vec3")
 					{
-						shader.setUniform(i.first, entity->GetComponent<MaterialComponent>().AmbientColor);
+						shader.setUniform(i.first, *material.getVec3("ambient"));
 					}
 					else if (i.second == "sampler2D")
 					{
-						glActiveTexture(nat);
+						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("ambient")->bind();
 						shader.setUniform(i.first, nat);
 						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
@@ -48,11 +48,11 @@ void RenderComponent::Draw()
 				{
 					if (i.second == "vec3")
 					{
-						shader.setUniform(i.first, glm::vec3(0.1f));
+						shader.setUniform(i.first, *material.getVec3("diffuse"));
 					}
 					else if (i.second == "sampler2D")
 					{
-						glActiveTexture(nat);
+						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("diffuse")->bind();
 						shader.setUniform(i.first, nat);
 						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
@@ -63,11 +63,11 @@ void RenderComponent::Draw()
 				{
 					if (i.second == "vec3")
 					{
-						shader.setUniform(i.first, glm::vec3(0.1f));
+						shader.setUniform(i.first, *material.getVec3("specular"));
 					}
 					else if (i.second == "sampler2D")
 					{
-						glActiveTexture(nat);
+						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("specular")->bind();
 						shader.setUniform(i.first, nat);
 						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
@@ -76,7 +76,7 @@ void RenderComponent::Draw()
 				}
 				else if (i.first == "uMaterial.shininess")
 				{
-					shader.setUniform(i.first, material.getFloat("shininess"));
+					shader.setUniform(i.first, *material.getFloat("shininess"));
 				}
 			}
 
@@ -120,8 +120,8 @@ void RenderComponent::GenerateShader()
 	const std::string& vs = shaderGenerator.generateVertexShader();
 	const std::string& fs = shaderGenerator.generateFragmentShader();
 
-	//std::cout << vs << std::endl;
-	//std::cout << fs << std::endl;
+	std::cout << vs << std::endl;
+	std::cout << fs << std::endl;
 
 	m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
 }

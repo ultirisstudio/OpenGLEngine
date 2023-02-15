@@ -14,22 +14,34 @@ namespace DuckEngine
     {
         BPhongMaterial bphongMaterial;
 
-        if(material.hasTexture("ambient"))
+        if (material.hasTexture("ambient"))
             bphongMaterial.ambient = MaterialProperty(material.getTexture("ambient").get());
         else
-            bphongMaterial.ambient = MaterialProperty(material.getVec3("ambient"));
+            bphongMaterial.ambient = MaterialProperty(material.getVec3("ambient").get());
 
-        if (material.hasTexture("diffuse"))
-            bphongMaterial.diffuse = MaterialProperty(material.getTexture("diffuse").get());
+        if (*material.getBoolean("diffuse"))
+        {
+            if (material.hasTexture("diffuse"))
+                bphongMaterial.diffuse = MaterialProperty(material.getTexture("diffuse").get());
+        }
         else
-            bphongMaterial.diffuse = MaterialProperty(material.getVec3("diffuse"));
+        {
+            if (material.hasVec3("diffuse"))
+                bphongMaterial.diffuse = MaterialProperty(material.getVec3("diffuse").get());
+        }
 
-        if (material.hasTexture("specular"))
-            bphongMaterial.specular = MaterialProperty(material.getTexture("specular").get());
+        if (*material.getBoolean("specular"))
+        {
+            if (material.hasTexture("specular"))
+                bphongMaterial.specular = MaterialProperty(material.getTexture("specular").get());
+        }
         else
-            bphongMaterial.specular = MaterialProperty(material.getVec3("specular"));
+        {
+            if (material.hasVec3("specular"))
+                bphongMaterial.specular = MaterialProperty(material.getVec3("specular").get());
+        }
 
-        bphongMaterial.shininess = material.getFloat("shininess");
+        bphongMaterial.shininess = material.getFloat("shininess").get();
 
         bphongMaterial.hasAnyTexture = (material.hasTexture("ambient") || material.hasTexture("diffuse") || material.hasTexture("specular"));
 

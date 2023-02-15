@@ -90,10 +90,6 @@ namespace DuckEngine
 					ImGui::EndPopup();
 				}
 
-				ImGui::Text("Ambient texture: ");
-				ImGui::Text("AmbientColor: "); //ImGui::SameLine();
-				ImGui::ColorEdit3("##AmbientColor", glm::value_ptr(mc.AmbientColor));
-
 				ImGui::Text("Diffuse texture: ");
 				ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
@@ -109,12 +105,17 @@ namespace DuckEngine
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				ImGui::Checkbox("UseDiffuseTexture", &mc.UseDiffuseTexture);
+				if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
+				{
+					entity->GetComponent<RenderComponent>().GenerateShader();
+				}
 
-				ImGui::Text("DiffuseColor: "); //ImGui::SameLine();
-				ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(mc.DiffuseColor));
+				ImGui::Text("Diffuse Color: ");
+				ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(*mc.GetMaterial().getVec3("diffuse")));
 
-				ImGui::Text("Specular texture: "); //ImGui::SameLine();
+				ImGui::Separator();
+
+				ImGui::Text("Specular texture: ");
 				ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
 				{
@@ -128,6 +129,14 @@ namespace DuckEngine
 					}
 					ImGui::EndDragDropTarget();
 				}
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
+				{
+					entity->GetComponent<RenderComponent>().GenerateShader();
+				}
+
+				ImGui::Text("Specular Color: "); //ImGui::SameLine();
+				ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
 
 				ImGui::TreePop();
 			}

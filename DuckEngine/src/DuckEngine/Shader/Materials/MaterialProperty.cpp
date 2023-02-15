@@ -11,10 +11,10 @@
 namespace DuckEngine
 {
 	MaterialProperty::MaterialProperty() :
-		m_float(0.0f),
-		m_vec3(),
-		m_texture(),
-		m_cubemap(),
+		m_float(nullptr),
+		m_vec3(nullptr),
+		m_texture(nullptr),
+		m_cubemap(nullptr),
 		m_isFloat(true),
 		m_isVec3(false),
 		m_isTexture(false),
@@ -23,11 +23,11 @@ namespace DuckEngine
 
 	}
 
-	MaterialProperty::MaterialProperty(float value) :
+	MaterialProperty::MaterialProperty(float* value) :
 		m_float(value),
-		m_vec3(),
-		m_texture(),
-		m_cubemap(),
+		m_vec3(nullptr),
+		m_texture(nullptr),
+		m_cubemap(nullptr),
 		m_isFloat(true),
 		m_isVec3(false),
 		m_isTexture(false),
@@ -36,11 +36,11 @@ namespace DuckEngine
 
 	}
 
-	MaterialProperty::MaterialProperty(glm::vec3 value) :
-		m_float(),
+	MaterialProperty::MaterialProperty(glm::vec3* value) :
+		m_float(nullptr),
 		m_vec3(value),
-		m_texture(),
-		m_cubemap(),
+		m_texture(nullptr),
+		m_cubemap(nullptr),
 		m_isFloat(false),
 		m_isVec3(true),
 		m_isTexture(false),
@@ -50,10 +50,10 @@ namespace DuckEngine
 	};
 
 	MaterialProperty::MaterialProperty(Texture* value) :
-		m_float(),
-		m_vec3(),
+		m_float(nullptr),
+		m_vec3(nullptr),
 		m_texture(value),
-		m_cubemap(),
+		m_cubemap(nullptr),
 		m_isFloat(false),
 		m_isVec3(false),
 		m_isTexture(true),
@@ -62,10 +62,10 @@ namespace DuckEngine
 
 	};
 
-	MaterialProperty::MaterialProperty(CubeMap value) :
-		m_float(),
-		m_vec3(),
-		m_texture(),
+	MaterialProperty::MaterialProperty(CubeMap* value) :
+		m_float(nullptr),
+		m_vec3(nullptr),
+		m_texture(nullptr),
 		m_cubemap(value),
 		m_isFloat(false),
 		m_isVec3(false),
@@ -95,12 +95,12 @@ namespace DuckEngine
 		return m_isCubemap;
 	}
 
-	float MaterialProperty::asFloat() const
+	float* MaterialProperty::asFloat() const
 	{
 		return m_float;
 	}
 
-	glm::vec3 MaterialProperty::asVec3() const
+	glm::vec3* MaterialProperty::asVec3() const
 	{
 		return m_vec3;
 	}
@@ -110,7 +110,7 @@ namespace DuckEngine
 		return m_texture;
 	}
 
-	CubeMap MaterialProperty::asCubemap() const
+	CubeMap* MaterialProperty::asCubemap() const
 	{
 		return m_cubemap;
 	}

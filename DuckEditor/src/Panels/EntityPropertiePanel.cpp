@@ -7,7 +7,7 @@ namespace DuckEngine
 {
 	EntityPropertiePanel::EntityPropertiePanel()
 	{
-		m_ModelTexture = Renderer::CreateTexture("Icons/texture_obj.png");
+		m_ModelTexture = Texture::CreateTexture("Icons/texture_obj.png");
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(Entity* entity)

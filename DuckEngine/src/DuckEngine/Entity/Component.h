@@ -61,10 +61,10 @@ private:
 	std::shared_ptr<DuckEngine::Model> m_Model;
 public:
 	ModelComponent() = default;
-	ModelComponent(const std::string& path) { m_Model = DuckEngine::Renderer::CreateModel(path); }
+	ModelComponent(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 		
 	DuckEngine::Model& GetModel() { return *m_Model; }
-	void SetModel(const std::string& path) { m_Model = DuckEngine::Renderer::CreateModel(path); }
+	void SetModel(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 
 	DuckEngine::Model* GetPtr() { return m_Model.get(); }
 };
@@ -84,9 +84,9 @@ public:
 
 	MaterialComponent()
 	{
-		m_Material = DuckEngine::Renderer::CreateMaterial();
-		m_DefaultTexture = DuckEngine::Renderer::CreateTexture("Assets/Textures/white_texture.jpg");
-		m_NoTexture = DuckEngine::Renderer::CreateTexture("Assets/Textures/3d-modeling.png");
+		m_Material = DuckEngine::Material::CreateMaterial();
+		m_DefaultTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
+		m_NoTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
 	}
 
 	DuckEngine::Material& GetMaterial() { return *m_Material; }
@@ -143,7 +143,7 @@ public:
 	SkyboxComponent(const std::string& path)
 	{
 		m_CubeMapShader.LoadFromFile("Shaders/cubemap.vert", "Shaders/cubemap.frag");
-		m_Model = DuckEngine::Renderer::CreateModel(path);
+		m_Model = DuckEngine::Model::CreateModel(path);
 		m_CubeMap.Load({ "Assets/Skybox/right.jpg", "Assets/Skybox/left.jpg", "Assets/Skybox/top.jpg", "Assets/Skybox/bottom.jpg", "Assets/Skybox/front.jpg", "Assets/Skybox/back.jpg" });
 	}
 

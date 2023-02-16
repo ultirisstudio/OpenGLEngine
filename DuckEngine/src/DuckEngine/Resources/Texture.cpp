@@ -64,4 +64,9 @@ namespace DuckEngine
 	{
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
+
+	std::shared_ptr<Texture> Texture::CreateTexture(const std::string& path)
+	{
+		return std::make_shared<Texture>(path);
+	}
 }

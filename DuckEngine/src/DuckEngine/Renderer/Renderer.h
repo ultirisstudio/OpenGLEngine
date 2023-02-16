@@ -13,23 +13,12 @@ namespace DuckEngine
 	public:
 		struct SceneData
 		{
-			glm::mat4 m_viewMatrix;
-			glm::mat4 m_projectionMatrix;
+			Camera* m_ActiveCamera;
 		};
 		static SceneData m_SceneData;
 
-		static Shader* CreateShader(Material& material);
-
-		static const glm::mat4& getViewMatrix();
-		static const glm::mat4& getProjectionMatrix();
-
 		static void BeginScene(Camera* camera);
-		static void UpdateMatrix(glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
 		static void EndScene();
-
-		static std::shared_ptr<Texture> CreateTexture(const std::string& path);
-		static std::shared_ptr<Model> CreateModel(const std::string& path);
-		static std::shared_ptr<Material> CreateMaterial();
 
 		static void Clear();
 		static void ClearColor(const glm::vec4& color);

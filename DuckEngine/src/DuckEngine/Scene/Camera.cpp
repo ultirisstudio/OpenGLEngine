@@ -14,11 +14,6 @@ namespace DuckEngine
 		return (T(0) < val) - (val < T(0));
 	}
 
-	void Camera::updateViewMatrix()
-	{
-		m_viewMatrix = glm::lookAt(m_position, m_position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
 	Camera::Camera(const glm::vec3& position) :
 		m_viewMatrix(glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f))),
 		m_target(glm::vec3(0.0f, 0.0f, -1.0f)),
@@ -47,6 +42,17 @@ namespace DuckEngine
 		m_target = glm::normalize(front);
 		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
 		m_up = glm::normalize(glm::cross(m_right, m_target));
+	}
+
+	void Camera::updateViewMatrix()
+	{
+		m_viewMatrix = glm::lookAt(m_position, m_position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	void Camera::Update()
+	{
+		m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100.0f);
+		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 	}
 
 	glm::mat4 Camera::getViewMatrix() const
@@ -127,7 +133,8 @@ namespace DuckEngine
 		m_yaw -= offsetX;
 		m_pitch += offsetY;
 
-		updateViewMatrix(); UpdateCameraVectors();
+		updateViewMatrix();
+		UpdateCameraVectors();
 
 		return false;
 	}
@@ -168,12 +175,6 @@ namespace DuckEngine
 		updateViewMatrix();
 	}
 
-	/*void Camera::setTarget(const glm::vec3& target)
-	{
-		m_target = target;
-		updateViewMatrix();
-	}*/
-
 	void Camera::setFov(float fov)
 	{
 		m_fov = fov;
@@ -204,12 +205,5 @@ namespace DuckEngine
 	{
 		m_ViewportPos.x = x;
 		m_ViewportPos.y = y;
-	}
-
-	void Camera::Update()
-	{
-		m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100.0f);
-		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
-		Renderer::UpdateMatrix(m_viewMatrix, m_projectionMatrix);
 	}
 }

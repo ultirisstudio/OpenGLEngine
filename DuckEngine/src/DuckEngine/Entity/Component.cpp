@@ -24,8 +24,8 @@ void RenderComponent::Draw()
 			shader.use();
 
 			shader.setUniform("uModel", transform);
-			shader.setUniform("uView", DuckEngine::Renderer::getViewMatrix());
-			shader.setUniform("uProjection", DuckEngine::Renderer::getProjectionMatrix());
+			shader.setUniform("uView", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getViewMatrix());
+			shader.setUniform("uProjection", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getProjectionMatrix());
 
 			for (auto& i : shader.GetFragmentRenderInfo().getRenderInfo())
 			{
@@ -101,10 +101,9 @@ void RenderComponent::Draw()
 		sc.m_CubeMap.Bind();
 		sc.m_CubeMapShader.use();
 		sc.m_CubeMapShader.setUniform("uModel", sc.GetTransform());
-		sc.m_CubeMapShader.setUniform("uView", DuckEngine::Renderer::getViewMatrix());
-		sc.m_CubeMapShader.setUniform("uProjection", DuckEngine::Renderer::getProjectionMatrix());
+		sc.m_CubeMapShader.setUniform("uView", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getViewMatrix());
+		sc.m_CubeMapShader.setUniform("uProjection", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getProjectionMatrix());
 		sc.m_CubeMapShader.setUniform("uCubeMap", 0);
-		sc.m_CubeMapShader.setUniform("uView", glm::mat4(glm::mat3(DuckEngine::Renderer::getViewMatrix())));
 		sc.m_CubeMap.BeginDrawModel();
 		sc.m_Model->draw();
 		sc.m_CubeMap.EndDrawModel();

@@ -87,4 +87,9 @@ namespace DuckEngine
 		for (Mesh* mesh : m_meshes)
 			mesh->draw();
 	}
+
+	std::shared_ptr<Model> Model::CreateModel(const std::string& path)
+	{
+		return std::make_shared<Model>(path);
+	}
 }

@@ -32,7 +32,7 @@ namespace DuckEngine
 
 	void Material::addTexture(const std::string& id, const std::string& file)
 	{
-		m_textures[id] = Renderer::CreateTexture(file);
+		m_textures[id] = Texture::CreateTexture(file);
 	}
 
 	void Material::addCubemap(const std::string& id, CubeMap value)
@@ -96,5 +96,10 @@ namespace DuckEngine
 	bool Material::hasBoolean(const std::string& property) const
 	{
 		return m_booleans.find(property) != m_booleans.cend();
+	}
+
+	std::shared_ptr<Material> Material::CreateMaterial()
+	{
+		return std::make_shared<Material>();
 	}
 }

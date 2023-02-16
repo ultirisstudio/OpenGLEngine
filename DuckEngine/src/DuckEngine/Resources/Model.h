@@ -22,6 +22,8 @@ namespace DuckEngine
 		Model(const std::string& path);
 		~Model();
 
+		static std::shared_ptr<Model> CreateModel(const std::string& path);
+
 		void draw() const;
 	};
 }

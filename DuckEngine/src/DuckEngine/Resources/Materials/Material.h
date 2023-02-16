@@ -46,5 +46,7 @@ namespace DuckEngine
 		bool hasTexture(const std::string& id) const;
 		bool hasCubemap(const std::string& id) const;
 		bool hasBoolean(const std::string& id) const;
+
+		static std::shared_ptr<Material> CreateMaterial();
 	};
 }

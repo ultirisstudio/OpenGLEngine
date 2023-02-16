@@ -8,11 +8,11 @@ namespace DuckEngine
 {
 	ContentBrowserPanel::ContentBrowserPanel() : m_BaseDirectory("Assets"), m_CurrentDirectory(m_BaseDirectory)
 	{
-		m_DirectoryIcon = Renderer::CreateTexture("Icons/texture_dossier.png");
-		m_FilePNGIcon = Renderer::CreateTexture("Icons/texture_png.png");
-		m_FileJPGIcon = Renderer::CreateTexture("Icons/texture_jpg.png");
-		m_FileOBJIcon = Renderer::CreateTexture("Icons/texture_obj.png");
-		m_FileOtherIcon = Renderer::CreateTexture("Icons/texture_texte.png");
+		m_DirectoryIcon = Texture::CreateTexture("Icons/texture_dossier.png");
+		m_FilePNGIcon = Texture::CreateTexture("Icons/texture_png.png");
+		m_FileJPGIcon = Texture::CreateTexture("Icons/texture_jpg.png");
+		m_FileOBJIcon = Texture::CreateTexture("Icons/texture_obj.png");
+		m_FileOtherIcon = Texture::CreateTexture("Icons/texture_texte.png");
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()

@@ -9,7 +9,7 @@
 #include <DuckEngine/Shader/Generators/BPhongVertexShaderGenerator.h>
 #include <DuckEngine/Shader/Generators/BPhongFragmentShaderGenerator.h>
 #include <DuckEngine/Shader/Generators/ShaderType.h>
-#include <DuckEngine/Shader/Materials/Material.h>
+#include <DuckEngine/Resources/Materials/Material.h>
 
 namespace DuckEngine
 {

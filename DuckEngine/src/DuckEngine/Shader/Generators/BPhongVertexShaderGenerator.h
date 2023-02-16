@@ -7,7 +7,7 @@
 #pragma once
 
 #include <DuckEngine/Shader/Generators/BaseShaderGenerator.h>
-#include <DuckEngine/Shader/Materials/BPhongMaterial.h>
+#include <DuckEngine/Resources/Materials/BPhongMaterial.h>
 
 namespace DuckEngine
 {

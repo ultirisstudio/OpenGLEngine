@@ -9,7 +9,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <DuckEngine/Resources/Texture.h>
-#include <DuckEngine/Resources/CubeMap.h>
+#include <DuckEngine/Resources/Materials/CubeMap.h>
 
 namespace DuckEngine
 {

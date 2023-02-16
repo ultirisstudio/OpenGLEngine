@@ -29,32 +29,29 @@ namespace DuckEngine
 
 		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
+
+		void CalculateLatency();
 	private:
 		std::shared_ptr<Camera> m_Camera;
 		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
-		//std::shared_ptr<Model> cube;
-		//std::shared_ptr<Model> sphere;
-		//std::shared_ptr<Model> plane;
 
 		std::vector<Entity*> m_Entities;
 		Entity* m_SelectedEntity;
-
-		//std::map<std::string, std::shared_ptr<Model>> m_Models;
 
 		FileBrowser m_FileBrowser;
 		void OpenExternalFile();
 
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
-		MaterialCreatorPanel m_MaterialCreatorPanel;
-		SequencerTestPanel m_SequencerTestPanel;
-	private:
-		//std::shared_ptr<Skybox> m_Skybox;
-		std::shared_ptr<Texture> m_Texture;
 	private:
 		bool m_ViewportFocus;
 		bool HasSelected = false;
+	private:
+		double last_time = glfwGetTime();
+		int nb_frame = 0;
+		int fps = 0;
+		int latency = 0;
 	};
 }

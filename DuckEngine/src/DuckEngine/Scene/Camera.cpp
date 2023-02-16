@@ -1,5 +1,5 @@
 #include "depch.h"
-#include <DuckEngine/Renderer/Camera.h>
+#include <DuckEngine/Scene/Camera.h>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <DuckEngine/Core/Window.h>

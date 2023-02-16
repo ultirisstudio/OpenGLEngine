@@ -17,19 +17,12 @@ namespace DuckEngine
 	void Editor::OnAttach()
 	{
 		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
-
-		//cube = Renderer::CreateModel("Assets/Models/cube.obj");
-		//sphere = Renderer::CreateModel("Assets/Models/sphere.obj");
-		//plane = Renderer::CreateModel("Assets/Models/plane.obj");
-
-		//m_Skybox = Renderer::CreateSkybox(*cube);
-		m_Texture = Renderer::CreateTexture("Assets/Textures/diffuse.png");
-
+		
 		m_frameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
-
+		
 		Entity* m_Entity = new Entity();
 		m_Entity->SetId(m_Entities.size());
 		m_Entity->SetName("Entity");
@@ -37,60 +30,16 @@ namespace DuckEngine
 		m_Entity->AddComponent<ModelComponent>("Assets/Models/BackPack.obj");
 		m_Entity->AddComponent<MaterialComponent>();
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3(0.1f));
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3(0.1f));
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/1001_albedo.jpg");
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3(1.0f));
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3(1.0f));
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/1001_albedo.jpg");
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("specular", "Assets/Textures/1001_roughness.jpg");
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
+		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		m_Entity->AddComponent<RenderComponent>();
 		m_Entity->GetComponent<RenderComponent>().GenerateShader();
 		m_Entities.push_back(m_Entity);
-
-		/*Material material;
-		material.addVec3("ambient", glm::vec3(0.1f));
-		material.addVec3("diffuse", glm::vec3(0.6f));
-		material.addVec3("specular", glm::vec3(1.0f));
-		material.addFloat("shininess", 32.0f);
-
-		ShaderGenerator shaderGenerator(material, ShaderType::BPhong);
-
-		//std::cout << shaderGenerator.generateVertexShader() << std::endl;
-		//std::cout << shaderGenerator.generateFragmentShader() << std::endl;
-
-		const std::string& vs =
-		"#version 330 core\n"
-		"layout(location = 0) in vec3 vPosition;\n"
-		"layout(location = 2) in vec2 vTexCoords;\n"
-		"out VS_OUT\n"
-		"{\n"
-		"	vec2 fTexCoords;\n"
-		"} vs_out;\n"
-		"uniform mat4 uModel;\n"
-		"uniform mat4 uView;\n"
-		"uniform mat4 uProjection;\n"
-		"void main()\n"
-		"{\n"
-		"	vs_out.fTexCoords = vTexCoords;\n"
-		"	gl_Position = uProjection * uView * uModel * vec4(vPosition, 1.0f);\n"
-		"}";
-
-		const std::string& fs =
-		"#version 330 core\n"
-		"in VS_OUT\n"
-		"{\n"
-		"	vec2 fTexCoords;\n"
-		"} fs_in;\n"
-		"out vec4 color;\n"
-		"uniform sampler2D uTexture;\n"
-		"void main()\n"
-		"{\n"
-		"	color = vec4(texture(uTexture, fs_in.fTexCoords).rgb, 1.0f);\n"
-		"}";
-
-		Shader shader;
-		shader.LoadFromSource(shaderGenerator.generateVertexShader(), shaderGenerator.generateFragmentShader(), shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
-		*/
 	}
 
 	void Editor::OnDetach()
@@ -120,6 +69,8 @@ namespace DuckEngine
 				entity->GetComponent<RenderComponent>().Draw();
 			}
 		}
+
+		CalculateLatency();
 
 		Renderer::EndScene();
 
@@ -244,7 +195,6 @@ namespace DuckEngine
 
 			glm::mat4 cameraProjection = m_Camera->getProjectionMatrix();
 			glm::mat4 cameraView = glm::inverse(m_Camera->GetTransform());
-			cameraView[1, 1] *= -1;
 
 			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
@@ -334,12 +284,12 @@ namespace DuckEngine
 
 		m_ContentBrowserPanel.OnImGuiRender();
 
-		m_MaterialCreatorPanel.OnImGuiRender();
-
-		m_SequencerTestPanel.OnImGuiRender();
-
 		ImGui::Begin("Open Resource Infos");
 		ImGui::Text("Selected file: %s\nFile path: %s\nFile extension: %s\n", m_FileBrowser.GetInfos().m_SelectedFile.c_str(), m_FileBrowser.GetInfos().m_FilePath.c_str(), m_FileBrowser.GetInfos().m_FileExtension.c_str());
+		ImGui::End();
+
+		ImGui::Begin("Render Infos");
+		ImGui::Text("%d fps \n%d ms", fps, latency);
 		ImGui::End();
 
 		ImGui::End();
@@ -356,9 +306,13 @@ namespace DuckEngine
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<MaterialComponent>();
 		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
 		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
+		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
+		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		temp->AddComponent<RenderComponent>();
+		temp->GetComponent<RenderComponent>().GenerateShader();
 
 		switch (type)
 		{
@@ -387,8 +341,6 @@ namespace DuckEngine
 		size_t lastindex = m_SelectedFile.find_last_of(".");
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
-		//m_Models.emplace(m_FileName, Renderer::CreateModel(file));
-
 		Entity* temp = new Entity();
 		temp->SetId(m_Entities.size());
 		temp->SetName(m_FileName);
@@ -396,10 +348,26 @@ namespace DuckEngine
 		temp->AddComponent<ModelComponent>(file);
 		temp->AddComponent<MaterialComponent>();
 		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets/Textures/diffuse.png");
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
 		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
+		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
+		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		temp->AddComponent<RenderComponent>();
+		temp->GetComponent<RenderComponent>().GenerateShader();
 		m_Entities.push_back(temp);
+	}
+
+	void Editor::CalculateLatency()
+	{
+		double currentTime = glfwGetTime();
+		nb_frame++;
+		if (currentTime - last_time >= 1.0) {
+			latency = (1000.0 / double(nb_frame));
+			fps = nb_frame;
+			nb_frame = 0;
+			last_time += 1.0;
+		}
 	}
 
 	void Editor::OpenExternalFile()

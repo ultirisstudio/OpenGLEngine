@@ -1,5 +1,5 @@
 #include "depch.h"
-#include <DuckEngine/Renderer/Camera.h>
+#include <DuckEngine/Scene/Camera.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>

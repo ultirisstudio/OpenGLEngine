@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <DuckEngine/Resources/CubeMap.h>
+#include <DuckEngine/Resources/Materials/CubeMap.h>
 #include <DuckEngine/Resources/Texture.h>
 
 #include <glm/glm.hpp>

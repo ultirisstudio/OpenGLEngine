@@ -1,10 +1,10 @@
 #pragma once
 
-#include <DuckEngine/Renderer/Camera.h>
-#include <DuckEngine/Renderer/Skybox.h>
+#include <DuckEngine/Scene/Camera.h>
 #include <DuckEngine/Resources/Texture.h>
 #include <DuckEngine/Resources/Model.h>
-#include <DuckEngine/Shader/Materials/Material.h>
+#include <DuckEngine/Resources/Materials/Material.h>
+#include <DuckEngine/Shader/Shader.h>
 
 namespace DuckEngine
 {

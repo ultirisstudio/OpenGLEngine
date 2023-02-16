@@ -40,7 +40,6 @@ void RenderComponent::Draw()
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("ambient")->bind();
 						shader.setUniform(i.first, nat);
-						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
 						nat++;
 					}
 				}
@@ -55,7 +54,6 @@ void RenderComponent::Draw()
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("diffuse")->bind();
 						shader.setUniform(i.first, nat);
-						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
 						nat++;
 					}
 				}
@@ -70,7 +68,6 @@ void RenderComponent::Draw()
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("specular")->bind();
 						shader.setUniform(i.first, nat);
-						//std::cout << i.first << " : " << i.second << " - Texture(" << nat << ")" << std::endl;
 						nat++;
 					}
 				}
@@ -120,8 +117,8 @@ void RenderComponent::GenerateShader()
 	const std::string& vs = shaderGenerator.generateVertexShader();
 	const std::string& fs = shaderGenerator.generateFragmentShader();
 
-	std::cout << vs << std::endl;
-	std::cout << fs << std::endl;
+	//std::cout << vs << std::endl;
+	//std::cout << fs << std::endl;
 
 	m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
 }

@@ -9,7 +9,6 @@
 
 #include "DuckEngine/Renderer/Renderer.h"
 #include "DuckEngine/Renderer/Framebuffer.h"
-#include "DuckEngine/Renderer/Skybox.h"
 
 #include "DuckEngine/Tools/Tree.h"
 #include "DuckEngine/Tools/FileBrowser.h"

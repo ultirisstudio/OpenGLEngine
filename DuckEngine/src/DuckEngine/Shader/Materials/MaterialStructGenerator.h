@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <DuckEngine/Shader/Materials/BPhongMaterial.h>
-#include <DuckEngine/Shader/Materials/Material.h>
+#include <DuckEngine/Resources/Materials/BPhongMaterial.h>
+#include <DuckEngine/Resources/Materials/Material.h>
 
 namespace DuckEngine
 {

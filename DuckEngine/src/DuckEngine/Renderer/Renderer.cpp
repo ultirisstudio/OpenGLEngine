@@ -15,8 +15,6 @@ namespace DuckEngine {
 	{
 		ShaderGenerator shaderGenerator(material, ShaderType::BPhong);
 		Shader shader;
-		std::cout << shaderGenerator.generateVertexShader() << std::endl;
-		std::cout << shaderGenerator.generateFragmentShader() << std::endl;
 		shader.LoadFromSource(shaderGenerator.generateVertexShader(), shaderGenerator.generateFragmentShader(), shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
 		return &shader;
 	}

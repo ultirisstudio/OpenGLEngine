@@ -7,7 +7,7 @@
 #include "depch.h"
 
 #include <DuckEngine/Renderer/Renderer.h>
-#include <DuckEngine/Shader/Materials/Material.h>
+#include <DuckEngine/Resources/Materials/Material.h>
 
 namespace DuckEngine
 {

@@ -5,6 +5,7 @@
 #include <DuckEngine/Resources/Model.h>
 #include <DuckEngine/Resources/Materials/Material.h>
 #include <DuckEngine/Shader/Shader.h>
+#include <DuckEngine/Resources/ResourceManager.h>
 
 namespace DuckEngine
 {
@@ -14,6 +15,7 @@ namespace DuckEngine
 		struct SceneData
 		{
 			Camera* m_ActiveCamera;
+			ResourceManager m_ResourceManager;
 		};
 		static SceneData m_SceneData;
 

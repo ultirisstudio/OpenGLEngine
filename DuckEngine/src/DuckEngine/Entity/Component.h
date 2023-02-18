@@ -61,10 +61,12 @@ private:
 	std::shared_ptr<DuckEngine::Model> m_Model;
 public:
 	ModelComponent() = default;
-	ModelComponent(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
+	ModelComponent(const std::string& path) { m_Model = DuckEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path); }
+	//ModelComponent(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 		
 	DuckEngine::Model& GetModel() { return *m_Model; }
-	void SetModel(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
+	void SetModel(const std::string& path) { m_Model = DuckEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path); }
+	//void SetModel(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 
 	DuckEngine::Model* GetPtr() { return m_Model.get(); }
 };
@@ -77,8 +79,6 @@ private:
 
 	std::shared_ptr<DuckEngine::Material> m_Material;
 public:
-	//glm::vec3 DiffuseColor = { 0.0f,0.0f,0.0f };
-	//glm::vec3 AmbientColor = { 0.0f,0.0f,0.0f };
 	bool UseDiffuseTexture;
 	bool UseSpecularTexture;
 

@@ -199,6 +199,12 @@ namespace DuckEngine
 			if (!entity->HasComponent<MaterialComponent>()) {
 				if (ImGui::MenuItem("Material Component")) {
 					entity->AddComponent<MaterialComponent>();
+					entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3(0.1f));
+					entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3(1.0f));
+					entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3(1.0f));
+					entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
+					entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
+					entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 				}
 			}
 

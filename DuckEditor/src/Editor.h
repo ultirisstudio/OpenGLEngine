@@ -36,7 +36,6 @@ namespace DuckEngine
 		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
-
 		std::vector<Entity*> m_Entities;
 		Entity* m_SelectedEntity;
 

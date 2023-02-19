@@ -3,8 +3,6 @@
 #include "DuckEngine.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
-#include "Panels/MaterialCreatorPanel.h"
-#include "Panels/SequencerTestPanel.h"
 
 namespace DuckEngine
 {

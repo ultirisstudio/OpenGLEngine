@@ -62,11 +62,9 @@ private:
 public:
 	ModelComponent() = default;
 	ModelComponent(const std::string& path) { m_Model = DuckEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path); }
-	//ModelComponent(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 		
 	DuckEngine::Model& GetModel() { return *m_Model; }
 	void SetModel(const std::string& path) { m_Model = DuckEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path); }
-	//void SetModel(const std::string& path) { m_Model = DuckEngine::Model::CreateModel(path); }
 
 	DuckEngine::Model* GetPtr() { return m_Model.get(); }
 };

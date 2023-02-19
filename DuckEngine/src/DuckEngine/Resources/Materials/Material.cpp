@@ -32,7 +32,8 @@ namespace DuckEngine
 
 	void Material::addTexture(const std::string& id, const std::string& file)
 	{
-		m_textures[id] = Texture::CreateTexture(file);
+		//m_textures[id] = Texture::CreateTexture(file);
+		m_textures[id] = Renderer::m_SceneData.m_ResourceManager.getTexture(file);
 	}
 
 	void Material::addCubemap(const std::string& id, CubeMap value)

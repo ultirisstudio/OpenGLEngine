@@ -67,6 +67,7 @@ namespace DuckEngine
 						std::string file = filesys.string();
 
 						mc.SetModel(file);
+						entity->GetComponent<RenderComponent>().GenerateShader();
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -105,9 +106,12 @@ namespace DuckEngine
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
+				if (mc.GetMaterial().hasTexture("diffuse"))
 				{
-					entity->GetComponent<RenderComponent>().GenerateShader();
+					if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
+					{
+						entity->GetComponent<RenderComponent>().GenerateShader();
+					}
 				}
 
 				ImGui::Text("Diffuse Color: ");
@@ -130,9 +134,12 @@ namespace DuckEngine
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
+				if (mc.GetMaterial().hasTexture("specular"))
 				{
-					entity->GetComponent<RenderComponent>().GenerateShader();
+					if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
+					{
+						entity->GetComponent<RenderComponent>().GenerateShader();
+					}
 				}
 
 				ImGui::Text("Specular Color: "); //ImGui::SameLine();

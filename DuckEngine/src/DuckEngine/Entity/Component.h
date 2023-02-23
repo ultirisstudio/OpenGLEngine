@@ -2,6 +2,7 @@
 
 #include <DuckEngine/Renderer/Renderer.h>
 #include <DuckEngine/Resources/Model.h>
+#include <DuckEngine/Resources/Materials/Material.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -80,12 +81,7 @@ public:
 	bool UseDiffuseTexture;
 	bool UseSpecularTexture;
 
-	MaterialComponent()
-	{
-		m_Material = DuckEngine::Material::CreateMaterial();
-		m_DefaultTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
-		m_NoTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
-	}
+	MaterialComponent();
 
 	DuckEngine::Material& GetMaterial() { return *m_Material; }
 
@@ -113,26 +109,8 @@ public:
 	}
 };
 
-class RenderComponent : public Component
-{
-private:
-	DuckEngine::Shader m_Shader;
-	std::shared_ptr<DuckEngine::Material> m_Material;
-public:
-	RenderComponent();
-
-	void Draw();
-	void GenerateShader();
-	DuckEngine::Shader& GetShader() { return m_Shader; }
-};
-
 class SkyboxComponent : public Component
 {
-private:
-	glm::vec3 Position = { 0.0f,0.0f,0.0f };
-	glm::vec3 Rotation = { 0.0f,0.0f,0.0f };
-	glm::vec3 Scale = { 15.0f,15.0f,15.0f };
-
 public:
 	std::shared_ptr<DuckEngine::Model> m_Model;
 	DuckEngine::CubeMap m_CubeMap;
@@ -144,11 +122,19 @@ public:
 		m_Model = DuckEngine::Model::CreateModel(path);
 		m_CubeMap.Load({ "Assets/Skybox/right.jpg", "Assets/Skybox/left.jpg", "Assets/Skybox/top.jpg", "Assets/Skybox/bottom.jpg", "Assets/Skybox/front.jpg", "Assets/Skybox/back.jpg" });
 	}
+};
 
-	glm::mat4 GetTransform() const {
+class RenderComponent : public Component
+{
+private:
+	DuckEngine::Shader m_Shader;
+public:
+	RenderComponent();
 
-		glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
+	void Draw();
+	void GenerateShader();
 
-		return glm::translate(glm::mat4(1.f), Position) * rotation * glm::scale(glm::mat4(1.0f), Scale);
-	}
+	const char* current_item;
+
+	DuckEngine::Shader& GetShader() { return m_Shader; }
 };

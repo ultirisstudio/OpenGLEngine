@@ -169,7 +169,7 @@ namespace DuckEngine
 
 		if (entity->HasComponent<RenderComponent>())
 		{
-			auto& mc = entity->GetComponent<RenderComponent>();
+			auto& rc = entity->GetComponent<RenderComponent>();
 
 			if (ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen, "Render"))
 			{
@@ -180,6 +180,21 @@ namespace DuckEngine
 						entity->RemoveComponent<RenderComponent>();
 					}
 					ImGui::EndPopup();
+				}
+
+				const char* items[] = { "BPhong", "CubeMap" };
+
+				if (ImGui::BeginCombo("##combo", rc.current_item))
+				{
+					for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+					{
+						bool is_selected = (rc.current_item == items[n]);
+						if (ImGui::Selectable(items[n], is_selected))
+							rc.current_item = items[n];
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
 				}
 				ImGui::TreePop();
 			}

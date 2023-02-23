@@ -26,6 +26,11 @@ namespace DuckEngine
 				m_CurrentDirectory = m_CurrentDirectory.parent_path();
 			}
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Refresh"))
+		{
+			
+		}
 
 		static float padding = 16.0f;
 		static float thumbnailSize = 64.0f;
@@ -42,6 +47,8 @@ namespace DuckEngine
 		{
 			const auto& path = directoryEntry.path();
 			std::string filenameString = path.filename().string();
+			std::filesystem::path relativePath(path);
+			std::string itemPath = relativePath.string();
 
 			ImGui::PushID(filenameString.c_str());
 
@@ -56,21 +63,13 @@ namespace DuckEngine
 			}
 			else if (GetFileExtension(directoryEntry) == "png")
 			{
-				icon = m_FilePNGIcon;
-				//std::filesystem::path relativePath(path);
-				//std::string itemPath = relativePath.string();
-				//m_Temp = Renderer::CreateTexture(itemPath);
-				//icon = m_Temp;
-				//std::cout << itemPath << std::endl;
+				//icon = m_FilePNGIcon;
+				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath);
 			}
 			else if (GetFileExtension(directoryEntry) == "jpg")
 			{
-				icon = m_FileJPGIcon;
-				//std::filesystem::path relativePath(path);
-				//std::string itemPath = relativePath.string();
-				//m_Temp = Renderer::CreateTexture(itemPath);
-				//icon = m_Temp;
-				//std::cout << itemPath << std::endl;
+				//icon = m_FileJPGIcon;
+				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath);
 			}
 			else
 			{
@@ -78,7 +77,7 @@ namespace DuckEngine
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 
 			if (ImGui::BeginPopupContextItem())
 			{

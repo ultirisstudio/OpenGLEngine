@@ -3,7 +3,7 @@
 #include <DuckEngine/Shader/Generators/ShaderGenerator.h>
 #include <glad/glad.h>
 
-RenderComponent::RenderComponent() : m_Shader()
+RenderComponent::RenderComponent() : m_Shader(), current_item("BPhong")
 {
 	
 }
@@ -96,11 +96,12 @@ void RenderComponent::Draw()
 	if (entity->HasComponent<SkyboxComponent>())
 	{
 		auto& sc = entity->GetComponent<SkyboxComponent>();
+		glm::mat4& transform = entity->GetComponent<TransformComponent>().GetTransform();
 
 		sc.m_CubeMap.ActiveTexture();
 		sc.m_CubeMap.Bind();
 		sc.m_CubeMapShader.use();
-		sc.m_CubeMapShader.setUniform("uModel", sc.GetTransform());
+		sc.m_CubeMapShader.setUniform("uModel", transform);
 		sc.m_CubeMapShader.setUniform("uView", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getViewMatrix());
 		sc.m_CubeMapShader.setUniform("uProjection", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getProjectionMatrix());
 		sc.m_CubeMapShader.setUniform("uCubeMap", 0);
@@ -120,4 +121,11 @@ void RenderComponent::GenerateShader()
 	//std::cout << fs << std::endl;
 
 	m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
+}
+
+MaterialComponent::MaterialComponent()
+{
+	m_Material = DuckEngine::Material::CreateMaterial();
+	m_DefaultTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
+	m_NoTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
 }

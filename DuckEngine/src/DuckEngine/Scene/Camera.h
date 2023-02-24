@@ -23,8 +23,6 @@ namespace DuckEngine
 		float m_yaw;
 		float m_pitch;
 
-		//glm::vec3(m_pitch, m_yaw, 0)
-
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };
 		glm::vec2 m_ViewportPos = { 1.0f, 1.0f };
 
@@ -55,13 +53,6 @@ namespace DuckEngine
 		bool OnMousePressed(MouseButtonPressedEvent& e);
 		bool OnMouseReleased(MouseButtonReleasedEvent& e);
 		bool OnMouseScrolled(MouseScrolledEvent& e);
-
-		void setPosition(const glm::vec3& position);
-		//void setTarget(const glm::vec3& target);
-		void setFov(float fov);
-		void setMinFov(float minFov);
-		void setMaxFov(float maxFov);
-		void setSensitivity(float sensitivity);
 
 		void Update();
 		void OnEvent(Event& e);

@@ -43,8 +43,7 @@ namespace DuckEngine
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
 	private:
-		bool m_ViewportFocus;
-		bool HasSelected = false;
+		bool m_ViewportFocused = false, m_ViewportHovered = false;
 	private:
 		double last_time = glfwGetTime();
 		int nb_frame = 0;

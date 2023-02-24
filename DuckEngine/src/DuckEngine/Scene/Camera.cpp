@@ -146,7 +146,7 @@ namespace DuckEngine
 		m_lastMousePos.x = data.MousePos.x;
 		m_lastMousePos.y = data.MousePos.y;
 
-		if (m_CameraFocus)
+		if (m_CameraFocus && e.GetMouseButton() == 1)
 			m_moving = true;
 		return false;
 	}
@@ -159,6 +159,9 @@ namespace DuckEngine
 
 	bool Camera::OnMouseScrolled(MouseScrolledEvent& e)
 	{
+		if (!m_CameraFocus)
+			return false;
+
 		m_fov -= e.GetYOffset() * 4.0f;
 
 		if (m_fov < m_minFov)
@@ -167,32 +170,6 @@ namespace DuckEngine
 			m_fov = m_maxFov;
 
 		return false;
-	}
-
-	void Camera::setPosition(const glm::vec3& position)
-	{
-		m_position = position;
-		updateViewMatrix();
-	}
-
-	void Camera::setFov(float fov)
-	{
-		m_fov = fov;
-	}
-
-	void Camera::setMinFov(float minFov)
-	{
-		m_minFov = minFov;
-	}
-
-	void Camera::setMaxFov(float maxFov)
-	{
-		m_maxFov = maxFov;
-	}
-
-	void Camera::setSensitivity(float sensitivity)
-	{
-		m_sensitivity = sensitivity;
 	}
 
 	void Camera::OnResize(float width, float height)

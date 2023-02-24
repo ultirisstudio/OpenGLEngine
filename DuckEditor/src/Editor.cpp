@@ -9,7 +9,7 @@
 
 namespace DuckEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ViewportFocus(false), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
+	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
 	{
 		
 	}
@@ -56,7 +56,7 @@ namespace DuckEngine
 
 		m_Camera->Update();
 
-		if (m_ViewportFocus)
+		if (m_ViewportFocused || m_ViewportHovered)
 			m_Camera->m_CameraFocus = true;
 		else
 			m_Camera->m_CameraFocus = false;
@@ -160,7 +160,8 @@ namespace DuckEngine
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
-		if (ImGui::IsWindowHovered()) { m_ViewportFocus = true; } else { m_ViewportFocus = false; }
+		m_ViewportFocused = ImGui::IsWindowFocused();
+		m_ViewportHovered = ImGui::IsWindowHovered();
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();

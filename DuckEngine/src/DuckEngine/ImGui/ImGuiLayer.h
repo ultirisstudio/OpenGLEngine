@@ -15,5 +15,7 @@ namespace DuckEngine
 
 		void Begin();
 		void End();
+
+		void SetDarkThemeColors();
 	};
 }

@@ -3,6 +3,7 @@
 #include "DuckEngine.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
+#include <map>
 
 namespace DuckEngine
 {
@@ -28,6 +29,8 @@ namespace DuckEngine
 		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
 
+		void OptionMenu();
+
 		void CalculateLatency();
 	private:
 		std::shared_ptr<Camera> m_Camera;
@@ -50,5 +53,12 @@ namespace DuckEngine
 		int nb_frame = 0;
 		int fps = 0;
 		int latency = 0;
+	private:
+		bool m_optionMenu = false;
+		int m_optionTab = 0;
+
+		std::vector<int> m_ImGuiColor;
+		std::vector<const char*> m_ThemeName;
+		std::map<int, glm::vec4> m_ThemeColor;
 	};
 }

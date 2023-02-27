@@ -7,6 +7,8 @@
 
 #include <DuckEngine/Shader/Generators/ShaderGenerator.h>
 
+#include "glm/gtc/type_ptr.hpp"
+
 namespace DuckEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
@@ -40,6 +42,48 @@ namespace DuckEngine
 		m_Entity->AddComponent<RenderComponent>();
 		m_Entity->GetComponent<RenderComponent>().GenerateShader();
 		m_Entities.push_back(m_Entity);
+
+		m_ImGuiColor = {
+			ImGuiCol_WindowBg,
+			ImGuiCol_Header,
+			ImGuiCol_HeaderHovered,
+			ImGuiCol_HeaderActive,
+			ImGuiCol_Button,
+			ImGuiCol_ButtonHovered,
+			ImGuiCol_ButtonActive,
+			ImGuiCol_FrameBg,
+			ImGuiCol_FrameBgHovered,
+			ImGuiCol_FrameBgActive,
+			ImGuiCol_Tab,
+			ImGuiCol_TabHovered,
+			ImGuiCol_TabActive,
+			ImGuiCol_TabUnfocused,
+			ImGuiCol_TabUnfocusedActive,
+			ImGuiCol_TitleBg,
+			ImGuiCol_TitleBgActive,
+			ImGuiCol_TitleBgCollapsed
+		};
+
+		m_ThemeName = {
+			"WindowBg",
+			"Header",
+			"HeaderHovered",
+			"HeaderActive",
+			"Button",
+			"ButtonHovered",
+			"ButtonActive",
+			"FrameBg",
+			"FrameBgHovered",
+			"FrameBgActive",
+			"Tab",
+			"TabHovered",
+			"TabActive",
+			"TabUnfocused",
+			"TabUnfocusedActive",
+			"TitleBg",
+			"TitleBgActive",
+			"TitleBgCollapsed"
+		};
 	}
 
 	void Editor::OnDetach()
@@ -150,8 +194,12 @@ namespace DuckEngine
 
 			if (ImGui::BeginMenu("Options"))
 			{
-				ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-				ImGui::MenuItem("Padding", NULL, &opt_padding);
+				if (ImGui::MenuItem("Preference"))
+				{
+					m_optionMenu = true;
+				}
+				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+				//ImGui::MenuItem("Padding", NULL, &opt_padding);
 				ImGui::EndMenu();
 			}
 
@@ -292,6 +340,11 @@ namespace DuckEngine
 		ImGui::Text("%d fps \n%d ms", fps, latency);
 		ImGui::End();
 
+		if (m_optionMenu)
+		{
+			OptionMenu();
+		}
+
 		ImGui::End();
 	}
 
@@ -388,5 +441,58 @@ namespace DuckEngine
 		{
 			std::cout << e.what();
 		}
+	}
+
+	void Editor::OptionMenu()
+	{
+		ImGui::Begin("Preference");
+		
+		{
+
+			ImGui::Columns(2);
+			ImGui::SetColumnOffset(1, 230);
+
+			if (ImGui::Button("Theme", ImVec2(230 - 15, 39)))
+				m_optionTab = 0;
+
+			if (ImGui::Button("Close", ImVec2(230 - 15, 39)))
+				m_optionMenu = false;
+		}
+
+		ImGui::NextColumn();
+
+		{
+			if (ImGui::Button("Real Dark", ImVec2(230 - 70, 29)))
+				ImGui::StyleColorsRealDark();
+			ImGui::SameLine();
+			if (ImGui::Button("Dark", ImVec2(230 - 70, 29)))
+				ImGui::StyleColorsDark();
+			ImGui::SameLine();
+			if (ImGui::Button("Classic", ImVec2(230 - 70, 29)))
+				ImGui::StyleColorsClassic();
+			ImGui::SameLine();
+			if (ImGui::Button("Light", ImVec2(230 - 70, 29)))
+				ImGui::StyleColorsLight();
+
+			ImGuiStyle* style = &ImGui::GetStyle();
+
+			for (int color : m_ImGuiColor)
+			{
+				m_ThemeColor[color] = { style->Colors[color].x, style->Colors[color].y, style->Colors[color].z, style->Colors[color].w };
+			}
+
+			for (int i = 0; i < m_ImGuiColor.size(); i++)
+			{
+				std::string temp("##" + std::string(m_ThemeName[i]));
+				ImGui::Text(m_ThemeName[i]); ImGui::SameLine(); ImGui::ColorEdit4(temp.c_str(), glm::value_ptr(m_ThemeColor[i]));
+			}
+
+			for (int color : m_ImGuiColor)
+			{
+				style->Colors[color] = ImColor(m_ThemeColor[color].x, m_ThemeColor[color].y, m_ThemeColor[color].z, m_ThemeColor[color].w);
+			}
+		}
+
+		ImGui::End();
 	}
 }

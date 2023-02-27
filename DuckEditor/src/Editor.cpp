@@ -31,14 +31,11 @@ namespace DuckEngine
 		m_Entity->AddComponent<TransformComponent>();
 		m_Entity->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
 		m_Entity->AddComponent<MaterialComponent>();
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3(0.1f));
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3(1.0f));
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3(1.0f));
+		m_Entity->GetComponent<MaterialComponent>().InitializeMaterial();
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
 		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		m_Entity->AddComponent<RenderComponent>();
 		m_Entity->GetComponent<RenderComponent>().GenerateShader();
 		m_Entities.push_back(m_Entity);
@@ -61,7 +58,8 @@ namespace DuckEngine
 			ImGuiCol_TabUnfocusedActive,
 			ImGuiCol_TitleBg,
 			ImGuiCol_TitleBgActive,
-			ImGuiCol_TitleBgCollapsed
+			ImGuiCol_TitleBgCollapsed,
+			ImGuiCol_Border
 		};
 
 		m_ThemeName = {
@@ -82,7 +80,8 @@ namespace DuckEngine
 			"TabUnfocusedActive",
 			"TitleBg",
 			"TitleBgActive",
-			"TitleBgCollapsed"
+			"TitleBgCollapsed",
+			"ImGuiCol_Border"
 		};
 	}
 

@@ -81,7 +81,11 @@ public:
 	bool UseDiffuseTexture;
 	bool UseSpecularTexture;
 
+	const char* current_item = "BPhong";
+
 	MaterialComponent();
+
+	void InitializeMaterial();
 
 	DuckEngine::Material& GetMaterial() { return *m_Material; }
 
@@ -111,16 +115,31 @@ public:
 
 class SkyboxComponent : public Component
 {
-public:
+private:
 	std::shared_ptr<DuckEngine::Model> m_Model;
 	DuckEngine::CubeMap m_CubeMap;
 	DuckEngine::Shader m_CubeMapShader;
-
+public:
 	SkyboxComponent(const std::string& path)
 	{
 		m_CubeMapShader.LoadFromFile("Shaders/cubemap.vert", "Shaders/cubemap.frag");
 		m_Model = DuckEngine::Model::CreateModel(path);
 		m_CubeMap.Load({ "Assets/Skybox/right.jpg", "Assets/Skybox/left.jpg", "Assets/Skybox/top.jpg", "Assets/Skybox/bottom.jpg", "Assets/Skybox/front.jpg", "Assets/Skybox/back.jpg" });
+	}
+
+	DuckEngine::CubeMap* GetCubeMap()
+	{
+		return &m_CubeMap;
+	}
+
+	DuckEngine::Shader* GetCubeMapShader()
+	{
+		return &m_CubeMapShader;
+	}
+
+	DuckEngine::Model* GetModel()
+	{
+		return m_Model.get();
 	}
 };
 
@@ -129,12 +148,12 @@ class RenderComponent : public Component
 private:
 	DuckEngine::Shader m_Shader;
 public:
+	bool m_CanDraw;
+
 	RenderComponent();
 
 	void Draw();
 	void GenerateShader();
-
-	const char* current_item;
 
 	DuckEngine::Shader& GetShader() { return m_Shader; }
 };

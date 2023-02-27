@@ -3,13 +3,16 @@
 #include <DuckEngine/Shader/Generators/ShaderGenerator.h>
 #include <glad/glad.h>
 
-RenderComponent::RenderComponent() : m_Shader(), current_item("BPhong")
+RenderComponent::RenderComponent() : m_Shader(), m_CanDraw(true)
 {
 	
 }
 
 void RenderComponent::Draw()
 {
+	if (!m_CanDraw)
+		return;
+
 	if (entity->HasComponent<ModelComponent>() && entity->HasComponent<MaterialComponent>())
 	{
 		if (entity->GetComponent<ModelComponent>().GetPtr())
@@ -96,31 +99,28 @@ void RenderComponent::Draw()
 	if (entity->HasComponent<SkyboxComponent>())
 	{
 		auto& sc = entity->GetComponent<SkyboxComponent>();
-		glm::mat4& transform = entity->GetComponent<TransformComponent>().GetTransform();
 
-		sc.m_CubeMap.ActiveTexture();
-		sc.m_CubeMap.Bind();
-		sc.m_CubeMapShader.use();
-		sc.m_CubeMapShader.setUniform("uModel", transform);
-		sc.m_CubeMapShader.setUniform("uView", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getViewMatrix());
-		sc.m_CubeMapShader.setUniform("uProjection", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getProjectionMatrix());
-		sc.m_CubeMapShader.setUniform("uCubeMap", 0);
-		sc.m_CubeMap.BeginDrawModel();
-		sc.m_Model->draw();
-		sc.m_CubeMap.EndDrawModel();
+		sc.GetCubeMap()->ActiveTexture();
+		sc.GetCubeMap()->Bind();
+		sc.GetCubeMapShader()->use();
+		sc.GetCubeMapShader()->setUniform("uView", glm::mat4(glm::mat3(DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getViewMatrix())));
+		sc.GetCubeMapShader()->setUniform("uProjection", DuckEngine::Renderer::m_SceneData.m_ActiveCamera->getProjectionMatrix());
+		sc.GetCubeMapShader()->setUniform("uCubeMap", 0);
+		sc.GetCubeMap()->BeginDrawModel();
+		sc.GetModel()->draw();
+		sc.GetCubeMap()->EndDrawModel();
 	}
 }
 
 void RenderComponent::GenerateShader()
 {
-	DuckEngine::ShaderGenerator shaderGenerator(entity->GetComponent<MaterialComponent>().GetMaterial(), DuckEngine::ShaderType::BPhong);
-	const std::string& vs = shaderGenerator.generateVertexShader();
-	const std::string& fs = shaderGenerator.generateFragmentShader();
-
-	//std::cout << vs << std::endl;
-	//std::cout << fs << std::endl;
-
-	m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
+	if (entity->HasComponent<MaterialComponent>())
+	{
+		DuckEngine::ShaderGenerator shaderGenerator(entity->GetComponent<MaterialComponent>().GetMaterial(), DuckEngine::ShaderType::BPhong);
+		const std::string& vs = shaderGenerator.generateVertexShader();
+		const std::string& fs = shaderGenerator.generateFragmentShader();
+		m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
+	}
 }
 
 MaterialComponent::MaterialComponent()
@@ -128,4 +128,14 @@ MaterialComponent::MaterialComponent()
 	m_Material = DuckEngine::Material::CreateMaterial();
 	m_DefaultTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
 	m_NoTexture = DuckEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
+}
+
+void MaterialComponent::InitializeMaterial()
+{
+	m_Material->addVec3("ambient", glm::vec3(0.1f));
+	m_Material->addVec3("diffuse", glm::vec3(1.0f));
+	m_Material->addVec3("specular", glm::vec3(1.0f));
+	m_Material->addBoolean("diffuse", false);
+	m_Material->addBoolean("specular", false);
+	m_Material->addFloat("shininess", 32.0f);
 }

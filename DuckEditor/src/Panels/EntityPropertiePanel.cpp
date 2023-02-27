@@ -91,59 +91,77 @@ namespace DuckEngine
 					ImGui::EndPopup();
 				}
 
-				ImGui::Text("Diffuse texture: ");
-				ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
-				if (ImGui::BeginDragDropTarget())
-				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-					{
-						const wchar_t* path = (const wchar_t*)payload->Data;
-						std::filesystem::path filesys = path;
-						std::string file = filesys.string();
-						mc.GetMaterial().addTexture("diffuse", file);
-						entity->GetComponent<RenderComponent>().GenerateShader();
-					}
-					ImGui::EndDragDropTarget();
-				}
-				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("diffuse"))
-				{
-					if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
-					{
-						entity->GetComponent<RenderComponent>().GenerateShader();
-					}
-				}
+				/*const char* items[] = {"BPhong", "CubeMap"};
 
-				ImGui::Text("Diffuse Color: ");
-				ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(*mc.GetMaterial().getVec3("diffuse")));
-
-				ImGui::Separator();
-
-				ImGui::Text("Specular texture: ");
-				ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), {64.0f, 64.0f}, {0, 1}, {1, 0});
-				if (ImGui::BeginDragDropTarget())
+				if (ImGui::BeginCombo("##combo", mc.current_item))
 				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+					for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 					{
-						const wchar_t* path = (const wchar_t*)payload->Data;
-						std::filesystem::path filesys = path;
-						std::string file = filesys.string();
-						mc.GetMaterial().addTexture("specular", file);
-						entity->GetComponent<RenderComponent>().GenerateShader();
+						bool is_selected = (mc.current_item == items[n]);
+						if (ImGui::Selectable(items[n], is_selected))
+							mc.current_item = items[n];
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();
 					}
-					ImGui::EndDragDropTarget();
-				}
-				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("specular"))
-				{
-					if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
-					{
-						entity->GetComponent<RenderComponent>().GenerateShader();
-					}
-				}
+					ImGui::EndCombo();
+				}*/
 
-				ImGui::Text("Specular Color: "); //ImGui::SameLine();
-				ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
+				if (entity->HasComponent<ModelComponent>())
+				{
+					ImGui::Text("Diffuse texture: ");
+					ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+						{
+							const wchar_t* path = (const wchar_t*)payload->Data;
+							std::filesystem::path filesys = path;
+							std::string file = filesys.string();
+							mc.GetMaterial().addTexture("diffuse", file);
+							entity->GetComponent<RenderComponent>().GenerateShader();
+						}
+						ImGui::EndDragDropTarget();
+					}
+					ImGui::SameLine();
+					if (mc.GetMaterial().hasTexture("diffuse"))
+					{
+						if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
+						{
+							entity->GetComponent<RenderComponent>().GenerateShader();
+						}
+					}
+
+					ImGui::Text("Diffuse Color: ");
+					ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(*mc.GetMaterial().getVec3("diffuse")));
+
+					ImGui::Separator();
+
+					ImGui::Text("Specular texture: ");
+					ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+						{
+							const wchar_t* path = (const wchar_t*)payload->Data;
+							std::filesystem::path filesys = path;
+							std::string file = filesys.string();
+							mc.GetMaterial().addTexture("specular", file);
+							entity->GetComponent<RenderComponent>().GenerateShader();
+						}
+						ImGui::EndDragDropTarget();
+					}
+					ImGui::SameLine();
+					if (mc.GetMaterial().hasTexture("specular"))
+					{
+						if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
+						{
+							entity->GetComponent<RenderComponent>().GenerateShader();
+						}
+					}
+
+					ImGui::Text("Specular Color: "); //ImGui::SameLine();
+					ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
+				}
 
 				ImGui::TreePop();
 			}
@@ -163,6 +181,7 @@ namespace DuckEngine
 					}
 					ImGui::EndPopup();
 				}
+
 				ImGui::TreePop();
 			}
 		}
@@ -182,20 +201,11 @@ namespace DuckEngine
 					ImGui::EndPopup();
 				}
 
-				const char* items[] = { "BPhong", "CubeMap" };
-
-				if (ImGui::BeginCombo("##combo", rc.current_item))
+				if (ImGui::Checkbox("Active render", &rc.m_CanDraw))
 				{
-					for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-					{
-						bool is_selected = (rc.current_item == items[n]);
-						if (ImGui::Selectable(items[n], is_selected))
-							rc.current_item = items[n];
-						if (is_selected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
+					entity->GetComponent<RenderComponent>().GenerateShader();
 				}
+
 				ImGui::TreePop();
 			}
 		}
@@ -212,7 +222,7 @@ namespace DuckEngine
 				}
 			}
 
-			if (!entity->HasComponent<ModelComponent>()) {
+			if (!entity->HasComponent<ModelComponent>() && !entity->HasComponent<SkyboxComponent>()) {
 				if (ImGui::MenuItem("Model Component")) {
 					entity->AddComponent<ModelComponent>();
 				}
@@ -233,10 +243,11 @@ namespace DuckEngine
 			if (!entity->HasComponent<RenderComponent>()) {
 				if (ImGui::MenuItem("Render Component")) {
 					entity->AddComponent<RenderComponent>();
+					entity->GetComponent<RenderComponent>().GenerateShader();
 				}
 			}
 
-			if (!entity->HasComponent<SkyboxComponent>()) {
+			if (!entity->HasComponent<SkyboxComponent>() && !entity->HasComponent<ModelComponent>()) {
 				if (ImGui::MenuItem("Skybox Component")) {
 					entity->AddComponent<SkyboxComponent>("Assets/Models/cube.obj");
 				}

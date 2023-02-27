@@ -33,7 +33,7 @@ namespace DuckEngine
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		float fontSize = 18.0f;
+		float fontSize = 14.0f;
 		io.Fonts->AddFontFromFileTTF("Fonts/Monocraft.ttf", fontSize);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("Fonts/Monocraft.ttf", fontSize);
 

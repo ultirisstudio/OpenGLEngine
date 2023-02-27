@@ -24,16 +24,21 @@ namespace DuckEngine
 		float m_pitch;
 
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };
-		glm::vec2 m_ViewportPos = { 1.0f, 1.0f };
 
 		glm::uvec2 m_lastMousePos;
 		bool m_moving;
+		bool m_rotate;
+		bool m_translate;
+		float m_MouseX;
+		float m_MouseY;
 
 		float m_fov;
 		float m_minFov;
 		float m_maxFov;
 
-		float m_sensitivity;
+		float m_RotateSensitivity;
+		float m_TranslateSensitivity;
+		float m_ScrollSensitivity;
 
 		void updateViewMatrix();
 
@@ -44,7 +49,6 @@ namespace DuckEngine
 		const glm::mat4& getProjectionMatrix() const;
 
 		glm::mat4 GetTransform();
-		glm::vec3 getPosition() const;
 		float getFov() const;
 
 		void UpdateCameraVectors();
@@ -57,7 +61,6 @@ namespace DuckEngine
 		void Update();
 		void OnEvent(Event& e);
 		void OnResize(float width, float height);
-		void GetViewportPos(float x, float y);
 
 		bool m_CameraFocus;
 	};

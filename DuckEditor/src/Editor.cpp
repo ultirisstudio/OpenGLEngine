@@ -56,7 +56,7 @@ namespace DuckEngine
 
 		m_Camera->Update();
 
-		if (m_ViewportFocused || m_ViewportHovered)
+		if (m_ViewportHovered)
 			m_Camera->m_CameraFocus = true;
 		else
 			m_Camera->m_CameraFocus = false;
@@ -178,7 +178,6 @@ namespace DuckEngine
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 			m_Camera->OnResize(viewportPanelSize.x, viewportPanelSize.y);
-			m_Camera->GetViewportPos(viewportPanelPos.x-x, viewportPanelPos.y-y);
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -300,6 +299,7 @@ namespace DuckEngine
 	{
 		m_Camera->OnEvent(e);
 	}
+
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
 		Entity* temp = new Entity();

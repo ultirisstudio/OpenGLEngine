@@ -25,20 +25,28 @@ namespace DuckEngine
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
 		
-		Entity* m_Entity = new Entity();
-		m_Entity->SetId(m_Entities.size());
-		m_Entity->SetName("Entity");
-		m_Entity->AddComponent<TransformComponent>();
-		m_Entity->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
-		m_Entity->AddComponent<MaterialComponent>();
-		m_Entity->GetComponent<MaterialComponent>().InitializeMaterial();
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
-		m_Entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
-		m_Entity->AddComponent<RenderComponent>();
-		m_Entity->GetComponent<RenderComponent>().GenerateShader();
-		m_Entities.push_back(m_Entity);
+		Entity* m_Backpack = new Entity();
+		m_Backpack->SetId(m_Entities.size());
+		m_Backpack->SetName("Backpack");
+		m_Backpack->AddComponent<TransformComponent>();
+		m_Backpack->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
+		m_Backpack->AddComponent<MaterialComponent>();
+		m_Backpack->GetComponent<MaterialComponent>().InitializeMaterial();
+		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
+		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
+		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
+		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
+		m_Backpack->AddComponent<RenderComponent>();
+		m_Backpack->GetComponent<RenderComponent>().GenerateShader();
+		m_Entities.push_back(m_Backpack);
+
+		Entity* m_Skybox = new Entity();
+		m_Skybox->SetId(m_Entities.size());
+		m_Skybox->SetName("Skybox");
+		m_Skybox->AddComponent<TransformComponent>();
+		m_Skybox->AddComponent<SkyboxComponent>("Assets\\Models\\cube.obj");
+		m_Skybox->AddComponent<RenderComponent>();
+		m_Entities.push_back(m_Skybox);
 
 		m_ImGuiColor = {
 			ImGuiCol_WindowBg,

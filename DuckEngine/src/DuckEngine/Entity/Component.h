@@ -43,6 +43,10 @@ public:
 	TransformComponent() = default;
 	TransformComponent(const glm::vec3& position) : Position(position) {}
 
+	void SetPosition(const glm::vec3& position) { Position = position; }
+	void SetRotation(const glm::vec3& rotation) { Rotation = rotation; }
+	void SetScale(const glm::vec3& scale) { Scale = scale; }
+
 	glm::mat4 GetTransform() const {
 
 		//glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));

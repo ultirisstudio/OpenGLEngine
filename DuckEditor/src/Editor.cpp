@@ -1,6 +1,7 @@
 #include "Editor.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include "imgui.h"
 #include "ImGuizmo.h"

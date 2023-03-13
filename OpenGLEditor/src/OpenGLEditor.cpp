@@ -4,15 +4,15 @@
 
 namespace OpenGLEngine
 {
-	class DuckEditor : public Application
+	class OpenGLEditor : public Application
 	{
 	public:
-		DuckEditor() : Application("Duck Editor")
+		OpenGLEditor() : Application("Duck Editor")
 		{
 			PushLayer(new Editor());
 		}
 
-		~DuckEditor()
+		~OpenGLEditor()
 		{
 
 		}
@@ -20,6 +20,6 @@ namespace OpenGLEngine
 
 	Application* CreateApplication()
 	{
-		return new DuckEditor();
+		return new OpenGLEditor();
 	}
 }

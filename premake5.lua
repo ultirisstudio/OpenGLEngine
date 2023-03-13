@@ -71,6 +71,8 @@ project "OpenGLEngine"
 		"ImGuizmo",
 		"opengl32.lib"
 	}
+	
+	flags { "MultiProcessorCompile" }
 
 	filter "system:windows"
 		systemversion "latest"
@@ -122,6 +124,8 @@ project "OpenGLEditor"
 	{
 		"OpenGLEngine"
 	}
+	
+	flags { "MultiProcessorCompile" }
 	
 	filter "system:windows"
 		systemversion "latest"

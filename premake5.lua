@@ -1,6 +1,6 @@
-workspace "DuckEngine"
+workspace "OpenGLEngine"
 	architecture "x64"
-    startproject "DuckEditor"
+    startproject "OpenGLEditor"
 
 	configurations
 	{
@@ -11,25 +11,25 @@ workspace "DuckEngine"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "DuckEngine/vendor/GLFW/include"
-IncludeDir["Glad"] = "DuckEngine/vendor/Glad/include"
-IncludeDir["glm"] = "DuckEngine/vendor/glm"
-IncludeDir["ImGui"] = "DuckEngine/vendor/imgui"
-IncludeDir["assimp"] = "DuckEngine/vendor/assimp/include"
-IncludeDir["stb_image"] = "DuckEngine/vendor/stb_image"
-IncludeDir["ImGuizmo"] = "DuckEngine/vendor/ImGuizmo"
+IncludeDir["GLFW"] = "OpenGLEngine/vendor/GLFW/include"
+IncludeDir["Glad"] = "OpenGLEngine/vendor/Glad/include"
+IncludeDir["glm"] = "OpenGLEngine/vendor/glm"
+IncludeDir["ImGui"] = "OpenGLEngine/vendor/imgui"
+IncludeDir["assimp"] = "OpenGLEngine/vendor/assimp/include"
+IncludeDir["stb_image"] = "OpenGLEngine/vendor/stb_image"
+IncludeDir["ImGuizmo"] = "OpenGLEngine/vendor/ImGuizmo"
 
 group "Dependance"
-	include "DuckEngine/vendor/GLFW"
-	include "DuckEngine/vendor/Glad"
-	include "DuckEngine/vendor/assimp"
-	include "DuckEngine/vendor/imgui"
-	include "DuckEngine/vendor/ImGuizmo"
+	include "OpenGLEngine/vendor/GLFW"
+	include "OpenGLEngine/vendor/Glad"
+	include "OpenGLEngine/vendor/assimp"
+	include "OpenGLEngine/vendor/imgui"
+	include "OpenGLEngine/vendor/ImGuizmo"
 
 group ""
 
-project "DuckEngine"
-	location "DuckEngine"
+project "OpenGLEngine"
+	location "OpenGLEngine"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -39,7 +39,7 @@ project "DuckEngine"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	
 	pchheader "depch.h"
-    pchsource "DuckEngine/src/depch.cpp"
+    pchsource "OpenGLEngine/src/depch.cpp"
 
 	files
 	{
@@ -91,8 +91,8 @@ project "DuckEngine"
 		runtime "Release"
 		optimize "on"
 
-project "DuckEditor"
-	location "DuckEditor"
+project "OpenGLEditor"
+	location "OpenGLEditor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -109,8 +109,8 @@ project "DuckEditor"
 
 	includedirs
 	{
-		"DuckEngine/src",
-		"DuckEngine/vendor",
+		"OpenGLEngine/src",
+		"OpenGLEngine/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
@@ -120,7 +120,7 @@ project "DuckEditor"
 
 	links
 	{
-		"DuckEngine"
+		"OpenGLEngine"
 	}
 	
 	filter "system:windows"

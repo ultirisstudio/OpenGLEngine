@@ -1,14 +1,14 @@
 .vs/
 bin/
 bin-int/
-DuckEngine/vendor/assimp/bin/
-DuckEngine/vendor/assimp/bin-int/
-DuckEngine/vendor/Glad/bin/
-DuckEngine/vendor/Glad/bin-int/
-DuckEngine/vendor/GLFW/bin/
-DuckEngine/vendor/GLFW/bin-int/
-DuckEngine/vendor/imgui/bin/
-DuckEngine/vendor/imgui/bin-int/
+OpenGLEngine/vendor/assimp/bin/
+OpenGLEngine/vendor/assimp/bin-int/
+OpenGLEngine/vendor/Glad/bin/
+OpenGLEngine/vendor/Glad/bin-int/
+OpenGLEngine/vendor/GLFW/bin/
+OpenGLEngine/vendor/GLFW/bin-int/
+OpenGLEngine/vendor/imgui/bin/
+OpenGLEngine/vendor/imgui/bin-int/
 
 *.user
 *.vcxproj

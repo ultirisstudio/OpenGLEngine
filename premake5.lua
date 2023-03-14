@@ -73,6 +73,7 @@ project "OpenGLEngine"
 	}
 	
 	flags { "MultiProcessorCompile" }
+	optimize "Speed"
 
 	filter "system:windows"
 		systemversion "latest"
@@ -126,6 +127,7 @@ project "OpenGLEditor"
 	}
 	
 	flags { "MultiProcessorCompile" }
+	optimize "Speed"
 	
 	filter "system:windows"
 		systemversion "latest"

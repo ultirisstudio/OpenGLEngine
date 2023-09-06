@@ -115,11 +115,8 @@ namespace OpenGLEngine
 
 		Renderer::BeginScene(m_Camera.get());
 
-		for (Entity* entity : m_Entities) {
-			if (entity->HasComponent<RenderComponent>())
-			{
-				entity->GetComponent<RenderComponent>().Draw();
-			}
+		for (Entity* entity : View<RenderComponent>()) {
+			entity->GetComponent<RenderComponent>().Draw();
 		}
 
 		CalculateLatency();

@@ -2,6 +2,11 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include <filesystem>
+#include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/Entity/Components/ModelComponent.h>
+#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
+#include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
+#include <OpenGLEngine/Entity/Components/RenderComponent.h>
 
 namespace OpenGLEngine
 {

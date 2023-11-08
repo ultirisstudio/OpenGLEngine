@@ -2,6 +2,7 @@
 #include "OpenGLEngine/Core/Window.h"
 #include "OpenGLEngine/Events/ApplicationEvent.h"
 #include "OpenGLEngine/Events/MouseEvent.h"
+#include "OpenGLEngine/Events/KeyEvent.h"
 #include <glad/glad.h>
 
 namespace OpenGLEngine {
@@ -96,6 +97,41 @@ namespace OpenGLEngine {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			MouseMovedEvent event((double)xPos, (double)yPos);
+			data.EventCallback(event);
+		});
+
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				KeyPressedEvent event(key, 0);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				KeyReleasedEvent event(key);
+				data.EventCallback(event);
+				break;
+			}
+			case GLFW_REPEAT:
+			{
+				KeyPressedEvent event(key, true);
+				data.EventCallback(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			KeyTypedEvent event(keycode);
 			data.EventCallback(event);
 		});
 	}

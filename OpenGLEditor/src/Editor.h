@@ -1,6 +1,9 @@
 #pragma once
 
-#include "OpenGLEngine.h"
+#include <OpenGLEngine.h>
+#include <OpenGLEngine/Events/Event.h>
+#include <OpenGLEngine/Events/KeyEvent.h>
+
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
 #include <map>
@@ -48,6 +51,8 @@ namespace OpenGLEngine
 			return entities;
 		}
 	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+	private:
 		std::shared_ptr<Camera> m_Camera;
 		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
@@ -71,6 +76,8 @@ namespace OpenGLEngine
 	private:
 		bool m_optionMenu = false;
 		int m_optionTab = 0;
+
+		int m_GizmoType = -1;
 
 		std::vector<int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;

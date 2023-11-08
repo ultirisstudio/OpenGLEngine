@@ -237,7 +237,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		/*if (m_SelectedEntity)
+		if (m_SelectedEntity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -247,13 +247,24 @@ namespace OpenGLEngine
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
 			glm::mat4 cameraProjection = m_Camera->getProjectionMatrix();
-			glm::mat4 cameraView = glm::inverse(m_Camera->GetTransform());
+			glm::mat4 cameraView = m_Camera->getViewMatrix();
 
 			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
-		}*/
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+
+			if (ImGuizmo::IsUsing)
+			{
+				glm::vec3 position, rotation, scale;
+				Math::DecomposeTransform(transform, position, rotation, scale);
+
+				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				tc.Position = position;
+				tc.Rotation += deltaRotation;
+				tc.Scale = scale;
+			}
+		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -356,6 +367,9 @@ namespace OpenGLEngine
 	void Editor::OnEvent(Event& e)
 	{
 		m_Camera->OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&Editor::OnKeyPressed, this, std::placeholders::_1));
 	}
 
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
@@ -427,6 +441,35 @@ namespace OpenGLEngine
 			nb_frame = 0;
 			last_time += 1.0;
 		}
+	}
+
+	bool Editor::OnKeyPressed(KeyPressedEvent& e)
+	{
+		switch (e.GetKeyCode())
+		{
+		case Key::E:
+		{
+			m_GizmoType = -1;
+			break;
+		}
+		case Key::R:
+		{
+			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
+		case Key::T:
+		{
+			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
+		case Key::Y:
+		{
+			m_GizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		}
+		}
+
+		return false;
 	}
 
 	void Editor::OpenExternalFile()

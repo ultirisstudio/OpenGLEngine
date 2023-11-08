@@ -6,6 +6,13 @@
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
 
 #include "OpenGLEngine/Entity/Entity.h"
+#include "OpenGLEngine/Entity/Components/TransformComponent.h"
+#include "OpenGLEngine/Entity/Components/ModelComponent.h"
+#include "OpenGLEngine/Entity/Components/MaterialComponent.h"
+#include "OpenGLEngine/Entity/Components/SkyboxComponent.h"
+#include "OpenGLEngine/Entity/Components/RenderComponent.h"
+
+#include "OpenGLEngine/Tools/Math.h"
 
 #include "OpenGLEngine/Renderer/Renderer.h"
 #include "OpenGLEngine/Renderer/Framebuffer.h"

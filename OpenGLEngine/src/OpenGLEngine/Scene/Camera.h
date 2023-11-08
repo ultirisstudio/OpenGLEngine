@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGLEngine/Events/Event.h"
+#include <OpenGLEngine/Events/Event.h>
 #include <OpenGLEngine/Events/MouseEvent.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,9 +26,13 @@ namespace OpenGLEngine
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };
 
 		glm::uvec2 m_lastMousePos;
+
+		bool m_canMove;
+
 		bool m_moving;
 		bool m_rotate;
 		bool m_translate;
+
 		float m_MouseX;
 		float m_MouseY;
 
@@ -50,6 +54,9 @@ namespace OpenGLEngine
 
 		glm::mat4 GetTransform();
 		float getFov() const;
+
+		void freeze() { m_canMove = false; }
+		void free() { m_canMove = true; }
 
 		void UpdateCameraVectors();
 

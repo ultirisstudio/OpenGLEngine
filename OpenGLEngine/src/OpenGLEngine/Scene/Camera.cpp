@@ -22,6 +22,7 @@ namespace OpenGLEngine
 		m_pitch(0.0f),
 		m_position(position),
 		m_lastMousePos(0),
+		m_canMove(true),
 		m_moving(false),
 		m_fov(45.0f),
 		m_minFov(15.0f),
@@ -94,6 +95,9 @@ namespace OpenGLEngine
 
 	bool Camera::OnMouseMoved(MouseMovedEvent& e)
 	{
+		if (!m_canMove)
+			return false;
+
 		if (!m_moving)
 			return false;
 
@@ -140,7 +144,7 @@ namespace OpenGLEngine
 			m_moving = true;
 
 		m_rotate = (e.GetMouseButton() == 1);
-		m_translate = (e.GetMouseButton() == 0);
+		m_translate = (e.GetMouseButton() == 2);
 
 		return false;
 	}

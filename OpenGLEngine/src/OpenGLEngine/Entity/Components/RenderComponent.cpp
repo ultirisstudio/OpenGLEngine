@@ -1,11 +1,17 @@
 #include "depch.h"
-#include <OpenGLEngine/Entity/Component.h>
-#include <OpenGLEngine/Shader/Generators/ShaderGenerator.h>
+
 #include <glad/glad.h>
+#include <OpenGLEngine/Shader/Generators/ShaderGenerator.h>
+
+#include "RenderComponent.h"
+#include "ModelComponent.h"
+#include "MaterialComponent.h"
+#include "TransformComponent.h"
+#include "SkyboxComponent.h"
 
 RenderComponent::RenderComponent() : m_Shader(), m_CanDraw(true)
 {
-	
+
 }
 
 void RenderComponent::Draw()
@@ -81,7 +87,7 @@ void RenderComponent::Draw()
 		shader.setUniform("uPointLight.ambient", glm::vec3(0.2f));
 		shader.setUniform("uPointLight.diffuse", glm::vec3(0.8f));
 		shader.setUniform("uPointLight.specular", glm::vec3(1.0f));
-		shader.setUniform("uPointLight.position", glm::vec3({0.0f, 1.5f, 2.0f}));
+		shader.setUniform("uPointLight.position", glm::vec3({ 0.0f, 1.5f, 2.0f }));
 		shader.setUniform("uPointLight.constant", 1.0f);
 		shader.setUniform("uPointLight.linear", 0.2f);
 		shader.setUniform("uPointLight.quadratic", 0.08f);
@@ -116,21 +122,4 @@ void RenderComponent::GenerateShader()
 		const std::string& fs = shaderGenerator.generateFragmentShader();
 		m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());
 	}
-}
-
-MaterialComponent::MaterialComponent()
-{
-	m_Material = OpenGLEngine::Material::CreateMaterial();
-	m_DefaultTexture = OpenGLEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
-	m_NoTexture = OpenGLEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
-}
-
-void MaterialComponent::InitializeMaterial()
-{
-	m_Material->addVec3("ambient", glm::vec3(0.1f));
-	m_Material->addVec3("diffuse", glm::vec3(1.0f));
-	m_Material->addVec3("specular", glm::vec3(1.0f));
-	m_Material->addBoolean("diffuse", false);
-	m_Material->addBoolean("specular", false);
-	m_Material->addFloat("shininess", 32.0f);
 }

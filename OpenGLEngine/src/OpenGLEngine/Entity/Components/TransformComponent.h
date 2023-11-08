@@ -17,5 +17,4 @@ public:
 	void SetScale(const glm::vec3& scale) { Scale = scale; }
 
 	glm::mat4 GetTransform() const;
-	glm::quat GetQuatRotation() const;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <OpenGLEngine/Scene/Camera.h>
+#include <OpenGLEngine/Scene/EditorCamera.h>
 #include <OpenGLEngine/Resources/Texture.h>
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Materials/Material.h>
@@ -14,12 +14,12 @@ namespace OpenGLEngine
 	public:
 		struct SceneData
 		{
-			Camera* m_ActiveCamera;
+			EditorCamera* m_ActiveCamera;
 			ResourceManager m_ResourceManager;
 		};
 		static SceneData m_SceneData;
 
-		static void BeginScene(Camera* camera);
+		static void BeginScene(EditorCamera* camera);
 		static void EndScene();
 
 		static void Clear();

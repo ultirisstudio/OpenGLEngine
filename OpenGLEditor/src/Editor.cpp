@@ -19,16 +19,15 @@ namespace OpenGLEngine
 
 	void Editor::OnAttach()
 	{
-		m_Camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 6.0f));
+		m_Scene = std::make_unique<Scene>();
+		m_EditorCamera = std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f));
 		
 		m_frameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
-		
-		Entity* m_Backpack = new Entity();
-		m_Backpack->SetId(m_Entities.size());
-		m_Backpack->SetName("Backpack");
+
+		Entity* m_Backpack = m_Scene->CreateEntity("Backpack");
 		m_Backpack->AddComponent<TransformComponent>();
 		m_Backpack->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
 		m_Backpack->AddComponent<MaterialComponent>();
@@ -39,15 +38,11 @@ namespace OpenGLEngine
 		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
 		m_Backpack->AddComponent<RenderComponent>();
 		m_Backpack->GetComponent<RenderComponent>().GenerateShader();
-		m_Entities.push_back(m_Backpack);
 
-		Entity* m_Skybox = new Entity();
-		m_Skybox->SetId(m_Entities.size());
-		m_Skybox->SetName("Skybox");
+		Entity* m_Skybox = m_Scene->CreateEntity("Skybox");
 		m_Skybox->AddComponent<TransformComponent>();
 		m_Skybox->AddComponent<SkyboxComponent>("Assets\\Models\\cube.obj");
 		m_Skybox->AddComponent<RenderComponent>();
-		m_Entities.push_back(m_Skybox);
 
 		m_ImGuiColor = {
 			ImGuiCol_WindowBg,
@@ -106,18 +101,16 @@ namespace OpenGLEngine
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
-		m_Camera->Update();
+		m_EditorCamera->Update();
 
 		if (m_ViewportHovered)
-			m_Camera->m_CameraFocus = true;
+			m_EditorCamera->m_CameraFocus = true;
 		else
-			m_Camera->m_CameraFocus = false;
+			m_EditorCamera->m_CameraFocus = false;
 
-		Renderer::BeginScene(m_Camera.get());
+		Renderer::BeginScene(m_EditorCamera.get());
 
-		for (Entity* entity : View<RenderComponent>()) {
-			entity->GetComponent<RenderComponent>().Draw();
-		}
+		m_Scene->RenderScene();
 
 		CalculateLatency();
 
@@ -184,11 +177,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					Entity* temp = new Entity();
-					temp->SetId(m_Entities.size());
-					temp->SetName("GameObject");
-					temp->AddComponent<TransformComponent>();
-					m_Entities.push_back(temp);
+					m_Scene->CreateEntity("GameObject");
 				}
 
 				if (ImGui::MenuItem("Create new Cube")) AddGameObject(CUBE);
@@ -230,7 +219,7 @@ namespace OpenGLEngine
 
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-			m_Camera->OnResize(viewportPanelSize.x, viewportPanelSize.y);
+			m_EditorCamera->OnResize(viewportPanelSize.x, viewportPanelSize.y);
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -246,8 +235,8 @@ namespace OpenGLEngine
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			glm::mat4 cameraProjection = m_Camera->getProjectionMatrix();
-			glm::mat4 cameraView = m_Camera->getViewMatrix();
+			glm::mat4 cameraProjection = m_EditorCamera->getProjectionMatrix();
+			glm::mat4 cameraView = m_EditorCamera->getViewMatrix();
 
 			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
@@ -293,26 +282,32 @@ namespace OpenGLEngine
 		ImGui::Begin("Scene");
 
 		static int selection_mask = 0x02;
-		int node_clicked = -1;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
 		
-		for (int i = 0; i < m_Entities.size(); i++)
+		//for (auto it = m_Scene->GetEntityMap().begin(); it != m_Scene->GetEntityMap().end(); it++)
+		for (Entity* entity : m_Scene->GetEntityVector())
 		{
-			ImGuiTreeNodeFlags flags = ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
-			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, flags, m_Entities[i]->GetName());
+			std::string id;
+			if (m_SelectedEntity)
+				id = m_SelectedEntity->GetId();
+			else
+				id = "-1";
+
+			ImGuiTreeNodeFlags flags = ((id.c_str() == entity->GetId()) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+			flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetId(), flags, entity->GetName());
+
 			if (ImGui::IsItemClicked())
 			{
-				node_clicked = i;
-				m_SelectedEntity = m_Entities[i];
+				m_SelectedEntity = entity;
 			}
 
 			if (ImGui::BeginPopupContextItem())
 			{
 				if (ImGui::MenuItem("Delete Object")) {
-					m_Entities.erase(m_Entities.begin() + i);
+					m_Scene->DestroyEntity(*entity);
 					m_SelectedEntity = nullptr;
-					node_clicked = -1;
 				}
 				ImGui::EndPopup();
 			}
@@ -320,14 +315,6 @@ namespace OpenGLEngine
 			if (opened)
 			{
 				ImGui::TreePop();
-			}
-
-			if (node_clicked != -1)
-			{
-				if (ImGui::GetIO().KeyCtrl)
-					selection_mask ^= (1 << node_clicked);
-				else
-					selection_mask = (1 << node_clicked);
 			}
 		}
 		
@@ -366,7 +353,7 @@ namespace OpenGLEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		m_Camera->OnEvent(e);
+		m_EditorCamera->OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&Editor::OnKeyPressed, this, std::placeholders::_1));
@@ -374,8 +361,7 @@ namespace OpenGLEngine
 
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
 	{
-		Entity* temp = new Entity();
-		temp->SetId(m_Entities.size());
+		Entity* temp = m_Scene->CreateEntity("temp");
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<MaterialComponent>();
 		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
@@ -402,8 +388,6 @@ namespace OpenGLEngine
 			temp->AddComponent<ModelComponent>("Assets/Models/plane.obj");
 			break;
 		}
-
-		m_Entities.push_back(temp);
 	}
 
 	void Editor::AddGameObject(const std::string& file)
@@ -414,9 +398,7 @@ namespace OpenGLEngine
 		size_t lastindex = m_SelectedFile.find_last_of(".");
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
-		Entity* temp = new Entity();
-		temp->SetId(m_Entities.size());
-		temp->SetName(m_FileName);
+		Entity* temp = m_Scene->CreateEntity(m_FileName);
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>(file);
 		temp->AddComponent<MaterialComponent>();
@@ -428,7 +410,6 @@ namespace OpenGLEngine
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		temp->AddComponent<RenderComponent>();
 		temp->GetComponent<RenderComponent>().GenerateShader();
-		m_Entities.push_back(temp);
 	}
 
 	void Editor::CalculateLatency()

@@ -36,29 +36,16 @@ namespace OpenGLEngine
 
 		void CalculateLatency();
 	private:
-		template<typename Component>
-		std::vector<Entity*> View()
-		{
-			std::vector<Entity*> entities;
-			for (auto& entity : m_Entities)
-			{
-				if (entity->HasComponent<Component>())
-				{
-					entities.push_back(entity);
-				}
-			}
-
-			return entities;
-		}
-	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
-		std::shared_ptr<Camera> m_Camera;
+		std::unique_ptr<Scene> m_Scene;
+
+		Entity* m_SelectedEntity;
+
+		std::shared_ptr<EditorCamera> m_EditorCamera;
 		std::shared_ptr<Framebuffer> m_frameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
-		std::vector<Entity*> m_Entities;
-		Entity* m_SelectedEntity;
 
 		FileBrowser m_FileBrowser;
 		void OpenExternalFile();

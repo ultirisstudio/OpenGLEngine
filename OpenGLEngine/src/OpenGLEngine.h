@@ -3,6 +3,8 @@
 #include "OpenGLEngine/Core/Application.h"
 #include "OpenGLEngine/Core/Layer.h"
 
+#include "OpenGLEngine/Scene/Scene.h"
+
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
 
 #include "OpenGLEngine/Entity/Entity.h"

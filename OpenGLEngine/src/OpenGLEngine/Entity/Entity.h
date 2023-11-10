@@ -12,11 +12,13 @@ class Component;
 class Entity
 {
 public:
+	Entity() = default;
+	Entity(std::string name, std::string uuid);
+
 	char* GetName() { return m_Name.data(); }
-	unsigned int GetId() { return m_Id; }
+	char* GetId() { return m_Id.data(); }
 
 	void SetName(std::string name) { m_Name = name; }
-	void SetId(unsigned int id) { m_Id = id; }
 
 	template<typename T>
 	bool HasComponent() const {
@@ -48,7 +50,7 @@ public:
 	}
 private:
 	std::string m_Name;
-	unsigned int m_Id;
+	std::string m_Id;
 
 	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
 	std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;

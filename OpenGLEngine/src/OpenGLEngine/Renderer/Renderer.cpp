@@ -11,7 +11,7 @@
 namespace OpenGLEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
 
-	void Renderer::BeginScene(Camera* camera)
+	void Renderer::BeginScene(EditorCamera* camera)
 	{
 		m_SceneData.m_ActiveCamera = camera;
 	}

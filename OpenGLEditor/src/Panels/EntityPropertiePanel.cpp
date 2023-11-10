@@ -21,13 +21,19 @@ namespace OpenGLEngine
 
 	void EntityPropertiePanel::OnImGuiRender(Entity* entity)
 	{
-		ImGui::Text("Information:");
+		char* uuid = entity->GetId();
 
-		ImGui::Separator();
+		std::string result;
 
 		std::stringstream sstm;
-		sstm << "Object_" << entity->GetId();
-		std::string result = sstm.str();
+		sstm << "UUID: " << uuid;
+		result = sstm.str();
+		ImGui::Text(result.c_str());
+		ImGui::Separator();
+
+		std::stringstream sstm2;
+		sstm2 << "##" << uuid;
+		result = sstm2.str();
 		ImGui::InputText(result.c_str(), entity->GetName(), 10);
 
 		ImGui::Separator();

@@ -17,6 +17,7 @@ IncludeDir["glm"] = "OpenGLEngine/vendor/glm"
 IncludeDir["ImGui"] = "OpenGLEngine/vendor/imgui"
 IncludeDir["assimp"] = "OpenGLEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "OpenGLEngine/vendor/stb_image"
+IncludeDir["yaml_cpp"] = "OpenGLEngine/vendor/yaml_cpp/include"
 IncludeDir["ImGuizmo"] = "OpenGLEngine/vendor/ImGuizmo"
 
 group "Dependance"
@@ -25,6 +26,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/assimp"
 	include "OpenGLEngine/vendor/imgui"
 	include "OpenGLEngine/vendor/ImGuizmo"
+	include "OpenGLEngine/vendor/yaml_cpp"
 
 group ""
 
@@ -59,6 +61,7 @@ project "OpenGLEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}"
 	}
 
@@ -69,6 +72,7 @@ project "OpenGLEngine"
 		"assimp",
 		"ImGui",
 		"ImGuizmo",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 	

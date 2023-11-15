@@ -44,18 +44,6 @@ namespace OpenGLEngine
 
 			if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
 			{
-				/*ImGui::Text("Position: "); ImGui::SameLine();
-				//ImGui::DragFloat3("##Position", glm::value_ptr(tc.Position), 0.1f, -1000.0f, 1000.0f);
-				ImGui::InputFloat3("##Position", glm::value_ptr(tc.Position), 0.1f);
-				ImGui::Text("Rotation: "); ImGui::SameLine();
-				//ImGui::DragFloat3("##Rotation", glm::value_ptr(tc.Rotation), 0.1f, 0.0f, 180.0f);
-				glm::vec3 rotation = glm::degrees(tc.Rotation);
-				ImGui::InputFloat3("##Rotation", glm::value_ptr(rotation), 0.1f);
-				tc.Rotation = glm::radians(rotation);
-				ImGui::Text("Scale: "); ImGui::SameLine();
-				//ImGui::DragFloat3("##Scale", glm::value_ptr(tc.Scale), 0.1f, 100.0f);
-				ImGui::InputFloat3("##Scale", glm::value_ptr(tc.Scale), 0.1f);**/
-
 				DrawVec3Control("Translation", tc.Position);
 				glm::vec3 rotation = glm::degrees(tc.Rotation);
 				DrawVec3Control("Rotation", rotation);

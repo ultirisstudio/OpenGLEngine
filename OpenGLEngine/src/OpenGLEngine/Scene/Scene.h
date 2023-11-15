@@ -20,10 +20,13 @@ namespace OpenGLEngine
 		Entity* FindEntityByName(std::string name);
 		Entity* GetEntityByUUID(std::string uuid);
 
-		EntityMap GetEntityMap() { return m_EntityMap; }
 		std::vector<Entity*> GetEntityVector();
 
+		void OnUpdate(double deltaTime);
 		void RenderScene();
+
+		void OnScenePlay();
+		void OnSceneStop();
 	private:
 		EntityMap m_EntityMap;
 	private:

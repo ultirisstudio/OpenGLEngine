@@ -3,6 +3,8 @@
 #include "OpenGLEngine/Core/Application.h"
 #include "OpenGLEngine/Core/Layer.h"
 
+#include "OpenGLEngine/Core/Input.h"
+
 #include "OpenGLEngine/Scene/Scene.h"
 
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
@@ -13,6 +15,7 @@
 #include "OpenGLEngine/Entity/Components/MaterialComponent.h"
 #include "OpenGLEngine/Entity/Components/SkyboxComponent.h"
 #include "OpenGLEngine/Entity/Components/RenderComponent.h"
+#include "OpenGLEngine/Entity/Components/NativeScriptComponent.h"
 
 #include "OpenGLEngine/Tools/Math.h"
 

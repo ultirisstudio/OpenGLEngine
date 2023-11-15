@@ -4,6 +4,7 @@
 #include <OpenGLEngine/Tools/UUID.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 
 namespace OpenGLEngine
 {
@@ -55,10 +56,34 @@ namespace OpenGLEngine
 		return entities;
 	}
 
+	void Scene::OnUpdate(double deltaTime)
+	{
+		for (Entity* entity : View<NativeScriptComponent>()) {
+			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
+
+			if (nsc.Instance == nullptr) {
+				nsc.Instance = nsc.InstantiateScript();
+				nsc.Instance->m_Entity = *entity;
+				nsc.Instance->OnCreate();
+			}
+
+			nsc.Instance->OnUpdate(deltaTime);
+		}
+	}
+
 	void Scene::RenderScene()
 	{
 		for (Entity* entity : View<RenderComponent>()) {
 			entity->GetComponent<RenderComponent>().Draw();
 		}
+	}
+	void Scene::OnScenePlay()
+	{
+		
+	}
+
+	void Scene::OnSceneStop()
+	{
+		
 	}
 }

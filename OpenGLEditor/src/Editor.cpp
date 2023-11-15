@@ -6,8 +6,6 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include <OpenGLEngine/Shader/Generators/ShaderGenerator.h>
-
 #include "glm/gtc/type_ptr.hpp"
 
 namespace OpenGLEngine
@@ -43,6 +41,39 @@ namespace OpenGLEngine
 		m_Skybox->AddComponent<TransformComponent>();
 		m_Skybox->AddComponent<SkyboxComponent>("Assets\\Models\\cube.obj");
 		m_Skybox->AddComponent<RenderComponent>();
+
+		class Player : public ScriptableEntity
+		{
+		public:
+			void OnCreate()
+			{
+				
+			}
+
+			void OnDestroy()
+			{
+				
+			}
+
+			void OnUpdate(double dt)
+			{
+				auto& tc = GetComponent<TransformComponent>();
+				float speed = 0.1f;
+
+				//std::cout << tc.Position.x << " " << tc.Position.y << " " << tc.Position.z << std::endl;
+
+				if (Input::IsKeyPressed(Key::A))
+					tc.Position.x -= speed * dt;
+				if (Input::IsKeyPressed(Key::D))
+					tc.Position.x += speed * dt;
+				if (Input::IsKeyPressed(Key::W))
+					tc.Position.z -= speed * dt;
+				if (Input::IsKeyPressed(Key::S))
+					tc.Position.z += speed * dt;
+			}
+		};
+
+		m_Backpack->AddComponent<NativeScriptComponent>().Bind<Player>();
 
 		m_ImGuiColor = {
 			ImGuiCol_WindowBg,
@@ -107,6 +138,8 @@ namespace OpenGLEngine
 			m_EditorCamera->m_CameraFocus = true;
 		else
 			m_EditorCamera->m_CameraFocus = false;
+
+		m_Scene->OnUpdate(1.0f);
 
 		Renderer::BeginScene(m_EditorCamera.get());
 

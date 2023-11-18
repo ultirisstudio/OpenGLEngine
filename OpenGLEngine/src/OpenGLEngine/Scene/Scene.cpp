@@ -8,6 +8,16 @@
 
 namespace OpenGLEngine
 {
+	Scene::Scene() : m_Name("Untitled"), m_Path("")
+	{
+
+	}
+
+	Scene::Scene(const std::string& name) : m_Name(name), m_Path("")
+	{
+		
+	}
+
 	Entity* Scene::CreateEntity(const std::string& name)
 	{
 		return CreateEntityWithUUID(uuid::generate_uuid_v4(), name);

@@ -122,6 +122,27 @@ namespace OpenGLEngine
 		Renderer::EndScene();
 
 		m_frameBuffer->unbind();
+
+		if (Input::IsKeyPressed(Key::LeftControl))
+		{
+			if (Input::IsKeyPressed(Key::S))
+			{
+				if (m_Scene->getPath() != "")
+				{
+					SceneSerializer serializer(*m_Scene);
+					serializer.Serialize(m_Scene->getPath());
+				}
+				else
+				{
+					m_FileBrowser.SaveFile();
+					if (m_FileBrowser.GetInfos().m_FilePath != "")
+					{
+						SceneSerializer serializer(*m_Scene);
+						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
+					}
+				}
+			}
+		}
 	}
 
 	void Editor::OnImGuiRender()
@@ -174,16 +195,32 @@ namespace OpenGLEngine
 				if (ImGui::MenuItem("Open")) OpenExternalFile();
 				ImGui::Separator();
 
+				if (ImGui::MenuItem("New scene"))
+				{
+					m_Scene = std::make_unique<Scene>();
+				}
+
 				if (ImGui::MenuItem("Save scene"))
 				{
-					SceneSerializer serializer(*m_Scene);
-					serializer.Serialize("Assets\\Scenes\\Test.scene");
+					if (m_Scene->getPath() != "")
+					{
+						SceneSerializer serializer(*m_Scene);
+						serializer.Serialize(m_Scene->getPath());
+					}
+					else
+					{
+						m_FileBrowser.SaveFile();
+						SceneSerializer serializer(*m_Scene);
+						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
+					}
 				}
 
 				if (ImGui::MenuItem("Load scene"))
 				{
+					m_FileBrowser.OpenFile();
+					m_Scene = std::make_unique<Scene>();
 					SceneSerializer serializer(*m_Scene);
-					serializer.Deserialize("Assets\\Scenes\\Test.scene");
+					serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
 				}
 
 				ImGui::Separator();
@@ -290,6 +327,13 @@ namespace OpenGLEngine
 
 				if (fileExtension == "obj")
 					AddGameObject(filePath);
+
+				if (fileExtension == "scene")
+				{
+					m_Scene = std::make_unique<Scene>();
+					SceneSerializer serializer(*m_Scene);
+					serializer.Deserialize(filePath);
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}

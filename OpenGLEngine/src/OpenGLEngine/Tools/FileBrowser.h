@@ -19,6 +19,8 @@ namespace OpenGLEngine
 
 		FileBrowser();
 		bool OpenFile();
+		bool SaveFile();
+		bool SaveFile(const char* file);
 		FileInfo& GetInfos() { return m_FileInfos; }
 	private:
 		FileInfo m_FileInfos;

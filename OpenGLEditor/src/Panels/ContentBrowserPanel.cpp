@@ -112,7 +112,9 @@ namespace OpenGLEngine
 					m_CurrentDirectory /= path.filename();
 
 			}
-			ImGui::TextWrapped(filenameString.c_str());
+			size_t lastindex = filenameString.find_last_of(".");
+			std::string fileName = filenameString.substr(0, lastindex);
+			ImGui::TextWrapped(fileName.c_str());
 
 			ImGui::NextColumn();
 

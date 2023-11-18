@@ -11,7 +11,8 @@ namespace OpenGLEngine
 	class Scene
 	{
 	public:
-		Scene() = default;
+		Scene();
+		Scene(const std::string& name);
 
 		Entity* CreateEntity(const std::string& name = std::string());
 		Entity* CreateEntityWithUUID(const std::string& uuid, const std::string& name = std::string());
@@ -27,8 +28,17 @@ namespace OpenGLEngine
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		const std::string& getName() { return m_Name; }
+		const std::string& getPath() { return m_Path; }
+
+		void setName(const std::string& name) { m_Name = name; }
+		void setPath(const std::string& path) { m_Path = path; }
 	private:
 		EntityMap m_EntityMap;
+
+		std::string m_Name;
+		std::string m_Path;
 
 		friend class SceneSerializer;
 	private:

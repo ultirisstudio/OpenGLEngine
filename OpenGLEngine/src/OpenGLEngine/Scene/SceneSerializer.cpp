@@ -138,7 +138,7 @@ namespace OpenGLEngine
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
+		out << YAML::Key << "Scene" << YAML::Value << m_Scene->getName();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 
 		for (auto& entity : m_Scene->GetEntityVector())
@@ -151,6 +151,8 @@ namespace OpenGLEngine
 
 		std::ofstream fout(filepath);
 		fout << out.c_str();
+
+		m_Scene->setPath(filepath);
 	}
 
 	void SceneSerializer::SerializeRuntime(const std::string& filepath)
@@ -170,6 +172,8 @@ namespace OpenGLEngine
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
+		m_Scene->setName(sceneName);
+		m_Scene->setPath(filepath);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -179,7 +183,7 @@ namespace OpenGLEngine
 				std::string name = entity["Entity"].as<std::string>();
 				std::string uuid = entity["ID"].as<std::string>();
 
-				std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
+				//std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
 
 				Entity* deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 

@@ -263,7 +263,7 @@ namespace OpenGLEngine
 
 			if (!entity->HasComponent<SkyboxComponent>() && !entity->HasComponent<ModelComponent>()) {
 				if (ImGui::MenuItem("Skybox Component")) {
-					entity->AddComponent<SkyboxComponent>("Assets/Models/cube.obj");
+					entity->AddComponent<SkyboxComponent>();
 				}
 			}
 

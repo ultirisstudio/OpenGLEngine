@@ -29,6 +29,8 @@ namespace OpenGLEngine
 		void OnSceneStop();
 	private:
 		EntityMap m_EntityMap;
+
+		friend class SceneSerializer;
 	private:
 		template<typename Component>
 		std::vector<Entity*> View()

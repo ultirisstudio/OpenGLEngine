@@ -17,3 +17,18 @@ void MaterialComponent::InitializeMaterial()
 	m_Material->addBoolean("specular", false);
 	m_Material->addFloat("shininess", 32.0f);
 }
+
+void MaterialComponent::addTexture(const std::string& id, const std::string& file)
+{
+	m_Material->addTexture(id, file);
+	m_Material->addBoolean(id, true);
+
+	if (id == "diffuse")
+	{
+		m_DiffuseTexture = file;
+	}
+	else if (id == "specular")
+	{
+		m_SpecularTexture = file;
+	}
+}

@@ -32,6 +32,9 @@ namespace OpenGLEngine
 		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
 
+		void SaveScene();
+		void LoadScene();
+
 		void OptionMenu();
 
 		void CalculateLatency();

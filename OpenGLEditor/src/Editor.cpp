@@ -8,6 +8,10 @@
 
 #include "glm/gtc/type_ptr.hpp"
 
+#include "Player.h"
+
+#include "OpenGLEngine/Scene/SceneSerializer.h"
+
 namespace OpenGLEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
@@ -25,55 +29,23 @@ namespace OpenGLEngine
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
 
+#if 0
 		Entity* m_Backpack = m_Scene->CreateEntity("Backpack");
 		m_Backpack->AddComponent<TransformComponent>();
 		m_Backpack->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
 		m_Backpack->AddComponent<MaterialComponent>();
 		m_Backpack->GetComponent<MaterialComponent>().InitializeMaterial();
-		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
-		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
-		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", true);
-		m_Backpack->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", true);
+		m_Backpack->GetComponent<MaterialComponent>().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
+		m_Backpack->GetComponent<MaterialComponent>().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
 		m_Backpack->AddComponent<RenderComponent>();
 		m_Backpack->GetComponent<RenderComponent>().GenerateShader();
+		m_Backpack->AddComponent<NativeScriptComponent>().Bind<Player>();
 
 		Entity* m_Skybox = m_Scene->CreateEntity("Skybox");
 		m_Skybox->AddComponent<TransformComponent>();
-		m_Skybox->AddComponent<SkyboxComponent>("Assets\\Models\\cube.obj");
+		m_Skybox->AddComponent<SkyboxComponent>();
 		m_Skybox->AddComponent<RenderComponent>();
-
-		class Player : public ScriptableEntity
-		{
-		public:
-			void OnCreate()
-			{
-				
-			}
-
-			void OnDestroy()
-			{
-				
-			}
-
-			void OnUpdate(double dt)
-			{
-				auto& tc = GetComponent<TransformComponent>();
-				float speed = 0.1f;
-
-				//std::cout << tc.Position.x << " " << tc.Position.y << " " << tc.Position.z << std::endl;
-
-				if (Input::IsKeyPressed(Key::A))
-					tc.Position.x -= speed * dt;
-				if (Input::IsKeyPressed(Key::D))
-					tc.Position.x += speed * dt;
-				if (Input::IsKeyPressed(Key::W))
-					tc.Position.z -= speed * dt;
-				if (Input::IsKeyPressed(Key::S))
-					tc.Position.z += speed * dt;
-			}
-		};
-
-		m_Backpack->AddComponent<NativeScriptComponent>().Bind<Player>();
+#endif
 
 		m_ImGuiColor = {
 			ImGuiCol_WindowBg,
@@ -197,11 +169,25 @@ namespace OpenGLEngine
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Fichier"))
+			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Ouvrir")) OpenExternalFile();
+				if (ImGui::MenuItem("Open")) OpenExternalFile();
 				ImGui::Separator();
-				if (ImGui::MenuItem("Fermer"))
+
+				if (ImGui::MenuItem("Save scene"))
+				{
+					SceneSerializer serializer(*m_Scene);
+					serializer.Serialize("Assets\\Scenes\\Test.scene");
+				}
+
+				if (ImGui::MenuItem("Load scene"))
+				{
+					SceneSerializer serializer(*m_Scene);
+					serializer.Deserialize("Assets\\Scenes\\Test.scene");
+				}
+
+				ImGui::Separator();
+				if (ImGui::MenuItem("Quit"))
 					OpenGLEngine::Application::Get().Close();
 				ImGui::EndMenu();
 			}
@@ -295,8 +281,15 @@ namespace OpenGLEngine
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::filesystem::path file = path;
-				AddGameObject(file.string());
+				//std::filesystem::path file = path;
+				std::wstring ws(path);
+				std::string filePath(ws.begin(), ws.end());
+				const size_t slash = filePath.find_last_of("/\\");
+				std::string selectedFile = filePath.substr(slash + 1);
+				std::string fileExtension = selectedFile.substr(selectedFile.find_last_of(".") + 1);
+
+				if (fileExtension == "obj")
+					AddGameObject(filePath);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -443,6 +436,14 @@ namespace OpenGLEngine
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
 		temp->AddComponent<RenderComponent>();
 		temp->GetComponent<RenderComponent>().GenerateShader();
+	}
+
+	void Editor::SaveScene()
+	{
+	}
+
+	void Editor::LoadScene()
+	{
 	}
 
 	void Editor::CalculateLatency()

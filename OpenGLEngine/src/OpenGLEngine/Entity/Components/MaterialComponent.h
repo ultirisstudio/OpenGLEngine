@@ -10,14 +10,19 @@ private:
 
 	std::shared_ptr<OpenGLEngine::Material> m_Material;
 public:
-	bool UseDiffuseTexture;
-	bool UseSpecularTexture;
+	//bool UseDiffuseTexture;
+	//bool UseSpecularTexture;
 
-	const char* current_item = "BPhong";
+	std::string m_DiffuseTexture;
+	std::string m_SpecularTexture;
+
+	//const char* current_item = "BPhong";
 
 	MaterialComponent();
 
 	void InitializeMaterial();
+
+	void addTexture(const std::string& id, const std::string& file);
 
 	OpenGLEngine::Material& GetMaterial() { return *m_Material; }
 

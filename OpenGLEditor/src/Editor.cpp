@@ -213,6 +213,7 @@ namespace OpenGLEngine
 					else
 					{
 						m_FileBrowser.SaveFile();
+						m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
 						SceneSerializer serializer(*m_Scene);
 						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
 					}

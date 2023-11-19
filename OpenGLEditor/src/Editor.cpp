@@ -137,6 +137,9 @@ namespace OpenGLEngine
 					m_FileBrowser.SaveFile();
 					if (m_FileBrowser.GetInfos().m_FilePath != "")
 					{
+						m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
+						std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
+						std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
 						SceneSerializer serializer(*m_Scene);
 						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
 					}

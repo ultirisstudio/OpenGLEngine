@@ -78,14 +78,34 @@ namespace OpenGLEngine
 			out << YAML::Value << YAML::BeginMap;
 
 			auto& mc = entity->GetComponent<MaterialComponent>();
-			if (mc.GetMaterial().getBoolean("diffuse"))
+
+			bool hasDiffuse = *mc.GetMaterial().getBoolean("diffuse");
+			bool hasSpecular = *mc.GetMaterial().getBoolean("specular");
+
+			out << YAML::Key << "hasDiffuse" << YAML::Value << hasDiffuse;
+			out << YAML::Key << "hasSpecular" << YAML::Value << hasSpecular;
+
+			out << YAML::Key << "ambient" << YAML::Value << *mc.GetMaterial().getVec3("ambient");
+
+			if (hasDiffuse)
 			{
 				out << YAML::Key << "diffuse" << YAML::Value << mc.m_DiffuseTexture;
 			}
-			if (mc.GetMaterial().getBoolean("specular"))
+			else
+			{
+				out << YAML::Key << "diffuse" << YAML::Value << *mc.GetMaterial().getVec3("diffuse");
+			}
+
+			if (hasSpecular)
 			{
 				out << YAML::Key << "specular" << YAML::Value << mc.m_SpecularTexture;
 			}
+			else
+			{
+				out << YAML::Key << "specular" << YAML::Value << *mc.GetMaterial().getVec3("specular");
+			}
+
+			out << YAML::Key << "shininess" << YAML::Value << *mc.GetMaterial().getFloat("shininess");
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -213,14 +233,30 @@ namespace OpenGLEngine
 							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
 							mc.InitializeMaterial();
 
-							if (materialComponent["diffuse"])
+							bool hasDiffuse = materialComponent["hasDiffuse"].IsScalar();
+							bool hasSpecular = materialComponent["hasSpecular"].IsScalar();
+
+							mc.GetMaterial().addVec3("ambient", materialComponent["ambient"].as<glm::vec3>());
+
+							if (hasDiffuse)
 							{
 								mc.addTexture("diffuse", materialComponent["diffuse"].as<std::string>());
 							}
-							if (materialComponent["specular"])
+							else
+							{
+								mc.GetMaterial().addVec3("diffuse", materialComponent["diffuse"].as<glm::vec3>());
+							}
+
+							if (hasSpecular)
 							{
 								mc.addTexture("specular", materialComponent["specular"].as<std::string>());
 							}
+							else
+							{
+								mc.GetMaterial().addVec3("specular", materialComponent["specular"].as<glm::vec3>());
+							}
+
+							mc.GetMaterial().addFloat("shininess", materialComponent["shininess"].as<float>());
 						}
 
 						auto skyboxComponent = component["SkyboxComponent"];

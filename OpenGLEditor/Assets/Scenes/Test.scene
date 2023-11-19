@@ -8,8 +8,12 @@ Entities:
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - MaterialComponent:
+          hasDiffuse: true
+          hasSpecular: true
+          ambient: [0, 0, 0]
           diffuse: Assets\Textures\1001_albedo.jpg
           specular: Assets\Textures\1001_roughness.jpg
+          shininess: 32
       - ModelComponent:
           model: Assets\Models\BackPack.obj
       - RenderComponent:

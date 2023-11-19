@@ -29,6 +29,8 @@ namespace OpenGLEngine
 		void OnScenePlay();
 		void OnSceneStop();
 
+		Entity* m_SelectedEntity;
+
 		const std::string& getName() { return m_Name; }
 		const std::string& getPath() { return m_Path; }
 

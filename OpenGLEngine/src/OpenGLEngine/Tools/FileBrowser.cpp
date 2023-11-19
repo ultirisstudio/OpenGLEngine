@@ -131,6 +131,14 @@ namespace OpenGLEngine
                     std::string c(path.begin(), path.end());
                     m_FileInfos.m_FilePath = c;
 
+                    const size_t slash = m_FileInfos.m_FilePath.find_last_of("/\\");
+                    m_FileInfos.m_SelectedFile = m_FileInfos.m_FilePath.substr(slash + 1);
+
+                    m_FileInfos.m_FileExtension = m_FileInfos.m_SelectedFile.substr(m_FileInfos.m_SelectedFile.find_last_of(".") + 1);
+
+                    size_t lastindex = m_FileInfos.m_SelectedFile.find_last_of(".");
+                    m_FileInfos.m_FileName = m_FileInfos.m_SelectedFile.substr(0, lastindex);
+
                     CoTaskMemFree(pszFilePath);
                 }
 

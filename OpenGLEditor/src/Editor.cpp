@@ -14,7 +14,7 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SelectedEntity(nullptr)
+	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy()
 	{
 		
 	}
@@ -28,68 +28,6 @@ namespace OpenGLEngine
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
-
-#if 0
-		Entity* m_Backpack = m_Scene->CreateEntity("Backpack");
-		m_Backpack->AddComponent<TransformComponent>();
-		m_Backpack->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
-		m_Backpack->AddComponent<MaterialComponent>();
-		m_Backpack->GetComponent<MaterialComponent>().InitializeMaterial();
-		m_Backpack->GetComponent<MaterialComponent>().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
-		m_Backpack->GetComponent<MaterialComponent>().addTexture("specular", "Assets\\Textures\\1001_roughness.jpg");
-		m_Backpack->AddComponent<RenderComponent>();
-		m_Backpack->GetComponent<RenderComponent>().GenerateShader();
-		m_Backpack->AddComponent<NativeScriptComponent>().Bind<Player>();
-
-		Entity* m_Skybox = m_Scene->CreateEntity("Skybox");
-		m_Skybox->AddComponent<TransformComponent>();
-		m_Skybox->AddComponent<SkyboxComponent>();
-		m_Skybox->AddComponent<RenderComponent>();
-#endif
-
-		m_ImGuiColor = {
-			ImGuiCol_WindowBg,
-			ImGuiCol_Header,
-			ImGuiCol_HeaderHovered,
-			ImGuiCol_HeaderActive,
-			ImGuiCol_Button,
-			ImGuiCol_ButtonHovered,
-			ImGuiCol_ButtonActive,
-			ImGuiCol_FrameBg,
-			ImGuiCol_FrameBgHovered,
-			ImGuiCol_FrameBgActive,
-			ImGuiCol_Tab,
-			ImGuiCol_TabHovered,
-			ImGuiCol_TabActive,
-			ImGuiCol_TabUnfocused,
-			ImGuiCol_TabUnfocusedActive,
-			ImGuiCol_TitleBg,
-			ImGuiCol_TitleBgActive,
-			ImGuiCol_TitleBgCollapsed,
-			ImGuiCol_Border
-		};
-
-		m_ThemeName = {
-			"WindowBg",
-			"Header",
-			"HeaderHovered",
-			"HeaderActive",
-			"Button",
-			"ButtonHovered",
-			"ButtonActive",
-			"FrameBg",
-			"FrameBgHovered",
-			"FrameBgActive",
-			"Tab",
-			"TabHovered",
-			"TabActive",
-			"TabUnfocused",
-			"TabUnfocusedActive",
-			"TitleBg",
-			"TitleBgActive",
-			"TitleBgCollapsed",
-			"ImGuiCol_Border"
-		};
 	}
 
 	void Editor::OnDetach()
@@ -127,23 +65,7 @@ namespace OpenGLEngine
 		{
 			if (Input::IsKeyPressed(Key::S))
 			{
-				if (m_Scene->getPath() != "")
-				{
-					SceneSerializer serializer(*m_Scene);
-					serializer.Serialize(m_Scene->getPath());
-				}
-				else
-				{
-					m_FileBrowser.SaveFile();
-					if (m_FileBrowser.GetInfos().m_FilePath != "")
-					{
-						m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
-						std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
-						std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
-						SceneSerializer serializer(*m_Scene);
-						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
-					}
-				}
+				SaveScene();
 			}
 		}
 	}
@@ -205,26 +127,12 @@ namespace OpenGLEngine
 
 				if (ImGui::MenuItem("Save scene"))
 				{
-					if (m_Scene->getPath() != "")
-					{
-						SceneSerializer serializer(*m_Scene);
-						serializer.Serialize(m_Scene->getPath());
-					}
-					else
-					{
-						m_FileBrowser.SaveFile();
-						m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
-						SceneSerializer serializer(*m_Scene);
-						serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
-					}
+					SaveScene();
 				}
 
 				if (ImGui::MenuItem("Load scene"))
 				{
-					m_FileBrowser.OpenFile();
-					m_Scene = std::make_unique<Scene>();
-					SceneSerializer serializer(*m_Scene);
-					serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
+					LoadScene();
 				}
 
 				ImGui::Separator();
@@ -286,7 +194,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (m_SelectedEntity && m_GizmoType != -1)
+		if (m_Scene->m_SelectedEntity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -298,7 +206,7 @@ namespace OpenGLEngine
 			glm::mat4 cameraProjection = m_EditorCamera->getProjectionMatrix();
 			glm::mat4 cameraView = m_EditorCamera->getViewMatrix();
 
-			auto& tc = m_SelectedEntity->GetComponent<TransformComponent>();
+			auto& tc = m_Scene->m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
@@ -348,64 +256,12 @@ namespace OpenGLEngine
 
 		ImGui::Begin("Inspector");
 
-		if (m_SelectedEntity)
-			m_EntityPropertiePanel.OnImGuiRender(m_SelectedEntity);
+		if (m_Scene->m_SelectedEntity)
+			m_EntityPropertiePanel.OnImGuiRender(m_Scene->m_SelectedEntity);
 
 		ImGui::End();
 
-		ImGui::Begin("Scene");
-
-		static int selection_mask = 0x02;
-
-		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
-		
-		//for (auto it = m_Scene->GetEntityMap().begin(); it != m_Scene->GetEntityMap().end(); it++)
-		for (Entity* entity : m_Scene->GetEntityVector())
-		{
-			std::string id;
-			if (m_SelectedEntity)
-				id = m_SelectedEntity->GetId();
-			else
-				id = "-1";
-
-			ImGuiTreeNodeFlags flags = ((id.c_str() == entity->GetId()) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetId(), flags, entity->GetName());
-
-			if (ImGui::IsItemClicked())
-			{
-				m_SelectedEntity = entity;
-			}
-
-			if (ImGui::BeginPopupContextItem())
-			{
-				if (ImGui::MenuItem("Delete Object")) {
-					m_Scene->DestroyEntity(*entity);
-					m_SelectedEntity = nullptr;
-				}
-				ImGui::EndPopup();
-			}
-
-			if (opened)
-			{
-				ImGui::TreePop();
-			}
-		}
-		
-		ImGui::PopStyleVar();
-
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::filesystem::path file = path;
-				AddGameObject(file.string());
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::End();
+		m_SceneHierarchy.OnImGuiRender(*m_Scene);
 
 		m_ContentBrowserPanel.OnImGuiRender();
 
@@ -431,6 +287,53 @@ namespace OpenGLEngine
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&Editor::OnKeyPressed, this, std::placeholders::_1));
+	}
+
+	void Editor::InitImGuiStyle()
+	{
+		m_ImGuiColor = {
+			ImGuiCol_WindowBg,
+			ImGuiCol_Header,
+			ImGuiCol_HeaderHovered,
+			ImGuiCol_HeaderActive,
+			ImGuiCol_Button,
+			ImGuiCol_ButtonHovered,
+			ImGuiCol_ButtonActive,
+			ImGuiCol_FrameBg,
+			ImGuiCol_FrameBgHovered,
+			ImGuiCol_FrameBgActive,
+			ImGuiCol_Tab,
+			ImGuiCol_TabHovered,
+			ImGuiCol_TabActive,
+			ImGuiCol_TabUnfocused,
+			ImGuiCol_TabUnfocusedActive,
+			ImGuiCol_TitleBg,
+			ImGuiCol_TitleBgActive,
+			ImGuiCol_TitleBgCollapsed,
+			ImGuiCol_Border
+		};
+
+		m_ThemeName = {
+			"WindowBg",
+			"Header",
+			"HeaderHovered",
+			"HeaderActive",
+			"Button",
+			"ButtonHovered",
+			"ButtonActive",
+			"FrameBg",
+			"FrameBgHovered",
+			"FrameBgActive",
+			"Tab",
+			"TabHovered",
+			"TabActive",
+			"TabUnfocused",
+			"TabUnfocusedActive",
+			"TitleBg",
+			"TitleBgActive",
+			"TitleBgCollapsed",
+			"ImGuiCol_Border"
+		};
 	}
 
 	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
@@ -488,10 +391,28 @@ namespace OpenGLEngine
 
 	void Editor::SaveScene()
 	{
+		if (m_Scene->getPath() != "")
+		{
+			SceneSerializer serializer(*m_Scene);
+			serializer.Serialize(m_Scene->getPath());
+		}
+		else
+		{
+			m_FileBrowser.SaveFile();
+			m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
+			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
+			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
+			SceneSerializer serializer(*m_Scene);
+			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
+		}
 	}
 
 	void Editor::LoadScene()
 	{
+		m_FileBrowser.OpenFile();
+		m_Scene = std::make_unique<Scene>();
+		SceneSerializer serializer(*m_Scene);
+		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
 	}
 
 	void Editor::CalculateLatency()
@@ -557,9 +478,7 @@ namespace OpenGLEngine
 	void Editor::OptionMenu()
 	{
 		ImGui::Begin("Preference");
-		
 		{
-
 			ImGui::Columns(2);
 			ImGui::SetColumnOffset(1, 230);
 

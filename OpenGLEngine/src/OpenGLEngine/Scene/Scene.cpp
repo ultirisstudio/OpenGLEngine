@@ -8,12 +8,12 @@
 
 namespace OpenGLEngine
 {
-	Scene::Scene() : m_Name("Untitled"), m_Path("")
+	Scene::Scene() : m_Name("Untitled"), m_Path(""), m_SelectedEntity(nullptr)
 	{
 
 	}
 
-	Scene::Scene(const std::string& name) : m_Name(name), m_Path("")
+	Scene::Scene(const std::string& name) : m_Name(name), m_Path(""), m_SelectedEntity(nullptr)
 	{
 		
 	}

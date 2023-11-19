@@ -6,6 +6,8 @@
 
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
+#include "Panels/SceneHierarchy.h"
+
 #include <map>
 
 namespace OpenGLEngine
@@ -28,6 +30,8 @@ namespace OpenGLEngine
 		void OnUpdate() override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
+	private:
+		void InitImGuiStyle();
 
 		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
@@ -38,12 +42,10 @@ namespace OpenGLEngine
 		void OptionMenu();
 
 		void CalculateLatency();
-	private:
+
 		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		std::unique_ptr<Scene> m_Scene;
-
-		Entity* m_SelectedEntity;
 
 		std::shared_ptr<EditorCamera> m_EditorCamera;
 		std::shared_ptr<Framebuffer> m_frameBuffer;
@@ -55,6 +57,7 @@ namespace OpenGLEngine
 
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
+		SceneHierarchy m_SceneHierarchy;
 	private:
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;

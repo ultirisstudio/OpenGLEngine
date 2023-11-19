@@ -1,7 +1,7 @@
-Scene: ""
+Scene: Test2
 Entities:
   - Entity: Cube
-    ID: 163f0bbe-1c81-44b4-a509-c366bd145086
+    ID: 0f20008a-d1e4-444a-b41e-e197909c24aa
     Components:
       - TransformComponent:
           Position: [0, 0, 0]
@@ -11,7 +11,7 @@ Entities:
           hasDiffuse: false
           hasSpecular: false
           ambient: [0, 0, 0]
-          diffuse: [0.734883726, 0.334970236, 0.334970236]
+          diffuse: [0.772093058, 0.204694435, 0.204694435]
           specular: [0, 0, 0]
           shininess: 32
       - ModelComponent:

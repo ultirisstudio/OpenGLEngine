@@ -2,6 +2,9 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
+#include <OpenGLEngine/Resources/Materials/CubeMap.h>
+#include <OpenGLEngine/Shader/Shader.h>
+
 class SkyboxComponent : public Component
 {
 private:

@@ -7,13 +7,22 @@
 #include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Shader/Generators/ShaderGenerator.h>
 #include <OpenGLEngine/Tools/Log.h>
+#include <OpenGLEngine/Entity/Components/RenderComponent.h>
 
 namespace OpenGLEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
 
-	void Renderer::BeginScene(EditorCamera* camera)
+	void Renderer::BeginScene(Scene& scene)
 	{
-		m_SceneData.m_ActiveCamera = camera;
+		m_SceneData.m_Scene = &scene;
+	}
+
+	void Renderer::Render()
+	{
+		for (Entity* entity : m_SceneData.m_Scene->getDrawEntities())
+		{
+			entity->GetComponent<RenderComponent>().Draw();
+		}
 	}
 
 	void Renderer::EndScene()

@@ -2,7 +2,8 @@
 
 #include <unordered_map>
 
-#include "OpenGLEngine/Entity/Entity.h"
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Scene/EditorCamera.h>
 
 namespace OpenGLEngine
 {
@@ -24,10 +25,13 @@ namespace OpenGLEngine
 		std::vector<Entity*> GetEntityVector();
 
 		void OnUpdate(double deltaTime);
-		void RenderScene();
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		EditorCamera& getEditorCamera() { return *m_EditorCamera; }
+
+		std::vector<Entity*> getDrawEntities();
 
 		Entity* m_SelectedEntity;
 
@@ -38,6 +42,8 @@ namespace OpenGLEngine
 		void setPath(const std::string& path) { m_Path = path; }
 	private:
 		EntityMap m_EntityMap;
+
+		std::shared_ptr<EditorCamera> m_EditorCamera;
 
 		std::string m_Name;
 		std::string m_Path;

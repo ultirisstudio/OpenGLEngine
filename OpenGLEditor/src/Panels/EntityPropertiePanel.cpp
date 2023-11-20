@@ -5,6 +5,7 @@
 #include <imgui/imgui_internal.h>
 
 #include <filesystem>
+#include <sstream>
 
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>

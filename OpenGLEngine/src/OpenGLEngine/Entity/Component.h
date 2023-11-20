@@ -1,6 +1,5 @@
 #pragma once
 
-#include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Materials/Material.h>
 #include <glm/glm.hpp>
@@ -8,8 +7,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 #define MAX_COMPONENTS 10
-
-#include "Entity.h"
 
 class Entity;
 

@@ -8,12 +8,14 @@
 
 namespace OpenGLEngine
 {
-	Scene::Scene() : m_Name("Untitled"), m_Path(""), m_SelectedEntity(nullptr)
+	Scene::Scene()
+		: m_Name("Untitled"), m_Path(""), m_SelectedEntity(nullptr), m_EditorCamera(std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
 
 	}
 
-	Scene::Scene(const std::string& name) : m_Name(name), m_Path(""), m_SelectedEntity(nullptr)
+	Scene::Scene(const std::string& name)
+		: m_Name(name), m_Path(""), m_SelectedEntity(nullptr), m_EditorCamera(std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
 		
 	}
@@ -81,12 +83,6 @@ namespace OpenGLEngine
 		}
 	}
 
-	void Scene::RenderScene()
-	{
-		for (Entity* entity : View<RenderComponent>()) {
-			entity->GetComponent<RenderComponent>().Draw();
-		}
-	}
 	void Scene::OnScenePlay()
 	{
 		
@@ -95,5 +91,15 @@ namespace OpenGLEngine
 	void Scene::OnSceneStop()
 	{
 		
+	}
+	std::vector<Entity*> Scene::getDrawEntities()
+	{
+		std::vector<Entity*> entities;
+
+		for (Entity* entity : View<RenderComponent>()) {
+			entities.push_back(entity);
+		}
+
+		return entities;
 	}
 }

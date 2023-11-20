@@ -1,5 +1,23 @@
 Scene: Test
 Entities:
+  - Entity: Cube
+    ID: a7362adf-e1bc-4ca1-8bc5-c6f55744c7bc
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - MaterialComponent:
+          hasDiffuse: false
+          hasSpecular: false
+          ambient: [0, 0, 0]
+          diffuse: [0.837209284, 0.190805852, 0.190805852]
+          specular: [0, 0, 0]
+          shininess: 32
+      - ModelComponent:
+          model: Assets/Models/cube.obj
+      - RenderComponent:
+          render: true
   - Entity: Backpack
     ID: 03a3915f-2e2c-45bc-9b1c-8e5f64ac6961
     Components:

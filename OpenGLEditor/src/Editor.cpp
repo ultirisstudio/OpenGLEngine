@@ -22,12 +22,13 @@ namespace OpenGLEngine
 	void Editor::OnAttach()
 	{
 		m_Scene = std::make_unique<Scene>();
-		m_EditorCamera = std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f));
 		
 		m_frameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 		m_frameBuffer->setDepthAttachment();
 		m_frameBuffer->Create();
+
+		InitImGuiStyle();
 	}
 
 	void Editor::OnDetach()
@@ -42,22 +43,20 @@ namespace OpenGLEngine
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
-		m_EditorCamera->Update();
+		m_Scene->getEditorCamera().Update();
 
 		if (m_ViewportHovered)
-			m_EditorCamera->m_CameraFocus = true;
+			m_Scene->getEditorCamera().m_CameraFocus = true;
 		else
-			m_EditorCamera->m_CameraFocus = false;
+			m_Scene->getEditorCamera().m_CameraFocus = false;
 
 		m_Scene->OnUpdate(1.0f);
 
-		Renderer::BeginScene(m_EditorCamera.get());
-
-		m_Scene->RenderScene();
+		Renderer::BeginScene(*m_Scene);
+		Renderer::Render();
+		Renderer::EndScene();
 
 		CalculateLatency();
-
-		Renderer::EndScene();
 
 		m_frameBuffer->unbind();
 
@@ -187,7 +186,7 @@ namespace OpenGLEngine
 
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-			m_EditorCamera->OnResize(viewportPanelSize.x, viewportPanelSize.y);
+			m_Scene->getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -203,8 +202,8 @@ namespace OpenGLEngine
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			glm::mat4 cameraProjection = m_EditorCamera->getProjectionMatrix();
-			glm::mat4 cameraView = m_EditorCamera->getViewMatrix();
+			glm::mat4 cameraProjection = m_Scene->getEditorCamera().getProjectionMatrix();
+			glm::mat4 cameraView = m_Scene->getEditorCamera().getViewMatrix();
 
 			auto& tc = m_Scene->m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
@@ -283,7 +282,7 @@ namespace OpenGLEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		m_EditorCamera->OnEvent(e);
+		m_Scene->getEditorCamera().OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&Editor::OnKeyPressed, this, std::placeholders::_1));

@@ -6,6 +6,7 @@
 #include <OpenGLEngine/Resources/Materials/Material.h>
 #include <OpenGLEngine/Shader/Shader.h>
 #include <OpenGLEngine/Resources/ResourceManager.h>
+#include <OpenGLEngine/Scene/Scene.h>
 
 namespace OpenGLEngine
 {
@@ -14,12 +15,13 @@ namespace OpenGLEngine
 	public:
 		struct SceneData
 		{
-			EditorCamera* m_ActiveCamera;
+			Scene* m_Scene;
 			ResourceManager m_ResourceManager;
 		};
 		static SceneData m_SceneData;
 
-		static void BeginScene(EditorCamera* camera);
+		static void BeginScene(Scene& scene);
+		static void Render();
 		static void EndScene();
 
 		static void Clear();

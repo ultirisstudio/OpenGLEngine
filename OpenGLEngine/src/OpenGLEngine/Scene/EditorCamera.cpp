@@ -13,7 +13,8 @@ namespace OpenGLEngine
 	}
 
 	EditorCamera::EditorCamera(const glm::vec3& position) :
-		Camera(position),
+		m_EPosition(position),
+		Camera(m_EPosition),
 		m_lastMousePos(0),
 		m_canMove(true),
 		m_moving(false),

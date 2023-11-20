@@ -9,6 +9,7 @@ namespace OpenGLEngine
 	class EditorCamera : public Camera
 	{
 	private:
+		glm::vec3 m_EPosition;
 		glm::uvec2 m_lastMousePos;
 
 		bool m_canMove;

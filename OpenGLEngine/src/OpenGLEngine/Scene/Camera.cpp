@@ -6,7 +6,7 @@
 
 namespace OpenGLEngine
 {
-	Camera::Camera(const glm::vec3& position) :
+	Camera::Camera(glm::vec3& position) :
 		m_viewMatrix(glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f))),
 		m_target(glm::vec3(0.0f, 0.0f, -1.0f)),
 		m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),

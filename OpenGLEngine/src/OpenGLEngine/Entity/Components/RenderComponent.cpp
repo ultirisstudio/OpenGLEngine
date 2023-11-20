@@ -21,11 +21,11 @@ void RenderComponent::Draw()
 	if (!m_CanDraw)
 		return;
 
-	if (entity->HasComponent<ModelComponent>() && entity->HasComponent<MaterialComponent>() && entity->GetComponent<ModelComponent>().GetPtr())
+	if (entity->HasComponent<OpenGLEngine::ModelComponent>() && entity->HasComponent<OpenGLEngine::MaterialComponent>() && entity->GetComponent<OpenGLEngine::ModelComponent>().GetPtr())
 	{
-		OpenGLEngine::Material& material = entity->GetComponent<MaterialComponent>().GetMaterial();
-		OpenGLEngine::Model& model = entity->GetComponent<ModelComponent>().GetModel();
-		glm::mat4& transform = entity->GetComponent<TransformComponent>().GetTransform();
+		OpenGLEngine::Material& material = entity->GetComponent<OpenGLEngine::MaterialComponent>().GetMaterial();
+		OpenGLEngine::Model& model = entity->GetComponent<OpenGLEngine::ModelComponent>().GetModel();
+		glm::mat4& transform = entity->GetComponent<OpenGLEngine::TransformComponent>().GetTransform();
 		OpenGLEngine::Shader& shader = entity->GetComponent<RenderComponent>().GetShader();
 
 		int nat = 0;
@@ -101,9 +101,9 @@ void RenderComponent::Draw()
 		model.draw();
 	}
 
-	if (entity->HasComponent<SkyboxComponent>())
+	if (entity->HasComponent<OpenGLEngine::SkyboxComponent>())
 	{
-		auto& sc = entity->GetComponent<SkyboxComponent>();
+		auto& sc = entity->GetComponent<OpenGLEngine::SkyboxComponent>();
 
 		sc.GetCubeMap()->ActiveTexture();
 		sc.GetCubeMap()->Bind();
@@ -119,9 +119,9 @@ void RenderComponent::Draw()
 
 void RenderComponent::GenerateShader()
 {
-	if (entity->HasComponent<MaterialComponent>())
+	if (entity->HasComponent<OpenGLEngine::MaterialComponent>())
 	{
-		OpenGLEngine::ShaderGenerator shaderGenerator(entity->GetComponent<MaterialComponent>().GetMaterial(), OpenGLEngine::ShaderType::BPhong);
+		OpenGLEngine::ShaderGenerator shaderGenerator(entity->GetComponent<OpenGLEngine::MaterialComponent>().GetMaterial(), OpenGLEngine::ShaderType::BPhong);
 		const std::string& vs = shaderGenerator.generateVertexShader();
 		const std::string& fs = shaderGenerator.generateFragmentShader();
 		m_Shader.LoadFromSource(vs, fs, shaderGenerator.getVertexShaderRenderInfo(), shaderGenerator.getFragmentShaderRenderInfo());

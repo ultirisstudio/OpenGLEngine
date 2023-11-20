@@ -12,7 +12,7 @@ namespace OpenGLEngine
 		glm::mat4 m_viewMatrix;
 		glm::mat4 m_projectionMatrix;
 
-		glm::vec3 m_position;
+		glm::vec3& m_position;
 		glm::vec3 m_target;
 		glm::vec3 m_up;
 		glm::vec3 m_right;
@@ -31,8 +31,9 @@ namespace OpenGLEngine
 
 		friend class EditorCamera;
 		friend class EntityPropertiePanel;
+		friend class CameraComponent;
 	public:
-		Camera(const glm::vec3& position);
+		Camera(glm::vec3& position);
 
 		glm::mat4 getViewMatrix() const;
 		const glm::mat4& getProjectionMatrix() const;

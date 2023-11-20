@@ -1,7 +1,6 @@
 #pragma once
 
 #include <OpenGLEngine/Entity/Component.h>
-
 #include <OpenGLEngine/Shader/Shader.h>
 
 class RenderComponent : public Component

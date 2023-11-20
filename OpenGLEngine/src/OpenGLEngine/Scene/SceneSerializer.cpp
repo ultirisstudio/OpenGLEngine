@@ -7,6 +7,7 @@
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/CameraComponent.h>
 
 #include <fstream>
 #include <yaml-cpp/yaml.h>
@@ -150,6 +151,19 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
+		if (entity->HasComponent<CameraComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "CameraComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& cc = entity->GetComponent<CameraComponent>();
+			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().getFov();
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 	}
@@ -233,8 +247,8 @@ namespace OpenGLEngine
 							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
 							mc.InitializeMaterial();
 
-							bool hasDiffuse = materialComponent["hasDiffuse"].IsScalar();
-							bool hasSpecular = materialComponent["hasSpecular"].IsScalar();
+							bool hasDiffuse = materialComponent["hasDiffuse"].as<bool>();
+							bool hasSpecular = materialComponent["hasSpecular"].as<bool>();
 
 							mc.GetMaterial().addVec3("ambient", materialComponent["ambient"].as<glm::vec3>());
 
@@ -270,6 +284,13 @@ namespace OpenGLEngine
 						{
 							auto& rc = deserializedEntity->AddComponent<RenderComponent>();
 							rc.GenerateShader();
+						}
+
+						auto cameraComponent = component["CameraComponent"];
+						if (cameraComponent)
+						{
+							auto& cc = deserializedEntity->AddComponent<CameraComponent>();
+							cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
 						}
 					}
 				}

@@ -43,14 +43,12 @@ namespace OpenGLEngine
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
-		m_Scene->getEditorCamera().Update();
+		m_Scene->Update(1.0f);
 
 		if (m_ViewportHovered)
 			m_Scene->getEditorCamera().m_CameraFocus = true;
 		else
 			m_Scene->getEditorCamera().m_CameraFocus = false;
-
-		m_Scene->OnUpdate(1.0f);
 
 		Renderer::BeginScene(*m_Scene);
 		Renderer::Render();
@@ -140,6 +138,19 @@ namespace OpenGLEngine
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Project"))
+			{
+				if (ImGui::MenuItem("Start scene"))
+				{
+					m_Scene->OnScenePlay();
+				}
+				if (ImGui::MenuItem("Stop scene"))
+				{
+					m_Scene->OnSceneStop();
+				}
+				ImGui::EndMenu();
+			}
+
 			if (ImGui::BeginMenu("Create"))
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
@@ -177,6 +188,8 @@ namespace OpenGLEngine
 		int x, y;
 		glfwGetWindowPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &x, &y);
 
+		m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
+
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
 			m_frameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
@@ -186,14 +199,14 @@ namespace OpenGLEngine
 
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-			m_Scene->getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
+			//m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
 		}
 		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (m_Scene->m_SelectedEntity && m_GizmoType != -1)
+		if (m_Scene->m_SelectedEntity && m_GizmoType != -1 && !m_Scene->isOnRuntime())
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -241,9 +254,7 @@ namespace OpenGLEngine
 
 				if (fileExtension == "scene")
 				{
-					m_Scene = std::make_unique<Scene>();
-					SceneSerializer serializer(*m_Scene);
-					serializer.Deserialize(filePath);
+					LoadScene(filePath);
 				}
 			}
 			ImGui::EndDragDropTarget();
@@ -405,13 +416,20 @@ namespace OpenGLEngine
 			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
 		}
 	}
-
+	
 	void Editor::LoadScene()
 	{
 		m_FileBrowser.OpenFile();
 		m_Scene = std::make_unique<Scene>();
 		SceneSerializer serializer(*m_Scene);
 		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
+	}
+
+	void Editor::LoadScene(std::string filePath)
+	{
+		m_Scene = std::make_unique<Scene>();
+		SceneSerializer serializer(*m_Scene);
+		serializer.Deserialize(filePath);
 	}
 
 	void Editor::CalculateLatency()

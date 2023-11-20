@@ -33,8 +33,10 @@ void RenderComponent::Draw()
 		shader.use();
 
 		shader.setUniform("uModel", transform);
-		shader.setUniform("uView", OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getViewMatrix());
-		shader.setUniform("uProjection", OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getProjectionMatrix());
+		shader.setUniform("uView", OpenGLEngine::Renderer::m_SceneData.m_Scene->getCameraViewMatrix());
+		//shader.setUniform("uView", OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getViewMatrix());
+		shader.setUniform("uProjection", OpenGLEngine::Renderer::m_SceneData.m_Scene->getCameraProjectionMatrix());
+		//shader.setUniform("uProjection", OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getProjectionMatrix());
 
 		for (auto& i : shader.GetFragmentRenderInfo().getRenderInfo())
 		{
@@ -106,8 +108,8 @@ void RenderComponent::Draw()
 		sc.GetCubeMap()->ActiveTexture();
 		sc.GetCubeMap()->Bind();
 		sc.GetCubeMapShader()->use();
-		sc.GetCubeMapShader()->setUniform("uView", glm::mat4(glm::mat3(OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getViewMatrix())));
-		sc.GetCubeMapShader()->setUniform("uProjection", OpenGLEngine::Renderer::m_SceneData.m_Scene->getEditorCamera().getProjectionMatrix());
+		sc.GetCubeMapShader()->setUniform("uView", glm::mat4(glm::mat3(OpenGLEngine::Renderer::m_SceneData.m_Scene->getCameraViewMatrix())));
+		sc.GetCubeMapShader()->setUniform("uProjection", OpenGLEngine::Renderer::m_SceneData.m_Scene->getCameraProjectionMatrix());
 		sc.GetCubeMapShader()->setUniform("uCubeMap", 0);
 		sc.GetCubeMap()->BeginDrawModel();
 		sc.GetModel()->draw();

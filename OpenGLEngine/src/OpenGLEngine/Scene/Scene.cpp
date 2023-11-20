@@ -5,17 +5,28 @@
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/CameraComponent.h>
 
 namespace OpenGLEngine
 {
-	Scene::Scene()
-		: m_Name("Untitled"), m_Path(""), m_SelectedEntity(nullptr), m_EditorCamera(std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
+	Scene::Scene() :
+		m_Name("Untitled"),
+		m_Path(""),
+		m_SelectedEntity(nullptr),
+		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
+		m_ActiveCamera(nullptr),
+		m_OnRuntime(false)
 	{
 
 	}
 
-	Scene::Scene(const std::string& name)
-		: m_Name(name), m_Path(""), m_SelectedEntity(nullptr), m_EditorCamera(std::make_shared<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
+	Scene::Scene(const std::string& name) : 
+		m_Name(name),
+		m_Path(""),
+		m_SelectedEntity(nullptr),
+		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
+		m_ActiveCamera(nullptr),
+		m_OnRuntime(false)
 	{
 		
 	}
@@ -68,8 +79,18 @@ namespace OpenGLEngine
 		return entities;
 	}
 
-	void Scene::OnUpdate(double deltaTime)
+	void Scene::Update(double deltaTime)
 	{
+		if (m_OnRuntime)
+			UpdateRuntime(deltaTime);
+		else
+			m_EditorCamera->Update();
+	}
+
+	void Scene::UpdateRuntime(double deltaTime)
+	{
+		m_ActiveCamera->Update();
+
 		for (Entity* entity : View<NativeScriptComponent>()) {
 			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
 
@@ -85,13 +106,52 @@ namespace OpenGLEngine
 
 	void Scene::OnScenePlay()
 	{
-		
+		for (Entity* entity : View<CameraComponent>())
+		{
+			m_ActiveCamera = &entity->GetComponent<CameraComponent>().GetCamera();
+		}
+
+		if (m_ActiveCamera)
+			m_OnRuntime = true;
 	}
 
 	void Scene::OnSceneStop()
 	{
-		
+		m_OnRuntime = false;
+
+		for (Entity* entity : View<NativeScriptComponent>()) {
+			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
+			if (nsc.Instance != nullptr) {
+				nsc.Instance->OnDestroy();
+				nsc.Instance = nullptr;
+			}
+		}
 	}
+
+	glm::mat4 Scene::getCameraViewMatrix() const
+	{
+		if (m_OnRuntime)
+			return m_ActiveCamera->getViewMatrix();
+		else
+			return m_EditorCamera->getViewMatrix();
+	}
+
+	const glm::mat4& Scene::getCameraProjectionMatrix() const
+	{
+		if (m_OnRuntime)
+			return m_ActiveCamera->getProjectionMatrix();
+		else
+			return m_EditorCamera->getProjectionMatrix();
+	}
+
+	void Scene::ResizeCamera(float width, float height)
+	{
+		m_EditorCamera->OnResize(width, height);
+
+		if (m_OnRuntime)
+			m_ActiveCamera->OnResize(width, height);
+	}
+
 	std::vector<Entity*> Scene::getDrawEntities()
 	{
 		std::vector<Entity*> entities;

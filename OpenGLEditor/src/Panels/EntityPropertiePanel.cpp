@@ -12,6 +12,7 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
+#include <OpenGLEngine/Entity/Components/CameraComponent.h>
 
 namespace OpenGLEngine
 {
@@ -51,6 +52,29 @@ namespace OpenGLEngine
 				tc.Rotation = glm::radians(rotation);
 				DrawVec3Control("Scale", tc.Scale, 1.0f);
 
+				ImGui::TreePop();
+			}
+		}
+
+		if (entity->HasComponent<CameraComponent>())
+		{
+			auto& cc = entity->GetComponent<CameraComponent>();
+
+			if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			{
+				ImGui::Text("Camera parameters: ");
+
+				ImGui::Text("FOV: "); ImGui::SameLine();
+				ImGui::DragFloat("##FOV", &cc.GetCamera().m_fov, 0.1f, 0.0f, 180.0f, "%.1f");
+
+				if (ImGui::BeginPopupContextItem())
+				{
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<MaterialComponent>();
+					}
+					ImGui::EndPopup();
+				}
 				ImGui::TreePop();
 			}
 		}
@@ -265,6 +289,12 @@ namespace OpenGLEngine
 			if (!entity->HasComponent<SkyboxComponent>() && !entity->HasComponent<ModelComponent>()) {
 				if (ImGui::MenuItem("Skybox Component")) {
 					entity->AddComponent<SkyboxComponent>();
+				}
+			}
+
+			if (!entity->HasComponent<CameraComponent>()) {
+				if (ImGui::MenuItem("Camera Component")) {
+					entity->AddComponent<CameraComponent>();
 				}
 			}
 

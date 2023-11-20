@@ -24,10 +24,18 @@ namespace OpenGLEngine
 
 		std::vector<Entity*> GetEntityVector();
 
-		void OnUpdate(double deltaTime);
+		void Update(double deltaTime);
+		void UpdateRuntime(double deltaTime);
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		bool isOnRuntime() { return m_OnRuntime; }
+
+		glm::mat4 getCameraViewMatrix() const;
+		const glm::mat4& getCameraProjectionMatrix() const;
+
+		void ResizeCamera(float width, float height);
 
 		EditorCamera& getEditorCamera() { return *m_EditorCamera; }
 
@@ -43,10 +51,13 @@ namespace OpenGLEngine
 	private:
 		EntityMap m_EntityMap;
 
-		std::shared_ptr<EditorCamera> m_EditorCamera;
+		std::unique_ptr<EditorCamera> m_EditorCamera;
+		Camera* m_ActiveCamera;
 
 		std::string m_Name;
 		std::string m_Path;
+
+		bool m_OnRuntime;
 
 		friend class SceneSerializer;
 	private:

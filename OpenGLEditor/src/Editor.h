@@ -38,6 +38,7 @@ namespace OpenGLEngine
 
 		void SaveScene();
 		void LoadScene();
+		void LoadScene(std::string filePath);
 
 		void OptionMenu();
 

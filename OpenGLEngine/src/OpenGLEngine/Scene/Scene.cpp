@@ -81,16 +81,17 @@ namespace OpenGLEngine
 
 	void Scene::Update(double deltaTime)
 	{
+		m_EditorCamera->Update();
+
+		if (m_ActiveCamera)
+			m_ActiveCamera->Update();
+
 		if (m_OnRuntime)
 			UpdateRuntime(deltaTime);
-		else
-			m_EditorCamera->Update();
 	}
 
 	void Scene::UpdateRuntime(double deltaTime)
 	{
-		m_ActiveCamera->Update();
-
 		for (Entity* entity : View<NativeScriptComponent>()) {
 			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
 
@@ -128,27 +129,14 @@ namespace OpenGLEngine
 		}
 	}
 
-	glm::mat4 Scene::getCameraViewMatrix() const
-	{
-		if (m_OnRuntime)
-			return m_ActiveCamera->getViewMatrix();
-		else
-			return m_EditorCamera->getViewMatrix();
-	}
-
-	const glm::mat4& Scene::getCameraProjectionMatrix() const
-	{
-		if (m_OnRuntime)
-			return m_ActiveCamera->getProjectionMatrix();
-		else
-			return m_EditorCamera->getProjectionMatrix();
-	}
-
-	void Scene::ResizeCamera(float width, float height)
+	void Scene::ResizeEditorCamera(float width, float height)
 	{
 		m_EditorCamera->OnResize(width, height);
+	}
 
-		if (m_OnRuntime)
+	void Scene::ResizeActiveCamera(float width, float height)
+	{
+		if (m_ActiveCamera)
 			m_ActiveCamera->OnResize(width, height);
 	}
 

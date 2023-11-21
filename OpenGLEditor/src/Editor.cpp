@@ -6,15 +6,13 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include "glm/gtc/type_ptr.hpp"
-
 #include "Player.h"
 
 #include "OpenGLEngine/Scene/SceneSerializer.h"
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy()
+	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport()
 	{
 		
 	}
@@ -22,11 +20,6 @@ namespace OpenGLEngine
 	void Editor::OnAttach()
 	{
 		m_Scene = std::make_unique<Scene>();
-		
-		m_EditorFrameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-		m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-		m_EditorFrameBuffer->setDepthAttachment();
-		m_EditorFrameBuffer->Create();
 
 		InitImGuiStyle();
 	}
@@ -38,25 +31,18 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate()
 	{
-		m_EditorFrameBuffer->bind();
-
-		Renderer::Clear();
-		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
-
 		m_Scene->Update(1.0f);
+		m_EditorViewport.Update();
+
+		CalculateLatency();
 
 		if (m_ViewportHovered)
 			m_Scene->getEditorCamera().m_CameraFocus = true;
 		else
 			m_Scene->getEditorCamera().m_CameraFocus = false;
 
-		Renderer::BeginScene(*m_Scene);
-		Renderer::Render();
-		Renderer::EndScene();
-
-		CalculateLatency();
-
-		m_EditorFrameBuffer->unbind();
+		m_Viewport.Render(*m_Scene);
+		m_EditorViewport.Render(*m_Scene);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -178,91 +164,8 @@ namespace OpenGLEngine
 			ImGui::EndMenuBar();
 		}
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport");
-		m_ViewportFocused = ImGui::IsWindowFocused();
-		m_ViewportHovered = ImGui::IsWindowHovered();
-
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
-		int x, y;
-		glfwGetWindowPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &x, &y);
-
-		m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
-
-		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
-		{
-			m_EditorFrameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-			m_EditorFrameBuffer->setDepthAttachment();
-			m_EditorFrameBuffer->Create();
-
-			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-			//m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
-		}
-		uint32_t textureID = m_EditorFrameBuffer->getColorAttachment(0);
-		ImGui::Image((void*)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-		/////////////////////////////////////////////////////////////////////////////////////////////
-
-		if (m_Scene->m_SelectedEntity && m_GizmoType != -1 && !m_Scene->isOnRuntime())
-		{
-			ImGuizmo::SetOrthographic(false);
-			ImGuizmo::SetDrawlist();
-			
-			float windowWidth = (float)ImGui::GetWindowWidth();
-			float windowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-			glm::mat4 cameraProjection = m_Scene->getEditorCamera().getProjectionMatrix();
-			glm::mat4 cameraView = m_Scene->getEditorCamera().getViewMatrix();
-
-			auto& tc = m_Scene->m_SelectedEntity->GetComponent<TransformComponent>();
-			glm::mat4 transform = tc.GetTransform();
-
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
-
-			if (ImGuizmo::IsUsing)
-			{
-				glm::vec3 position, rotation, scale;
-				Math::DecomposeTransform(transform, position, rotation, scale);
-
-				glm::vec3 deltaRotation = rotation - tc.Rotation;
-				tc.Position = position;
-				tc.Rotation += deltaRotation;
-				tc.Scale = scale;
-			}
-		}
-
-		/////////////////////////////////////////////////////////////////////////////////////////////
-
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				//std::filesystem::path file = path;
-				std::wstring ws(path);
-				std::string filePath(ws.begin(), ws.end());
-				const size_t slash = filePath.find_last_of("/\\");
-				std::string selectedFile = filePath.substr(slash + 1);
-				std::string fileExtension = selectedFile.substr(selectedFile.find_last_of(".") + 1);
-
-				if (fileExtension == "obj")
-					AddGameObject(filePath);
-
-				if (fileExtension == "scene")
-				{
-					LoadScene(filePath);
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::End();
-
-		ImGui::PopStyleVar();
+		m_Viewport.OnImGuiRender(*m_Scene);
+		m_EditorViewport.OnImGuiRender(*m_Scene);
 
 		ImGui::Begin("Inspector");
 
@@ -294,9 +197,6 @@ namespace OpenGLEngine
 	void Editor::OnEvent(Event& e)
 	{
 		m_Scene->getEditorCamera().OnEvent(e);
-
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&Editor::OnKeyPressed, this, std::placeholders::_1));
 	}
 
 	void Editor::InitImGuiStyle()
@@ -442,35 +342,6 @@ namespace OpenGLEngine
 			nb_frame = 0;
 			last_time += 1.0;
 		}
-	}
-
-	bool Editor::OnKeyPressed(KeyPressedEvent& e)
-	{
-		switch (e.GetKeyCode())
-		{
-		case Key::E:
-		{
-			m_GizmoType = -1;
-			break;
-		}
-		case Key::R:
-		{
-			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-			break;
-		}
-		case Key::T:
-		{
-			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-			break;
-		}
-		case Key::Y:
-		{
-			m_GizmoType = ImGuizmo::OPERATION::SCALE;
-			break;
-		}
-		}
-
-		return false;
 	}
 
 	void Editor::OpenExternalFile()

@@ -21,7 +21,7 @@ namespace OpenGLEngine
 		static SceneData m_SceneData;
 
 		static void BeginScene(Scene& scene);
-		static void Render();
+		static void Render(bool runtime);
 		static void EndScene();
 
 		static void Clear();

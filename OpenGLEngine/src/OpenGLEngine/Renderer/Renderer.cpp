@@ -17,11 +17,11 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene = &scene;
 	}
 
-	void Renderer::Render()
+	void Renderer::Render(bool runtime)
 	{
 		for (Entity* entity : m_SceneData.m_Scene->getDrawEntities())
 		{
-			entity->GetComponent<RenderComponent>().Draw();
+			entity->GetComponent<RenderComponent>().Draw(runtime);
 		}
 	}
 

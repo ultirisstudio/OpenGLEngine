@@ -7,6 +7,8 @@
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
 #include "Panels/SceneHierarchy.h"
+#include "Panels/EditorViewport.h"
+#include "Panels/Viewport.h"
 
 #include <map>
 
@@ -43,15 +45,8 @@ namespace OpenGLEngine
 		void OptionMenu();
 
 		void CalculateLatency();
-
-		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		std::unique_ptr<Scene> m_Scene;
-
-		std::shared_ptr<Framebuffer> m_EditorFrameBuffer;
-		//std::shared_ptr<Framebuffer> m_frameBuffer;
-		glm::vec2 m_EditorViewportSize = { 0.0f, 0.0f };
-		//glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
 
 		FileBrowser m_FileBrowser;
@@ -60,6 +55,8 @@ namespace OpenGLEngine
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
 		SceneHierarchy m_SceneHierarchy;
+		EditorViewport m_EditorViewport;
+		Viewport m_Viewport;
 	private:
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
@@ -71,8 +68,6 @@ namespace OpenGLEngine
 	private:
 		bool m_optionMenu = false;
 		int m_optionTab = 0;
-
-		int m_GizmoType = -1;
 
 		std::vector<int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;

@@ -12,7 +12,7 @@ public:
 
 	RenderComponent();
 
-	void Draw();
+	void Draw(bool runtime);
 	void GenerateShader();
 
 	OpenGLEngine::Shader& GetShader() { return m_Shader; }

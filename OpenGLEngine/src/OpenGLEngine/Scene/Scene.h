@@ -30,14 +30,13 @@ namespace OpenGLEngine
 		void OnScenePlay();
 		void OnSceneStop();
 
-		bool isOnRuntime() { return m_OnRuntime; }
+		//bool isOnRuntime() { return m_OnRuntime; }
 
-		glm::mat4 getCameraViewMatrix() const;
-		const glm::mat4& getCameraProjectionMatrix() const;
-
-		void ResizeCamera(float width, float height);
+		void ResizeEditorCamera(float width, float height);
+		void ResizeActiveCamera(float width, float height);
 
 		EditorCamera& getEditorCamera() { return *m_EditorCamera; }
+		Camera* getActiveCamera() { return m_ActiveCamera; }
 
 		std::vector<Entity*> getDrawEntities();
 

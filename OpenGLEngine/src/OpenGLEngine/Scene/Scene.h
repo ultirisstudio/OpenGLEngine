@@ -30,8 +30,6 @@ namespace OpenGLEngine
 		void OnScenePlay();
 		void OnSceneStop();
 
-		//bool isOnRuntime() { return m_OnRuntime; }
-
 		void ResizeEditorCamera(float width, float height);
 		void ResizeActiveCamera(float width, float height);
 

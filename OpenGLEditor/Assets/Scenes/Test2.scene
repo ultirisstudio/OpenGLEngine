@@ -4,7 +4,7 @@ Entities:
     ID: 6d839d32-d1c6-4de8-a928-af2e983f5543
     Components:
       - TransformComponent:
-          Position: [-2.21012807, -1.38980043, 0]
+          Position: [-8.8101263, -1.38980043, -7.19999647]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - MaterialComponent:
@@ -18,3 +18,12 @@ Entities:
           model: Assets/Models/cube.obj
       - RenderComponent:
           render: true
+  - Entity: Camera
+    ID: 6a8df738-91ff-4d7c-a7db-e111af45e5de
+    Components:
+      - TransformComponent:
+          Position: [-22, 1.10000002, -7]
+          Rotation: [-0.151843652, 0, 0]
+          Scale: [1, 0.999997377, 0.999997377]
+      - CameraComponent:
+          fov: 45

@@ -1,23 +1,14 @@
 Scene: Test
 Entities:
-  - Entity: Cube
-    ID: a7362adf-e1bc-4ca1-8bc5-c6f55744c7bc
+  - Entity: Camera
+    ID: c68b38d3-7b3c-48b4-b25a-27e595920f05
     Components:
       - TransformComponent:
-          Position: [0, 0, -8.67132092]
-          Rotation: [0, 0, 0]
+          Position: [11, 5.4000001, 0]
+          Rotation: [-0.289724648, -2.82219744, 0]
           Scale: [1, 1, 1]
-      - MaterialComponent:
-          hasDiffuse: false
-          hasSpecular: false
-          ambient: [0, 0, 0]
-          diffuse: [0.837209284, 0.190805852, 0.190805852]
-          specular: [0, 0, 0]
-          shininess: 32
-      - ModelComponent:
-          model: Assets/Models/cube.obj
-      - RenderComponent:
-          render: true
+      - CameraComponent:
+          fov: 41.0999985
   - Entity: Backpack
     ID: 03a3915f-2e2c-45bc-9b1c-8e5f64ac6961
     Components:
@@ -36,15 +27,24 @@ Entities:
           model: Assets\Models\BackPack.obj
       - RenderComponent:
           render: true
-  - Entity: Camera
-    ID: c68b38d3-7b3c-48b4-b25a-27e595920f05
+  - Entity: Cube
+    ID: a7362adf-e1bc-4ca1-8bc5-c6f55744c7bc
     Components:
       - TransformComponent:
-          Position: [-21.1000004, 5.4000001, 0]
-          Rotation: [-0.289724648, -0.106465079, 0]
+          Position: [0, 0, -8.67132092]
+          Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
-      - CameraComponent:
-          fov: 45
+      - MaterialComponent:
+          hasDiffuse: false
+          hasSpecular: false
+          ambient: [0, 0, 0]
+          diffuse: [0.837209284, 0.190805852, 0.190805852]
+          specular: [0, 0, 0]
+          shininess: 32
+      - ModelComponent:
+          model: Assets/Models/cube.obj
+      - RenderComponent:
+          render: true
   - Entity: Skybox
     ID: e0138522-1ced-4d96-89cb-b8ba0a02e4cf
     Components:

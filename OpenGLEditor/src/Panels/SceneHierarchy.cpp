@@ -24,7 +24,7 @@ void OpenGLEngine::SceneHierarchy::OnImGuiRender(Scene& scene)
 		else
 			id = "-1";
 
-		ImGuiTreeNodeFlags flags = ((id.c_str() == entity->GetId()) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		ImGuiTreeNodeFlags flags = ((strcmp(id.c_str(), entity->GetId()) == 0) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetId(), flags, entity->GetName());
 

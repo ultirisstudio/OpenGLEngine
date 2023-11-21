@@ -32,6 +32,7 @@ namespace OpenGLEngine
 		void OnUpdate() override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
+
 	private:
 		void InitImGuiStyle();
 

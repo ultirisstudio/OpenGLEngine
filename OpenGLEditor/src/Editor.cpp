@@ -32,14 +32,9 @@ namespace OpenGLEngine
 	void Editor::OnUpdate()
 	{
 		m_Scene->Update(1.0f);
-		m_EditorViewport.Update();
+		m_EditorViewport.Update(*m_Scene);
 
 		CalculateLatency();
-
-		if (m_ViewportHovered)
-			m_Scene->getEditorCamera().m_CameraFocus = true;
-		else
-			m_Scene->getEditorCamera().m_CameraFocus = false;
 
 		m_Viewport.Render(*m_Scene);
 		m_EditorViewport.Render(*m_Scene);

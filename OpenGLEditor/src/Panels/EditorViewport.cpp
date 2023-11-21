@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <ImGuizmo.h>
 
+#include "../Editor.h"
+
 #include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Tools/Math.h>
@@ -25,6 +27,8 @@ namespace OpenGLEngine
 	{
 		m_EditorFrameBuffer->bind();
 
+		glViewport(0, 0, m_EditorViewportSize.x, m_EditorViewportSize.y);
+
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
@@ -35,8 +39,13 @@ namespace OpenGLEngine
 		m_EditorFrameBuffer->unbind();
 	}
 
-	void EditorViewport::Update()
+	void EditorViewport::Update(Scene& scene)
 	{
+		if (m_ViewportHovered)
+			scene.getEditorCamera().m_CameraFocus = true;
+		else
+			scene.getEditorCamera().m_CameraFocus = false;
+
 		if (Input::IsKeyPressed(Key::E))
 			m_GizmoType = -1;
 
@@ -52,6 +61,8 @@ namespace OpenGLEngine
 
 	void EditorViewport::OnImGuiRender(Scene& scene)
 	{
+		m_EditorFrameBuffer->bind();
+
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Editor");
 		m_ViewportFocused = ImGui::IsWindowFocused();
@@ -59,10 +70,8 @@ namespace OpenGLEngine
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
-		int x, y;
-		glfwGetWindowPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &x, &y);
 
-		scene.ResizeEditorCamera(viewportPanelSize.x, viewportPanelSize.y);
+		scene.getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -72,8 +81,6 @@ namespace OpenGLEngine
 			m_EditorFrameBuffer->Create();
 
 			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-			//m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
 		}
 		uint32_t textureID = m_EditorFrameBuffer->getColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -135,7 +142,8 @@ namespace OpenGLEngine
 		}
 
 		ImGui::End();
-
 		ImGui::PopStyleVar();
+
+		m_EditorFrameBuffer->unbind();
 	}
 }

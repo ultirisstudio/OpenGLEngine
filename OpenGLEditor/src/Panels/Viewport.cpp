@@ -19,6 +19,8 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 
 	m_ViewportFrameBuffer->bind();
 
+	glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+
 	Renderer::Clear();
 	Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
@@ -31,6 +33,8 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 
 void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 {
+	m_ViewportFrameBuffer->bind();
+
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 	ImGui::Begin("Viewport");
 
@@ -41,11 +45,8 @@ void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
-		
-		//int x, y;
-		//glfwGetWindowPos(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &x, &y);
 
-		scene.ResizeActiveCamera(viewportPanelSize.x, viewportPanelSize.y);
+		scene.getActiveCamera()->OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -63,4 +64,6 @@ void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	m_ViewportFrameBuffer->unbind();
 }

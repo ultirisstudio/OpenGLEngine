@@ -5,6 +5,8 @@
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Renderer/Framebuffer.h>
 
+class Editor;
+
 namespace OpenGLEngine
 {
 	class EditorViewport
@@ -13,7 +15,7 @@ namespace OpenGLEngine
 		EditorViewport();
 
 		void Render(Scene& scene);
-		void Update();
+		void Update(Scene& scene);
 
 		void OnImGuiRender(Scene& scene);
 	private:

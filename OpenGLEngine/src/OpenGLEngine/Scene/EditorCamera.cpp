@@ -4,6 +4,9 @@
 #include <OpenGLEngine/Core/Window.h>
 #include "OpenGLEngine/Core/Application.h"
 
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+
 namespace OpenGLEngine
 {
 	template <typename T>
@@ -13,8 +16,20 @@ namespace OpenGLEngine
 	}
 
 	EditorCamera::EditorCamera(const glm::vec3& position) :
-		m_EPosition(position),
-		Camera(m_EPosition),
+		m_viewMatrix(glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f))),
+		m_projectionMatrix(1.0f),
+
+		m_yaw(-90.0f),
+		m_pitch(0.0f),
+		m_position(position),
+
+		m_target(glm::vec3(0.0f, 0.0f, -1.0f)),
+		m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+
+		m_fov(45.0f),
+		m_minFov(15.0f),
+		m_maxFov(95.0f),
+
 		m_lastMousePos(0),
 		m_canMove(true),
 		m_moving(false),
@@ -28,7 +43,60 @@ namespace OpenGLEngine
 		m_MouseX(0.0f),
 		m_MouseY(0.0f)
 	{
-		
+		UpdateCameraVectors();
+	}
+
+	void EditorCamera::updateViewMatrix()
+	{
+		m_viewMatrix = glm::lookAt(m_position, m_position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	glm::mat4 EditorCamera::getViewMatrix() const
+	{
+		return m_viewMatrix;
+	}
+
+	const glm::mat4& EditorCamera::getProjectionMatrix() const
+	{
+		return m_projectionMatrix;
+	}
+
+	glm::mat4 EditorCamera::GetTransform()
+	{
+		//glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(m_pitch, m_yaw, 0)));
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(m_pitch), { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), glm::radians(m_yaw), { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 });
+		return glm::translate(glm::mat4(1.f), m_position) * rotation;
+	}
+
+	float EditorCamera::getFov() const
+	{
+		return m_fov;
+	}
+
+	void EditorCamera::UpdateCameraVectors()
+	{
+		glm::vec3 front;
+		front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		front.y = sin(glm::radians(m_pitch));
+		front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		m_target = glm::normalize(front);
+		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
+		m_up = glm::normalize(glm::cross(m_right, m_target));
+	}
+
+	void EditorCamera::Update()
+	{
+		m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100000.0f);
+
+		updateViewMatrix();
+		UpdateCameraVectors();
+	}
+
+	void EditorCamera::OnResize(float width, float height)
+	{
+		m_ViewportSize.x = width;
+		m_ViewportSize.y = height;
+		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 	}
 
 	void EditorCamera::OnEvent(Event& e)

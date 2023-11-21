@@ -290,6 +290,7 @@ namespace OpenGLEngine
 						if (cameraComponent)
 						{
 							auto& cc = deserializedEntity->AddComponent<CameraComponent>();
+							cc.Init();
 							cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
 						}
 					}

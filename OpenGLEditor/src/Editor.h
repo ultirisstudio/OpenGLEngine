@@ -48,8 +48,10 @@ namespace OpenGLEngine
 	private:
 		std::unique_ptr<Scene> m_Scene;
 
-		std::shared_ptr<Framebuffer> m_frameBuffer;
-		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		std::shared_ptr<Framebuffer> m_EditorFrameBuffer;
+		//std::shared_ptr<Framebuffer> m_frameBuffer;
+		glm::vec2 m_EditorViewportSize = { 0.0f, 0.0f };
+		//glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 	private:
 
 		FileBrowser m_FileBrowser;

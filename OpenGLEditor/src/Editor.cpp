@@ -23,10 +23,10 @@ namespace OpenGLEngine
 	{
 		m_Scene = std::make_unique<Scene>();
 		
-		m_frameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-		m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-		m_frameBuffer->setDepthAttachment();
-		m_frameBuffer->Create();
+		m_EditorFrameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+		m_EditorFrameBuffer->setDepthAttachment();
+		m_EditorFrameBuffer->Create();
 
 		InitImGuiStyle();
 	}
@@ -38,7 +38,7 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate()
 	{
-		m_frameBuffer->bind();
+		m_EditorFrameBuffer->bind();
 
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
@@ -56,7 +56,7 @@ namespace OpenGLEngine
 
 		CalculateLatency();
 
-		m_frameBuffer->unbind();
+		m_EditorFrameBuffer->unbind();
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -190,19 +190,19 @@ namespace OpenGLEngine
 
 		m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
 
-		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
-			m_frameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_frameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-			m_frameBuffer->setDepthAttachment();
-			m_frameBuffer->Create();
+			m_EditorFrameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+			m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+			m_EditorFrameBuffer->setDepthAttachment();
+			m_EditorFrameBuffer->Create();
 
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 			//m_Scene->ResizeCamera(viewportPanelSize.x, viewportPanelSize.y);
 		}
-		uint32_t textureID = m_frameBuffer->getColorAttachment(0);
-		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		uint32_t textureID = m_EditorFrameBuffer->getColorAttachment(0);
+		ImGui::Image((void*)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 

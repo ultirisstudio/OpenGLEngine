@@ -4,7 +4,7 @@ Entities:
     ID: c68b38d3-7b3c-48b4-b25a-27e595920f05
     Components:
       - TransformComponent:
-          Position: [0, 0, 0]
+          Position: [-21.1000004, 0, 0]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - CameraComponent:

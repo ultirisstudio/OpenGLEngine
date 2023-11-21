@@ -36,6 +36,8 @@ namespace OpenGLEngine
 		EditorCamera& getEditorCamera() { return *m_EditorCamera; }
 		Camera* getActiveCamera() { return m_ActiveCamera; }
 
+		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
+
 		std::vector<Entity*> getDrawEntities();
 
 		Entity* m_SelectedEntity;

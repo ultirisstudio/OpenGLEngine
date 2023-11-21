@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <sstream>
 
+#include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
@@ -66,6 +67,10 @@ namespace OpenGLEngine
 
 				ImGui::Text("FOV: "); ImGui::SameLine();
 				ImGui::DragFloat("##FOV", &cc.GetCamera().m_fov, 0.1f, 0.0f, 180.0f, "%.1f");
+				if (ImGui::Button("Set Active"))
+				{
+					//m_Scene->setActiveCamera(&cc.GetCamera());
+				}
 
 				if (ImGui::BeginPopupContextItem())
 				{

@@ -2,6 +2,8 @@
 
 #include <OpenGLEngine/Entity/Entity.h>
 
+class Scene;
+
 namespace OpenGLEngine
 {
 	class EntityPropertiePanel

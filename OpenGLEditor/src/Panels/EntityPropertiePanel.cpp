@@ -14,6 +14,7 @@
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
+//#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 
 namespace OpenGLEngine
 {
@@ -229,6 +230,34 @@ namespace OpenGLEngine
 				ImGui::TreePop();
 			}
 		}
+
+		/*if (entity->HasComponent<NativeScriptComponent>())
+		{
+			auto& nsc = entity->GetComponent<NativeScriptComponent>();
+
+			if (ImGui::TreeNodeEx("Script Component", ImGuiTreeNodeFlags_DefaultOpen, "Script Component"))
+			{
+				if (ImGui::BeginPopupContextItem())
+				{
+					if (ImGui::MenuItem("Delete Component"))
+					{
+						entity->RemoveComponent<RenderComponent>();
+					}
+					ImGui::EndPopup();
+				}
+
+				std::string script_name;
+				if (ImGui::InputText("##script_name", script_name.data(), 10))
+				{
+					if (registery().find(string_hash()(script_name)) != registery().end())
+					{
+						//nsc.Bind<registery().at(string_hash()(script_name))>();
+					}
+				}
+
+				ImGui::TreePop();
+			}
+		}*/
 
 		if (entity->HasComponent<RenderComponent>())
 		{

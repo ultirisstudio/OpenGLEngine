@@ -246,7 +246,7 @@ namespace OpenGLEngine
 						{
 							auto& mc = deserializedEntity->AddComponent<ModelComponent>(modelComponent["model"].as<std::string>());
 							
-							/*class Player : public ScriptableEntity
+							class Player : public ScriptableEntity
 							{
 							public:
 								void OnCreate()
@@ -277,7 +277,7 @@ namespace OpenGLEngine
 								}
 							};
 
-							deserializedEntity->AddComponent<NativeScriptComponent>().Bind<Player>();*/
+							deserializedEntity->AddComponent<NativeScriptComponent>().Bind<Player>();
 						}
 
 						auto materialComponent = component["MaterialComponent"];

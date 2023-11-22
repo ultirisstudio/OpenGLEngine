@@ -9,6 +9,8 @@ namespace OpenGLEngine
 {
 	class NativeScriptComponent : public Component
 	{
+	private:
+		std::string script_name;
 	public:
 		ScriptableEntity* Instance = nullptr;
 
@@ -21,5 +23,7 @@ namespace OpenGLEngine
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+
+		char* getScriptName() { return script_name.data(); }
 	};
 }

@@ -241,7 +241,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<RenderComponent>();
+						entity->RemoveComponent<NativeScriptComponent>();
 					}
 					ImGui::EndPopup();
 				}

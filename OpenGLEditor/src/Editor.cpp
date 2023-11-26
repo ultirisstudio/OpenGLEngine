@@ -121,11 +121,11 @@ namespace OpenGLEngine
 
 			script_creator var_script_creator = fun_script_creator(string_hash()(narrowStr));
 
-			script_ptr entity = var_script_creator();
-
-			if (entity)
+			if (var_script_creator)
 			{
 				std::cout << "Script validate" << std::endl;
+
+				//script_ptr entity = var_script_creator();
 			}
 
 			// N'oubliez pas de libérer la mémoire allouée

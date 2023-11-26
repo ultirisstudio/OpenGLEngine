@@ -3,8 +3,6 @@
 #include <OpenGLEngine/Entity/Component.h>
 #include <OpenGLEngine/Entity/ScriptableEntity.h>
 
-//#include <OpenGLEngine/Script/Script.h>
-
 namespace OpenGLEngine
 {
 	class NativeScriptComponent : public Component

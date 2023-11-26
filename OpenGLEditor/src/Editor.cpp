@@ -12,6 +12,20 @@
 
 #include <OpenGLEngine/Script/Script.h>
 
+#ifndef WIN32_MEAN_AND_LEAN
+#define WIN32_MEAN_AND_LEAN
+#endif
+
+#include <Windows.h>
+
+HINSTANCE hinstance{ nullptr };
+using _get_script_creator = OpenGLEngine::script_creator(*)(size_t);
+_get_script_creator var_script_creator { nullptr };
+using _get_script_names = LPSAFEARRAY(*)(void);
+_get_script_names var_script_names { nullptr };
+
+typedef int (*pGet)();
+
 namespace OpenGLEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport()
@@ -24,6 +38,29 @@ namespace OpenGLEngine
 		m_Scene = std::make_unique<Scene>();
 
 		InitImGuiStyle();
+
+		hinstance = LoadLibraryA("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.dll");
+		if (hinstance)
+		{
+			pGet obj = (pGet)GetProcAddress(hinstance, "get_script_name_size");
+			if (obj)
+			{
+				int result = obj();
+				std::cout << "Size: " << result << std::endl;
+			}
+
+			_get_script_creator script_creator = nullptr;
+			_get_script_names script_name = nullptr;
+			script_creator = (_get_script_creator)GetProcAddress(hinstance, "get_script_creator");
+			script_name = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
+
+			if (script_creator && script_name)
+			{
+				std::cout << "Script validate" << std::endl;
+			}
+
+			FreeLibrary(hinstance);
+		}
 	}
 
 	void Editor::OnDetach()
@@ -47,6 +84,11 @@ namespace OpenGLEngine
 			{
 				SaveScene();
 			}
+		}
+
+		if (Input::IsKeyPressed(Key::L))
+		{
+			std::cout << registery().size() << std::endl;
 		}
 	}
 

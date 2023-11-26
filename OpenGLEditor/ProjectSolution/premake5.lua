@@ -12,16 +12,18 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["OpenGLEngine"] = "../../OpenGLEngine/src"
+IncludeDir["glm"] = "../../OpenGLEngine/vendor/glm"
+IncludeDir["assimp"] = "../../OpenGLEngine/vendor/assimp/include"
 
 LibraryDir = {}
-LibraryDir["OpenGLEngine"] = "../../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/OpenGLEgine.lib"
+LibraryDir["OpenGLEngine"] = "../../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/OpenGLEngine/OpenGLEngine.lib"
 
 project "ProjectSolution"
 	location "ProjectSolution"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -29,16 +31,19 @@ project "ProjectSolution"
 	files
 	{
 		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.assimp}",
 		"%{IncludeDir.OpenGLEngine}"
 	}
 
-	links
+	libdirs
 	{
 		"%{LibraryDir.OpenGLEngine}"
 	}

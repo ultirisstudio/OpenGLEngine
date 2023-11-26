@@ -1,32 +1,31 @@
 #pragma once
-
-#include <OpenGLEngine/Entity/ScriptableEntity.h>
+#include <iostream>
 #include <OpenGLEngine/Script/Script.h>
-//#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-//#include <OpenGLEngine/Core/Input.h>
 
 using namespace OpenGLEngine;
-
-class Player;
-
-REGISTER_SCRIPT(Player);
 
 class Player : public ScriptableEntity
 {
 public:
-	void OnCreate()
-	{
-		std::cout << "create" << std::endl;
-	}
+	void OnCreate();
 
-	void OnDestroy()
-	{
+	void OnDestroy();
 
-	}
+	void OnUpdate(double dt);
 
-	void OnUpdate(double dt)
-	{
+	static bool Init();
+private:
+};
 
-	}
+class Test : public ScriptableEntity
+{
+public:
+	void OnCreate();
+
+	void OnDestroy();
+
+	void OnUpdate(double dt);
+
+	static bool Init();
 private:
 };

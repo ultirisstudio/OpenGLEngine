@@ -24,6 +24,12 @@ namespace OpenGLEngine
 	}
 
 	extern "C" __declspec(dllexport)
+	std::string get_script_name(size_t index)
+	{
+		return script_name()[index];
+	}
+
+	extern "C" __declspec(dllexport)
 	int get_script_name_size()
 	{
 		return script_name().size();

@@ -16,16 +16,3 @@ public:
 	static bool Init();
 private:
 };
-
-class Test : public ScriptableEntity
-{
-public:
-	void OnCreate();
-
-	void OnDestroy();
-
-	void OnUpdate(double dt);
-
-	static bool Init();
-private:
-};

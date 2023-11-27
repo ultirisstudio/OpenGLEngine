@@ -119,13 +119,23 @@ namespace OpenGLEngine
 			// Imprime la chaîne C étroite
 			std::cout << "Contenu de la premiere chaine (C etroite) : " << narrowStr << std::endl;
 
+			wideStr = stringVector.at(1).c_str();
+			bufferSize = wcslen(wideStr) + 1;
+			narrowStr = new char[bufferSize];
+			convertedChars = 0;
+			wcstombs_s(&convertedChars, narrowStr, bufferSize, wideStr, _TRUNCATE);
+
+			std::cout << "Contenu de la deuxieme chaine (C etroite) : " << narrowStr << std::endl;
+
 			script_creator var_script_creator = fun_script_creator(string_hash()(narrowStr));
 
 			if (var_script_creator)
 			{
 				std::cout << "Script validate" << std::endl;
 
-				//script_ptr entity = var_script_creator();
+				script_ptr entity = var_script_creator();
+
+				entity->OnCreate();
 			}
 
 			// N'oubliez pas de libérer la mémoire allouée

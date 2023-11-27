@@ -14,7 +14,7 @@ namespace OpenGLEngine
 			return m_Entity.GetComponent<T>();
 		}
 
-	protected:
+	public:
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
 		virtual void OnUpdate(double deltaTime) {}

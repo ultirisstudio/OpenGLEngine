@@ -1,25 +1,23 @@
 #include "Player.h"
 #include <OpenGLEngine/Script/Script.h>
+#include <OpenGLEngine/Entity/Components/TransformComponent.h>
 
 REGISTER_SCRIPT(Player);
 
 void Player::OnCreate()
 {
-	std::cout << "Player::OnCreate(): " << m_Name << std::endl;
+	std::cout << "Player::OnCreate(): " << s_Name << std::endl;
 }
 
 void Player::OnDestroy()
 {
+	std::cout << "Player::OnDestroy()" << std::endl;
 }
 
 void Player::OnUpdate(double dt)
 {
-}
-
-bool Player::Init()
-{
-	std::cout << "Player::Init()" << std::endl;
-	return true;
+	//TransformComponent& tc = GetComponent<TransformComponent>();
+	std::cout << m_Entity.GetName() << std::endl;
 }
 
 REGISTER_SCRIPT(Test);
@@ -35,10 +33,4 @@ void Test::OnDestroy()
 
 void Test::OnUpdate(double dt)
 {
-}
-
-bool Test::Init()
-{
-	std::cout << "Test::Init()" << std::endl;
-	return true;
 }

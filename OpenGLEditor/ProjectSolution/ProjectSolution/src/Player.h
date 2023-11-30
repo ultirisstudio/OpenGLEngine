@@ -12,10 +12,9 @@ public:
 	void OnDestroy();
 
 	void OnUpdate(double dt);
-
-	static bool Init();
 private:
-	std::string m_Name = "Player";
+	std::string s_Name = "Player";
+	int s_Life = 100;
 };
 
 class Test : public ScriptableEntity
@@ -26,7 +25,5 @@ public:
 	void OnDestroy();
 
 	void OnUpdate(double dt);
-
-	static bool Init();
 private:
 };

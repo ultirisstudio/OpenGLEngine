@@ -248,11 +248,12 @@ namespace OpenGLEngine
 
 				if (ImGui::InputText("##script_name", nsc.getScriptName(), 10))
 				{
-					/*if (registery().find(string_hash()(script_name)) != registery().end())
-					{
-						//nsc.Bind<registery().at(string_hash()(script_name))>();
-					}*/
 					std::cout << nsc.getScriptName() << std::endl;
+				}
+
+				if (ImGui::Button("Reload"))
+				{
+					nsc.Bind();
 				}
 
 				ImGui::TreePop();
@@ -329,6 +330,12 @@ namespace OpenGLEngine
 			if (!entity->HasComponent<CameraComponent>()) {
 				if (ImGui::MenuItem("Camera Component")) {
 					entity->AddComponent<CameraComponent>().Init();
+				}
+			}
+
+			if (!entity->HasComponent<NativeScriptComponent>()) {
+				if (ImGui::MenuItem("Script Component")) {
+					entity->AddComponent<NativeScriptComponent>();
 				}
 			}
 

@@ -18,8 +18,9 @@ namespace OpenGLEngine
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
 		virtual void OnUpdate(double deltaTime) {}
-	private:
+
 		Entity m_Entity;
+	private:
 		friend class Scene;
 	};
 }

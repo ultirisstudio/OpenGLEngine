@@ -8,10 +8,9 @@ namespace OpenGLEngine
 		hinstance = LoadLibraryA("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.dll");
 		if (hinstance)
 		{
-			//fun_script_creator = (_get_script_creator)GetProcAddress(hinstance, "get_script_creator");
-			//fun_script_names = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
+			fun_script_names = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
 
-			/*// Get the SafeArray of script names
+			// Get the SafeArray of script names
 			LPSAFEARRAY scriptNames = fun_script_names();
 
 			if (scriptNames == nullptr) {
@@ -49,36 +48,19 @@ namespace OpenGLEngine
 				SysFreeString(bstr);
 			}
 
-			//std::cout << stringVector.at(0).c_str() << std::endl;
-
-			const wchar_t* wideStr = stringVector.at(0).c_str();
-			size_t bufferSize = wcslen(wideStr) + 1;  // +1 pour le caractère nul de fin
-			char* narrowStr = new char[bufferSize];
-
-			size_t convertedChars = 0;
-			wcstombs_s(&convertedChars, narrowStr, bufferSize, wideStr, _TRUNCATE);
-
-			// Imprime la chaîne C étroite
-			std::cout << "Contenu de la premiere chaine (C etroite) : " << narrowStr << std::endl;
-
-			wideStr = stringVector.at(1).c_str();
-			bufferSize = wcslen(wideStr) + 1;
-			narrowStr = new char[bufferSize];
-			convertedChars = 0;
-			wcstombs_s(&convertedChars, narrowStr, bufferSize, wideStr, _TRUNCATE);
-
-			std::cout << "Contenu de la deuxieme chaine (C etroite) : " << narrowStr << std::endl;*/
-
-			// N'oubliez pas de libérer la mémoire allouée
-			//delete[] narrowStr;
-
-			/*script_creator script;
-			script = fun_script_creator(string_hash()(result));
-
-			if (script)
+			for (int i = 0; i < stringVector.size(); i++)
 			{
-				std::cout << "Script validate" << std::endl;
-			}*/
+				const wchar_t* wideStr = stringVector.at(i).c_str();
+				size_t bufferSize = wcslen(wideStr) + 1;  // +1 pour le caractère nul de fin
+				char* narrowStr = new char[bufferSize];
+
+				size_t convertedChars = 0;
+				wcstombs_s(&convertedChars, narrowStr, bufferSize, wideStr, _TRUNCATE);
+
+				m_LoadedScriptNames.push_back(narrowStr);
+
+				delete[] narrowStr;
+			}
 
 			//FreeLibrary(hinstance);
 		}
@@ -91,25 +73,20 @@ namespace OpenGLEngine
 
 	void NativeScriptComponent::Bind()
 	{
-		//if (m_ScriptName.empty())
-			//return;
+		if (m_ScriptName.empty())
+			return;
+
+		m_Script = nullptr;
 
 		if (hinstance)
 		{
-			std::cout << "Get entity" << std::endl;
 			fun_script_creator = (_get_script_creator)GetProcAddress(hinstance, "get_script_creator");
 			fun_script_names = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
-			script_creator var_script_creator = fun_script_creator(string_hash()("Player"));
+			script_creator var_script_creator = fun_script_creator(string_hash()(m_ScriptName.c_str()));
 
 			if (var_script_creator)
 			{
-				std::cout << "Script validate" << std::endl;
-
 				m_Script = var_script_creator();
-
-				//Instance = var_script_creator().get();
-
-				//entity->OnCreate();
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Header.h"
+#include <iostream>
+#include <string>
+#include <OpenGLEngine/Entity/ScriptableEntity.h>
 
 using namespace OpenGLEngine;
 
@@ -13,7 +15,7 @@ public:
 
 	void OnUpdate(double dt);
 private:
-	std::string s_Name = "Player";
+	const char* s_Name = "Player";
 	int s_Life = 100;
 };
 

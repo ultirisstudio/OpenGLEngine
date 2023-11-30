@@ -6,7 +6,6 @@
 #include <glm/glm.hpp>
 
 namespace OpenGLEngine {
-
 	class Input
 	{
 	public:

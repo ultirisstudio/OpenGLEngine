@@ -16,8 +16,9 @@ void Player::OnDestroy()
 
 void Player::OnUpdate(double dt)
 {
-	//TransformComponent& tc = GetComponent<TransformComponent>();
-	std::cout << m_Entity.GetName() << std::endl;
+	TransformComponent& tc = GetComponent<TransformComponent>();
+	//tc.Position.x += 0.1f;
+	//std::cout << m_Entity.GetName() << std::endl;
 }
 
 REGISTER_SCRIPT(Test);

@@ -2,6 +2,9 @@
 
 #include "Entity.h"
 
+#include <OpenGLEngine/Core/Input.h>
+#include <OpenGLEngine/Core/KeyCodes.h>
+
 namespace OpenGLEngine
 {
 	class ScriptableEntity
@@ -12,6 +15,26 @@ namespace OpenGLEngine
 		template<typename T>
 		T& GetComponent() {
 			return m_Entity.GetComponent<T>();
+		}
+
+		template<typename T>
+		bool HasComponent() {
+			return m_Entity.HasComponent<T>();
+		}
+
+		template<typename T>
+		void RemoveComponent() {
+			m_Entity.RemoveComponent<T>();
+		}
+
+		template<typename T, typename... TArgs>
+		T& AddComponent(TArgs&&... mArgs) {
+			return m_Entity.AddComponent<T>(std::forward<TArgs>(mArgs)...);
+		}
+
+		bool GetKeyPressed(KeyCode key)
+		{
+			return 0;
 		}
 
 	public:

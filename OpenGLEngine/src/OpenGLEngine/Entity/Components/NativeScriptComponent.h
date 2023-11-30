@@ -25,6 +25,8 @@ namespace OpenGLEngine
 
 		std::string m_ScriptName;
 
+		std::vector<std::string> m_LoadedScriptNames;
+
 		script_ptr m_Script = nullptr;
 	public:
 		NativeScriptComponent();
@@ -45,5 +47,8 @@ namespace OpenGLEngine
 		void Bind();
 
 		char* getScriptName() { return m_ScriptName.data(); }
+		void setScriptName(const char* scriptName) { m_ScriptName = scriptName; }
+
+		std::vector<std::string>& getLoadedScriptNames() { return m_LoadedScriptNames; }
 	};
 }

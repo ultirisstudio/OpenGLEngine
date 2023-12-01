@@ -1,4 +1,6 @@
 #include "Player.h"
+
+#include <iostream>
 #include <OpenGLEngine/Script/Script.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 
@@ -6,7 +8,7 @@ REGISTER_SCRIPT(Player);
 
 void Player::OnCreate()
 {
-	std::cout << "Player::OnCreate(): " << s_Name << std::endl;
+	std::cout << "Player::OnCreate(): " << s_Name << " - life:" << s_Life << std::endl;
 }
 
 void Player::OnDestroy()
@@ -17,7 +19,7 @@ void Player::OnDestroy()
 void Player::OnUpdate(double dt)
 {
 	TransformComponent& tc = GetComponent<TransformComponent>();
-	//tc.Position.x += 0.1f;
+	tc.Position.x += 0.02f;
 	//std::cout << m_Entity.GetName() << std::endl;
 }
 
@@ -33,5 +35,20 @@ void Test::OnDestroy()
 }
 
 void Test::OnUpdate(double dt)
+{
+}
+
+REGISTER_SCRIPT(Inventory);
+
+void Inventory::OnCreate()
+{
+	std::cout << "Test::OnCreate()" << std::endl;
+}
+
+void Inventory::OnDestroy()
+{
+}
+
+void Inventory::OnUpdate(double dt)
 {
 }

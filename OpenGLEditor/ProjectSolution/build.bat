@@ -1,0 +1,1 @@
+"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" C:\Users\rouff\Documents\Programmation\C++\OpenGLEngine\OpenGLEditor\ProjectSolution\ProjectSolution.sln /t:Build /p:Configuration=Release

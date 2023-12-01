@@ -1,4 +1,5 @@
 #include "Editor.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -7,6 +8,7 @@
 #include "ImGuizmo.h"
 
 #include "OpenGLEngine/Scene/SceneSerializer.h"
+#include "OpenGLEngine/Entity/Components/NativeScriptComponent.h"
 
 namespace OpenGLEngine
 {
@@ -119,6 +121,34 @@ namespace OpenGLEngine
 
 			if (ImGui::BeginMenu("Project"))
 			{
+				if (ImGui::MenuItem("Build project"))
+				{
+					int result = system("ProjectSolution\\build.bat");
+
+					/*
+					// Créer un handle pour le processus
+  HANDLE processHandle = CreateProcess(NULL, "C:\\my_command.exe", NULL, NULL, FALSE, 0, NULL, NULL, &STARTUPINFO(), &PROCESS_INFORMATION());
+
+  // Attendre la fin du processus
+  WaitForSingleObject(processHandle, INFINITE);
+
+  // Fermer le handle
+  CloseHandle(processHandle);*/
+				}
+				if (ImGui::MenuItem("Load DLL"))
+				{
+					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					{
+						entity->GetComponent<NativeScriptComponent>().LoadDLL();
+					}
+				}
+				if (ImGui::MenuItem("Unload DLL"))
+				{
+					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					{
+						entity->GetComponent<NativeScriptComponent>().UnloadDLL();
+					}
+				}
 				if (ImGui::MenuItem("Start scene"))
 				{
 					m_Scene->OnScenePlay();

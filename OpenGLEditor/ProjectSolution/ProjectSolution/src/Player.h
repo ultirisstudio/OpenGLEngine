@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <OpenGLEngine/Entity/ScriptableEntity.h>
 
 using namespace OpenGLEngine;
@@ -20,6 +18,17 @@ private:
 };
 
 class Test : public ScriptableEntity
+{
+public:
+	void OnCreate();
+
+	void OnDestroy();
+
+	void OnUpdate(double dt);
+private:
+};
+
+class Inventory : public ScriptableEntity
 {
 public:
 	void OnCreate();

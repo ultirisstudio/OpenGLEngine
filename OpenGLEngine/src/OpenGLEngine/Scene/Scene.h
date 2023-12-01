@@ -59,7 +59,7 @@ namespace OpenGLEngine
 		bool m_OnRuntime;
 
 		friend class SceneSerializer;
-	private:
+	public:
 		template<typename Component>
 		std::vector<Entity*> View()
 		{

@@ -19,19 +19,19 @@ namespace OpenGLEngine
 	class NativeScriptComponent : public Component
 	{
 	private:
-		HINSTANCE hinstance{ nullptr };
-		_get_script_creator fun_script_creator{ nullptr };
-		_get_script_names fun_script_names{ nullptr };
+		HINSTANCE hinstance;
+		_get_script_creator fun_script_creator;
+		_get_script_names fun_script_names;
 
 		std::string m_ScriptName;
 
 		std::vector<std::string> m_LoadedScriptNames;
 
-		script_ptr m_Script = nullptr;
+		script_ptr m_Script;
 	public:
 		NativeScriptComponent();
 
-		ScriptableEntity* Instance = nullptr;
+		ScriptableEntity* Instance;
 
 		ScriptableEntity* InstantiateScript();
 		//ScriptableEntity* (*InstantiateScript)();
@@ -43,6 +43,9 @@ namespace OpenGLEngine
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}*/
+
+		void LoadDLL();
+		void UnloadDLL();
 
 		void Bind();
 

@@ -3,10 +3,20 @@
 
 namespace OpenGLEngine
 {
-	NativeScriptComponent::NativeScriptComponent()
+	NativeScriptComponent::NativeScriptComponent() : hinstance(nullptr), fun_script_creator(nullptr), fun_script_names(nullptr), m_ScriptName(""), m_Script(nullptr), Instance(nullptr)
+	{
+		
+	}
+
+	ScriptableEntity* NativeScriptComponent::InstantiateScript()
+	{
+		return m_Script.get();
+	}
+
+	void NativeScriptComponent::LoadDLL()
 	{
 		hinstance = LoadLibraryA("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.dll");
-		if (hinstance)
+		if (hinstance && !m_Script && !Instance)
 		{
 			fun_script_names = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
 
@@ -61,14 +71,22 @@ namespace OpenGLEngine
 
 				delete[] narrowStr;
 			}
-
-			//FreeLibrary(hinstance);
 		}
 	}
 
-	ScriptableEntity* NativeScriptComponent::InstantiateScript()
+	void NativeScriptComponent::UnloadDLL()
 	{
-		return m_Script.get();
+		FreeLibrary(hinstance);
+
+		m_ScriptName.clear();
+		m_LoadedScriptNames.clear();
+
+		delete Instance;
+
+		Instance = nullptr;
+		fun_script_creator = nullptr;
+		fun_script_names = nullptr;
+		hinstance = nullptr;
 	}
 
 	void NativeScriptComponent::Bind()

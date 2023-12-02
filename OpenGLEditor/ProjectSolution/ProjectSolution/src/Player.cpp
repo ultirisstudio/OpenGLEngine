@@ -3,6 +3,7 @@
 #include <iostream>
 #include <OpenGLEngine/Script/Script.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/Core/Input.h>
 
 REGISTER_SCRIPT(Player);
 
@@ -19,8 +20,13 @@ void Player::OnDestroy()
 void Player::OnUpdate(double dt)
 {
 	TransformComponent& tc = GetComponent<TransformComponent>();
-	tc.Position.x += 0.02f;
+	tc.Position.x += 0.02f * dt;
 	//std::cout << m_Entity.GetName() << std::endl;
+
+	/*if (GetKeyPressed(87))
+	{
+		std::cout << "W" << std::endl;
+	}*/
 }
 
 REGISTER_SCRIPT(Test);

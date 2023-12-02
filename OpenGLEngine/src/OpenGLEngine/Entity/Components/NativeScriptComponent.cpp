@@ -3,21 +3,24 @@
 
 namespace OpenGLEngine
 {
-	NativeScriptComponent::NativeScriptComponent() : hinstance(nullptr), fun_script_creator(nullptr), fun_script_names(nullptr), m_ScriptName(""), m_Script(nullptr), Instance(nullptr)
+	NativeScriptComponent::NativeScriptComponent() : hinstance(nullptr), fun_script_creator(nullptr), fun_script_names(nullptr), m_ScriptName(""), Instance(nullptr)//, m_Script(nullptr)
 	{
 		
 	}
 
 	ScriptableEntity* NativeScriptComponent::InstantiateScript()
 	{
-		return m_Script.get();
+		//return m_Script.get();
+		return nullptr;
 	}
 
 	void NativeScriptComponent::LoadDLL()
 	{
 		hinstance = LoadLibraryA("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.dll");
-		if (hinstance && !m_Script && !Instance)
+		if (hinstance) // && !m_Script && !Instance
 		{
+			std::cout << "DLL loaded." << std::endl;
+
 			fun_script_names = (_get_script_names)GetProcAddress(hinstance, "get_script_names");
 
 			// Get the SafeArray of script names
@@ -89,12 +92,20 @@ namespace OpenGLEngine
 		hinstance = nullptr;
 	}
 
+	void NativeScriptComponent::ClearFiles()
+	{
+		std::remove("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.dll");
+		std::remove("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.lib");
+		std::remove("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.pdb");
+		std::remove("ProjectSolution/bin/Release-windows-x86_64/ProjectSolution/ProjectSolution.exp");
+	}
+
 	void NativeScriptComponent::Bind()
 	{
 		if (m_ScriptName.empty())
 			return;
 
-		m_Script = nullptr;
+		//m_Script.reset();
 
 		if (hinstance)
 		{
@@ -104,7 +115,7 @@ namespace OpenGLEngine
 
 			if (var_script_creator)
 			{
-				m_Script = var_script_creator();
+				//m_Script = var_script_creator();
 			}
 		}
 	}

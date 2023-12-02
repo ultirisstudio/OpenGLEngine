@@ -34,7 +34,7 @@ namespace OpenGLEngine
 
 		bool GetKeyPressed(KeyCode key)
 		{
-			return 0;
+			return Input::IsKeyPressed(key);
 		}
 
 	public:

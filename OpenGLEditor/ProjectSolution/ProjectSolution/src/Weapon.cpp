@@ -2,7 +2,7 @@
 
 #include <OpenGLEngine/Script/Script.h>
 
-//REGISTER_SCRIPT(Weapon);
+REGISTER_SCRIPT(Weapon);
 
 void Weapon::OnCreate()
 {

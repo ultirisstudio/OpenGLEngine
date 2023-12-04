@@ -32,10 +32,7 @@ namespace OpenGLEngine
 			return m_Entity.AddComponent<T>(std::forward<TArgs>(mArgs)...);
 		}
 
-		bool GetKeyPressed(KeyCode key) {
-			//return Input::IsKeyPressed(key);
-			return true;
-		}
+		bool GetKeyPressed(KeyCode key);
 
 	public:
 		virtual void OnCreate() {}

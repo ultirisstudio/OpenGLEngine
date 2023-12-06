@@ -107,11 +107,6 @@ namespace OpenGLEngine
 
 	void Scene::OnScenePlay()
 	{
-		for (Entity* entity : View<CameraComponent>())
-		{
-			m_ActiveCamera = &entity->GetComponent<CameraComponent>().GetCamera();
-		}
-
 		if (m_ActiveCamera)
 			m_OnRuntime = true;
 	}

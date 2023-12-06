@@ -2,7 +2,6 @@
 
 #include "Entity.h"
 
-#include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
 
 namespace OpenGLEngine

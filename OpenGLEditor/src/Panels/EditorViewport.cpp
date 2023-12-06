@@ -59,7 +59,7 @@ namespace OpenGLEngine
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 	}
 
-	void EditorViewport::OnImGuiRender(Scene& scene)
+	void EditorViewport::OnImGuiRender(SceneManager& sceneManager)
 	{
 		m_EditorFrameBuffer->bind();
 
@@ -71,7 +71,7 @@ namespace OpenGLEngine
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
-		scene.getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
+		sceneManager.getActiveScene().getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -87,7 +87,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (scene.m_SelectedEntity && m_GizmoType != -1)
+		if (sceneManager.getActiveScene().m_SelectedEntity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -96,10 +96,10 @@ namespace OpenGLEngine
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			glm::mat4 cameraProjection = scene.getEditorCamera().getProjectionMatrix();
-			glm::mat4 cameraView = scene.getEditorCamera().getViewMatrix();
+			glm::mat4 cameraProjection = sceneManager.getActiveScene().getEditorCamera().getProjectionMatrix();
+			glm::mat4 cameraView = sceneManager.getActiveScene().getEditorCamera().getViewMatrix();
 
-			auto& tc = scene.m_SelectedEntity->GetComponent<TransformComponent>();
+			auto& tc = sceneManager.getActiveScene().m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
@@ -130,12 +130,12 @@ namespace OpenGLEngine
 				std::string selectedFile = filePath.substr(slash + 1);
 				std::string fileExtension = selectedFile.substr(selectedFile.find_last_of(".") + 1);
 
-				//if (fileExtension == "obj")
-					//AddGameObject(filePath);
+				if (fileExtension == "obj")
+					sceneManager.AddGameObject(filePath);
 
 				if (fileExtension == "scene")
 				{
-					//LoadScene(filePath);
+					sceneManager.LoadScene(filePath);
 				}
 			}
 			ImGui::EndDragDropTarget();

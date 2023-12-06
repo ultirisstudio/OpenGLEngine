@@ -1,6 +1,7 @@
 #pragma once
 
-#include <OpenGLEngine/Entity/Entity.h>
+
+#include "../SceneManager.h"
 
 class Scene;
 
@@ -11,7 +12,7 @@ namespace OpenGLEngine
 	public:
 		EntityPropertiePanel();
 
-		void OnImGuiRender(Entity* entity);
+		void OnImGuiRender(SceneManager& sceneManager);
 		void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
 	private:
 		std::shared_ptr<Texture> m_ModelTexture;

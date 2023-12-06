@@ -2,10 +2,8 @@
 
 #include <memory>
 
-#include <OpenGLEngine/Scene/Scene.h>
+#include "../SceneManager.h"
 #include <OpenGLEngine/Renderer/Framebuffer.h>
-
-class Editor;
 
 namespace OpenGLEngine
 {
@@ -17,7 +15,7 @@ namespace OpenGLEngine
 		void Render(Scene& scene);
 		void Update(Scene& scene);
 
-		void OnImGuiRender(Scene& scene);
+		void OnImGuiRender(SceneManager& sceneManager);
 	private:
 		std::shared_ptr<Framebuffer> m_EditorFrameBuffer;
 		glm::vec2 m_EditorViewportSize = { 0.0f, 0.0f };

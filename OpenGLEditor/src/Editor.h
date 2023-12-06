@@ -10,17 +10,12 @@
 #include "Panels/EditorViewport.h"
 #include "Panels/Viewport.h"
 
+#include "SceneManager.h"
+
 #include <map>
 
 namespace OpenGLEngine
 {
-	enum DEFAULT_OBJECT_TYPE
-	{
-		CUBE,
-		SPHERE,
-		PLANE
-	};
-
 	class Editor : public Layer
 	{
 	public:
@@ -35,32 +30,16 @@ namespace OpenGLEngine
 
 	private:
 		void InitImGuiStyle();
-
-		void AddGameObject(DEFAULT_OBJECT_TYPE type);
-		void AddGameObject(const std::string& file);
-
-		void SaveScene();
-		void LoadScene();
-		void LoadScene(std::string filePath);
-
 		void OptionMenu();
-
 		void CalculateLatency();
 	private:
-		std::unique_ptr<Scene> m_Scene;
-	private:
-
-		FileBrowser m_FileBrowser;
-		void OpenExternalFile();
-
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
 		SceneHierarchy m_SceneHierarchy;
 		EditorViewport m_EditorViewport;
 		Viewport m_Viewport;
-	private:
-		bool m_ViewportFocused = false;
-		bool m_ViewportHovered = false;
+
+		std::unique_ptr<SceneManager> m_SceneManager;
 	private:
 		double last_time = glfwGetTime();
 		int nb_frame = 0;

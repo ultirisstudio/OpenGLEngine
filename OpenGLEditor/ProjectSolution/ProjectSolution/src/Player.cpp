@@ -5,6 +5,7 @@
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
+#include <OpenGLEngine/Core/KeyCodes.h>
 
 REGISTER_SCRIPT(Player);
 
@@ -24,7 +25,7 @@ void Player::OnUpdate(double dt)
 	tc.Position.x += 0.02f * dt;
 	//std::cout << m_Entity.GetName() << std::endl;
 
-	if (GetKeyPressed(87))
+	if (GetKeyPressed(Key::W))
 	{
 		std::cout << "W" << std::endl;
 	}

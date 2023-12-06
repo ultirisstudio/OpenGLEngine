@@ -7,8 +7,7 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include "OpenGLEngine/Scene/SceneSerializer.h"
-#include "OpenGLEngine/Entity/Components/NativeScriptComponent.h"
+#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 
 namespace OpenGLEngine
 {
@@ -19,9 +18,9 @@ namespace OpenGLEngine
 
 	void Editor::OnAttach()
 	{
-		m_Scene = std::make_unique<Scene>();
-
 		InitImGuiStyle();
+
+		m_SceneManager = std::make_unique<SceneManager>();
 	}
 
 	void Editor::OnDetach()
@@ -31,19 +30,19 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate()
 	{
-		m_Scene->Update(1.0f);
-		m_EditorViewport.Update(*m_Scene);
+		m_SceneManager->update(1.0f);
+		m_EditorViewport.Update(m_SceneManager->getActiveScene());
 
 		CalculateLatency();
 
-		m_Viewport.Render(*m_Scene);
-		m_EditorViewport.Render(*m_Scene);
+		m_Viewport.Render(m_SceneManager->getActiveScene());
+		m_EditorViewport.Render(m_SceneManager->getActiveScene());
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
 			if (Input::IsKeyPressed(Key::S))
 			{
-				SaveScene();
+				m_SceneManager->SaveScene();
 			}
 		}
 	}
@@ -95,22 +94,22 @@ namespace OpenGLEngine
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Open")) OpenExternalFile();
+				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile();
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("New scene"))
 				{
-					m_Scene = std::make_unique<Scene>();
+					m_SceneManager->createNewScene();
 				}
 
 				if (ImGui::MenuItem("Save scene"))
 				{
-					SaveScene();
+					m_SceneManager->SaveScene();
 				}
 
 				if (ImGui::MenuItem("Load scene"))
 				{
-					LoadScene();
+					m_SceneManager->LoadScene();
 				}
 
 				ImGui::Separator();
@@ -123,7 +122,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Build project"))
 				{
-					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
 					{
 						entity->GetComponent<NativeScriptComponent>().UnloadDLL();
 					}
@@ -132,7 +131,7 @@ namespace OpenGLEngine
 
 					int result = system("ProjectSolution\\build.bat");
 
-					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
 					{
 						entity->GetComponent<NativeScriptComponent>().LoadDLL();
 					}
@@ -148,14 +147,14 @@ namespace OpenGLEngine
 				}
 				if (ImGui::MenuItem("Load DLL"))
 				{
-					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
 					{
 						entity->GetComponent<NativeScriptComponent>().LoadDLL();
 					}
 				}
 				if (ImGui::MenuItem("Unload DLL"))
 				{
-					for (Entity* entity : m_Scene->View<NativeScriptComponent>())
+					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
 					{
 						entity->GetComponent<NativeScriptComponent>().UnloadDLL();
 					}
@@ -164,11 +163,11 @@ namespace OpenGLEngine
 				}
 				if (ImGui::MenuItem("Start scene"))
 				{
-					m_Scene->OnScenePlay();
+					m_SceneManager->getActiveScene().OnScenePlay();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
-					m_Scene->OnSceneStop();
+					m_SceneManager->getActiveScene().OnSceneStop();
 				}
 				ImGui::EndMenu();
 			}
@@ -177,12 +176,12 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					m_Scene->CreateEntity("GameObject");
+					m_SceneManager->getActiveScene().CreateEntity("GameObject");
 				}
 
-				if (ImGui::MenuItem("Create new Cube")) AddGameObject(CUBE);
-				if (ImGui::MenuItem("Create new Sphere")) AddGameObject(SPHERE);
-				if (ImGui::MenuItem("Create new Plane")) AddGameObject(PLANE);
+				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddGameObject(CUBE);
+				if (ImGui::MenuItem("Create new Sphere")) m_SceneManager->AddGameObject(SPHERE);
+				if (ImGui::MenuItem("Create new Plane")) m_SceneManager->AddGameObject(PLANE);
 				ImGui::EndMenu();
 			}
 
@@ -200,27 +199,11 @@ namespace OpenGLEngine
 			ImGui::EndMenuBar();
 		}
 
-		m_Viewport.OnImGuiRender(*m_Scene);
-		m_EditorViewport.OnImGuiRender(*m_Scene);
-
-		ImGui::Begin("Inspector");
-
-		if (m_Scene->m_SelectedEntity)
-			m_EntityPropertiePanel.OnImGuiRender(m_Scene->m_SelectedEntity);
-
-		ImGui::End();
-
-		m_SceneHierarchy.OnImGuiRender(*m_Scene);
-
+		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
+		m_EditorViewport.OnImGuiRender(*m_SceneManager);
+		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager);
+		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_ContentBrowserPanel.OnImGuiRender();
-
-		ImGui::Begin("Open Resource Infos");
-		ImGui::Text("Selected file: %s\nFile path: %s\nFile extension: %s\n", m_FileBrowser.GetInfos().m_SelectedFile.c_str(), m_FileBrowser.GetInfos().m_FilePath.c_str(), m_FileBrowser.GetInfos().m_FileExtension.c_str());
-		ImGui::End();
-
-		ImGui::Begin("Render Infos");
-		ImGui::Text("%d fps \n%d ms", fps, latency);
-		ImGui::End();
 
 		if (m_optionMenu)
 		{
@@ -232,7 +215,7 @@ namespace OpenGLEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		m_Scene->getEditorCamera().OnEvent(e);
+		m_SceneManager->getActiveScene().getEditorCamera().OnEvent(e);
 	}
 
 	void Editor::InitImGuiStyle()
@@ -282,92 +265,6 @@ namespace OpenGLEngine
 		};
 	}
 
-	void Editor::AddGameObject(DEFAULT_OBJECT_TYPE type)
-	{
-		Entity* temp = m_Scene->CreateEntity("temp");
-		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
-		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
-		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
-		temp->AddComponent<RenderComponent>();
-		temp->GetComponent<RenderComponent>().GenerateShader();
-
-		switch (type)
-		{
-		case CUBE:
-			temp->SetName("Cube");
-			temp->AddComponent<ModelComponent>("Assets/Models/cube.obj");
-			break;
-		case SPHERE:
-			temp->SetName("Sphere");
-			temp->AddComponent<ModelComponent>("Assets/Models/sphere.obj");
-			break;
-		case PLANE:
-			temp->SetName("Plane");
-			temp->AddComponent<ModelComponent>("Assets/Models/plane.obj");
-			break;
-		}
-	}
-
-	void Editor::AddGameObject(const std::string& file)
-	{
-		const size_t slash = file.find_last_of("/\\");
-		const std::string m_SelectedFile = file.substr(slash + 1);
-
-		size_t lastindex = m_SelectedFile.find_last_of(".");
-		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
-
-		Entity* temp = m_Scene->CreateEntity(m_FileName);
-		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<ModelComponent>(file);
-		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
-		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
-		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
-		temp->AddComponent<RenderComponent>();
-		temp->GetComponent<RenderComponent>().GenerateShader();
-	}
-
-	void Editor::SaveScene()
-	{
-		if (m_Scene->getPath() != "")
-		{
-			SceneSerializer serializer(*m_Scene);
-			serializer.Serialize(m_Scene->getPath());
-		}
-		else
-		{
-			m_FileBrowser.SaveFile();
-			m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
-			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
-			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
-			SceneSerializer serializer(*m_Scene);
-			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
-		}
-	}
-	
-	void Editor::LoadScene()
-	{
-		m_FileBrowser.OpenFile();
-		m_Scene = std::make_unique<Scene>();
-		SceneSerializer serializer(*m_Scene);
-		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
-	}
-
-	void Editor::LoadScene(std::string filePath)
-	{
-		m_Scene = std::make_unique<Scene>();
-		SceneSerializer serializer(*m_Scene);
-		serializer.Deserialize(filePath);
-	}
-
 	void Editor::CalculateLatency()
 	{
 		double currentTime = glfwGetTime();
@@ -377,25 +274,6 @@ namespace OpenGLEngine
 			fps = nb_frame;
 			nb_frame = 0;
 			last_time += 1.0;
-		}
-	}
-
-	void Editor::OpenExternalFile()
-	{
-		m_FileBrowser.OpenFile();
-
-		std::filesystem::path sourceFile = m_FileBrowser.GetInfos().m_FilePath;
-		std::filesystem::path targetParent = "Assets";
-		auto target = targetParent / sourceFile.filename();
-
-		try
-		{
-			std::filesystem::create_directories(targetParent);
-			std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
-		}
-		catch (std::exception& e)
-		{
-			std::cout << e.what();
 		}
 	}
 

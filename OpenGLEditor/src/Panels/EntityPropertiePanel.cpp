@@ -29,6 +29,12 @@ namespace OpenGLEngine
 
 		if (sceneManager.getActiveScene().m_SelectedEntity)
 		{
+			if (sceneManager.getActiveScene().isOnRuntime())
+			{
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+
 			Entity* entity = sceneManager.getActiveScene().m_SelectedEntity;
 
 			char* uuid = entity->GetId();
@@ -376,6 +382,12 @@ namespace OpenGLEngine
 				}
 
 				ImGui::EndPopup();
+			}
+
+			if (sceneManager.getActiveScene().isOnRuntime())
+			{
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
 			}
 		}
 

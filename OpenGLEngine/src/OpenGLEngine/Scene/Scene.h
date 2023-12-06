@@ -42,6 +42,8 @@ namespace OpenGLEngine
 
 		Entity* m_SelectedEntity;
 
+		bool isOnRuntime() { return m_OnRuntime; }
+
 		const std::string& getName() { return m_Name; }
 		const std::string& getPath() { return m_Path; }
 

@@ -12,6 +12,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["OpenGLEngine"] = "../../OpenGLEngine/src"
+IncludeDir["GLFW"] = "../../OpenGLEngine/vendor/GLFW/include"
 IncludeDir["glm"] = "../../OpenGLEngine/vendor/glm"
 IncludeDir["assimp"] = "../../OpenGLEngine/vendor/assimp/include"
 IncludeDir["glm"] = "../../OpenGLEngine/vendor/glm"
@@ -33,10 +34,10 @@ LibraryDir["ImGuizmo"] = "../../OpenGLEngine/vendor/ImGuizmo/bin/%{cfg.buildcfg}
 
 project "ProjectSolution"
 	location "ProjectSolution"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "off"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

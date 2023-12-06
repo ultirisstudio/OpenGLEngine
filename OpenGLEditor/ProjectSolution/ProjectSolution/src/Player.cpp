@@ -22,10 +22,10 @@ void Player::OnDestroy()
 void Player::OnUpdate(double dt)
 {
 	TransformComponent& tc = GetComponent<TransformComponent>();
-	tc.Position.x += 0.02f * dt;
+	//tc.Position.x += 0.02f * dt;
 	//std::cout << m_Entity.GetName() << std::endl;
 
-	if (GetKeyPressed(Key::W))
+	if (GetKeyPressed(87))
 	{
 		std::cout << "W" << std::endl;
 	}

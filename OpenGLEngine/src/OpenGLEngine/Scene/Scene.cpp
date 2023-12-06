@@ -1,6 +1,8 @@
 #include "depch.h"
 #include <OpenGLEngine/Scene/Scene.h>
 
+#include <OpenGLEngine/Core/Application.h>
+
 #include <OpenGLEngine/Tools/UUID.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
@@ -98,6 +100,7 @@ namespace OpenGLEngine
 			if (nsc.Instance == nullptr) {
 				nsc.Instance = nsc.InstantiateScript();
 				nsc.Instance->m_Entity = *entity;
+				nsc.Instance->m_Window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 				nsc.Instance->OnCreate();
 			}
 

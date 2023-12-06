@@ -28,7 +28,7 @@ namespace OpenGLEngine
 		std::vector<std::string> m_LoadedScriptNames;
 
 		//script_ptr m_Script;
-		//std::unique_ptr<ScriptableEntity> m_Script;
+		std::unique_ptr<ScriptableEntity> m_Script;
 	public:
 		NativeScriptComponent();
 

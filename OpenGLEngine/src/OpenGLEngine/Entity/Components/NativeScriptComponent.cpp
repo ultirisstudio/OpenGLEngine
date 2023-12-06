@@ -10,8 +10,7 @@ namespace OpenGLEngine
 
 	ScriptableEntity* NativeScriptComponent::InstantiateScript()
 	{
-		//return m_Script.get();
-		return nullptr;
+		return m_Script.get();
 	}
 
 	void NativeScriptComponent::LoadDLL()
@@ -105,7 +104,7 @@ namespace OpenGLEngine
 		if (m_ScriptName.empty())
 			return;
 
-		//m_Script.reset();
+		m_Script.reset();
 
 		if (hinstance)
 		{
@@ -115,7 +114,7 @@ namespace OpenGLEngine
 
 			if (var_script_creator)
 			{
-				//m_Script = var_script_creator();
+				m_Script = var_script_creator();
 			}
 		}
 	}

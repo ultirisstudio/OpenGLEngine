@@ -1,13 +1,16 @@
 #include "depch.h"
 #include <OpenGLEngine/Scene/Scene.h>
 
-#include <OpenGLEngine/Core/Application.h>
+#include "OpenGLEngine/Core/Application.h"
+#include <GLFW/glfw3.h>
 
 #include <OpenGLEngine/Tools/UUID.h>
 #include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
+
+#include <OpenGLEngine/Core/Input.h>
 
 namespace OpenGLEngine
 {
@@ -101,6 +104,7 @@ namespace OpenGLEngine
 				nsc.Instance = nsc.InstantiateScript();
 				nsc.Instance->m_Entity = *entity;
 				nsc.Instance->m_Window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
 				nsc.Instance->OnCreate();
 			}
 

@@ -32,17 +32,7 @@ namespace OpenGLEngine
 			return m_Entity.AddComponent<T>(std::forward<TArgs>(mArgs)...);
 		}
 
-		bool GetKeyPressed(KeyCode key)
-		{
-			auto* window = m_Window;
-			if (window)
-			{
-				auto state = glfwGetKey(window, static_cast<int32_t>(key));
-				std::cout << state << std::endl;
-				return state == GLFW_PRESS;
-			}
-			return false;
-		}
+		bool GetKeyPressed(const KeyCode key);
 
 	public:
 		virtual void OnCreate() {}

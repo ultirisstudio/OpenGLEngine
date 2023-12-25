@@ -1,9 +1,10 @@
 #pragma once
 
 #include "depch.h"
-#include <GLFW/glfw3.h>
 #include "OpenGLEngine/Events/Event.h"
 #include <glm/glm.hpp>
+
+struct GLFWwindow;
 
 namespace OpenGLEngine {
 	

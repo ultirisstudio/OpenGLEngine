@@ -267,7 +267,7 @@ namespace OpenGLEngine
 
 	void Editor::CalculateLatency()
 	{
-		double currentTime = glfwGetTime();
+		double currentTime = Renderer::GetTime();
 		nb_frame++;
 		if (currentTime - last_time >= 1.0) {
 			latency = (1000.0 / double(nb_frame));

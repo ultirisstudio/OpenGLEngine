@@ -1,8 +1,11 @@
 #include "depch.h"
+
 #include "OpenGLEngine/Core/Window.h"
 #include "OpenGLEngine/Events/ApplicationEvent.h"
 #include "OpenGLEngine/Events/MouseEvent.h"
 #include "OpenGLEngine/Events/KeyEvent.h"
+
+#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 namespace OpenGLEngine {

@@ -2,8 +2,9 @@
 
 #include "Entity.h"
 
-#include <GLFW/glfw3.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
+
+struct GLFWwindow;
 
 namespace OpenGLEngine
 {

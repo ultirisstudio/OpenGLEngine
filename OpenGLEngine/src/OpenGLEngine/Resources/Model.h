@@ -2,11 +2,13 @@
 
 #include <OpenGLEngine/Resources/Mesh.h>
 
-#include <assimp/scene.h>
-
 #include <list>
 
 #include <OpenGLEngine/Tools/Log.h>
+
+struct aiScene;
+struct aiNode;
+struct aiMesh;
 
 namespace OpenGLEngine
 {

@@ -120,9 +120,7 @@ project "OpenGLEditor"
 		"OpenGLEngine/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.assimp}",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

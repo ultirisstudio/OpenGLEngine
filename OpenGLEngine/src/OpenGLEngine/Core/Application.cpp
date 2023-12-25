@@ -1,4 +1,7 @@
 #include "depch.h"
+
+#include <GLFW/glfw3.h>
+
 #include "Application.h"
 #include "OpenGLEngine/Renderer/Renderer.h"
 #include "OpenGLEngine/Core/Input.h"

@@ -41,7 +41,7 @@ namespace OpenGLEngine
 
 		std::unique_ptr<SceneManager> m_SceneManager;
 	private:
-		double last_time = glfwGetTime();
+		double last_time = Renderer::GetTime();
 		int nb_frame = 0;
 		int fps = 0;
 		int latency = 0;

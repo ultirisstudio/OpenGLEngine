@@ -1,8 +1,9 @@
 #include "depch.h"
 #include "ImGuiLayer.h"
 
-#include "imgui.h"
-#include "ImGuizmo.h"
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <ImGuizmo.h>
 
 #define IMGUI_IMPL_API
 #include "examples/imgui_impl_opengl3.h"

@@ -1,4 +1,5 @@
 #include "Viewport.h"
+#include "../Macros.h"
 
 #include <imgui.h>
 
@@ -19,7 +20,7 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 
 	m_ViewportFrameBuffer->bind();
 
-	glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+	Renderer::SetViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
 	Renderer::Clear();
 	Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));

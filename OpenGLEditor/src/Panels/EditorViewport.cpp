@@ -1,4 +1,5 @@
 #include "EditorViewport.h"
+#include "../Macros.h"
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -27,7 +28,7 @@ namespace OpenGLEngine
 	{
 		m_EditorFrameBuffer->bind();
 
-		glViewport(0, 0, m_EditorViewportSize.x, m_EditorViewportSize.y);
+		Renderer::SetViewport(0, 0, m_EditorViewportSize.x, m_EditorViewportSize.y);
 
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));

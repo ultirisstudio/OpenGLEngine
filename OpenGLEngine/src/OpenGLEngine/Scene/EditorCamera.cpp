@@ -96,7 +96,7 @@ namespace OpenGLEngine
 	{
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
-		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+		glViewport(0, 0, static_cast<GLsizei>(m_ViewportSize.x), static_cast<GLsizei>(m_ViewportSize.y));
 	}
 
 	void EditorCamera::OnEvent(Event& e)
@@ -116,11 +116,11 @@ namespace OpenGLEngine
 		if (!m_moving)
 			return false;
 
-		float offsetX = static_cast<int>(m_lastMousePos.x - e.GetX());
-		float offsetY = static_cast<int>(m_lastMousePos.y - e.GetY());
+		float offsetX = static_cast<float>(m_lastMousePos.x - e.GetX());
+		float offsetY = static_cast<float>(m_lastMousePos.y - e.GetY());
 
-		m_lastMousePos.x = e.GetX();
-		m_lastMousePos.y = e.GetY();
+		m_lastMousePos.x = static_cast<glm::uint>(e.GetX());
+		m_lastMousePos.y = static_cast<glm::uint>(e.GetY());
 
 		if (m_rotate)
 		{

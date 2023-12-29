@@ -8,6 +8,8 @@ project "assimp"
   objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   defines {
+	  "_CRT_SECURE_NO_WARNINGS",
+	  
       -- "SWIG",
       "ASSIMP_BUILD_NO_OWN_ZLIB",
 

@@ -316,6 +316,8 @@ namespace glTF {
 
 						break;
 #endif
+                    case Mesh::SExtension::EType::Unknown:
+                        break;
 					default:
 						throw DeadlyImportError("GLTF: Can not write mesh: unknown mesh extension, only Open3DGC is supported.");
 				}// switch(ptr_ext->Type)

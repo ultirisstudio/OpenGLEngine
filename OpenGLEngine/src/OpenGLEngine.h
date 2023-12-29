@@ -14,8 +14,6 @@
 #include "OpenGLEngine/Entity/Components/ModelComponent.h"
 #include "OpenGLEngine/Entity/Components/MaterialComponent.h"
 #include "OpenGLEngine/Entity/Components/SkyboxComponent.h"
-#include "OpenGLEngine/Entity/Components/RenderComponent.h"
-//#include "OpenGLEngine/Entity/Components/NativeScriptComponent.h"
 
 #include "OpenGLEngine/Tools/Math.h"
 

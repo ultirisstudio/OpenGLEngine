@@ -22,7 +22,7 @@ namespace OpenGLEngine
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false)
 	{
-
+		Init();
 	}
 
 	Scene::Scene(const std::string& name) : 
@@ -33,7 +33,18 @@ namespace OpenGLEngine
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false)
 	{
-		
+		Init();
+	}
+
+	Scene::~Scene()
+	{
+		m_PhysicsEngine->Shutdown();
+	}
+
+	void Scene::Init()
+	{
+		m_PhysicsEngine = std::make_unique<PhysicsEngine>();
+		m_PhysicsEngine->Init();
 	}
 
 	Entity* Scene::CreateEntity(const std::string& name)
@@ -87,6 +98,8 @@ namespace OpenGLEngine
 	void Scene::Update(double deltaTime)
 	{
 		m_EditorCamera->Update();
+
+		m_PhysicsEngine->Update(deltaTime);
 
 		if (m_ActiveCamera)
 			m_ActiveCamera->Update();
@@ -151,5 +164,9 @@ namespace OpenGLEngine
 		}
 
 		return entities;
+	}
+	EntityMap* Scene::getEntities()
+	{
+		return &m_EntityMap;
 	}
 }

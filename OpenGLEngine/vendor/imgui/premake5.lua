@@ -21,7 +21,7 @@ project "ImGui"
 		"imgui_demo.cpp"
 	}
 
-    defines { "IMGUI_API=__declspec(dllexport)" }
+    defines { "IMGUI_API=__declspec(dllexport)", "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "system:windows"
 		systemversion "latest"

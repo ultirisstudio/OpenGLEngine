@@ -17,8 +17,11 @@ namespace OpenGLEngine
 		{
 			Scene* m_Scene;
 			ResourceManager m_ResourceManager;
+			Shader m_Shader;
 		};
 		static SceneData m_SceneData;
+
+		static void Init();
 
 		static void BeginScene(Scene& scene);
 		static void Render(bool runtime);

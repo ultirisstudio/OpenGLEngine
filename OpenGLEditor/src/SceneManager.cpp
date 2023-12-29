@@ -30,8 +30,6 @@ namespace OpenGLEngine
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
-		temp->AddComponent<RenderComponent>();
-		temp->GetComponent<RenderComponent>().GenerateShader();
 
 		switch (type)
 		{
@@ -68,8 +66,6 @@ namespace OpenGLEngine
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
-		temp->AddComponent<RenderComponent>();
-		temp->GetComponent<RenderComponent>().GenerateShader();
 	}
 
 	void SceneManager::SaveScene()

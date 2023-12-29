@@ -32,7 +32,7 @@ namespace OpenGLEngine
 	extern "C" __declspec(dllexport) inline
 	int get_script_name_size()
 	{
-		return script_name().size();
+		return static_cast<int>(script_name().size());
 	}
 
 	inline bool register_script(size_t tag, script_creator func)
@@ -68,7 +68,7 @@ namespace OpenGLEngine
 		const ULONG size{ (ULONG)script_name().size() };
 		if (!size) return nullptr;
 		CComSafeArray<BSTR> names{ size };
-		for (long i{ 0 }; i < size; ++i)
+		for (unsigned long i{ 0 }; i < size; ++i)
 			names.SetAt(i, A2BSTR_EX(script_name()[i].c_str()), false);
 		return names.Detach();
 	}

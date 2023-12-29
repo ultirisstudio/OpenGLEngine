@@ -105,7 +105,7 @@ namespace OpenGLEngine
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
-			if (ImGuizmo::IsUsing)
+			if (ImGuizmo::IsUsing())
 			{
 				glm::vec3 position, rotation, scale;
 				Math::DecomposeTransform(transform, position, rotation, scale);

@@ -20,6 +20,8 @@ namespace OpenGLEngine
 	{
 		InitImGuiStyle();
 
+		Renderer::Init();
+
 		m_SceneManager = std::make_unique<SceneManager>();
 	}
 

@@ -5,9 +5,7 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
-#include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
-//#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 
 #include <OpenGLEngine/Entity/ScriptableEntity.h>
 #include <OpenGLEngine/Core/Input.h>
@@ -143,19 +141,6 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<RenderComponent>())
-		{
-			out << YAML::BeginMap;
-			out << YAML::Key << "RenderComponent";
-			out << YAML::Value << YAML::BeginMap;
-
-			auto& mc = entity->GetComponent<ModelComponent>();
-			out << YAML::Key << "render" << YAML::Value << true;
-
-			out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
-
 		if (entity->HasComponent<CameraComponent>())
 		{
 			out << YAML::BeginMap;
@@ -282,13 +267,6 @@ namespace OpenGLEngine
 						if (skyboxComponent)
 						{
 							auto& sc = deserializedEntity->AddComponent<SkyboxComponent>();
-						}
-
-						auto renderComponent = component["RenderComponent"];
-						if (renderComponent)
-						{
-							auto& rc = deserializedEntity->AddComponent<RenderComponent>();
-							rc.GenerateShader();
 						}
 
 						auto cameraComponent = component["CameraComponent"];

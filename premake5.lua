@@ -19,6 +19,7 @@ IncludeDir["assimp"] = "OpenGLEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "OpenGLEngine/vendor/stb_image"
 IncludeDir["yaml_cpp"] = "OpenGLEngine/vendor/yaml_cpp/include"
 IncludeDir["ImGuizmo"] = "OpenGLEngine/vendor/ImGuizmo"
+IncludeDir["reactphysics3d"] = "OpenGLEngine/vendor/reactphysics3d/include"
 
 group "Dependance"
 	include "OpenGLEngine/vendor/GLFW"
@@ -27,6 +28,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/imgui"
 	include "OpenGLEngine/vendor/ImGuizmo"
 	include "OpenGLEngine/vendor/yaml_cpp"
+	include "OpenGLEngine/vendor/reactphysics3d"
 
 group ""
 
@@ -62,7 +64,8 @@ project "OpenGLEngine"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.reactphysics3d}"
 	}
 
 	links
@@ -73,7 +76,8 @@ project "OpenGLEngine"
 		"ImGui",
 		"ImGuizmo",
 		"yaml-cpp",
-		"opengl32.lib"
+		"reactphysics3d",
+		"opengl32.lib",
 	}
 	
 	flags { "MultiProcessorCompile" }

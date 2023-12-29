@@ -12,7 +12,6 @@
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
-#include <OpenGLEngine/Entity/Components/RenderComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 
@@ -130,7 +129,6 @@ namespace OpenGLEngine
 							std::string file = filesys.string();
 
 							mc.SetModel(file);
-							entity->GetComponent<RenderComponent>().GenerateShader();
 						}
 						ImGui::EndDragDropTarget();
 					}
@@ -181,17 +179,13 @@ namespace OpenGLEngine
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
 								mc.GetMaterial().addTexture("diffuse", file);
-								entity->GetComponent<RenderComponent>().GenerateShader();
 							}
 							ImGui::EndDragDropTarget();
 						}
 						ImGui::SameLine();
 						if (mc.GetMaterial().hasTexture("diffuse"))
 						{
-							if (ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get()))
-							{
-								entity->GetComponent<RenderComponent>().GenerateShader();
-							}
+							ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get());
 						}
 
 						ImGui::Text("Diffuse Color: ");
@@ -209,17 +203,13 @@ namespace OpenGLEngine
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
 								mc.GetMaterial().addTexture("specular", file);
-								entity->GetComponent<RenderComponent>().GenerateShader();
 							}
 							ImGui::EndDragDropTarget();
 						}
 						ImGui::SameLine();
 						if (mc.GetMaterial().hasTexture("specular"))
 						{
-							if (ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get()))
-							{
-								entity->GetComponent<RenderComponent>().GenerateShader();
-							}
+							ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get());
 						}
 
 						ImGui::Text("Specular Color: "); //ImGui::SameLine();
@@ -274,7 +264,7 @@ namespace OpenGLEngine
 						nsc.Bind();
 					}*/
 
-					int size = nsc.getLoadedScriptNames().size();
+					int size = static_cast<int>(nsc.getLoadedScriptNames().size());
 					const char** items = new const char* [size];
 
 					for (int i = 0; i < size; i++)
@@ -296,30 +286,6 @@ namespace OpenGLEngine
 								ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
 						}
 						ImGui::EndCombo();
-					}
-
-					ImGui::TreePop();
-				}
-			}
-
-			if (entity->HasComponent<RenderComponent>())
-			{
-				auto& rc = entity->GetComponent<RenderComponent>();
-
-				if (ImGui::TreeNodeEx("Render", ImGuiTreeNodeFlags_DefaultOpen, "Render"))
-				{
-					if (ImGui::BeginPopupContextItem())
-					{
-						if (ImGui::MenuItem("Delete Component"))
-						{
-							entity->RemoveComponent<RenderComponent>();
-						}
-						ImGui::EndPopup();
-					}
-
-					if (ImGui::Checkbox("Active render", &rc.m_CanDraw))
-					{
-						entity->GetComponent<RenderComponent>().GenerateShader();
 					}
 
 					ImGui::TreePop();
@@ -353,13 +319,6 @@ namespace OpenGLEngine
 						entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
 						entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
 						entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
-					}
-				}
-
-				if (!entity->HasComponent<RenderComponent>()) {
-					if (ImGui::MenuItem("Render Component")) {
-						entity->AddComponent<RenderComponent>();
-						entity->GetComponent<RenderComponent>().GenerateShader();
 					}
 				}
 

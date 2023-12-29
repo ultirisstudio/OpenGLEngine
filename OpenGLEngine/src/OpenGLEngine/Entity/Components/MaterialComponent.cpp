@@ -14,7 +14,7 @@ namespace OpenGLEngine
 	{
 		m_Material->addVec3("ambient", glm::vec3(0.1f));
 		m_Material->addVec3("diffuse", glm::vec3(1.0f));
-		m_Material->addVec3("specular", glm::vec3(1.0f));
+		m_Material->addVec3("specular", glm::vec3(0.0f));
 		m_Material->addBoolean("diffuse", false);
 		m_Material->addBoolean("specular", false);
 		m_Material->addFloat("shininess", 32.0f);

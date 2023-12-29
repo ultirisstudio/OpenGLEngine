@@ -4,6 +4,9 @@
 
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Scene/EditorCamera.h>
+#include <OpenGLEngine/Tools/Chronometer.h>
+
+#include <OpenGLEngine/Physics/PhysicsEngine.h>
 
 namespace OpenGLEngine
 {
@@ -14,6 +17,9 @@ namespace OpenGLEngine
 	public:
 		Scene();
 		Scene(const std::string& name);
+		~Scene();
+
+		void Init();
 
 		Entity* CreateEntity(const std::string& name = std::string());
 		Entity* CreateEntityWithUUID(const std::string& uuid, const std::string& name = std::string());
@@ -39,6 +45,7 @@ namespace OpenGLEngine
 		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
 
 		std::vector<Entity*> getDrawEntities();
+		EntityMap* getEntities();
 
 		Entity* m_SelectedEntity;
 
@@ -59,6 +66,8 @@ namespace OpenGLEngine
 		std::string m_Path;
 
 		bool m_OnRuntime;
+
+		std::unique_ptr<PhysicsEngine> m_PhysicsEngine;
 
 		friend class SceneSerializer;
 	public:

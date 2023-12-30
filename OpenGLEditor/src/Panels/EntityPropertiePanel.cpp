@@ -14,6 +14,7 @@
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/LightComponent.h>
 
 namespace OpenGLEngine
 {
@@ -239,6 +240,28 @@ namespace OpenGLEngine
 				}
 			}
 
+			if (entity->HasComponent<LightComponent>())
+			{
+				auto& lc = entity->GetComponent<LightComponent>();
+
+				if (ImGui::TreeNodeEx("Light", ImGuiTreeNodeFlags_DefaultOpen, "Light"))
+				{
+					if (ImGui::BeginPopupContextItem())
+					{
+						if (ImGui::MenuItem("Delete Component"))
+						{
+							entity->RemoveComponent<LightComponent>();
+						}
+						ImGui::EndPopup();
+					}
+
+					ImGui::Text("Diffuse Color: ");
+					ImGui::ColorEdit3("##LightDiffuseColor", glm::value_ptr(lc.diffuse));
+
+					ImGui::TreePop();
+				}
+			}
+
 			if (entity->HasComponent<NativeScriptComponent>())
 			{
 				auto& nsc = entity->GetComponent<NativeScriptComponent>();
@@ -331,6 +354,12 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<CameraComponent>()) {
 					if (ImGui::MenuItem("Camera Component")) {
 						entity->AddComponent<CameraComponent>().Init();
+					}
+				}
+
+				if (!entity->HasComponent<LightComponent>()) {
+					if (ImGui::MenuItem("Light Component")) {
+						entity->AddComponent<LightComponent>();
 					}
 				}
 

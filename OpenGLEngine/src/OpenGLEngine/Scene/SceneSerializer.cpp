@@ -6,6 +6,7 @@
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
+#include <OpenGLEngine/Entity/Components/LightComponent.h>
 
 #include <OpenGLEngine/Entity/ScriptableEntity.h>
 #include <OpenGLEngine/Core/Input.h>
@@ -141,6 +142,19 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
+		if (entity->HasComponent<LightComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "LightComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& lc = entity->GetComponent<LightComponent>();
+			out << YAML::Key << "diffuse" << YAML::Value << lc.diffuse;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
 		if (entity->HasComponent<CameraComponent>())
 		{
 			out << YAML::BeginMap;
@@ -240,7 +254,8 @@ namespace OpenGLEngine
 							bool hasDiffuse = materialComponent["hasDiffuse"].as<bool>();
 							bool hasSpecular = materialComponent["hasSpecular"].as<bool>();
 
-							mc.GetMaterial().addVec3("ambient", materialComponent["ambient"].as<glm::vec3>());
+							*mc.GetMaterial().getVec3("ambient") = materialComponent["ambient"].as<glm::vec3>();
+							*mc.GetMaterial().getFloat("shininess") = materialComponent["shininess"].as<float>();
 
 							if (hasDiffuse)
 							{
@@ -248,7 +263,7 @@ namespace OpenGLEngine
 							}
 							else
 							{
-								mc.GetMaterial().addVec3("diffuse", materialComponent["diffuse"].as<glm::vec3>());
+								*mc.GetMaterial().getVec3("diffuse") = materialComponent["diffuse"].as<glm::vec3>();
 							}
 
 							if (hasSpecular)
@@ -257,16 +272,21 @@ namespace OpenGLEngine
 							}
 							else
 							{
-								mc.GetMaterial().addVec3("specular", materialComponent["specular"].as<glm::vec3>());
+								*mc.GetMaterial().getVec3("specular") = materialComponent["specular"].as<glm::vec3>();
 							}
-
-							mc.GetMaterial().addFloat("shininess", materialComponent["shininess"].as<float>());
 						}
 
 						auto skyboxComponent = component["SkyboxComponent"];
 						if (skyboxComponent)
 						{
 							auto& sc = deserializedEntity->AddComponent<SkyboxComponent>();
+						}
+
+						auto lightComponent = component["LightComponent"];
+						if (lightComponent)
+						{
+							auto& lc = deserializedEntity->AddComponent<LightComponent>();
+							lc.diffuse = lightComponent["diffuse"].as<glm::vec3>();
 						}
 
 						auto cameraComponent = component["CameraComponent"];

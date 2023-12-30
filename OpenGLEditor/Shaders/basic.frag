@@ -36,36 +36,51 @@ out vec4 color;
 uniform Material uMaterial;
 uniform Light uLight;
 
+uniform vec3 uCameraPosition;
+
 void main()
 {
 		VertexData vertex;
         vertex.position = fPosition;
         vertex.normal = fNormal;
 
-		float ambientStrength = 0.1f;
-		vec3 ambient = ambientStrength * uLight.diffuse;
-		vec3 diffuse;
-		vec3 specular;
+		vec3 objectColor;
+		vec3 objectSpecular;
 
 		if (uMaterial.use_diffuse_texture == 1)
 		{
-			diffuse = texture(uMaterial.diffuse_texture, fTextureCoordinates).xyz;
+			objectColor = texture(uMaterial.diffuse_texture, fTextureCoordinates).rgb;
 		}
 		else
 		{
-			diffuse = uMaterial.diffuse_color;
+			objectColor = uMaterial.diffuse_color;
 		}
-		
+
 		if (uMaterial.use_specular_texture == 1)
 		{
-			specular = texture(uMaterial.specular_texture, fTextureCoordinates).xyz;
+			objectSpecular = texture(uMaterial.specular_texture, fTextureCoordinates).rgb;
 		}
 		else
 		{
-			specular = uMaterial.specular_color;
+			objectSpecular = uMaterial.specular_color;
 		}
+
+		float ambientStrength = 0.1f;
+		vec3 ambient = uLight.diffuse * objectColor;
+
+		vec3 norm = normalize(vertex.normal);
+		vec3 lightDir = normalize(uLight.position - vertex.position);
+
+		float diff = max(dot(norm, lightDir), 0.0f);
+		vec3 diffuse = uLight.diffuse * diff * objectColor;
+
+		vec3 viewDir = normalize(uCameraPosition - vertex.position);
+		vec3 reflectDir = reflect(-lightDir, norm);
+
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+		vec3 specular = spec * objectSpecular;
 		
-		vec3 result = ambientStrength * diffuse; // + specular
+		vec3 result = (ambient + diffuse + specular);
 		
         color = vec4(result, 1.0f);
 };

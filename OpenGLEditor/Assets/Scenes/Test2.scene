@@ -4,20 +4,18 @@ Entities:
     ID: 6d839d32-d1c6-4de8-a928-af2e983f5543
     Components:
       - TransformComponent:
-          Position: [-8.8101263, -1.38980043, -7.19999647]
+          Position: [-8.8101263, -2.81894064, -7.19999647]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - MaterialComponent:
-          hasDiffuse: false
-          hasSpecular: false
+          hasDiffuse: true
+          hasSpecular: true
           ambient: [0, 0, 0]
-          diffuse: [1, 0.999989986, 0.999989986]
-          specular: [0, 0, 0]
+          diffuse: ""
+          specular: ""
           shininess: 32
       - ModelComponent:
           model: Assets/Models/cube.obj
-      - RenderComponent:
-          render: true
   - Entity: Camera
     ID: 6a8df738-91ff-4d7c-a7db-e111af45e5de
     Components:

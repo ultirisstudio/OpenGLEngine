@@ -13,7 +13,9 @@
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
+#include <OpenGLEngine/Entity/Components/LightComponent.h>
 
+#include <OpenGLEngine/Tools/Math.h>
 
 namespace OpenGLEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
@@ -22,6 +24,9 @@ namespace OpenGLEngine {
 	{
 		m_SceneData.m_Shader = Shader();
 		m_SceneData.m_Shader.LoadFromFile("Shaders/basic.vert", "Shaders/basic.frag");
+
+		m_SceneData.m_Shader.setUniform("uLight.position", glm::vec3(1.0f, 1.0f, 1.0f));
+		m_SceneData.m_Shader.setUniform("uLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -37,19 +42,33 @@ namespace OpenGLEngine {
 		{
 			viewMatrix = m_SceneData.m_Scene->getActiveCamera()->getViewMatrix();
 			projectionMatrix = m_SceneData.m_Scene->getActiveCamera()->getProjectionMatrix();
+
+			glm::vec3 position, rotation, scale;
+			Math::DecomposeTransform(m_SceneData.m_Scene->getActiveCamera()->GetTransform(), position, rotation, scale);
+
+			m_SceneData.m_Shader.setUniform("uCameraPosition", position);
 		}
 		else
 		{
 			viewMatrix = m_SceneData.m_Scene->getEditorCamera().getViewMatrix();
 			projectionMatrix = m_SceneData.m_Scene->getEditorCamera().getProjectionMatrix();
+
+			glm::vec3 position, rotation, scale;
+			Math::DecomposeTransform(m_SceneData.m_Scene->getEditorCamera().GetTransform(), position, rotation, scale);
+
+			m_SceneData.m_Shader.setUniform("uCameraPosition", position);
 		}
 
 		m_SceneData.m_Shader.use();
 
-		m_SceneData.m_Shader.setUniform("uLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-
 		for (auto entity = m_SceneData.m_Scene->getEntities()->begin(); entity != m_SceneData.m_Scene->getEntities()->end(); entity++)
 		{
+			if (entity->second.HasComponent<LightComponent>())
+			{
+				m_SceneData.m_Shader.setUniform("uLight.position", entity->second.GetComponent<TransformComponent>().Position);
+				m_SceneData.m_Shader.setUniform("uLight.diffuse", entity->second.GetComponent<LightComponent>().diffuse);
+			}
+
 			if (entity->second.HasComponent<ModelComponent>() && entity->second.HasComponent<MaterialComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())
 			{
 				Material& material = entity->second.GetComponent<MaterialComponent>().GetMaterial();

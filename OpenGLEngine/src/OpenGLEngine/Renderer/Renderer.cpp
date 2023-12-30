@@ -24,9 +24,6 @@ namespace OpenGLEngine {
 	{
 		m_SceneData.m_Shader = Shader();
 		m_SceneData.m_Shader.LoadFromFile("Shaders/basic.vert", "Shaders/basic.frag");
-
-		m_SceneData.m_Shader.setUniform("uLight.position", glm::vec3(1.0f, 1.0f, 1.0f));
-		m_SceneData.m_Shader.setUniform("uLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -63,10 +60,12 @@ namespace OpenGLEngine {
 
 		for (auto entity = m_SceneData.m_Scene->getEntities()->begin(); entity != m_SceneData.m_Scene->getEntities()->end(); entity++)
 		{
-			if (entity->second.HasComponent<LightComponent>())
+			if (entity->second.HasComponent<LightComponent>() && entity->second.GetComponent<LightComponent>().lightType == LightComponent::LightType::DIRECTIONAL)
 			{
-				m_SceneData.m_Shader.setUniform("uLight.position", entity->second.GetComponent<TransformComponent>().Position);
-				m_SceneData.m_Shader.setUniform("uLight.diffuse", entity->second.GetComponent<LightComponent>().diffuse);
+				m_SceneData.m_Shader.setUniform("dirLight.direction", entity->second.GetComponent<LightComponent>().dir_direction);
+				m_SceneData.m_Shader.setUniform("dirLight.ambient", entity->second.GetComponent<LightComponent>().dir_ambient);
+				m_SceneData.m_Shader.setUniform("dirLight.diffuse", entity->second.GetComponent<LightComponent>().dir_diffuse);
+				m_SceneData.m_Shader.setUniform("dirLight.specular", entity->second.GetComponent<LightComponent>().dir_specular);
 			}
 
 			if (entity->second.HasComponent<ModelComponent>() && entity->second.HasComponent<MaterialComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())

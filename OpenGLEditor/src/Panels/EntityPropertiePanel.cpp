@@ -213,8 +213,13 @@ namespace OpenGLEngine
 							ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get());
 						}
 
-						ImGui::Text("Specular Color: "); //ImGui::SameLine();
+						ImGui::Text("Specular Color: ");
 						ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
+
+						ImGui::Separator();
+
+						ImGui::Text("Shininess: ");
+						ImGui::InputFloat("##Shininess", mc.GetMaterial().getFloat("shininess").get());
 					}
 
 					ImGui::TreePop();
@@ -255,8 +260,62 @@ namespace OpenGLEngine
 						ImGui::EndPopup();
 					}
 
-					ImGui::Text("Diffuse Color: ");
-					ImGui::ColorEdit3("##LightDiffuseColor", glm::value_ptr(lc.diffuse));
+					const char* items[] = { "Directional Light", "Point Light" };
+					const char* current_item = items[0];
+
+					if (ImGui::BeginCombo("##combolighttype", current_item))
+					{
+						for (int n = 0; n <= 1; n++)
+						{
+							bool is_selected = (current_item == items[n]);
+							if (ImGui::Selectable(items[n], is_selected))
+							{
+								if (items[n] == "Directional Light")
+								{
+									lc.SetType(LightComponent::LightType::DIRECTIONAL);
+								}
+								else if (items[n] == "Point Light")
+								{
+									lc.SetType(LightComponent::LightType::POINT);
+								}
+							}
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+					if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
+					{
+						ImGui::Text("Directional light direction: ");
+						DrawVec3Control("dirlightdirection", lc.dir_direction);
+
+						ImGui::Text("Directional light ambient: ");
+						ImGui::ColorEdit3("##dirlightambient", glm::value_ptr(lc.dir_ambient));
+
+						ImGui::Text("Directional light diffuse: ");
+						ImGui::ColorEdit3("##dirlightdiffuse", glm::value_ptr(lc.dir_diffuse));
+
+						ImGui::Text("Directional light specular: ");
+						ImGui::ColorEdit3("##dirlightspecular", glm::value_ptr(lc.dir_specular));
+					}
+					else if (lc.lightType == LightComponent::LightType::POINT)
+					{
+						ImGui::Text("Point light position: ");
+						DrawVec3Control("pointlightposition", lc.point_position);
+						ImGui::Text("Point light ambient: ");
+						ImGui::ColorEdit3("##pointlightambient", glm::value_ptr(lc.point_ambient));
+						ImGui::Text("Point light diffuse: ");
+						ImGui::ColorEdit3("##pointlightdiffuse", glm::value_ptr(lc.point_diffuse));
+						ImGui::Text("Point light specular: ");
+						ImGui::ColorEdit3("##pointlightspecular", glm::value_ptr(lc.point_specular));
+						ImGui::Text("Point light constant: ");
+						ImGui::InputFloat("##pointlightconstant", &lc.point_constant);
+						ImGui::Text("Point light linear: ");
+						ImGui::InputFloat("##pointlightlinear", &lc.point_linear);
+						ImGui::Text("Point light quadratic: ");
+						ImGui::InputFloat("##pointlightquadratic", &lc.point_quadratic);
+					}
 
 					ImGui::TreePop();
 				}

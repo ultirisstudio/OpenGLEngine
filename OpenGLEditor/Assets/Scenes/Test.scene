@@ -11,8 +11,8 @@ Entities:
           hasDiffuse: false
           hasSpecular: false
           ambient: [0, 0, 0]
-          diffuse: [0.772093058, 0.100551665, 0.100551665]
-          specular: [9.99999997e-07, 0, 0]
+          diffuse_color: [0.772093058, 0.100551665, 0.100551665]
+          specular_color: [9.99999997e-07, 0, 0]
           shininess: 32
       - ModelComponent:
           model: Assets/Models/cube.obj
@@ -27,8 +27,10 @@ Entities:
           hasDiffuse: true
           hasSpecular: true
           ambient: [0, 0, 0]
-          diffuse: Assets\Textures\1001_albedo.jpg
-          specular: Assets\Textures\1001_roughness.jpg
+          diffuse_color: [1, 1, 1]
+          specular_color: [0, 0, 0]
+          diffuse_texture: Assets\Textures\1001_albedo.jpg
+          specular_texture: Assets\Textures\1001_roughness.jpg
           shininess: 32
       - ModelComponent:
           model: Assets\Models\BackPack.obj
@@ -45,7 +47,7 @@ Entities:
     ID: 1a482772-9898-41b6-b048-d861bc5892b3
     Components:
       - TransformComponent:
-          Position: [-5.10627317, 0, 4.07963467]
+          Position: [1.35947418, 4.06594372, 3.8539114]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - LightComponent:

@@ -91,23 +91,17 @@ namespace OpenGLEngine
 			out << YAML::Key << "hasSpecular" << YAML::Value << hasSpecular;
 
 			out << YAML::Key << "ambient" << YAML::Value << *mc.GetMaterial().getVec3("ambient");
+			out << YAML::Key << "diffuse_color" << YAML::Value << *mc.GetMaterial().getVec3("diffuse");
+			out << YAML::Key << "specular_color" << YAML::Value << *mc.GetMaterial().getVec3("specular");
 
 			if (hasDiffuse)
 			{
-				out << YAML::Key << "diffuse" << YAML::Value << mc.m_DiffuseTexture;
-			}
-			else
-			{
-				out << YAML::Key << "diffuse" << YAML::Value << *mc.GetMaterial().getVec3("diffuse");
+				out << YAML::Key << "diffuse_texture" << YAML::Value << mc.m_DiffuseTexture;
 			}
 
 			if (hasSpecular)
 			{
-				out << YAML::Key << "specular" << YAML::Value << mc.m_SpecularTexture;
-			}
-			else
-			{
-				out << YAML::Key << "specular" << YAML::Value << *mc.GetMaterial().getVec3("specular");
+				out << YAML::Key << "specular_texture" << YAML::Value << mc.m_SpecularTexture;
 			}
 
 			out << YAML::Key << "shininess" << YAML::Value << *mc.GetMaterial().getFloat("shininess");
@@ -148,8 +142,8 @@ namespace OpenGLEngine
 			out << YAML::Key << "LightComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& lc = entity->GetComponent<LightComponent>();
-			out << YAML::Key << "diffuse" << YAML::Value << lc.diffuse;
+			//auto& lc = entity->GetComponent<LightComponent>();
+			//out << YAML::Key << "diffuse" << YAML::Value << lc.diffuse;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -256,23 +250,17 @@ namespace OpenGLEngine
 
 							*mc.GetMaterial().getVec3("ambient") = materialComponent["ambient"].as<glm::vec3>();
 							*mc.GetMaterial().getFloat("shininess") = materialComponent["shininess"].as<float>();
+							*mc.GetMaterial().getVec3("diffuse") = materialComponent["diffuse_color"].as<glm::vec3>();
+							*mc.GetMaterial().getVec3("specular") = materialComponent["specular_color"].as<glm::vec3>();
 
 							if (hasDiffuse)
 							{
-								mc.addTexture("diffuse", materialComponent["diffuse"].as<std::string>());
-							}
-							else
-							{
-								*mc.GetMaterial().getVec3("diffuse") = materialComponent["diffuse"].as<glm::vec3>();
+								mc.addTexture("diffuse", materialComponent["diffuse_texture"].as<std::string>());
 							}
 
 							if (hasSpecular)
 							{
-								mc.addTexture("specular", materialComponent["specular"].as<std::string>());
-							}
-							else
-							{
-								*mc.GetMaterial().getVec3("specular") = materialComponent["specular"].as<glm::vec3>();
+								mc.addTexture("specular", materialComponent["specular_texture"].as<std::string>());
 							}
 						}
 
@@ -285,8 +273,8 @@ namespace OpenGLEngine
 						auto lightComponent = component["LightComponent"];
 						if (lightComponent)
 						{
-							auto& lc = deserializedEntity->AddComponent<LightComponent>();
-							lc.diffuse = lightComponent["diffuse"].as<glm::vec3>();
+							//auto& lc = deserializedEntity->AddComponent<LightComponent>();
+							//lc.diffuse = lightComponent["diffuse"].as<glm::vec3>();
 						}
 
 						auto cameraComponent = component["CameraComponent"];

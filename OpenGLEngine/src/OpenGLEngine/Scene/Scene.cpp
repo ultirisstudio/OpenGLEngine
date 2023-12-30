@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <OpenGLEngine/Tools/UUID.h>
-#include <OpenGLEngine/Entity/Components/RenderComponent.h>
+#include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
@@ -20,7 +20,8 @@ namespace OpenGLEngine
 		m_SelectedEntity(nullptr),
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
-		m_OnRuntime(false)
+		m_OnRuntime(false),
+		m_LightsCount(0)
 	{
 		Init();
 	}
@@ -31,7 +32,8 @@ namespace OpenGLEngine
 		m_SelectedEntity(nullptr),
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
-		m_OnRuntime(false)
+		m_OnRuntime(false),
+		m_LightsCount(0)
 	{
 		Init();
 	}
@@ -155,16 +157,6 @@ namespace OpenGLEngine
 			m_ActiveCamera->OnResize(width, height);
 	}
 
-	std::vector<Entity*> Scene::getDrawEntities()
-	{
-		std::vector<Entity*> entities;
-
-		for (Entity* entity : View<RenderComponent>()) {
-			entities.push_back(entity);
-		}
-
-		return entities;
-	}
 	EntityMap* Scene::getEntities()
 	{
 		return &m_EntityMap;

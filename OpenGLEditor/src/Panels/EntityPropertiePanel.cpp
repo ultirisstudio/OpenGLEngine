@@ -261,7 +261,7 @@ namespace OpenGLEngine
 					}
 
 					const char* items[] = { "Directional Light", "Point Light" };
-					const char* current_item = items[0];
+					const char* current_item = lc.item_type;
 
 					if (ImGui::BeginCombo("##combolighttype", current_item))
 					{
@@ -287,12 +287,6 @@ namespace OpenGLEngine
 
 					if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 					{
-						ImGui::Text("Directional light direction: ");
-						DrawVec3Control("dirlightdirection", lc.dir_direction);
-
-						ImGui::Text("Directional light ambient: ");
-						ImGui::ColorEdit3("##dirlightambient", glm::value_ptr(lc.dir_ambient));
-
 						ImGui::Text("Directional light diffuse: ");
 						ImGui::ColorEdit3("##dirlightdiffuse", glm::value_ptr(lc.dir_diffuse));
 
@@ -301,10 +295,6 @@ namespace OpenGLEngine
 					}
 					else if (lc.lightType == LightComponent::LightType::POINT)
 					{
-						ImGui::Text("Point light position: ");
-						DrawVec3Control("pointlightposition", lc.point_position);
-						ImGui::Text("Point light ambient: ");
-						ImGui::ColorEdit3("##pointlightambient", glm::value_ptr(lc.point_ambient));
 						ImGui::Text("Point light diffuse: ");
 						ImGui::ColorEdit3("##pointlightdiffuse", glm::value_ptr(lc.point_diffuse));
 						ImGui::Text("Point light specular: ");
@@ -417,8 +407,14 @@ namespace OpenGLEngine
 				}
 
 				if (!entity->HasComponent<LightComponent>()) {
-					if (ImGui::MenuItem("Light Component")) {
-						entity->AddComponent<LightComponent>();
+					if (ImGui::MenuItem("Directional Light")) {
+						entity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+					}
+				}
+
+				if (!entity->HasComponent<LightComponent>()) {
+					if (ImGui::MenuItem("Spot Light Component")) {
+						entity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
 					}
 				}
 

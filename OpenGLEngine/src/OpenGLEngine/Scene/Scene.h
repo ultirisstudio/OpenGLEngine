@@ -8,6 +8,8 @@
 
 #include <OpenGLEngine/Physics/PhysicsEngine.h>
 
+class PointLight;
+
 namespace OpenGLEngine
 {
 	using EntityMap = std::unordered_map<std::string, Entity>;
@@ -44,10 +46,11 @@ namespace OpenGLEngine
 
 		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
 
-		std::vector<Entity*> getDrawEntities();
 		EntityMap* getEntities();
 
 		Entity* m_SelectedEntity;
+
+		int m_LightsCount;
 
 		bool isOnRuntime() { return m_OnRuntime; }
 

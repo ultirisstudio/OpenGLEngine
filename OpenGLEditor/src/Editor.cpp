@@ -11,7 +11,7 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport()
+	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
 	{
 		
 	}

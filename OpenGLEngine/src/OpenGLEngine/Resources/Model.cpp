@@ -75,6 +75,11 @@ namespace OpenGLEngine
 		loadNode(scene->mRootNode, scene);
 	}
 
+	Model::Model(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+	{
+		m_meshes.push_back(new Mesh(vertices, indices));
+	}
+
 	Model::~Model()
 	{
 		for (Mesh* mesh : m_meshes)
@@ -92,5 +97,10 @@ namespace OpenGLEngine
 	std::shared_ptr<Model> Model::CreateModel(const std::string& path)
 	{
 		return std::make_shared<Model>(path);
+	}
+
+	std::shared_ptr<Model> Model::CreateModel(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+	{
+		return std::make_shared<Model>(vertices, indices);
 	}
 }

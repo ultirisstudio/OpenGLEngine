@@ -22,9 +22,11 @@ namespace OpenGLEngine
 
 	public:
 		Model(const std::string& path);
+		Model(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 		~Model();
 
 		static std::shared_ptr<Model> CreateModel(const std::string& path);
+		static std::shared_ptr<Model> CreateModel(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
 		void draw() const;
 	};

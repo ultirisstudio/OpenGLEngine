@@ -6,12 +6,42 @@
 #include <OpenGLEngine/Scene/SceneSerializer.h>
 
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
+#include <OpenGLEngine/Entity/Components/ModelComponent.h>
+#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
+#include <OpenGLEngine/Entity/Components/LightComponent.h>
 
 namespace OpenGLEngine
 {
 	SceneManager::SceneManager()
 	{
 		m_Scene = std::make_unique<Scene>();
+
+		/*Entity* temp = m_Scene->CreateEntity("dir_light");
+		temp->AddComponent<TransformComponent>();
+		temp->GetComponent<TransformComponent>().SetRotation(glm::vec3(-2.5f, -7.5f, -9.1f));
+		temp->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				for (int k = 0; k < 5; k++)
+				{
+					Entity* temp = m_Scene->CreateEntity("test_" + std::to_string(i) + "_" + std::to_string(j) + "_" + std::to_string(k));
+					temp->AddComponent<TransformComponent>(glm::vec3({ i * 6.0f, j * 6.0f, k * 6.0f }));
+					temp->AddComponent<ModelComponent>("Assets\\Models\\BackPack.obj");
+					temp->AddComponent<MaterialComponent>();
+					temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+					temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+					temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+					temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
+					temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
+					temp->GetComponent<MaterialComponent>().addTexture("diffuse", "Assets\\Textures\\1001_albedo.jpg");
+					temp->GetComponent<MaterialComponent>().addTexture("specular", "Assets\\Textures\\1001_metallic.jpg");
+					temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
+				}
+			}
+		}*/
 	}
 
 	void SceneManager::update(double dt)

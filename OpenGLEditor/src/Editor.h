@@ -4,6 +4,8 @@
 #include <OpenGLEngine/Events/Event.h>
 #include <OpenGLEngine/Events/KeyEvent.h>
 
+#include <OpenGLEngine/Tools/Chronometer.h>
+
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/EntityPropertiePanel.h"
 #include "Panels/SceneHierarchy.h"
@@ -45,6 +47,8 @@ namespace OpenGLEngine
 		int nb_frame = 0;
 		int fps = 0;
 		int latency = 0;
+	private:
+		Chronometer m_Chronometer;
 	private:
 		bool m_optionMenu = false;
 		int m_optionTab = 0;

@@ -154,28 +154,27 @@ namespace OpenGLEngine
 						ImGui::EndPopup();
 					}
 
-					if (entity->HasComponent<ModelComponent>())
+					ImGui::Text("Heightmap texture: ");
+					ImGui::ImageButton((ImTextureID)tc.GetEditorHeightMapTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+					if (ImGui::BeginDragDropTarget())
 					{
-						ImGui::Text("Heightmap texture: ");
-						ImGui::ImageButton((ImTextureID)tc.GetEditorHeightMapTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
-						if (ImGui::BeginDragDropTarget())
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-							{
-								const wchar_t* path = (const wchar_t*)payload->Data;
-								std::filesystem::path filesys = path;
-								std::string file = filesys.string();
-								tc.SetHeightMap(file);
-							}
-							ImGui::EndDragDropTarget();
+							const wchar_t* path = (const wchar_t*)payload->Data;
+							std::filesystem::path filesys = path;
+							std::string file = filesys.string();
+							tc.SetHeightMap(file);
 						}
+						ImGui::EndDragDropTarget();
+					}
 
-						ImGui::Separator();
+					ImGui::Separator();
 
-						if (ImGui::Button("Generate terrain"))
-						{
-							tc.GenerateTerrain();
-						}
+					ImGui::Checkbox("Wireframe", &tc.m_PolygonMode);
+
+					if (ImGui::Button("Generate terrain"))
+					{
+						tc.GenerateTerrain();
 					}
 
 					ImGui::TreePop();
@@ -197,22 +196,7 @@ namespace OpenGLEngine
 						ImGui::EndPopup();
 					}
 
-					/*const char* items[] = {"BPhong", "CubeMap"};
-
-					if (ImGui::BeginCombo("##combo", mc.current_item))
-					{
-						for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-						{
-							bool is_selected = (mc.current_item == items[n]);
-							if (ImGui::Selectable(items[n], is_selected))
-								mc.current_item = items[n];
-							if (is_selected)
-								ImGui::SetItemDefaultFocus();
-						}
-						ImGui::EndCombo();
-					}*/
-
-					if (entity->HasComponent<ModelComponent>())
+					if (entity->HasComponent<ModelComponent>() || entity->HasComponent<TerrainComponent>())
 					{
 						ImGui::Text("Diffuse texture: ");
 						ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });

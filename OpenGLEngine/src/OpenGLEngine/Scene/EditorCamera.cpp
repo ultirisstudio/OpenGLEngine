@@ -33,10 +33,10 @@ namespace OpenGLEngine
 		m_lastMousePos(0),
 		m_canMove(true),
 		m_moving(false),
-		m_RotateSensitivity(0.1f),
-		m_TranslateSensitivity(0.04f),
+		m_RotateSensitivity(0.16f),
+		m_TranslateSensitivity(0.1f),
 
-		m_ScrollSensitivity(1.0f),
+		m_ScrollSensitivity(2.0f),
 		m_CameraFocus(false),
 		m_rotate(false),
 		m_translate(false),

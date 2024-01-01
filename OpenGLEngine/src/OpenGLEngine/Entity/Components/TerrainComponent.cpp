@@ -1,6 +1,8 @@
 #include "depch.h"
 #include "TerrainComponent.h"
 
+#include <glad/glad.h>
+
 #include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Resources/Model.h>
@@ -26,75 +28,105 @@ namespace OpenGLEngine
 
 	void TerrainComponent::GenerateTerrain()
 	{
+		//if (m_Generated)
+			//return;
+
+		m_Generated = true;
+
 		int width, height, nChannels;
-		unsigned char* data = stbi_load("resources/heightmaps/iceland_heightmap.png", &width, &height, &nChannels, 0);
+		unsigned char* data = stbi_load(height_map_path.c_str(), &width, &height, &nChannels, 0);
+
+		float yScale, yShift;
+		int rez;
+		unsigned bytePerPixel;
+
+		yScale = 64.0f / 256.0f;
+		yShift = 16.0f;
+		rez = 1;
+		bytePerPixel = nChannels;
 
 		std::vector<Vertex> vertices;
-		//std::vector<float> vertices;
-		float yScale = 64.0f / 256.0f, yShift = 16.0f;  // apply a scale+shift to the height data
 		for (unsigned int i = 0; i < height; i++)
 		{
 			for (unsigned int j = 0; j < width; j++)
 			{
 				Vertex vertex;
 
-				// retrieve texel for (i,j) tex coord
-				unsigned char* texel = data + (j + width * i) * nChannels;
-				// raw height at coordinate
-				unsigned char y = texel[0];
+				unsigned char* pixelOffset = data + (j + width * i) * bytePerPixel;
+				unsigned char y = pixelOffset[0];
 
-				// vertex
 				vertex.position.x = -height / 2.0f + i;
 				vertex.position.y = (int)y * yScale - yShift;
 				vertex.position.z = -width / 2.0f + j;
 
-				// normal
-				// retrieve texel for (i-1,j) tex coord
-				unsigned char* texel1 = data + (j + width * (i - 1)) * nChannels;
-				// raw height at coordinate
-				unsigned char y1 = texel1[0];
-				// retrieve texel for (i,j-1) tex coord
-				unsigned char* texel2 = data + ((j - 1) + width * i) * nChannels;
-				// raw height at coordinate
-				unsigned char y2 = texel2[0];
-				// retrieve texel for (i+1,j) tex coord
-				unsigned char* texel3 = data + (j + width * (i + 1)) * nChannels;
-				// raw height at coordinate
-				unsigned char y3 = texel3[0];
-				// retrieve texel for (i,j+1) tex coord
-				unsigned char* texel4 = data + ((j + 1) + width * i) * nChannels;
-				// raw height at coordinate
-				unsigned char y4 = texel4[0];
+				vertex.normal.x = 0;
+				vertex.normal.y = 1;
+				vertex.normal.z = 0;
 
-				// normal
-				glm::vec3 normal = glm::normalize(glm::vec3(y1 - y3, 2.0f, y2 - y4));
-
-				vertex.normal.x = normal.x;
-				vertex.normal.y = normal.y;
-				vertex.normal.z = normal.z;
-
-				// texture coordinates
-				vertex.texCoord.x = (float)j / (float)width;
-				vertex.texCoord.y = (float)i / (float)height;
+				vertex.texCoord.x = (float)j / ((float)width - 1);
+				vertex.texCoord.y = (float)i / ((float)height - 1);
 				
 				vertices.push_back(vertex);
 			}
 		}
 
+		std::cout << "Loaded " << vertices.size() << " vertices" << std::endl;
+
 		stbi_image_free(data);
 
-		std::vector<unsigned int> indices;
-		for (unsigned int i = 0; i < height - 1; i++)       // for each row a.k.a. each strip
+		std::vector<unsigned> indices;
+		for (unsigned i = 0; i < height - 1; i++)
 		{
-			for (unsigned int j = 0; j < width; j++)      // for each column
+			for (unsigned j = 0; j < width; j++)
 			{
-				for (unsigned int k = 0; k < 2; k++)      // for each side of the strip
+				for (unsigned k = 0; k < 2; k++)
 				{
 					indices.push_back(j + width * (i + k));
 				}
 			}
 		}
 
-		entity->GetComponent<ModelComponent>().SetModel(Model::CreateModel(vertices, indices));
+		std::cout << "Loaded " << indices.size() << " indices" << std::endl;
+
+		numStrips = (height - 1) / rez;
+		numTrisPerStrip = (width / rez) * 2 - 2;
+		std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
+		std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
+
+		unsigned int terrainVBO, terrainEBO;
+		glGenVertexArrays(1, &terrainVAO);
+		glGenBuffers(1, &terrainVBO);
+		glGenBuffers(1, &terrainEBO);
+
+		glBindVertexArray(terrainVAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
+
+		//entity->GetComponent<ModelComponent>().SetModel(Model::CreateModel(vertices, indices));
+	}
+	void TerrainComponent::Draw()
+	{
+		if (!m_Generated)
+			return;
+
+		glBindVertexArray(terrainVAO);
+
+		for (unsigned strip = 0; strip < numStrips; strip++)
+		{
+			glDrawElements(GL_TRIANGLE_STRIP, numTrisPerStrip + 2, GL_UNSIGNED_INT, (void*)(sizeof(unsigned) * (numTrisPerStrip + 2) * strip));
+		}
 	}
 }

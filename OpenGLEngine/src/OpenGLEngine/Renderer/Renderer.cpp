@@ -14,6 +14,7 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 
 #include <OpenGLEngine/Tools/Math.h>
 
@@ -58,8 +59,6 @@ namespace OpenGLEngine {
 
 		m_SceneData.m_Shader.use();
 
-		//m_SceneData.m_Shader.setUniform("uUsePointLight", static_cast<int>(m_SceneData.m_Scene->m_LightsCount));
-
 		int dirLightCount = 0;
 		int pointLightCount = 0;
 
@@ -89,10 +88,9 @@ namespace OpenGLEngine {
 				}
 			}
 
-			if (entity->second.HasComponent<ModelComponent>() && entity->second.HasComponent<MaterialComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())
+			if (((entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr()) || entity->second.HasComponent<TerrainComponent>()) && entity->second.HasComponent<MaterialComponent>())
 			{
 				Material& material = entity->second.GetComponent<MaterialComponent>().GetMaterial();
-				Model& model = entity->second.GetComponent<ModelComponent>().GetModel();
 				glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
 
 				int nat = 0;
@@ -125,7 +123,18 @@ namespace OpenGLEngine {
 					nat++;
 				}
 
-				model.draw();
+				if (entity->second.HasComponent<TerrainComponent>())
+				{
+					if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
+						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+					entity->second.GetComponent<TerrainComponent>().Draw();
+
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
+				
+				if (entity->second.HasComponent<ModelComponent>())
+					entity->second.GetComponent<ModelComponent>().GetModel().draw();
 			}
 
 			if (entity->second.HasComponent<SkyboxComponent>())

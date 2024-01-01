@@ -28,9 +28,6 @@ namespace OpenGLEngine
 
 	void TerrainComponent::GenerateTerrain()
 	{
-		//if (m_Generated)
-			//return;
-
 		m_Generated = true;
 
 		int width, height, nChannels;

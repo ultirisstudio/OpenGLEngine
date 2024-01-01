@@ -17,21 +17,31 @@ namespace OpenGLEngine
 	{
 		unsigned int format;
 		unsigned int internalFormat;
+
 		if (path.find(".png") != std::string::npos)
 		{
-			format = GL_RGBA;
-			internalFormat = GL_RGBA;
 			stbi_set_flip_vertically_on_load(true);
 		}
 		else
 		{
-			format = GL_RGB;
-			internalFormat = GL_RGB;
 			stbi_set_flip_vertically_on_load(false);
 		}
 
 		int width, height, nbChannels;
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nbChannels, 0);
+
+		if (nbChannels == 4)
+		{
+			format = GL_RGBA;
+			internalFormat = GL_RGBA;
+		}
+		else if (nbChannels == 3)
+		{
+			format = GL_RGB;
+			internalFormat = GL_RGB;
+		}
+
+		//std::cout << "Loaded texture at " << path << " with " << nbChannels << " channels" << std::endl;
 
 		if (!data)
 			std::cout << "Failed to load texture at " << path << " : " << stbi_failure_reason() << std::endl;

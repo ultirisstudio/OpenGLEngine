@@ -26,6 +26,7 @@ namespace OpenGLEngine
 		ShaderRenderInfo& GetFragmentRenderInfo();
 
 		void LoadFromFile(const std::string& path_vs, const std::string& path_fs);
+		void LoadFromFile(const std::string& path_vs, const std::string& path_fs, const std::string& path_tcs, const std::string& path_tes);
 		void LoadFromSource(const std::string& vs, const std::string& fs, ShaderRenderInfo vertexRenderInfo, ShaderRenderInfo fragmentRenderInfo);
 
 		void setUniform(const std::string& name, bool value) const;

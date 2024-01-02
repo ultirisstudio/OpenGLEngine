@@ -95,6 +95,10 @@ namespace OpenGLEngine {
 
 				int nat = 0;
 
+				m_SceneData.m_Shader.setUniform("projection", projectionMatrix);
+				m_SceneData.m_Shader.setUniform("view", viewMatrix);
+				m_SceneData.m_Shader.setUniform("model", transform);
+
 				m_SceneData.m_Shader.setUniform("uModel", transform);
 				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
 				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
@@ -128,9 +132,17 @@ namespace OpenGLEngine {
 					if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
 						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+					entity->second.GetComponent<TerrainComponent>().GetShader().use();
+
+					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
+					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
+					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
+
 					entity->second.GetComponent<TerrainComponent>().Draw();
 
 					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+					m_SceneData.m_Shader.use();
 				}
 				
 				if (entity->second.HasComponent<ModelComponent>())

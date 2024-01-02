@@ -1,21 +1,23 @@
 #pragma once
 
 #include <OpenGLEngine/Entity/Component.h>
+#include <OpenGLEngine/Shader/Shader.h>
 
 namespace OpenGLEngine
 {
 	class TerrainComponent : public Component
 	{
 	private:
-		std::shared_ptr<OpenGLEngine::Texture> m_NoTexture;
+		std::shared_ptr<Texture> m_NoTexture;
+		Shader m_Shader;
 
 		std::string height_map_path;
 		std::string m_ModelPath;
 
 		bool m_Generated = false;
 
-		int numStrips;
-		int numTrisPerStrip;
+		int m_MaxTessLevel;
+		unsigned rez = 20;
 
 		unsigned int terrainVAO;
 	public:
@@ -27,6 +29,8 @@ namespace OpenGLEngine
 		std::string GetHeightMap() { return height_map_path; }
 
 		Texture& GetEditorHeightMapTexture();
+
+		Shader& GetShader();
 
 		bool IsGenerated() { return m_Generated; }
 

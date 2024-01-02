@@ -144,6 +144,37 @@ namespace OpenGLEngine
 		glDeleteShader(fragmentShader);
 	}
 
+	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs, const std::string& path_tcs, const std::string& path_tes)
+	{
+		unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
+		unsigned int fragmentShader = ReadShader(path_fs, GL_FRAGMENT_SHADER);
+		unsigned int tessControlShader = ReadShader(path_tcs, GL_TESS_CONTROL_SHADER);
+		unsigned int tessEvaluationShader = ReadShader(path_tes, GL_TESS_EVALUATION_SHADER);
+
+		m_id = glCreateProgram();
+
+		glAttachShader(m_id, vertexShader);
+		glAttachShader(m_id, fragmentShader);
+		glAttachShader(m_id, tessControlShader);
+		glAttachShader(m_id, tessEvaluationShader);
+
+		glLinkProgram(m_id);
+
+		int linkStatus;
+		glGetProgramiv(m_id, GL_LINK_STATUS, &linkStatus);
+		if (!linkStatus)
+		{
+			char error[512];
+			glGetProgramInfoLog(m_id, 512, NULL, error);
+			std::cout << "Failed to link shader : " << error << std::endl;
+		}
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteShader(tessControlShader);
+		glDeleteShader(tessEvaluationShader);
+	}
+
 	void Shader::LoadFromSource(const std::string& vs, const std::string& fs, ShaderRenderInfo vertexRenderInfo, ShaderRenderInfo fragmentRenderInfo)
 	{
 		m_VertexRenderInfo = vertexRenderInfo;

@@ -13,7 +13,13 @@ namespace OpenGLEngine
 {
 	TerrainComponent::TerrainComponent()
 	{
-		m_NoTexture = OpenGLEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
+		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png");
+
+		m_Shader = Shader();
+		m_Shader.LoadFromFile("Shaders/gpuheight.vs", "Shaders/gpuheight.fs", "Shaders/gpuheight.tcs", "Shaders/gpuheight.tes");
+
+		glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &m_MaxTessLevel);
+		std::cout << "Max available tess level: " << m_MaxTessLevel << std::endl;
 	}
 
 	Texture& TerrainComponent::GetEditorHeightMapTexture()
@@ -26,93 +32,105 @@ namespace OpenGLEngine
 		return *m_NoTexture;
 	}
 
+	Shader& TerrainComponent::GetShader()
+	{
+		return m_Shader;
+	}
+
 	void TerrainComponent::GenerateTerrain()
 	{
 		m_Generated = true;
 
-		int width, height, nChannels;
-		unsigned char* data = stbi_load(height_map_path.c_str(), &width, &height, &nChannels, 0);
+		unsigned int texture;
+		glGenTextures(1, &texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		float yScale, yShift;
-		int rez;
-		unsigned bytePerPixel;
+		unsigned int format;
+		unsigned int internalFormat;
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(height_map_path.c_str(), &width, &height, &nrChannels, 0);
 
-		yScale = 64.0f / 256.0f;
-		yShift = 16.0f;
-		rez = 1;
-		bytePerPixel = nChannels;
-
-		std::vector<Vertex> vertices;
-		for (unsigned int i = 0; i < height; i++)
+		if (nrChannels == 4)
 		{
-			for (unsigned int j = 0; j < width; j++)
-			{
-				Vertex vertex;
-
-				unsigned char* pixelOffset = data + (j + width * i) * bytePerPixel;
-				unsigned char y = pixelOffset[0];
-
-				vertex.position.x = -height / 2.0f + i;
-				vertex.position.y = (int)y * yScale - yShift;
-				vertex.position.z = -width / 2.0f + j;
-
-				vertex.normal.x = 0;
-				vertex.normal.y = 1;
-				vertex.normal.z = 0;
-
-				vertex.texCoord.x = (float)j / ((float)width - 1);
-				vertex.texCoord.y = (float)i / ((float)height - 1);
-				
-				vertices.push_back(vertex);
-			}
+			format = GL_RGBA;
+			internalFormat = GL_RGBA;
+		}
+		else if (nrChannels == 3)
+		{
+			format = GL_RGB;
+			internalFormat = GL_RGB;
 		}
 
-		std::cout << "Loaded " << vertices.size() << " vertices" << std::endl;
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, internalFormat, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
 
+			m_Shader.setUniform("heightMap", 0);
+			std::cout << "Loaded heightmap of size " << height << " x " << width << std::endl;
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << std::endl;
+		}
 		stbi_image_free(data);
 
-		std::vector<unsigned> indices;
-		for (unsigned i = 0; i < height - 1; i++)
+		std::vector<float> vertices;
+		for (unsigned i = 0; i <= rez - 1; i++)
 		{
-			for (unsigned j = 0; j < width; j++)
+			for (unsigned j = 0; j <= rez - 1; j++)
 			{
-				for (unsigned k = 0; k < 2; k++)
-				{
-					indices.push_back(j + width * (i + k));
-				}
+				vertices.push_back(-width / 2.0f + width * i / (float)rez); // v.x
+				vertices.push_back(0.0f); // v.y
+				vertices.push_back(-height / 2.0f + height * j / (float)rez); // v.z
+				vertices.push_back(i / (float)rez); // u
+				vertices.push_back(j / (float)rez); // v
+
+				vertices.push_back(-width / 2.0f + width * (i + 1) / (float)rez); // v.x
+				vertices.push_back(0.0f); // v.y
+				vertices.push_back(-height / 2.0f + height * j / (float)rez); // v.z
+				vertices.push_back((i + 1) / (float)rez); // u
+				vertices.push_back(j / (float)rez); // v
+
+				vertices.push_back(-width / 2.0f + width * i / (float)rez); // v.x
+				vertices.push_back(0.0f); // v.y
+				vertices.push_back(-height / 2.0f + height * (j + 1) / (float)rez); // v.z
+				vertices.push_back(i / (float)rez); // u
+				vertices.push_back((j + 1) / (float)rez); // v
+
+				vertices.push_back(-width / 2.0f + width * (i + 1) / (float)rez); // v.x
+				vertices.push_back(0.0f); // v.y
+				vertices.push_back(-height / 2.0f + height * (j + 1) / (float)rez); // v.z
+				vertices.push_back((i + 1) / (float)rez); // u
+				vertices.push_back((j + 1) / (float)rez); // v
 			}
 		}
+		std::cout << "Loaded " << rez * rez << " patches of 4 control points each" << std::endl;
+		std::cout << "Processing " << rez * rez * 4 << " vertices in vertex shader" << std::endl;
 
-		std::cout << "Loaded " << indices.size() << " indices" << std::endl;
-
-		numStrips = (height - 1) / rez;
-		numTrisPerStrip = (width / rez) * 2 - 2;
-		std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
-		std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
-
-		unsigned int terrainVBO, terrainEBO;
+		unsigned int terrainVBO;
 		glGenVertexArrays(1, &terrainVAO);
-		glGenBuffers(1, &terrainVBO);
-		glGenBuffers(1, &terrainEBO);
-
 		glBindVertexArray(terrainVAO);
 
+		glGenBuffers(1, &terrainVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
-
+		
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-
+		
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
 
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
-
-		//entity->GetComponent<ModelComponent>().SetModel(Model::CreateModel(vertices, indices));
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
 	}
 	void TerrainComponent::Draw()
 	{
@@ -120,10 +138,6 @@ namespace OpenGLEngine
 			return;
 
 		glBindVertexArray(terrainVAO);
-
-		for (unsigned strip = 0; strip < numStrips; strip++)
-		{
-			glDrawElements(GL_TRIANGLE_STRIP, numTrisPerStrip + 2, GL_UNSIGNED_INT, (void*)(sizeof(unsigned) * (numTrisPerStrip + 2) * strip));
-		}
+		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
 	}
 }

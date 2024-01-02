@@ -127,16 +127,22 @@ namespace OpenGLEngine {
 					nat++;
 				}
 
-				if (entity->second.HasComponent<TerrainComponent>())
+				if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())
 				{
 					if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
 						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 					entity->second.GetComponent<TerrainComponent>().GetShader().use();
 
+					int nat = 0;
+
+					glActiveTexture(GL_TEXTURE0 + nat);
+					entity->second.GetComponent<TerrainComponent>().GetHeightMapTexture().bind();
+					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
 					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
 					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
 					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
+					nat++;
 
 					entity->second.GetComponent<TerrainComponent>().Draw();
 

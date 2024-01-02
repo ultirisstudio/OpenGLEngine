@@ -9,10 +9,10 @@ namespace OpenGLEngine
 	{
 	private:
 		std::shared_ptr<Texture> m_NoTexture;
-		Shader m_Shader;
+		std::shared_ptr<Texture> m_HeightMapTexture;
+		std::shared_ptr<Shader> m_Shader;
 
-		std::string height_map_path;
-		std::string m_ModelPath;
+		std::string m_HeightMapPath;
 
 		bool m_Generated = false;
 
@@ -25,8 +25,10 @@ namespace OpenGLEngine
 
 		bool m_PolygonMode = false;
 
-		void SetHeightMap(const std::string& path) { height_map_path = path; }
-		std::string GetHeightMap() { return height_map_path; }
+		void SetHeightMap(const std::string& path) { m_HeightMapPath = path; }
+
+		std::string GetHeightMapPath() { return m_HeightMapPath; }
+		Texture& GetHeightMapTexture() { return *m_HeightMapTexture; }
 
 		Texture& GetEditorHeightMapTexture();
 

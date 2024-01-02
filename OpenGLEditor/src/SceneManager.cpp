@@ -54,9 +54,9 @@ namespace OpenGLEngine
 		Entity* temp = m_Scene->CreateEntity("temp");
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient",  glm::vec3({ 1.0f, 1.0f, 1.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse",  glm::vec3({ 1.0f, 1.0f, 1.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 1.0f, 1.0f, 1.0f }));
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
@@ -90,9 +90,9 @@ namespace OpenGLEngine
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>(file);
 		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3({ 0.0f, 0.0f, 0.0f }));
-		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 0.0f, 0.0f, 0.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient",  glm::vec3({ 1.0f, 1.0f, 1.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse",  glm::vec3({ 1.0f, 1.0f, 1.0f }));
+		temp->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3({ 1.0f, 1.0f, 1.0f }));
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
 		temp->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);

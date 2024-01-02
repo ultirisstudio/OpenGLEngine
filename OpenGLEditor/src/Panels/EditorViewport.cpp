@@ -12,7 +12,8 @@
 #include <OpenGLEngine/Core/Input.h>
 
 #include <glm/gtc/type_ptr.hpp>
-
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 namespace OpenGLEngine
 {
@@ -107,8 +108,10 @@ namespace OpenGLEngine
 
 			if (ImGuizmo::IsUsing())
 			{
-				glm::vec3 position, rotation, scale;
-				Math::DecomposeTransform(transform, position, rotation, scale);
+				glm::vec3 position, scale;
+				glm::quat rotationQuat;
+				glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
+				glm::vec3 rotation = glm::eulerAngles(rotationQuat) * 3.14159f / 180.f;
 
 				glm::vec3 deltaRotation = rotation - tc.Rotation;
 				tc.Position = position;

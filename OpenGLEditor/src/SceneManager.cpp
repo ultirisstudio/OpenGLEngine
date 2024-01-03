@@ -107,7 +107,9 @@ namespace OpenGLEngine
 		}
 		else
 		{
-			m_FileBrowser.SaveFile();
+			if (!m_FileBrowser.SaveFile())
+				return;
+
 			m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
 			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
 			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
@@ -118,7 +120,9 @@ namespace OpenGLEngine
 
 	void SceneManager::LoadScene()
 	{
-		m_FileBrowser.OpenFile();
+		if (!m_FileBrowser.OpenFile())
+			return;
+
 		m_Scene = std::make_unique<Scene>();
 		SceneSerializer serializer(*m_Scene);
 		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
@@ -148,7 +152,8 @@ namespace OpenGLEngine
 
 	void SceneManager::OpenExternalFile()
 	{
-		m_FileBrowser.OpenFile();
+		if (!m_FileBrowser.OpenFile())
+			return;
 
 		std::filesystem::path sourceFile = m_FileBrowser.GetInfos().m_FilePath;
 		std::filesystem::path targetParent = "Assets";

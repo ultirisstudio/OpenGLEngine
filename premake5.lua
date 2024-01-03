@@ -19,7 +19,7 @@ IncludeDir["assimp"] = "OpenGLEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "OpenGLEngine/vendor/stb_image"
 IncludeDir["yaml_cpp"] = "OpenGLEngine/vendor/yaml_cpp/include"
 IncludeDir["ImGuizmo"] = "OpenGLEngine/vendor/ImGuizmo"
-IncludeDir["reactphysics3d"] = "OpenGLEngine/vendor/reactphysics3d/include"
+IncludeDir["tinyfiledialogs"] = "OpenGLEngine/vendor/tinyfiledialogs/include"
 
 group "Dependance"
 	include "OpenGLEngine/vendor/GLFW"
@@ -28,7 +28,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/imgui"
 	include "OpenGLEngine/vendor/ImGuizmo"
 	include "OpenGLEngine/vendor/yaml_cpp"
-	include "OpenGLEngine/vendor/reactphysics3d"
+	include "OpenGLEngine/vendor/tinyfiledialogs"
 
 group ""
 
@@ -65,7 +65,7 @@ project "OpenGLEngine"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.reactphysics3d}"
+		"%{IncludeDir.tinyfiledialogs}"
 	}
 
 	links
@@ -76,7 +76,7 @@ project "OpenGLEngine"
 		"ImGui",
 		"ImGuizmo",
 		"yaml-cpp",
-		"reactphysics3d",
+		"tinyfiledialogs",
 		"opengl32.lib",
 	}
 	

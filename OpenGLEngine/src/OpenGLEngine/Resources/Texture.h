@@ -18,10 +18,10 @@ namespace OpenGLEngine
 		std::string m_path;
 	public:
 		Texture();
-		Texture(const std::string& path, unsigned int min_filter_param, unsigned int mag_filter_param);
+		Texture(const std::string& path, bool gamma, unsigned int min_filter_param, unsigned int mag_filter_param);
 		~Texture();
 
-		static std::shared_ptr<Texture> CreateTexture(const std::string& path);
+		static std::shared_ptr<Texture> CreateTexture(const std::string& path, bool gamma);
 
 		unsigned int GetID() const { return m_id; }
 

@@ -5,9 +5,9 @@ namespace OpenGLEngine
 {
 	MaterialComponent::MaterialComponent()
 	{
-		m_Material = OpenGLEngine::Material::CreateMaterial();
-		m_DefaultTexture = OpenGLEngine::Texture::CreateTexture("Assets/Textures/white_texture.jpg");
-		m_NoTexture = OpenGLEngine::Texture::CreateTexture("Assets/Textures/3d-modeling.png");
+		m_Material = Material::CreateMaterial();
+		m_DefaultTexture = Texture::CreateTexture("Assets/Textures/white_texture.jpg", false);
+		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png", false);
 	}
 
 	void MaterialComponent::InitializeMaterial()
@@ -22,16 +22,17 @@ namespace OpenGLEngine
 
 	void MaterialComponent::addTexture(const std::string& id, const std::string& file)
 	{
-		m_Material->addTexture(id, file);
-		m_Material->addBoolean(id, true);
-
 		if (id == "diffuse")
 		{
 			m_DiffuseTexture = file;
+			m_Material->addTexture(id, file, true);
 		}
 		else if (id == "specular")
 		{
 			m_SpecularTexture = file;
+			m_Material->addTexture(id, file, false);
 		}
+
+		m_Material->addBoolean(id, true);
 	}
 }

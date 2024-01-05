@@ -6,12 +6,17 @@
 namespace OpenGLEngine
 {
 	Texture::Texture() :
-		m_id(0)
+		m_id(0),
+		m_Format(0),
+		m_InternalFormat(0),
+		m_path(""),
+		m_Width(0),
+		m_Height(0)
 	{
 		
 	}
 
-	Texture::Texture(const std::string& path, unsigned int min_filter_param = GL_NEAREST_MIPMAP_LINEAR, unsigned int mag_filter_param = GL_NEAREST) :
+	Texture::Texture(const std::string& path, bool gamma = false, unsigned int min_filter_param = GL_NEAREST_MIPMAP_LINEAR, unsigned int mag_filter_param = GL_NEAREST) :
 		m_id(0),
 		m_Format(0),
 		m_InternalFormat(0),
@@ -34,13 +39,13 @@ namespace OpenGLEngine
 
 		if (nbChannels == 4)
 		{
+			m_InternalFormat = gamma ? GL_SRGB_ALPHA : GL_RGBA;
 			m_Format = GL_RGBA;
-			m_InternalFormat = GL_RGBA;
 		}
 		else if (nbChannels == 3)
 		{
+			m_InternalFormat = gamma ? GL_SRGB : GL_RGB;
 			m_Format = GL_RGB;
-			m_InternalFormat = GL_RGB;
 		}
 
 		if (!data)
@@ -75,8 +80,8 @@ namespace OpenGLEngine
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
-	std::shared_ptr<Texture> Texture::CreateTexture(const std::string& path)
+	std::shared_ptr<Texture> Texture::CreateTexture(const std::string& path, bool gamma)
 	{
-		return std::make_shared<Texture>(path);
+		return std::make_shared<Texture>(path, gamma);
 	}
 }

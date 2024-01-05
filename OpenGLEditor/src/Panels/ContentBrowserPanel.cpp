@@ -8,11 +8,11 @@ namespace OpenGLEngine
 {
 	ContentBrowserPanel::ContentBrowserPanel() : m_BaseDirectory("Assets"), m_CurrentDirectory(m_BaseDirectory)
 	{
-		m_DirectoryIcon = Texture::CreateTexture("Icons/texture_dossier.png");
-		m_FilePNGIcon = Texture::CreateTexture("Icons/texture_png.png");
-		m_FileJPGIcon = Texture::CreateTexture("Icons/texture_jpg.png");
-		m_FileOBJIcon = Texture::CreateTexture("Icons/texture_obj.png");
-		m_FileOtherIcon = Texture::CreateTexture("Icons/texture_texte.png");
+		m_DirectoryIcon = Texture::CreateTexture("Icons/texture_dossier.png", false);
+		m_FilePNGIcon = Texture::CreateTexture("Icons/texture_png.png", false);
+		m_FileJPGIcon = Texture::CreateTexture("Icons/texture_jpg.png", false);
+		m_FileOBJIcon = Texture::CreateTexture("Icons/texture_obj.png", false);
+		m_FileOtherIcon = Texture::CreateTexture("Icons/texture_texte.png", false);
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()
@@ -64,12 +64,12 @@ namespace OpenGLEngine
 			else if (GetFileExtension(directoryEntry) == "png")
 			{
 				//icon = m_FilePNGIcon;
-				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath);
+				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
 			}
 			else if (GetFileExtension(directoryEntry) == "jpg")
 			{
 				//icon = m_FileJPGIcon;
-				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath);
+				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
 			}
 			else
 			{

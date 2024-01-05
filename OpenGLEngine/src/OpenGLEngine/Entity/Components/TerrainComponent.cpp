@@ -13,7 +13,7 @@ namespace OpenGLEngine
 {
 	TerrainComponent::TerrainComponent()
 	{
-		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png");
+		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png", false);
 
 		m_Shader = std::make_shared<Shader>();
 		m_Shader->LoadFromFile("Shaders/gpuheight.vs", "Shaders/gpuheight.fs", "Shaders/gpuheight.tcs", "Shaders/gpuheight.tes");
@@ -26,7 +26,7 @@ namespace OpenGLEngine
 	{
 		if (m_HeightMapPath != "")
 		{
-			return *Renderer::m_SceneData.m_ResourceManager.getTexture(m_HeightMapPath);
+			return *Renderer::m_SceneData.m_ResourceManager.getTexture(m_HeightMapPath, false);
 		}
 
 		return *m_NoTexture;
@@ -41,7 +41,7 @@ namespace OpenGLEngine
 	{
 		m_Generated = true;
 
-		m_HeightMapTexture = std::make_shared<Texture>(m_HeightMapPath, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+		m_HeightMapTexture = std::make_shared<Texture>(m_HeightMapPath, false, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 		int width, height;
 		width = m_HeightMapTexture->GetWidth();

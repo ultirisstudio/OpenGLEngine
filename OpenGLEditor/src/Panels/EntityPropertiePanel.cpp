@@ -21,7 +21,7 @@ namespace OpenGLEngine
 {
 	EntityPropertiePanel::EntityPropertiePanel()
 	{
-		m_ModelTexture = Texture::CreateTexture("Icons/texture_obj.png");
+		m_ModelTexture = Texture::CreateTexture("Icons/texture_obj.png", false);
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager)
@@ -207,7 +207,7 @@ namespace OpenGLEngine
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
-								mc.GetMaterial().addTexture("diffuse", file);
+								mc.GetMaterial().addTexture("diffuse", file, false);
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -220,8 +220,6 @@ namespace OpenGLEngine
 						ImGui::Text("Diffuse Color: ");
 						ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(*mc.GetMaterial().getVec3("diffuse")));
 
-						ImGui::Separator();
-
 						ImGui::Text("Specular texture: ");
 						ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 						if (ImGui::BeginDragDropTarget())
@@ -231,7 +229,7 @@ namespace OpenGLEngine
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
-								mc.GetMaterial().addTexture("specular", file);
+								mc.GetMaterial().addTexture("specular", file, false);
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -243,8 +241,6 @@ namespace OpenGLEngine
 
 						ImGui::Text("Specular Color: ");
 						ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
-
-						ImGui::Separator();
 
 						ImGui::Text("Shininess: ");
 						ImGui::InputFloat("##Shininess", mc.GetMaterial().getFloat("shininess").get());

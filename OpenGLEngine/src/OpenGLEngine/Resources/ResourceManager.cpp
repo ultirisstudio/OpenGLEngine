@@ -5,7 +5,7 @@
 
 namespace OpenGLEngine
 {
-	std::shared_ptr<Texture> ResourceManager::getTexture(const std::string& id)
+	std::shared_ptr<Texture> ResourceManager::getTexture(const std::string& id, bool gamma)
 	{
 		if (m_Textures.find(id) != m_Textures.cend())
 		{
@@ -13,7 +13,7 @@ namespace OpenGLEngine
 		}
 		else
 		{
-			m_Textures[id] = Texture::CreateTexture(id);
+			m_Textures[id] = Texture::CreateTexture(id, gamma);
 			return m_Textures.at(id);
 		}
 	}

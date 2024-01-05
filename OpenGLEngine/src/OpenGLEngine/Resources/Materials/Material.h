@@ -30,7 +30,7 @@ namespace OpenGLEngine
 
 		void addFloat(const std::string& id, float value);
 		void addVec3(const std::string& id, glm::vec3 value);
-		void addTexture(const std::string& id, const std::string& file);
+		void addTexture(const std::string& id, const std::string& file, bool gamma);
 		void addCubemap(const std::string& id, CubeMap value);
 		void addBoolean(const std::string& id, bool value);
 

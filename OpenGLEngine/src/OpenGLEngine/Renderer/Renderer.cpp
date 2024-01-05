@@ -173,6 +173,8 @@ namespace OpenGLEngine {
 
 		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
+
+		//glEnable(GL_FRAMEBUFFER_SRGB);
 	}
 
 	void Renderer::EndScene()

@@ -12,13 +12,8 @@ namespace OpenGLEngine
 
 		std::shared_ptr<OpenGLEngine::Material> m_Material;
 	public:
-		//bool UseDiffuseTexture;
-		//bool UseSpecularTexture;
-
 		std::string m_DiffuseTexture;
 		std::string m_SpecularTexture;
-
-		//const char* current_item = "BPhong";
 
 		MaterialComponent();
 

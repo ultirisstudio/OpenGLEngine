@@ -17,7 +17,7 @@ namespace OpenGLEngine
 		std::map<std::string, std::shared_ptr<Model>> m_Models;
 
 	public:
-		std::shared_ptr<Texture> getTexture(const std::string& id);
+		std::shared_ptr<Texture> getTexture(const std::string& id, bool gamma);
 		std::shared_ptr<Material> getMaterial(const std::string& id);
 		std::shared_ptr<Model> getModel(const std::string& id);
 	};

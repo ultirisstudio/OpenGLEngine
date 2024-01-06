@@ -20,12 +20,10 @@ namespace OpenGLEngine
 		LightType lightType = LightType::DIRECTIONAL;
 
 		//dirlight params
-		glm::vec3 dir_diffuse = { 1.0f, 1.0f, 1.0f };
-		glm::vec3 dir_specular = { 1.0f, 1.0f, 1.0f };
+		glm::vec3 dir_color = { 1.0f, 1.0f, 1.0f };
 
 		//pointlight params
-		glm::vec3 point_diffuse = { 1.0f, 1.0f, 1.0f };
-		glm::vec3 point_specular = { 1.0f, 1.0f, 1.0f };
+		glm::vec3 point_color = { 1.0f, 1.0f, 1.0f };
 		float point_constant = 1.0f;
 		float point_linear = 0.09f;
 		float point_quadratic = 0.032f;

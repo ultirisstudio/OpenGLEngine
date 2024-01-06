@@ -24,7 +24,7 @@ namespace OpenGLEngine {
 	void Renderer::Init()
 	{
 		m_SceneData.m_Shader = Shader();
-		m_SceneData.m_Shader.LoadFromFile("Shaders/basic.vert", "Shaders/basic.frag");
+		m_SceneData.m_Shader.LoadFromFile("Shaders/pbr_shader.vert", "Shaders/pbr_shader.frag");
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -69,20 +69,20 @@ namespace OpenGLEngine {
 				auto& lc = entity->second.GetComponent<LightComponent>();
 				if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 				{
-					m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].direction", entity->second.GetComponent<TransformComponent>().Rotation);
-					m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].diffuse", lc.dir_diffuse);
-					m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].specular", lc.dir_specular);
+					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].direction", entity->second.GetComponent<TransformComponent>().Rotation);
+					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].diffuse", lc.dir_diffuse);
+					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].specular", lc.dir_specular);
 
 					dirLightCount++;
 				}
 				else if (lc.lightType == LightComponent::LightType::POINT)
 				{
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].diffuse", lc.point_diffuse);
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].specular", lc.point_specular);
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].constant", lc.point_constant);
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].linear", lc.point_linear);
-					m_SceneData.m_Shader.setUniform("pointLights[" + std::to_string(pointLightCount) + "].quadratic", lc.point_quadratic);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
+					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].specular", lc.point_specular);
+					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].constant", lc.point_constant);
+					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].linear", lc.point_linear);
+					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].quadratic", lc.point_quadratic);
 
 					pointLightCount++;
 				}
@@ -95,35 +95,59 @@ namespace OpenGLEngine {
 
 				int nat = 0;
 
-				m_SceneData.m_Shader.setUniform("projection", projectionMatrix);
-				m_SceneData.m_Shader.setUniform("view", viewMatrix);
-				m_SceneData.m_Shader.setUniform("model", transform);
-
 				m_SceneData.m_Shader.setUniform("uModel", transform);
 				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
 				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
+				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
 
-				m_SceneData.m_Shader.setUniform("uMaterial.ambient_color", *material.getVec3("ambient"));
-				m_SceneData.m_Shader.setUniform("uMaterial.diffuse_color", *material.getVec3("diffuse"));
-				m_SceneData.m_Shader.setUniform("uMaterial.specular_color", *material.getVec3("specular"));
-				m_SceneData.m_Shader.setUniform("uMaterial.shininess", *material.getFloat("shininess"));
+				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
+				m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
+				m_SceneData.m_Shader.setUniform("uMaterial.roughness", *material.getFloat("roughness"));
+				m_SceneData.m_Shader.setUniform("uMaterial.ao", *material.getFloat("ao"));
 
-				m_SceneData.m_Shader.setUniform("uMaterial.use_diffuse_texture", *material.getBoolean("diffuse"));
-				m_SceneData.m_Shader.setUniform("uMaterial.use_specular_texture", *material.getBoolean("specular"));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", *material.getBoolean("albedo"));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", *material.getBoolean("normal"));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", *material.getBoolean("metallic"));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", *material.getBoolean("roughness"));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", *material.getBoolean("ao"));
 
-				if (*material.getBoolean("diffuse"))
+				if (*material.getBoolean("albedo"))
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("diffuse")->bind();
-					m_SceneData.m_Shader.setUniform("uMaterial.diffuse_texture", nat);
+					material.getTexture("albedo")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.albedoMap", nat);
 					nat++;
 				}
 
-				if (*material.getBoolean("specular"))
+				if (*material.getBoolean("normal"))
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("specular")->bind();
-					m_SceneData.m_Shader.setUniform("uMaterial.specular_texture", nat);
+					material.getTexture("normal")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.normalMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("metallic"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("metallic")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.metallicMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("roughness"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("roughness")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.roughnessMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("ao"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("ao")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
 					nat++;
 				}
 
@@ -171,7 +195,7 @@ namespace OpenGLEngine {
 			}
 		}
 
-		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
+		//m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
 
 		//glEnable(GL_FRAMEBUFFER_SRGB);

@@ -7,13 +7,14 @@ namespace OpenGLEngine
 	class MaterialComponent : public Component
 	{
 	private:
-		std::shared_ptr<OpenGLEngine::Texture> m_DefaultTexture;
-		std::shared_ptr<OpenGLEngine::Texture> m_NoTexture;
-
-		std::shared_ptr<OpenGLEngine::Material> m_Material;
+		std::shared_ptr<Texture> m_NoTexture;
+		std::shared_ptr<Material> m_Material;
 	public:
-		std::string m_DiffuseTexture;
-		std::string m_SpecularTexture;
+		std::string m_AlbedoTexture;
+		std::string m_NormalTexture;
+		std::string m_MetallicTexture;
+		std::string m_RoughnessTexture;
+		std::string m_AOTexture;
 
 		MaterialComponent();
 
@@ -21,29 +22,18 @@ namespace OpenGLEngine
 
 		void addTexture(const std::string& id, const std::string& file);
 
-		OpenGLEngine::Material& GetMaterial() { return *m_Material; }
+		Material& GetMaterial() { return *m_Material; }
 
-		OpenGLEngine::Texture& GetDefaultTexture() { return *m_DefaultTexture; }
-		OpenGLEngine::Texture& GetNoTexture() { return *m_NoTexture; }
+		Texture& GetNoTexture() { return *m_NoTexture; }
 
-		OpenGLEngine::Texture& GetEditorDiffuseTexture()
-		{
-			if (m_Material->hasTexture("diffuse"))
-			{
-				return *m_Material->getTexture("diffuse");
-			}
+		Texture& GetEditorAlbedoTexture();
 
-			return *m_NoTexture;
-		}
+		Texture& GetEditorNormalTexture();
 
-		OpenGLEngine::Texture& GetEditorSpecularTexture()
-		{
-			if (m_Material->hasTexture("specular"))
-			{
-				return *m_Material->getTexture("specular");
-			}
+		Texture& GetEditorMetallicTexture();
 
-			return *m_NoTexture;
-		}
+		Texture& GetEditorRoughnessTexture();
+
+		Texture& GetEditorAOTexture();
 	};
 }

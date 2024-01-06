@@ -84,27 +84,47 @@ namespace OpenGLEngine
 
 			auto& mc = entity->GetComponent<MaterialComponent>();
 
-			bool hasDiffuse = *mc.GetMaterial().getBoolean("diffuse");
-			bool hasSpecular = *mc.GetMaterial().getBoolean("specular");
+			bool hasAlbedo = *mc.GetMaterial().getBoolean("albedo");
+			bool hasNormal = *mc.GetMaterial().getBoolean("normal");
+			bool hasMetallic = *mc.GetMaterial().getBoolean("metallic");
+			bool hasRoughness = *mc.GetMaterial().getBoolean("roughness");
+			bool hasAO = *mc.GetMaterial().getBoolean("ao");
 
-			out << YAML::Key << "hasDiffuse" << YAML::Value << hasDiffuse;
-			out << YAML::Key << "hasSpecular" << YAML::Value << hasSpecular;
+			out << YAML::Key << "hasAlbedo" << YAML::Value << hasAlbedo;
+			out << YAML::Key << "hasNormal" << YAML::Value << hasNormal;
+			out << YAML::Key << "hasMetallic" << YAML::Value << hasMetallic;
+			out << YAML::Key << "hasRoughness" << YAML::Value << hasRoughness;
+			out << YAML::Key << "hasAO" << YAML::Value << hasAO;
 
-			out << YAML::Key << "ambient" << YAML::Value << *mc.GetMaterial().getVec3("ambient");
-			out << YAML::Key << "diffuse_color" << YAML::Value << *mc.GetMaterial().getVec3("diffuse");
-			out << YAML::Key << "specular_color" << YAML::Value << *mc.GetMaterial().getVec3("specular");
+			out << YAML::Key << "albedo" << YAML::Value << *mc.GetMaterial().getVec3("albedo");
+			out << YAML::Key << "metallic" << YAML::Value << *mc.GetMaterial().getFloat("metallic");
+			out << YAML::Key << "roughness" << YAML::Value << *mc.GetMaterial().getFloat("roughness");
+			out << YAML::Key << "ao" << YAML::Value << *mc.GetMaterial().getFloat("ao");
 
-			if (hasDiffuse)
+			if (hasAlbedo)
 			{
-				out << YAML::Key << "diffuse_texture" << YAML::Value << mc.m_DiffuseTexture;
+				out << YAML::Key << "albedoMap" << YAML::Value << mc.m_AlbedoTexture;
 			}
 
-			if (hasSpecular)
+			if (hasNormal)
 			{
-				out << YAML::Key << "specular_texture" << YAML::Value << mc.m_SpecularTexture;
+				out << YAML::Key << "normalMap" << YAML::Value << mc.m_NormalTexture;
 			}
 
-			out << YAML::Key << "shininess" << YAML::Value << *mc.GetMaterial().getFloat("shininess");
+			if (hasMetallic)
+			{
+				out << YAML::Key << "metallicMap" << YAML::Value << mc.m_MetallicTexture;
+			}
+
+			if (hasRoughness)
+			{
+				out << YAML::Key << "roughnessMap" << YAML::Value << mc.m_RoughnessTexture;
+			}
+
+			if (hasAO)
+			{
+				out << YAML::Key << "aoMap" << YAML::Value << mc.m_AOTexture;
+			}
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -142,8 +162,22 @@ namespace OpenGLEngine
 			out << YAML::Key << "LightComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			//auto& lc = entity->GetComponent<LightComponent>();
-			//out << YAML::Key << "diffuse" << YAML::Value << lc.diffuse;
+			auto& lc = entity->GetComponent<LightComponent>();
+
+			if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
+			{
+				out << YAML::Key << "lightType" << YAML::Value << "Directional";
+				out << YAML::Key << "color" << YAML::Value << lc.dir_color;
+			}
+			else if (lc.lightType == LightComponent::LightType::POINT)
+			{
+				out << YAML::Key << "lightType" << YAML::Value << "Point";
+
+				out << YAML::Key << "color" << YAML::Value << lc.point_color;
+				out << YAML::Key << "constant" << YAML::Value << lc.point_constant;
+				out << YAML::Key << "linear" << YAML::Value << lc.point_linear;
+				out << YAML::Key << "quadratic" << YAML::Value << lc.point_quadratic;
+			}
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -215,7 +249,7 @@ namespace OpenGLEngine
 				std::string name = entity["Entity"].as<std::string>();
 				std::string uuid = entity["ID"].as<std::string>();
 
-				//std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
+				std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
 
 				Entity* deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
@@ -245,22 +279,46 @@ namespace OpenGLEngine
 							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
 							mc.InitializeMaterial();
 
-							bool hasDiffuse = materialComponent["hasDiffuse"].as<bool>();
-							bool hasSpecular = materialComponent["hasSpecular"].as<bool>();
+							bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
+							bool hasNormal = materialComponent["hasNormal"].as<bool>();
+							bool hasMetallic = materialComponent["hasMetallic"].as<bool>();
+							bool hasRoughness = materialComponent["hasRoughness"].as<bool>();
+							bool hasAO = materialComponent["hasAO"].as<bool>();
 
-							*mc.GetMaterial().getVec3("ambient") = materialComponent["ambient"].as<glm::vec3>();
-							*mc.GetMaterial().getFloat("shininess") = materialComponent["shininess"].as<float>();
-							*mc.GetMaterial().getVec3("diffuse") = materialComponent["diffuse_color"].as<glm::vec3>();
-							*mc.GetMaterial().getVec3("specular") = materialComponent["specular_color"].as<glm::vec3>();
+							*mc.GetMaterial().getBoolean("albedo") = hasAlbedo;
+							*mc.GetMaterial().getBoolean("normal") = hasNormal;
+							*mc.GetMaterial().getBoolean("metallic") = hasMetallic;
+							*mc.GetMaterial().getBoolean("roughness") = hasRoughness;
+							*mc.GetMaterial().getBoolean("ao") = hasAO;
 
-							if (hasDiffuse)
+							*mc.GetMaterial().getVec3("albedo") = materialComponent["albedo"].as<glm::vec3>();
+							*mc.GetMaterial().getFloat("metallic") = materialComponent["metallic"].as<float>();
+							*mc.GetMaterial().getFloat("roughness") = materialComponent["roughness"].as<float>();
+							*mc.GetMaterial().getFloat("ao") = materialComponent["ao"].as<float>();
+
+							if (hasAlbedo)
 							{
-								mc.addTexture("diffuse", materialComponent["diffuse_texture"].as<std::string>());
+								mc.addTexture("albedo", materialComponent["albedoMap"].as<std::string>());
 							}
 
-							if (hasSpecular)
+							if (hasNormal)
 							{
-								mc.addTexture("specular", materialComponent["specular_texture"].as<std::string>());
+								mc.addTexture("normal", materialComponent["normalMap"].as<std::string>());
+							}
+
+							if (hasMetallic)
+							{
+								mc.addTexture("metallic", materialComponent["metallicMap"].as<std::string>());
+							}
+
+							if (hasRoughness)
+							{
+								mc.addTexture("roughness", materialComponent["roughnessMap"].as<std::string>());
+							}
+
+							if (hasAO)
+							{
+								mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
 							}
 						}
 
@@ -273,8 +331,20 @@ namespace OpenGLEngine
 						auto lightComponent = component["LightComponent"];
 						if (lightComponent)
 						{
-							//auto& lc = deserializedEntity->AddComponent<LightComponent>();
-							//lc.diffuse = lightComponent["diffuse"].as<glm::vec3>();
+							if (lightComponent["lightType"].as<std::string>() == "Directional")
+							{
+								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+								lc.dir_color = lightComponent["color"].as<glm::vec3>();
+							}
+
+							if (lightComponent["lightType"].as<std::string>() == "Point")
+							{
+								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
+								lc.point_color = lightComponent["color"].as<glm::vec3>();
+								lc.point_constant = lightComponent["constant"].as<float>();
+								lc.point_linear = lightComponent["linear"].as<float>();
+								lc.point_quadratic = lightComponent["quadratic"].as<float>();
+							}
 						}
 
 						auto cameraComponent = component["CameraComponent"];

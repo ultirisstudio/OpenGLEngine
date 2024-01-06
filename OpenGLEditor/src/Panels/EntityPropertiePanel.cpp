@@ -198,8 +198,8 @@ namespace OpenGLEngine
 
 					if (entity->HasComponent<ModelComponent>() || entity->HasComponent<TerrainComponent>())
 					{
-						ImGui::Text("Diffuse texture: ");
-						ImGui::ImageButton((ImTextureID)mc.GetEditorDiffuseTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+						ImGui::Text("Albedo texture: ");
+						ImGui::ImageButton((ImTextureID)mc.GetEditorAlbedoTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 						if (ImGui::BeginDragDropTarget())
 						{
 							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -207,21 +207,23 @@ namespace OpenGLEngine
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
-								mc.GetMaterial().addTexture("diffuse", file, false);
+								mc.addTexture("albedo", file);
 							}
 							ImGui::EndDragDropTarget();
 						}
 						ImGui::SameLine();
-						if (mc.GetMaterial().hasTexture("diffuse"))
+						if (mc.GetMaterial().hasTexture("albedo"))
 						{
-							ImGui::Checkbox("Use Diffuse Texture", mc.GetMaterial().getBoolean("diffuse").get());
+							ImGui::Checkbox("Use Albedo Texture", mc.GetMaterial().getBoolean("albedo").get());
 						}
 
-						ImGui::Text("Diffuse Color: ");
-						ImGui::ColorEdit3("##DiffuseColor", glm::value_ptr(*mc.GetMaterial().getVec3("diffuse")));
+						ImGui::Text("Albedo Color: ");
+						ImGui::ColorEdit3("##AlbedoColor", glm::value_ptr(*mc.GetMaterial().getVec3("albedo")));
 
-						ImGui::Text("Specular texture: ");
-						ImGui::ImageButton((ImTextureID)mc.GetEditorSpecularTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+						ImGui::Separator();
+
+						ImGui::Text("Normal texture: ");
+						ImGui::ImageButton((ImTextureID)mc.GetEditorNormalTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 						if (ImGui::BeginDragDropTarget())
 						{
 							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -229,21 +231,87 @@ namespace OpenGLEngine
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path filesys = path;
 								std::string file = filesys.string();
-								mc.GetMaterial().addTexture("specular", file, false);
+								mc.addTexture("normal", file);
 							}
 							ImGui::EndDragDropTarget();
 						}
 						ImGui::SameLine();
-						if (mc.GetMaterial().hasTexture("specular"))
+						if (mc.GetMaterial().hasTexture("normal"))
 						{
-							ImGui::Checkbox("Use Specular Texture", mc.GetMaterial().getBoolean("specular").get());
+							ImGui::Checkbox("Use Normal Texture", mc.GetMaterial().getBoolean("normal").get());
 						}
 
-						ImGui::Text("Specular Color: ");
-						ImGui::ColorEdit3("##SpecularColor", glm::value_ptr(*mc.GetMaterial().getVec3("specular")));
+						ImGui::Separator();
 
-						ImGui::Text("Shininess: ");
-						ImGui::InputFloat("##Shininess", mc.GetMaterial().getFloat("shininess").get());
+						ImGui::Text("Metallic texture: ");
+						ImGui::ImageButton((ImTextureID)mc.GetEditorMetallicTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path filesys = path;
+								std::string file = filesys.string();
+								mc.addTexture("metallic", file);
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::SameLine();
+						if (mc.GetMaterial().hasTexture("metallic"))
+						{
+							ImGui::Checkbox("Use Metallic Texture", mc.GetMaterial().getBoolean("metallic").get());
+						}
+
+						ImGui::Text("Metallic: ");
+						ImGui::SliderFloat("##Metallic", mc.GetMaterial().getFloat("metallic").get(), 0.0f, 1.0f);
+
+						ImGui::Separator();
+
+						ImGui::Text("Roughness texture: ");
+						ImGui::ImageButton((ImTextureID)mc.GetEditorRoughnessTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path filesys = path;
+								std::string file = filesys.string();
+								mc.addTexture("roughness", file);
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::SameLine();
+						if (mc.GetMaterial().hasTexture("roughness"))
+						{
+							ImGui::Checkbox("Use Roughness Texture", mc.GetMaterial().getBoolean("roughness").get());
+						}
+
+						ImGui::Text("Roughness: ");
+						ImGui::SliderFloat("##Roughness", mc.GetMaterial().getFloat("roughness").get(), 0.0f, 1.0f);
+
+						ImGui::Separator();
+
+						ImGui::Text("AO texture: ");
+						ImGui::ImageButton((ImTextureID)mc.GetEditorAOTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path filesys = path;
+								std::string file = filesys.string();
+								mc.addTexture("ao", file);
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::SameLine();
+						if (mc.GetMaterial().hasTexture("ao"))
+						{
+							ImGui::Checkbox("Use AO Texture", mc.GetMaterial().getBoolean("ao").get());
+						}
+
+						ImGui::Text("AO: ");
+						ImGui::SliderFloat("##AO", mc.GetMaterial().getFloat("ao").get(), 0.0f, 1.0f);
 					}
 
 					ImGui::TreePop();
@@ -311,18 +379,13 @@ namespace OpenGLEngine
 
 					if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 					{
-						ImGui::Text("Directional light diffuse: ");
-						ImGui::ColorEdit3("##dirlightdiffuse", glm::value_ptr(lc.dir_diffuse));
-
-						ImGui::Text("Directional light specular: ");
-						ImGui::ColorEdit3("##dirlightspecular", glm::value_ptr(lc.dir_specular));
+						ImGui::Text("Directional light color: ");
+						ImGui::ColorEdit3("##dirlightcolor", glm::value_ptr(lc.dir_color));
 					}
 					else if (lc.lightType == LightComponent::LightType::POINT)
 					{
-						ImGui::Text("Point light diffuse: ");
-						ImGui::ColorEdit3("##pointlightdiffuse", glm::value_ptr(lc.point_diffuse));
-						ImGui::Text("Point light specular: ");
-						ImGui::ColorEdit3("##pointlightspecular", glm::value_ptr(lc.point_specular));
+						ImGui::Text("Point light color: ");
+						ImGui::ColorEdit3("##pointlightcolor", glm::value_ptr(lc.point_color));
 						ImGui::Text("Point light constant: ");
 						ImGui::InputFloat("##pointlightconstant", &lc.point_constant);
 						ImGui::Text("Point light linear: ");
@@ -349,16 +412,6 @@ namespace OpenGLEngine
 						}
 						ImGui::EndPopup();
 					}
-
-					/*if (ImGui::InputText("##script_name", nsc.getScriptName(), 10))
-					{
-						std::cout << nsc.getScriptName() << std::endl;
-					}
-
-					if (ImGui::Button("Reload"))
-					{
-						nsc.Bind();
-					}*/
 
 					int size = static_cast<int>(nsc.getLoadedScriptNames().size());
 					const char** items = new const char* [size];
@@ -415,12 +468,7 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<MaterialComponent>()) {
 					if (ImGui::MenuItem("Material Component")) {
 						entity->AddComponent<MaterialComponent>();
-						entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("ambient", glm::vec3(0.1f));
-						entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("diffuse", glm::vec3(1.0f));
-						entity->GetComponent<MaterialComponent>().GetMaterial().addVec3("specular", glm::vec3(1.0f));
-						entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("diffuse", false);
-						entity->GetComponent<MaterialComponent>().GetMaterial().addBoolean("specular", false);
-						entity->GetComponent<MaterialComponent>().GetMaterial().addFloat("shininess", 32.0f);
+						entity->GetComponent<MaterialComponent>().InitializeMaterial();
 					}
 				}
 
@@ -443,7 +491,7 @@ namespace OpenGLEngine
 				}
 
 				if (!entity->HasComponent<LightComponent>()) {
-					if (ImGui::MenuItem("Spot Light Component")) {
+					if (ImGui::MenuItem("Point Light Component")) {
 						entity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
 					}
 				}

@@ -52,21 +52,45 @@ namespace OpenGLEngine
 
 	std::shared_ptr<glm::vec3> Material::getVec3(const std::string& id) const
 	{
+		if (m_vec3s.find(id) == m_vec3s.cend())
+		{
+			std::cout << "Error: Material::getVec3() - Invalid vec3 id: " << id << std::endl;
+			return nullptr;
+		}
+
 		return m_vec3s.at(id);
 	}
 
 	std::shared_ptr<Texture> Material::getTexture(const std::string& id) const
 	{
+		if (m_textures.find(id) == m_textures.cend())
+		{
+			std::cout << "Error: Material::getTexture() - Invalid texture id: " << id << std::endl;
+			return nullptr;
+		}
+
 		return m_textures.at(id);
 	}
 
 	std::shared_ptr<CubeMap> Material::getCubemap(const std::string& id) const
 	{
+		if (m_cubemaps.find(id) == m_cubemaps.cend())
+		{
+			std::cout << "Error: Material::getCubemap() - Invalid cubemap id: " << id << std::endl;
+			return nullptr;
+		}
+
 		return m_cubemaps.at(id);
 	}
 
 	std::shared_ptr<bool> Material::getBoolean(const std::string& id) const
 	{
+		if (m_booleans.find(id) == m_booleans.cend())
+		{
+			std::cout << "Error: Material::getBoolean() - Invalid boolean id: " << id << std::endl;
+			return nullptr;
+		}
+
 		return m_booleans.at(id);
 	}
 

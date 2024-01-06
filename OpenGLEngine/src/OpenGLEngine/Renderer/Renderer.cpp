@@ -79,10 +79,9 @@ namespace OpenGLEngine {
 				{
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
-					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].specular", lc.point_specular);
-					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].constant", lc.point_constant);
-					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].linear", lc.point_linear);
-					//m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].quadratic", lc.point_quadratic);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].constant", lc.point_constant);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].linear", lc.point_linear);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].quadratic", lc.point_quadratic);
 
 					pointLightCount++;
 				}

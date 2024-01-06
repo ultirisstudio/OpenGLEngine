@@ -31,6 +31,10 @@ struct Material
 struct PointLight {    
     vec3 position;
     vec3 color;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 #define NR_POINT_LIGHTS 4
@@ -111,7 +115,7 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
     vec3 L = normalize(light.position - fWorldPos);
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
-    float attenuation = 1.0 / (distance * distance);
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     vec3 radiance = light.color * attenuation;
 
     // Cook-Torrance BRDF
@@ -135,19 +139,19 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
     kD *= 1.0 - metallic;	  
 
     // scale light by NdotL
-    float NdotL = max(dot(N, L), 0.0);        
+    float NdotL = 1.0 + max(dot(N, L), 0.0);
 
     // add to outgoing radiance Lo
-    return (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    return (kD * albedo / PI + specular) * radiance * NdotL; //  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
 }
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 albedo = vec3(0.0, 0.0, 0.0);
-    float metallic = 0.0;
-    float roughness = 0.0;
-    float ao = 0.0;
-    vec3 N = vec3(0.0, 0.0, 0.0);
+    vec3 albedo;
+    float metallic;
+    float roughness;
+    float ao;
+    vec3 N;
 
     if (!uMaterial.use_albedo_texture)
 		albedo = uMaterial.albedoColor;
@@ -155,7 +159,7 @@ void main()
         albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
 
     if (!uMaterial.use_normal_texture)
-        N = fNormal;
+        N = normalize(fNormal);
     else
         N = getNormalFromMap();
 
@@ -190,7 +194,7 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.0) * albedo * ao;
     
     vec3 result = ambient + Lo;
 

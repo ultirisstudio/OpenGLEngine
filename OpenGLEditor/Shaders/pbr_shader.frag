@@ -183,7 +183,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < uUsePointLight; i++)
+    for(int i = 0; i < uUsePointLight; ++i)
     {
         Lo += calculateReflectance(uPointLights[i], V, N, F0, albedo, roughness, metallic);
     }

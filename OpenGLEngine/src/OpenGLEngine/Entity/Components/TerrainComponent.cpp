@@ -11,7 +11,7 @@
 
 namespace OpenGLEngine
 {
-	TerrainComponent::TerrainComponent()
+	TerrainComponent::TerrainComponent() : terrainVAO(0)
 	{
 		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png", false);
 

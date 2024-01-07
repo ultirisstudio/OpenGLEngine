@@ -9,7 +9,7 @@
 
 namespace OpenGLEngine
 {
-	Mesh* OpenGLEngine::Model::loadMesh(const aiMesh* mesh, const aiScene* scene)
+	Mesh* Model::loadMesh(const aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
@@ -55,13 +55,16 @@ namespace OpenGLEngine
 	void Model::loadNode(const aiNode* node, const aiScene* scene)
 	{
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-			m_meshes.push_back(loadMesh(scene->mMeshes[node->mMeshes[i]], scene));
+		{
+			//m_meshes.push_back(loadMesh(scene->mMeshes[node->mMeshes[i]], scene));
+			m_meshesMap[scene->mMeshes[node->mMeshes[i]]->mName.C_Str()] = loadMesh(scene->mMeshes[node->mMeshes[i]], scene);
+		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 			loadNode(node->mChildren[i], scene);
 	}
 
-	Model::Model(const std::string& path)
+	Model::Model(const std::string& path) : m_Name("Unamed")
 	{
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_ImproveCacheLocality);
@@ -72,25 +75,35 @@ namespace OpenGLEngine
 			return;
 		}
 
+		m_Name = scene->mRootNode->mName.C_Str();
+
 		loadNode(scene->mRootNode, scene);
 	}
 
-	Model::Model(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+	Model::Model(std::string name, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) : m_Name(name)
 	{
-		m_meshes.push_back(new Mesh(vertices, indices));
+		//m_meshes.push_back(new Mesh(vertices, indices));
+		m_meshesMap[m_Name] = new Mesh(vertices, indices);
 	}
 
 	Model::~Model()
 	{
-		for (Mesh* mesh : m_meshes)
+		for (auto& [name, mesh] : m_meshesMap)
 			delete mesh;
 
-		m_meshes.clear();
+		//for (Mesh* mesh : m_meshes)
+			//delete mesh;
+
+		//m_meshes.clear();
+		m_meshesMap.clear();
 	}
 
 	void Model::draw() const
 	{
-		for (Mesh* mesh : m_meshes)
+		//for (Mesh* mesh : m_meshes)
+			//mesh->draw();
+
+		for (auto& [name, mesh] : m_meshesMap)
 			mesh->draw();
 	}
 
@@ -99,8 +112,13 @@ namespace OpenGLEngine
 		return std::make_shared<Model>(path);
 	}
 
-	std::shared_ptr<Model> Model::CreateModel(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+	std::shared_ptr<Model> Model::CreateModel(std::string name, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 	{
-		return std::make_shared<Model>(vertices, indices);
+		return std::make_shared<Model>(name, vertices, indices);
+	}
+
+	std::unordered_map<std::string, Mesh*>& Model::GetMeshes()
+	{
+		return m_meshesMap;
 	}
 }

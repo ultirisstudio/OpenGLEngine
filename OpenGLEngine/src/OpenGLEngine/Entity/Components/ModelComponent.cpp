@@ -2,6 +2,7 @@
 #include "ModelComponent.h"
 
 #include <OpenGLEngine/Renderer/Renderer.h>
+#include <OpenGLEngine/Resources/Mesh.h>
 
 namespace OpenGLEngine
 {

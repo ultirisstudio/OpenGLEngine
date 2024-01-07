@@ -7,7 +7,6 @@
 #include <OpenGLEngine/Tools/UUID.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
@@ -40,13 +39,12 @@ namespace OpenGLEngine
 
 	Scene::~Scene()
 	{
-		m_PhysicsEngine->Shutdown();
+		
 	}
 
 	void Scene::Init()
 	{
-		m_PhysicsEngine = std::make_unique<PhysicsEngine>();
-		m_PhysicsEngine->Init();
+		
 	}
 
 	Entity* Scene::CreateEntity(const std::string& name)
@@ -101,8 +99,6 @@ namespace OpenGLEngine
 	{
 		m_EditorCamera->Update();
 
-		m_PhysicsEngine->Update(deltaTime);
-
 		if (m_ActiveCamera)
 			m_ActiveCamera->Update();
 
@@ -112,19 +108,7 @@ namespace OpenGLEngine
 
 	void Scene::UpdateRuntime(double deltaTime)
 	{
-		for (Entity* entity : View<NativeScriptComponent>()) {
-			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
-
-			if (nsc.Instance == nullptr) {
-				nsc.Instance = nsc.InstantiateScript();
-				nsc.Instance->m_Entity = *entity;
-				nsc.Instance->m_Window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-
-				nsc.Instance->OnCreate();
-			}
-
-			nsc.Instance->OnUpdate(deltaTime);
-		}
+		
 	}
 
 	void Scene::OnScenePlay()
@@ -136,14 +120,6 @@ namespace OpenGLEngine
 	void Scene::OnSceneStop()
 	{
 		m_OnRuntime = false;
-
-		for (Entity* entity : View<NativeScriptComponent>()) {
-			NativeScriptComponent& nsc = entity->GetComponent<NativeScriptComponent>();
-			if (nsc.Instance != nullptr) {
-				nsc.Instance->OnDestroy();
-				nsc.Instance = nullptr;
-			}
-		}
 	}
 
 	void Scene::ResizeEditorCamera(float width, float height)

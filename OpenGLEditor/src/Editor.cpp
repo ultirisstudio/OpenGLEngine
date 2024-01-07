@@ -7,8 +7,6 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include <OpenGLEngine/Entity/Components/NativeScriptComponent.h>
-
 namespace OpenGLEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
@@ -122,47 +120,6 @@ namespace OpenGLEngine
 
 			if (ImGui::BeginMenu("Project"))
 			{
-				if (ImGui::MenuItem("Build project"))
-				{
-					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
-					{
-						entity->GetComponent<NativeScriptComponent>().UnloadDLL();
-					}
-
-					NativeScriptComponent::ClearFiles();
-
-					int result = system("ProjectSolution\\build.bat");
-
-					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
-					{
-						entity->GetComponent<NativeScriptComponent>().LoadDLL();
-					}
-					
-					// Créer un handle pour le processus
-					/*HANDLE processHandle = CreateProcess(NULL, "C:\\my_command.exe", NULL, NULL, FALSE, 0, NULL, NULL, &STARTUPINFO(), &PROCESS_INFORMATION());
-
-					// Attendre la fin du processus
-					WaitForSingleObject(processHandle, INFINITE);
-
-					// Fermer le handle
-					CloseHandle(processHandle);*/
-				}
-				if (ImGui::MenuItem("Load DLL"))
-				{
-					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
-					{
-						entity->GetComponent<NativeScriptComponent>().LoadDLL();
-					}
-				}
-				if (ImGui::MenuItem("Unload DLL"))
-				{
-					for (Entity* entity : m_SceneManager->getActiveScene().View<NativeScriptComponent>())
-					{
-						entity->GetComponent<NativeScriptComponent>().UnloadDLL();
-					}
-
-					NativeScriptComponent::ClearFiles();
-				}
 				if (ImGui::MenuItem("Start scene"))
 				{
 					m_SceneManager->getActiveScene().OnScenePlay();

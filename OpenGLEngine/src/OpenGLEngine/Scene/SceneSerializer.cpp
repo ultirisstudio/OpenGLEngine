@@ -8,7 +8,6 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 
-#include <OpenGLEngine/Entity/ScriptableEntity.h>
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
 

@@ -9,12 +9,6 @@
 
 namespace OpenGLEngine
 {
-	template <typename T>
-	static int sgn(T val)
-	{
-		return (T(0) < val) - (val < T(0));
-	}
-
 	EditorCamera::EditorCamera(const glm::vec3& position) :
 		m_viewMatrix(glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f))),
 		m_projectionMatrix(1.0f),

@@ -35,6 +35,7 @@ namespace OpenGLEngine
 		void setUniform(const std::string& name, float value) const;
 		void setUniform(const std::string& name, double value) const;
 		void setUniform(const std::string& name, const glm::vec3& value) const;
+		void setUniform(const std::string& name, const glm::mat3& value) const;
 		void setUniform(const std::string& name, const glm::mat4& value) const;
 
 		void setUniform(const std::string& name, const std::vector<bool>& value) const;

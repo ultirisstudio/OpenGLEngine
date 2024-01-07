@@ -2,6 +2,8 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
+class Mesh;
+
 namespace OpenGLEngine
 {
 	class ModelComponent : public Component
@@ -16,6 +18,8 @@ namespace OpenGLEngine
 
 		void SetModel(const std::string& path);
 		void SetModel(std::shared_ptr<Model> model) { m_Model = model; }
+
+		std::unordered_map<std::string, Mesh*>& GetMeshes() { return m_Model->GetMeshes(); }
 
 		Model& GetModel() { return *m_Model; }
 		Model* GetPtr() { return m_Model.get(); }

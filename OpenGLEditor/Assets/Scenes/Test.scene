@@ -1,31 +1,5 @@
 Scene: Test
 Entities:
-  - Entity: Light3r
-    ID: a2762941-f92a-4086-a67b-2c6bcfe705e9
-    Components:
-      - TransformComponent:
-          Position: [0.40979445, 0, 6.42621183]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-      - LightComponent:
-          lightType: Point
-          color: [1, 1, 1]
-          constant: 1
-          linear: 0.0900000036
-          quadratic: 0.0320000015
-  - Entity: Light2
-    ID: 7d56fa14-c691-4e22-a985-d06b0e66125a
-    Components:
-      - TransformComponent:
-          Position: [5.74557066, 0, 5.20525503]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-      - LightComponent:
-          lightType: Point
-          color: [1, 1, 1]
-          constant: 1
-          linear: 0.0900000036
-          quadratic: 0.0320000015
   - Entity: BackPack
     ID: 3ce8062b-9e1d-47f7-b7e8-fec027577a77
     Components:
@@ -43,11 +17,11 @@ Entities:
           metallic: 0.5
           roughness: 0.5
           ao: 1
-          albedoMap: Assets\Textures\1001_albedo.jpg
-          normalMap: Assets\Textures\1001_normal.jpg
-          metallicMap: Assets\Textures\1001_metallic.jpg
-          roughnessMap: Assets\Textures\1001_roughness.jpg
-          aoMap: Assets\Textures\1001_AO.jpg
+          albedoMap: Assets\Textures\Backpack\1001_albedo.jpg
+          normalMap: Assets\Textures\Backpack\1001_normal.jpg
+          metallicMap: Assets\Textures\Backpack\1001_metallic.jpg
+          roughnessMap: Assets\Textures\Backpack\1001_roughness.jpg
+          aoMap: Assets\Textures\Backpack\1001_AO.jpg
       - ModelComponent:
           model: Assets\Models\BackPack.obj
   - Entity: Plane
@@ -74,7 +48,7 @@ Entities:
     ID: 3b83756a-ccb5-414d-801e-e2ebeeda692b
     Components:
       - TransformComponent:
-          Position: [-1.95089078, 0, 3.9852128]
+          Position: [-0.348690033, -1.27952397, 1.70568204]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - LightComponent:

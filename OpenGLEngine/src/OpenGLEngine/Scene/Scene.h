@@ -6,8 +6,6 @@
 #include <OpenGLEngine/Scene/EditorCamera.h>
 #include <OpenGLEngine/Tools/Chronometer.h>
 
-#include <OpenGLEngine/Physics/PhysicsEngine.h>
-
 class PointLight;
 
 namespace OpenGLEngine
@@ -69,8 +67,6 @@ namespace OpenGLEngine
 		std::string m_Path;
 
 		bool m_OnRuntime;
-
-		std::unique_ptr<PhysicsEngine> m_PhysicsEngine;
 
 		friend class SceneSerializer;
 	public:

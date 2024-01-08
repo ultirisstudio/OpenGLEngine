@@ -123,7 +123,7 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
     float attenuation = 1.0 / (distance * distance); //(light.constant + light.linear * distance + light.quadratic * (distance * distance))
-    vec3 radiance = light.color; // * attenuation
+    vec3 radiance = light.color * attenuation; // 
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);   

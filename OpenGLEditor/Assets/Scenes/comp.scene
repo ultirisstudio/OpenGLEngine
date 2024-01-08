@@ -1,0 +1,38 @@
+Scene: comp
+Entities:
+  - Entity: untitled
+    ID: 1a8c53af-0bc9-4d7d-acbb-c04c9eb5b764
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [0.100000001, 0.100000001, 0.100000001]
+      - MaterialComponent:
+          hasAlbedo: true
+          hasNormal: true
+          hasMetallic: true
+          hasRoughness: true
+          hasAO: false
+          albedo: [1, 1, 1]
+          metallic: 0.5
+          roughness: 0.5
+          ao: 1
+          albedoMap: Assets\Main.1_Sponza\textures\floor_tiles_01_BaseColor.png
+          normalMap: Assets\Main.1_Sponza\textures\floor_tiles_01_Normal.png
+          metallicMap: Assets\Main.1_Sponza\textures\floor_tiles_01_Metalness.png
+          roughnessMap: Assets\Main.1_Sponza\textures\floor_tiles_01_Roughness.png
+      - ModelComponent:
+          model: Assets\Main.1_Sponza\untitled.obj
+  - Entity: GameObject
+    ID: f48b5e2e-7a54-4f5b-a66f-429a80b84f58
+    Components:
+      - TransformComponent:
+          Position: [-25.3809242, 31.826889, 0.883626699]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - LightComponent:
+          lightType: Point
+          color: [1, 1, 1]
+          constant: 1
+          linear: 0.0900000036
+          quadratic: 0.0320000015

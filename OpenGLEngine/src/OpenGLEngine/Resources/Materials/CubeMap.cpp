@@ -43,6 +43,30 @@ namespace OpenGLEngine
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
+	void CubeMap::Load(std::string hdr_path)
+	{
+		stbi_set_flip_vertically_on_load(true);
+		int width, height, nrComponents;
+		float* data = stbi_loadf(hdr_path.c_str(), &width, &height, &nrComponents, 0);
+		if (data)
+		{
+			glGenTextures(1, &m_ID);
+			glBindTexture(GL_TEXTURE_2D, m_ID);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Failed to load HDR image." << std::endl;
+		}
+	}
+
 	void CubeMap::ActiveTexture()
 	{
 		glActiveTexture(GL_TEXTURE0);

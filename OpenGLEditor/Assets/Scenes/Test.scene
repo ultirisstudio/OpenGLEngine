@@ -48,7 +48,7 @@ Entities:
     ID: 3b83756a-ccb5-414d-801e-e2ebeeda692b
     Components:
       - TransformComponent:
-          Position: [-0.348690033, -1.27952397, 1.70568204]
+          Position: [-0.348690033, 0.365062565, 2.37563419]
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - LightComponent:
@@ -66,3 +66,12 @@ Entities:
           Scale: [0.999999881, 1, 0.999999881]
       - CameraComponent:
           fov: 45
+  - Entity: GameObject
+    ID: 3e36affa-49c7-4e90-91fe-39ace7f6d39e
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - SkyboxComponent:
+          skybox: true

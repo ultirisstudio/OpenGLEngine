@@ -34,6 +34,8 @@ namespace OpenGLEngine {
 
 	void Renderer::Render(bool runtime)
 	{
+		m_SceneData.m_Shader.use();
+
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
 		if (runtime)
@@ -56,8 +58,6 @@ namespace OpenGLEngine {
 
 			m_SceneData.m_Shader.setUniform("uCameraPosition", position);
 		}
-
-		m_SceneData.m_Shader.use();
 
 		int dirLightCount = 0;
 		int pointLightCount = 0;
@@ -109,6 +109,9 @@ namespace OpenGLEngine {
 				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", *material.getBoolean("metallic"));
 				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", *material.getBoolean("roughness"));
 				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", *material.getBoolean("ao"));
+
+				m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
+				nat++;
 
 				if (*material.getBoolean("albedo"))
 				{
@@ -182,15 +185,11 @@ namespace OpenGLEngine {
 			{
 				auto& sc = entity->second.GetComponent<SkyboxComponent>();
 
-				sc.GetCubeMap()->ActiveTexture();
-				sc.GetCubeMap()->Bind();
-				sc.GetCubeMapShader()->use();
-				sc.GetCubeMapShader()->setUniform("uView", glm::mat4(glm::mat3(viewMatrix)));
-				sc.GetCubeMapShader()->setUniform("uProjection", projectionMatrix);
-				sc.GetCubeMapShader()->setUniform("uCubeMap", 0);
-				sc.GetCubeMap()->BeginDrawModel();
+				sc.GetShader()->use();
+				sc.GetShader()->setUniform("projection", projectionMatrix);
+				sc.GetShader()->setUniform("view", glm::mat4(glm::mat3(viewMatrix)));
+				sc.BindTexture();
 				sc.GetModel()->draw();
-				sc.GetCubeMap()->EndDrawModel();
 			}
 		}
 

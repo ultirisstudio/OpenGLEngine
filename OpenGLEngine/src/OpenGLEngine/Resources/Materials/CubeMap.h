@@ -11,6 +11,7 @@ namespace OpenGLEngine
 		CubeMap();
 
 		void Load(std::array<std::string, 6> paths);
+		void Load(std::string hdr_path);
 		void ActiveTexture();
 		void BeginDrawModel();
 		void EndDrawModel();

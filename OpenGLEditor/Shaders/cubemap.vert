@@ -2,17 +2,13 @@
 
 layout(location = 0) in vec3 vPosition;
 
-out VS_OUT
-{
-    vec3 fTexCoords;
-} vs_out;
+out vec3 WorldPos;
 
-uniform mat4 uView;
-uniform mat4 uProjection;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-    vs_out.fTexCoords = vPosition;
-    vec4 pos = uProjection * uView * vec4(vPosition, 1.0f);
-    gl_Position = pos.xyww;
+    WorldPos = vPosition;
+    gl_Position = projection * view * vec4(WorldPos, 1.0);
 }

@@ -5,33 +5,44 @@
 #include <OpenGLEngine/Resources/Materials/CubeMap.h>
 #include <OpenGLEngine/Shader/Shader.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace OpenGLEngine
 {
 	class SkyboxComponent : public Component
 	{
 	private:
-		std::shared_ptr<OpenGLEngine::Model> m_Model;
-		OpenGLEngine::CubeMap m_CubeMap;
-		OpenGLEngine::Shader m_CubeMapShader;
+		std::shared_ptr<Model> m_Model;
+
+		Shader m_EquirectangularToCubemapShader;
+		Shader m_IrradianceShader;
+		Shader m_BackgroundShader;
+
+		unsigned int hdrTexture;
+		unsigned int envCubemap;
+
+		glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+		glm::mat4 captureViews[6] =
+		{
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+		};
 	public:
-		SkyboxComponent()
+		SkyboxComponent();
+
+		void BindTexture();
+
+		Shader* GetShader()
 		{
-			m_CubeMapShader.LoadFromFile("Shaders/cubemap.vert", "Shaders/cubemap.frag");
-			m_Model = OpenGLEngine::Model::CreateModel("Assets\\Models\\cube.obj");
-			m_CubeMap.Load({ "Assets/Skybox/right.jpg", "Assets/Skybox/left.jpg", "Assets/Skybox/top.jpg", "Assets/Skybox/bottom.jpg", "Assets/Skybox/front.jpg", "Assets/Skybox/back.jpg" });
+			return &m_BackgroundShader;
 		}
 
-		OpenGLEngine::CubeMap* GetCubeMap()
-		{
-			return &m_CubeMap;
-		}
-
-		OpenGLEngine::Shader* GetCubeMapShader()
-		{
-			return &m_CubeMapShader;
-		}
-
-		OpenGLEngine::Model* GetModel()
+		Model* GetModel()
 		{
 			return m_Model.get();
 		}

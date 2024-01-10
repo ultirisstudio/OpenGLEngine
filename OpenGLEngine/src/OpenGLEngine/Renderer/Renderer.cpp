@@ -187,7 +187,7 @@ namespace OpenGLEngine {
 
 				sc.GetShader()->use();
 				sc.GetShader()->setUniform("projection", projectionMatrix);
-				sc.GetShader()->setUniform("view", glm::mat4(glm::mat3(viewMatrix)));
+				sc.GetShader()->setUniform("view", viewMatrix);
 				sc.BindTexture();
 				sc.GetModel()->draw();
 			}

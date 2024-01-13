@@ -44,7 +44,7 @@ namespace OpenGLEngine
 
 	void Scene::Init()
 	{
-		
+		m_Skybox = std::make_unique<Skybox>();
 	}
 
 	Entity* Scene::CreateEntity(const std::string& name)

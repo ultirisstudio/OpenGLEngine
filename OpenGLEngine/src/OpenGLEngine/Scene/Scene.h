@@ -5,6 +5,7 @@
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Scene/EditorCamera.h>
 #include <OpenGLEngine/Tools/Chronometer.h>
+#include <OpenGLEngine/Scene/Skybox.h>
 
 class PointLight;
 
@@ -55,11 +56,14 @@ namespace OpenGLEngine
 		const std::string& getName() { return m_Name; }
 		const std::string& getPath() { return m_Path; }
 
+		Skybox& getSkybox() { return *m_Skybox; }
+
 		void setName(const std::string& name) { m_Name = name; }
 		void setPath(const std::string& path) { m_Path = path; }
 	private:
 		EntityMap m_EntityMap;
 
+		std::unique_ptr<Skybox> m_Skybox;
 		std::unique_ptr<EditorCamera> m_EditorCamera;
 		Camera* m_ActiveCamera;
 

@@ -1,12 +1,12 @@
 #include "depch.h"
-#include "SkyboxComponent.h"
+#include "Skybox.h"
 
 #include <glad/glad.h>
 #include <stb_image.h>
 
 namespace OpenGLEngine
 {
-	SkyboxComponent::SkyboxComponent()
+	Skybox::Skybox()
 	{
 		m_EquirectangularToCubemapShader.LoadFromFile("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
 		m_IrradianceShader.LoadFromFile("Shaders/cubemap.vert", "Shaders/irradiance_convolution.frag");
@@ -80,7 +80,7 @@ namespace OpenGLEngine
 
 		// pbr: create an irradiance cubemap, and re-scale capture FBO to irradiance scale.
 		// --------------------------------------------------------------------------------
-		
+
 		glGenTextures(1, &irradianceMap);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 		for (unsigned int i = 0; i < 6; ++i)
@@ -118,15 +118,13 @@ namespace OpenGLEngine
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	}
-	void SkyboxComponent::BindTexture()
+	void Skybox::BindCubeMap()
 	{
-		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 	}
 
-	unsigned int SkyboxComponent::BindIrradianceMap()
+	void Skybox::BindIrradianceMap()
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-		return irradianceMap;
 	}
 }

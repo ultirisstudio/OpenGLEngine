@@ -1,7 +1,6 @@
 #pragma once
 
-#include <OpenGLEngine/Entity/Component.h>
-
+#include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Materials/CubeMap.h>
 #include <OpenGLEngine/Shader/Shader.h>
 
@@ -10,7 +9,7 @@
 
 namespace OpenGLEngine
 {
-	class SkyboxComponent : public Component
+	class Skybox
 	{
 	private:
 		std::shared_ptr<Model> m_Model;
@@ -34,11 +33,11 @@ namespace OpenGLEngine
 			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 		};
 	public:
-		SkyboxComponent();
+		Skybox();
 
-		void BindTexture();
+		void BindCubeMap();
 
-		unsigned int BindIrradianceMap();
+		void BindIrradianceMap();
 
 		Shader* GetShader()
 		{
@@ -51,3 +50,4 @@ namespace OpenGLEngine
 		}
 	};
 }
+

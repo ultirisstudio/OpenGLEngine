@@ -63,11 +63,6 @@ namespace OpenGLEngine {
 
 		int dirLightCount = 0;
 		int pointLightCount = 0;
-		
-		//m_SceneData.m_Shader.setUniform("uIrradianceMap", nat);
-		//glActiveTexture(GL_TEXTURE0 + nat);
-		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-		//nat++;
 
 		for (auto entity = m_SceneData.m_Scene->getEntities()->begin(); entity != m_SceneData.m_Scene->getEntities()->end(); entity++)
 		{
@@ -100,6 +95,11 @@ namespace OpenGLEngine {
 			{
 				Material& material = entity->second.GetComponent<MaterialComponent>().GetMaterial();
 				glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
+
+				//m_SceneData.m_Shader.setUniform("uIrradianceMap", nat);
+				//glActiveTexture(GL_TEXTURE0 + nat);
+				//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
+				//nat++;
 
 				m_SceneData.m_Shader.setUniform("uModel", transform);
 				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
@@ -157,11 +157,6 @@ namespace OpenGLEngine {
 					nat++;
 				}
 
-				m_SceneData.m_Shader.setUniform("uIrradianceMap", nat);
-				glActiveTexture(GL_TEXTURE0 + nat);
-				m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-				nat++;
-
 				if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())
 				{
 					if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
@@ -203,13 +198,13 @@ namespace OpenGLEngine {
 			}
 		}
 
-		m_SceneData.m_Scene->getSkybox().GetShader()->use();
+		/*m_SceneData.m_Scene->getSkybox().GetShader()->use();
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
 
 		glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindCubeMap();
-		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
+		m_SceneData.m_Scene->getSkybox().GetModel()->draw();*/
 
 		//m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);

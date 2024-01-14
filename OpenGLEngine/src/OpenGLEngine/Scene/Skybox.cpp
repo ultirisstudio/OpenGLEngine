@@ -29,7 +29,7 @@ namespace OpenGLEngine
 
 		stbi_set_flip_vertically_on_load(true);
 		int width, height, nrComponents;
-		float* data = stbi_loadf("Assets\\HDR\\kloofendal_43d_clear_puresky_4k.hdr", &width, &height, &nrComponents, 0);
+		float* data = stbi_loadf("Assets\\HDR\\kloofendal_48d_partly_cloudy_puresky_4k.hdr", &width, &height, &nrComponents, 0);
 		if (data)
 		{
 			glGenTextures(1, &hdrTexture);
@@ -59,6 +59,17 @@ namespace OpenGLEngine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+		glm::mat4 captureViews[6] =
+		{
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+		};
 
 		m_EquirectangularToCubemapShader.use();
 		m_EquirectangularToCubemapShader.setUniform("equirectangularMap", 0);
@@ -90,8 +101,8 @@ namespace OpenGLEngine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
@@ -102,8 +113,8 @@ namespace OpenGLEngine
 		m_IrradianceShader.use();
 		m_IrradianceShader.setUniform("environmentMap", 0);
 		m_IrradianceShader.setUniform("projection", captureProjection);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 
 		glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -116,7 +127,6 @@ namespace OpenGLEngine
 			m_Model->draw();
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	}
 	void Skybox::BindCubeMap()
 	{

@@ -43,7 +43,6 @@ namespace OpenGLEngine {
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		glViewport(0, 0, m_Data.Width, m_Data.Height);
 
 		SetVSync(true);
 

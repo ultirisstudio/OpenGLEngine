@@ -2,7 +2,7 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
-class Mesh;
+class Entity;
 
 namespace OpenGLEngine
 {
@@ -11,7 +11,7 @@ namespace OpenGLEngine
 	private:
 		std::shared_ptr<Model> m_Model;
 
-		std::vector<Entity*> m_SubEntities;
+		std::vector<Entity> m_SubEntities;
 	public:
 		std::string m_ModelPath;
 
@@ -20,7 +20,7 @@ namespace OpenGLEngine
 
 		void SetModel(const std::string& path);
 
-		std::unordered_map<std::string, Mesh*>& GetMeshes() { return m_Model->GetMeshes(); }
+		std::vector<Entity>* GetSubEntities() { return &m_SubEntities; }
 
 		Model& GetModel() { return *m_Model; }
 		Model* GetPtr() { return m_Model.get(); }

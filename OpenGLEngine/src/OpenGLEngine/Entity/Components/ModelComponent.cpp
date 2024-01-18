@@ -2,15 +2,19 @@
 #include "ModelComponent.h"
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Resources/Mesh.h>
 #include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/Entity/Entity.h>
+
+#include <OpenGLEngine/Tools/UUID.h>
+
+#include <OpenGLEngine/Entity/Components/MeshComponent.h>
+#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 
 namespace OpenGLEngine
 {
 	ModelComponent::ModelComponent(const std::string& path)
 	{
-		m_Model = OpenGLEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path);
-		m_ModelPath = path;
+		SetModel(path);
 	}
 
 	void ModelComponent::SetModel(const std::string& path)
@@ -18,12 +22,12 @@ namespace OpenGLEngine
 		m_Model = OpenGLEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path);
 		m_ModelPath = path;
 
-		/*m_SubEntities.clear();
+		m_SubEntities.clear();
 		for (auto& [name, mesh] : m_Model->GetMeshes())
 		{
-			m_SubEntities.push_back(scene->CreateEntity(name));
-			//m_SubEntities.back()->AddComponent<>();
-			//m_SubEntities.back().AddComponent<MeshComponent>(mesh.second);
-		}*/
+			m_SubEntities.push_back(Entity(name, uuid::generate_uuid_v4()));
+			m_SubEntities.back().AddComponent<MeshComponent>(name, mesh);
+			m_SubEntities.back().AddComponent<MaterialComponent>().InitializeMaterial();
+		}
 	}
 }

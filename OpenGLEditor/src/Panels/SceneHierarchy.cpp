@@ -2,6 +2,8 @@
 
 #include "imgui.h"
 
+#include <OpenGLEngine/Entity/Components/ModelComponent.h>
+
 OpenGLEngine::SceneHierarchy::SceneHierarchy()
 {
 
@@ -44,6 +46,33 @@ void OpenGLEngine::SceneHierarchy::OnImGuiRender(Scene& scene)
 
 		if (opened)
 		{
+			if (entity->HasComponent<ModelComponent>())
+			{
+				auto& mc = entity->GetComponent<ModelComponent>();
+
+				if (ImGui::TreeNodeEx("Meshes", ImGuiTreeNodeFlags_SpanFullWidth))
+				{
+					if (mc.GetSubEntities())
+					{
+						for (auto& subEntity : *mc.GetSubEntities())
+						{
+							ImGuiTreeNodeFlags flags = ((strcmp(id.c_str(), subEntity.GetId()) == 0) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+							flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+							bool opened = ImGui::TreeNodeEx((void*)(intptr_t)subEntity.GetId(), flags, subEntity.GetName());
+							if (ImGui::IsItemClicked())
+							{
+								scene.m_SelectedEntity = &subEntity;
+							}
+							if (opened)
+							{
+								ImGui::TreePop();
+							}
+						}
+					}
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::TreePop();
 		}
 	}

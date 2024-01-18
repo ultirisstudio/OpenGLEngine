@@ -10,6 +10,7 @@
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
@@ -138,6 +139,19 @@ namespace OpenGLEngine
 				}
 			}
 
+			if (entity->HasComponent<MeshComponent>())
+			{
+				auto& mc = entity->GetComponent<MeshComponent>();
+
+				if (ImGui::TreeNodeEx("Mesh", ImGuiTreeNodeFlags_DefaultOpen, "Mesh"))
+				{
+					ImGui::Text("Mesh: "); ImGui::SameLine();
+					ImGui::Text(mc.GetName().c_str());
+
+					ImGui::TreePop();
+				}
+			}
+
 			if (entity->HasComponent<TerrainComponent>())
 			{
 				auto& tc = entity->GetComponent<TerrainComponent>();
@@ -195,7 +209,7 @@ namespace OpenGLEngine
 						ImGui::EndPopup();
 					}
 
-					if (entity->HasComponent<ModelComponent>() || entity->HasComponent<TerrainComponent>())
+					if (entity->HasComponent<MeshComponent>())
 					{
 						ImGui::Text("Albedo texture: ");
 						ImGui::ImageButton((ImTextureID)mc.GetEditorAlbedoTexture().GetID(), { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });

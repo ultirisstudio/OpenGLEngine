@@ -4,8 +4,6 @@ in float Height;
 
 out vec4 FragColor;
 
-uniform sampler2D uTexture;
-
 void main()
 {
     float h = (Height + 16)/64.0f;

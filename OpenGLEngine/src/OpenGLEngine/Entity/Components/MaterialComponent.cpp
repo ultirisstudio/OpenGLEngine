@@ -29,33 +29,36 @@ namespace OpenGLEngine
 		{
 			m_AlbedoTexture = file;
 			m_Material->addTexture(id, file, true);
+			m_Material->addBoolean(id, true);
 		}
 		else if (id == "normal")
 		{
 			m_NormalTexture = file;
 			m_Material->addTexture(id, file, false);
+			m_Material->addBoolean(id, true);
 		}
 		else if (id == "metallic")
 		{
 			m_MetallicTexture = file;
 			m_Material->addTexture(id, file, false);
+			m_Material->addBoolean(id, true);
 		}
 		else if (id == "roughness")
 		{
 			m_RoughnessTexture = file;
 			m_Material->addTexture(id, file, false);
+			m_Material->addBoolean(id, true);
 		}
 		else if (id == "ao")
 		{
 			m_AOTexture = file;
 			m_Material->addTexture(id, file, false);
+			m_Material->addBoolean(id, true);
 		}
 		else
 		{
 			std::cout << "Error: MaterialComponent::addTexture() - Invalid texture id: " << id << std::endl;
 		}
-
-		m_Material->addBoolean(id, true);
 	}
 
 	Texture& MaterialComponent::GetEditorAlbedoTexture()

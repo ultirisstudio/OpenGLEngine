@@ -210,7 +210,7 @@ namespace OpenGLEngine
 
 	void Shader::setUniform(const std::string& name, bool value) const
 	{
-		glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
+		glUniform1i(glGetUniformLocation(m_id, name.c_str()), (bool)value);
 	}
 
 	void Shader::setUniform(const std::string& name, unsigned int value) const

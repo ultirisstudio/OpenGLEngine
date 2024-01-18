@@ -1,4 +1,4 @@
-#version 330 core
+#version 440 core
 
 in vec2 fTextureCoordinates;
 in vec3 fWorldPos;
@@ -122,12 +122,12 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
     vec3 L = normalize(light.position - fWorldPos);
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
-    float attenuation = 1.0 / (distance * distance); //(light.constant + light.linear * distance + light.quadratic * (distance * distance))
-    vec3 radiance = light.color * attenuation; // 
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
+    vec3 radiance = light.color * attenuation;
 
     // Cook-Torrance BRDF
-    float NDF = DistributionGGX(N, H, roughness);   
-    float G   = GeometrySmith(N, V, L, roughness);      
+    float NDF = DistributionGGX(N, H, roughness);
+    float G   = GeometrySmith(N, V, L, roughness);
     vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
            
     vec3 numerator    = NDF * G * F; 
@@ -154,38 +154,39 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 albedo;
-    float metallic;
-    float roughness;
-    float ao;
-    vec3 N;
+    vec3 albedo = uMaterial.albedoColor;
+    float metallic = uMaterial.metallic;
+    float roughness = uMaterial.roughness;
+    float ao = uMaterial.ao;
+    vec3 N = normalize(fNormal);
 
-    if (!uMaterial.use_albedo_texture)
-		albedo = uMaterial.albedoColor;
-    else
+    if (uMaterial.use_albedo_texture)
+    {
         albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
+    }
 
-    if (!uMaterial.use_normal_texture)
-        N = normalize(fNormal);
-    else
+    if (uMaterial.use_normal_texture)
+    {
         N = getNormalFromMap();
+    }
 
-    if (!uMaterial.use_metallic_texture)
-        metallic = uMaterial.metallic;
-    else
+    if (uMaterial.use_metallic_texture)
+    {
         metallic = texture(uMaterial.metallicMap, fTextureCoordinates).r;
+    }
 
-    if (!uMaterial.use_roughness_texture)
-        roughness = uMaterial.roughness;
-    else
+    if (uMaterial.use_roughness_texture)
+    {
         roughness = texture(uMaterial.roughnessMap, fTextureCoordinates).r;
+    }
 
-    if (!uMaterial.use_ao_texture)
-        ao = uMaterial.ao;
-    else
+    if (uMaterial.use_ao_texture)
+    {
         ao = texture(uMaterial.aoMap, fTextureCoordinates).r;
+    }
 
     vec3 V = normalize(uCameraPosition - fWorldPos);
+    vec3 R = reflect(-V, N); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
@@ -203,9 +204,9 @@ void main()
     //vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
     vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
     vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	  
+    kD *= 1.0 - metallic;
     vec3 irradiance = texture(uIrradianceMap, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
+    vec3 diffuse      = albedo; //irradiance * 
     vec3 ambient = (kD * diffuse) * ao;
     
     vec3 result = ambient + Lo;

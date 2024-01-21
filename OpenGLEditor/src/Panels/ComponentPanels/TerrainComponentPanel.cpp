@@ -57,6 +57,9 @@ namespace OpenGLEngine
 					tc.GenerateTerrain();
 				}
 
+				ImGui::SliderInt("Resolution", &tc.rez, 1, 100);
+				ImGui::SliderInt("Texture scale", &tc.textureScale, 1, 100);
+
 				ImGui::TreePop();
 			}
 		}

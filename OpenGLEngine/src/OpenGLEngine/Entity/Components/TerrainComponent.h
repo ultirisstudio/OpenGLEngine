@@ -16,13 +16,14 @@ namespace OpenGLEngine
 		bool m_Generated = false;
 
 		int m_MaxTessLevel;
-		unsigned rez = 20;
 
 		unsigned int terrainVAO;
 	public:
 		TerrainComponent();
 
 		bool m_PolygonMode = false;
+		int rez = 20;
+		int textureScale = 1;
 
 		void SetHeightMap(const std::string& path) { m_HeightMapPath = path; }
 

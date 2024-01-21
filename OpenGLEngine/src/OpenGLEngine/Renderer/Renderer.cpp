@@ -193,6 +193,8 @@ namespace OpenGLEngine {
 				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
 				nat++;
 
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTextureScale", entity->second.GetComponent<TerrainComponent>().textureScale);
+
 				entity->second.GetComponent<TerrainComponent>().Draw();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

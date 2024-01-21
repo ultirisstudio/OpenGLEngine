@@ -209,7 +209,7 @@ void main()
     vec3 diffuse      = albedo; //irradiance * 
     vec3 ambient = (kD * diffuse) * ao;
     
-    vec3 result = ambient + Lo;
+    vec3 result = (ambient * 0.5) + Lo;
 
     // HDR tonemapping
     result = result / (result + vec3(1.0));

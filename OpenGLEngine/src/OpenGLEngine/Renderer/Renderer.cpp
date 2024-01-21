@@ -188,10 +188,10 @@ namespace OpenGLEngine {
 				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
 				nat++;
 
-				//glActiveTexture(GL_TEXTURE0 + nat);
-				//entity->second.GetComponent<MaterialComponent>().GetMaterial().getTexture("albedo")->bind();
-				//entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
-				//nat++;
+				glActiveTexture(GL_TEXTURE0 + nat);
+				entity->second.GetComponent<MaterialComponent>().GetMaterial().getTexture("albedo")->bind();
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
+				nat++;
 
 				entity->second.GetComponent<TerrainComponent>().Draw();
 

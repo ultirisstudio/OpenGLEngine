@@ -15,7 +15,6 @@
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 
@@ -69,6 +68,9 @@ namespace OpenGLEngine {
 		{
 			m_SceneData.m_Shader.use();
 
+			int nat = 0;
+			glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
+
 			if (entity->second.HasComponent<LightComponent>())
 			{
 				auto& lc = entity->second.GetComponent<LightComponent>();
@@ -92,9 +94,7 @@ namespace OpenGLEngine {
 				}
 			}
 
-			int nat = 0;
-
-			if (((entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr()) || entity->second.HasComponent<TerrainComponent>()))
+			if (entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())
 			{
 				m_SceneData.m_Shader.use();
 
@@ -103,7 +103,6 @@ namespace OpenGLEngine {
 					m_SceneData.m_Shader.use();
 
 					Material& material = subEntity.GetComponent<MaterialComponent>().GetMaterial();
-					glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
 
 					m_SceneData.m_Shader.setUniform("uModel", transform);
 					m_SceneData.m_Shader.setUniform("uView", viewMatrix);
@@ -168,51 +167,42 @@ namespace OpenGLEngine {
 
 					subEntity.GetComponent<MeshComponent>().GetMesh().draw();
 				}
-
-				/*if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())
-				{
-					if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
-						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-					entity->second.GetComponent<TerrainComponent>().GetShader().use();
-					
-					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
-					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
-					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
-
-					glActiveTexture(GL_TEXTURE0 + nat);
-					entity->second.GetComponent<TerrainComponent>().GetHeightMapTexture().bind();
-					entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
-					nat++;
-
-					//glActiveTexture(GL_TEXTURE0 + nat);
-					//entity->second.GetComponent<MaterialComponent>().GetMaterial().getTexture("albedo")->bind();
-					//entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
-					//nat++;
-
-					entity->second.GetComponent<TerrainComponent>().Draw();
-
-					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-					m_SceneData.m_Shader.use();
-				}
 				
 				if (entity->second.HasComponent<ModelComponent>())
-					entity->second.GetComponent<ModelComponent>().GetModel().draw();*/
+					entity->second.GetComponent<ModelComponent>().GetModel().draw();
 			}
 
-			/*if (entity->second.HasComponent<SkyboxComponent>())
+			if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())
 			{
-				auto& sc = entity->second.GetComponent<SkyboxComponent>();
+				if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-				sc.GetShader()->use();
-				sc.GetShader()->setUniform("projection", projectionMatrix);
-				sc.GetShader()->setUniform("view", viewMatrix);
+				entity->second.GetComponent<TerrainComponent>().GetShader().use();
 
-				sc.BindTexture();
-				sc.GetModel()->draw();
-			}*/
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
+
+				glActiveTexture(GL_TEXTURE0 + nat);
+				entity->second.GetComponent<TerrainComponent>().GetHeightMapTexture().bind();
+				entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
+				nat++;
+
+				//glActiveTexture(GL_TEXTURE0 + nat);
+				//entity->second.GetComponent<MaterialComponent>().GetMaterial().getTexture("albedo")->bind();
+				//entity->second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
+				//nat++;
+
+				entity->second.GetComponent<TerrainComponent>().Draw();
+
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+				m_SceneData.m_Shader.use();
+			}
 		}
+
+		//m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
+		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
 
 		m_SceneData.m_Scene->getSkybox().GetShader()->use();
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);
@@ -221,11 +211,6 @@ namespace OpenGLEngine {
 		glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindCubeMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
-
-
-		m_SceneData.m_Shader.use();
-		//m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
-		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
 	}
 
 	void Renderer::EndScene()

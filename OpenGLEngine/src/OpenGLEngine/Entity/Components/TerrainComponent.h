@@ -8,7 +8,6 @@ namespace OpenGLEngine
 	class TerrainComponent : public Component
 	{
 	private:
-		std::shared_ptr<Texture> m_NoTexture;
 		std::shared_ptr<Texture> m_HeightMapTexture;
 		std::shared_ptr<Shader> m_Shader;
 
@@ -29,8 +28,6 @@ namespace OpenGLEngine
 
 		std::string GetHeightMapPath() { return m_HeightMapPath; }
 		Texture& GetHeightMapTexture() { return *m_HeightMapTexture; }
-
-		Texture& GetEditorHeightMapTexture();
 
 		Shader& GetShader();
 

@@ -53,8 +53,8 @@ namespace OpenGLEngine
 	{
 		Entity* temp = m_Scene->CreateEntity("temp");
 		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().InitializeMaterial();
+		//temp->AddComponent<MaterialComponent>();
+		//temp->GetComponent<MaterialComponent>().InitializeMaterial();
 
 		switch (type)
 		{
@@ -84,8 +84,8 @@ namespace OpenGLEngine
 		Entity* temp = m_Scene->CreateEntity(m_FileName);
 		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>(file);
-		temp->AddComponent<MaterialComponent>();
-		temp->GetComponent<MaterialComponent>().InitializeMaterial();
+		//temp->AddComponent<MaterialComponent>();
+		//temp->GetComponent<MaterialComponent>().InitializeMaterial();
 	}
 
 	void SceneManager::SaveScene()

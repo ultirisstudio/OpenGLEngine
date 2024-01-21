@@ -4,7 +4,6 @@
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
-#include <OpenGLEngine/Entity/Components/SkyboxComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 
@@ -137,19 +136,6 @@ namespace OpenGLEngine
 
 			auto& mc = entity->GetComponent<ModelComponent>();
 			out << YAML::Key << "model" << YAML::Value << mc.m_ModelPath;
-
-			out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
-
-		if (entity->HasComponent<SkyboxComponent>())
-		{
-			out << YAML::BeginMap;
-			out << YAML::Key << "SkyboxComponent";
-			out << YAML::Value << YAML::BeginMap;
-
-			auto& mc = entity->GetComponent<ModelComponent>();
-			out << YAML::Key << "skybox" << YAML::Value << true;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -319,12 +305,6 @@ namespace OpenGLEngine
 							{
 								mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
 							}
-						}
-
-						auto skyboxComponent = component["SkyboxComponent"];
-						if (skyboxComponent)
-						{
-							auto& sc = deserializedEntity->AddComponent<SkyboxComponent>();
 						}
 
 						auto lightComponent = component["LightComponent"];

@@ -13,23 +13,11 @@ namespace OpenGLEngine
 {
 	TerrainComponent::TerrainComponent() : terrainVAO(0)
 	{
-		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png", false);
-
 		m_Shader = std::make_shared<Shader>();
 		m_Shader->LoadFromFile("Shaders/gpuheight.vs", "Shaders/gpuheight.fs", "Shaders/gpuheight.tcs", "Shaders/gpuheight.tes");
 
 		glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &m_MaxTessLevel);
 		std::cout << "Max available tess level: " << m_MaxTessLevel << std::endl;
-	}
-
-	Texture& TerrainComponent::GetEditorHeightMapTexture()
-	{
-		if (m_HeightMapPath != "")
-		{
-			return *Renderer::m_SceneData.m_ResourceManager.getTexture(m_HeightMapPath, false);
-		}
-
-		return *m_NoTexture;
 	}
 
 	Shader& TerrainComponent::GetShader()

@@ -20,7 +20,6 @@ namespace OpenGLEngine
 		glm::vec3* m_Position;
 		glm::vec3* m_Rotation;
 
-		float m_fov;
 		float m_minFov;
 		float m_maxFov;
 
@@ -40,6 +39,8 @@ namespace OpenGLEngine
 		const glm::mat4& getProjectionMatrix() const;
 
 		glm::mat4 GetTransform();
+
+		float m_fov;
 		float getFov() const;
 		void setFov(float fov) { m_fov = fov; }
 

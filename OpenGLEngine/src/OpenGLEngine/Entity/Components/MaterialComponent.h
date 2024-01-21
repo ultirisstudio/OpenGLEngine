@@ -7,7 +7,6 @@ namespace OpenGLEngine
 	class MaterialComponent : public Component
 	{
 	private:
-		std::shared_ptr<Texture> m_NoTexture;
 		std::shared_ptr<Material> m_Material;
 	public:
 		std::string m_AlbedoTexture;
@@ -23,17 +22,5 @@ namespace OpenGLEngine
 		void addTexture(const std::string& id, const std::string& file);
 
 		Material& GetMaterial() { return *m_Material; }
-
-		Texture& GetNoTexture() { return *m_NoTexture; }
-
-		Texture& GetEditorAlbedoTexture();
-
-		Texture& GetEditorNormalTexture();
-
-		Texture& GetEditorMetallicTexture();
-
-		Texture& GetEditorRoughnessTexture();
-
-		Texture& GetEditorAOTexture();
 	};
 }

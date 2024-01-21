@@ -6,7 +6,6 @@ namespace OpenGLEngine
 	MaterialComponent::MaterialComponent()
 	{
 		m_Material = Material::CreateMaterial();
-		m_NoTexture = Texture::CreateTexture("Assets/Textures/3d-modeling.png", false);
 	}
 
 	void MaterialComponent::InitializeMaterial()
@@ -59,50 +58,5 @@ namespace OpenGLEngine
 		{
 			std::cout << "Error: MaterialComponent::addTexture() - Invalid texture id: " << id << std::endl;
 		}
-	}
-
-	Texture& MaterialComponent::GetEditorAlbedoTexture()
-	{
-		if (m_Material->hasTexture("albedo"))
-		{
-			return *m_Material->getTexture("albedo");
-		}
-		return *m_NoTexture;
-	}
-
-	Texture& MaterialComponent::GetEditorNormalTexture()
-	{
-		if (m_Material->hasTexture("normal"))
-		{
-			return *m_Material->getTexture("normal");
-		}
-		return *m_NoTexture;
-	}
-
-	Texture& MaterialComponent::GetEditorMetallicTexture()
-	{
-		if (m_Material->hasTexture("metallic"))
-		{
-			return *m_Material->getTexture("metallic");
-		}
-		return *m_NoTexture;
-	}
-
-	Texture& MaterialComponent::GetEditorRoughnessTexture()
-	{
-		if (m_Material->hasTexture("roughness"))
-		{
-			return *m_Material->getTexture("roughness");
-		}
-		return *m_NoTexture;
-	}
-
-	Texture& MaterialComponent::GetEditorAOTexture()
-	{
-		if (m_Material->hasTexture("ao"))
-		{
-			return *m_Material->getTexture("ao");
-		}
-		return *m_NoTexture;
 	}
 }

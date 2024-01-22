@@ -206,10 +206,10 @@ void main()
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
     vec3 irradiance = texture(uIrradianceMap, N).rgb;
-    vec3 diffuse      = albedo; //irradiance * 
+    vec3 diffuse      = albedo; // irradiance * 
     vec3 ambient = (kD * diffuse) * ao;
     
-    vec3 result = (ambient * 0.5) + Lo;
+    vec3 result = ambient + Lo;
 
     // HDR tonemapping
     result = result / (result + vec3(1.0));

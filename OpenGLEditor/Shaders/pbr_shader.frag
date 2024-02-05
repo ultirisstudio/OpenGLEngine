@@ -27,20 +27,23 @@ struct Material
     bool use_ao_texture;
 };
 
-// lights
+//Point light
 struct PointLight {    
     vec3 position;
     vec3 color;
-
-    float constant;
-    float linear;
-    float quadratic;
 };
-
 #define NR_POINT_LIGHTS 4
-
 uniform int uUsePointLight;
 uniform PointLight uPointLights[NR_POINT_LIGHTS];
+
+//Directional light
+struct DirLight {    
+    vec3 direction;
+    vec3 color;
+};
+#define NR_DIR_LIGHTS 4
+uniform int uUseDirLight;
+uniform DirLight uDirLights[NR_DIR_LIGHTS];
 
 uniform Material uMaterial;
 
@@ -48,12 +51,10 @@ uniform vec3 uCameraPosition;
 
 uniform samplerCube uIrradianceMap;
 
+uniform float uAmbiantLight;
+
 const float PI = 3.14159265359;
-// ----------------------------------------------------------------------------
-// Easy trick to get tangent-normals to world-space to keep PBR code simplified.
-// Don't worry if you don't get what's going on; you generally want to do normal 
-// mapping the usual way for performance anyways; I do plan make a note of this 
-// technique somewhere later in the normal mapping tutorial.
+
 vec3 getNormalFromMap()
 {
     vec3 tangentNormal = texture(uMaterial.normalMap, fTextureCoordinates).xyz * 2.0 - 1.0;
@@ -116,13 +117,13 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }  
 // ----------------------------------------------------------------------------
-vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo, float roughness, float metallic)
+vec3 calculatePointLightReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo, float roughness, float metallic)
 {
     // calculate per-light radiance
     vec3 L = normalize(light.position - fWorldPos);
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance)); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
     vec3 radiance = light.color * attenuation;
 
     // Cook-Torrance BRDF
@@ -131,25 +132,40 @@ vec3 calculateReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo
     vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
            
     vec3 numerator    = NDF * G * F; 
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
     vec3 specular = numerator / denominator;
-        
-    // kS is equal to Fresnel
+    
     vec3 kS = F;
-    // for energy conservation, the diffuse and specular light can't
-    // be above 1.0 (unless the surface emits light); to preserve this
-    // relationship the diffuse component (kD) should equal 1.0 - kS.
     vec3 kD = vec3(1.0) - kS;
-    // multiply kD by the inverse metalness such that only non-metals 
-    // have diffuse lighting, or a linear blend if partly metal (pure metals
-    // have no diffuse light).
     kD *= 1.0 - metallic;	  
 
-    // scale light by NdotL
     float NdotL = max(dot(N, L), 0.0);
 
-    // add to outgoing radiance Lo
-    return (kD * albedo / PI + specular) * radiance * NdotL; //  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+// ----------------------------------------------------------------------------
+vec3 calculateDirLightReflectance(DirLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+    // calculate per-light radiance
+    vec3 L = normalize(light.direction);
+    vec3 H = normalize(V + L);
+    vec3 radiance = light.color;
+
+    float NDF = DistributionGGX(N, H, roughness);
+    float G   = GeometrySmith(N, V, L, roughness);
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+           
+    vec3 numerator    = NDF * G * F; 
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+    vec3 specular = numerator / denominator;
+    
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;	  
+
+    float NdotL = max(dot(N, L), 0.0);
+
+    return (kD * albedo / PI + specular) * radiance * NdotL;
 }
 // ----------------------------------------------------------------------------
 void main()
@@ -187,21 +203,20 @@ void main()
 
     vec3 V = normalize(uCameraPosition - fWorldPos);
     vec3 R = reflect(-V, N); 
-
-    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
+  
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
-    // reflectance equation
     vec3 Lo = vec3(0.0);
     for(int i = 0; i < uUsePointLight; ++i)
     {
-        Lo += calculateReflectance(uPointLights[i], V, N, F0, albedo, roughness, metallic);
+        Lo += calculatePointLightReflectance(uPointLights[i], V, N, F0, albedo, roughness, metallic);
     }
-    
-    // ambient lighting (we now use IBL as the ambient term)
-    //vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    for(int i = 0; i < uUseDirLight; ++i)
+    {
+        Lo += calculateDirLightReflectance(uDirLights[i], V, N, F0, albedo, roughness, metallic);
+    }
+
     vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
@@ -209,7 +224,7 @@ void main()
     vec3 diffuse      = albedo; // irradiance * 
     vec3 ambient = (kD * diffuse) * ao;
     
-    vec3 result = ambient + Lo;
+    vec3 result = (ambient * uAmbiantLight) + Lo;
 
     // HDR tonemapping
     result = result / (result + vec3(1.0));

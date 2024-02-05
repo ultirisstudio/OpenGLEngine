@@ -76,9 +76,8 @@ namespace OpenGLEngine {
 				auto& lc = entity->second.GetComponent<LightComponent>();
 				if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 				{
-					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].direction", entity->second.GetComponent<TransformComponent>().Rotation);
-					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].diffuse", lc.dir_diffuse);
-					//m_SceneData.m_Shader.setUniform("dirLights[" + std::to_string(dirLightCount) + "].specular", lc.dir_specular);
+					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].direction", entity->second.GetComponent<TransformComponent>().Rotation);
+					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].color", lc.dir_color);
 
 					dirLightCount++;
 				}
@@ -86,9 +85,6 @@ namespace OpenGLEngine {
 				{
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].constant", lc.point_constant);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].linear", lc.point_linear);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].quadratic", lc.point_quadratic);
 
 					pointLightCount++;
 				}
@@ -203,8 +199,9 @@ namespace OpenGLEngine {
 			}
 		}
 
-		//m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
+		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
+		m_SceneData.m_Shader.setUniform("uAmbiantLight", m_SceneData.m_Scene->m_AmbientLight);
 
 		m_SceneData.m_Scene->getSkybox().GetShader()->use();
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);

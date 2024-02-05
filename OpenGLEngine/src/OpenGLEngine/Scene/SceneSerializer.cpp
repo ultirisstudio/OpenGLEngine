@@ -159,9 +159,6 @@ namespace OpenGLEngine
 				out << YAML::Key << "lightType" << YAML::Value << "Point";
 
 				out << YAML::Key << "color" << YAML::Value << lc.point_color;
-				out << YAML::Key << "constant" << YAML::Value << lc.point_constant;
-				out << YAML::Key << "linear" << YAML::Value << lc.point_linear;
-				out << YAML::Key << "quadratic" << YAML::Value << lc.point_quadratic;
 			}
 
 			out << YAML::EndMap;
@@ -320,9 +317,6 @@ namespace OpenGLEngine
 							{
 								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
 								lc.point_color = lightComponent["color"].as<glm::vec3>();
-								lc.point_constant = lightComponent["constant"].as<float>();
-								lc.point_linear = lightComponent["linear"].as<float>();
-								lc.point_quadratic = lightComponent["quadratic"].as<float>();
 							}
 						}
 

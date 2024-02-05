@@ -164,6 +164,13 @@ namespace OpenGLEngine
 		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_ContentBrowserPanel.OnImGuiRender();
 
+		ImGui::Begin("World infos:");
+		{
+			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
+		}
+
+		ImGui::End();
+
 		if (m_optionMenu)
 		{
 			OptionMenu();

@@ -59,12 +59,6 @@ namespace OpenGLEngine
 				{
 					ImGui::Text("Point light color: ");
 					ImGui::ColorEdit3("##pointlightcolor", glm::value_ptr(lc.point_color));
-					ImGui::Text("Point light constant: ");
-					ImGui::InputFloat("##pointlightconstant", &lc.point_constant);
-					ImGui::Text("Point light linear: ");
-					ImGui::InputFloat("##pointlightlinear", &lc.point_linear);
-					ImGui::Text("Point light quadratic: ");
-					ImGui::InputFloat("##pointlightquadratic", &lc.point_quadratic);
 				}
 
 				ImGui::TreePop();

@@ -20,7 +20,8 @@ namespace OpenGLEngine
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
-		m_LightsCount(0)
+		m_LightsCount(0),
+		m_AmbientLight(1.0f)
 	{
 		Init();
 	}
@@ -32,7 +33,8 @@ namespace OpenGLEngine
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
-		m_LightsCount(0)
+		m_LightsCount(0),
+		m_AmbientLight(1.0f)
 	{
 		Init();
 	}

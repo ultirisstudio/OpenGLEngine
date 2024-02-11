@@ -20,6 +20,24 @@ namespace OpenGLEngine
 
 	}
 
+	Material::~Material()
+	{
+		for (auto& texture : m_textures)
+		{
+			texture.second.reset();
+		}
+
+		for (auto& cubemap : m_cubemaps)
+		{
+			cubemap.second.reset();
+		}
+
+		m_floats.clear();
+		m_vec3s.clear();
+		m_textures.clear();
+		m_cubemaps.clear();
+	}
+
 	void Material::addFloat(const std::string& id, float value)
 	{
 		m_floats[id] = std::make_shared<float>(value);

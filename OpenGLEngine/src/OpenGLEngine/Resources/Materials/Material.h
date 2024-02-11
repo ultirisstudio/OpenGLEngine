@@ -27,6 +27,7 @@ namespace OpenGLEngine
 
 	public:
 		Material();
+		~Material();
 
 		void addFloat(const std::string& id, float value);
 		void addVec3(const std::string& id, glm::vec3 value);

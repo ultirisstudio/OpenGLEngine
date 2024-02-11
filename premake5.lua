@@ -63,8 +63,7 @@ project "OpenGLEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.tinyfiledialogs}"
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -74,7 +73,6 @@ project "OpenGLEngine"
 		"assimp",
 		"ImGui",
 		"ImGuizmo",
-		"tinyfiledialogs",
 		"opengl32.lib",
 	}
 	
@@ -123,12 +121,14 @@ project "OpenGLEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.tinyfiledialogs}"
 	}
 
 	links
 	{
 		"OpenGLEngine",
+		"tinyfiledialogs",
 		"yaml-cpp"
 	}
 	

@@ -17,4 +17,3 @@
 #include "OpenGLEngine/Tools/Math.h"
 
 #include "OpenGLEngine/Tools/Tree.h"
-#include "OpenGLEngine/Tools/FileBrowser.h"

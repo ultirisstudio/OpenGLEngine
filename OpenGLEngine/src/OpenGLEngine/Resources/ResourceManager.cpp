@@ -43,4 +43,26 @@ namespace OpenGLEngine
 			return m_Models.at(id);
 		}
 	}
+
+	void ResourceManager::Reset()
+	{
+		for (auto& texture : m_Textures)
+		{
+			texture.second.reset();
+		}
+
+		for (auto& material : m_Materials)
+		{
+			material.second.reset();
+		}
+
+		for (auto& model : m_Models)
+		{
+			model.second.reset();
+		}
+
+		m_Textures.clear();
+		m_Materials.clear();
+		m_Models.clear();
+	}
 }

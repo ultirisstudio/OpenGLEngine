@@ -4,7 +4,8 @@
 #include <memory>
 
 #include <OpenGLEngine/Scene/Scene.h>
-#include <OpenGLEngine/Tools/FileBrowser.h>
+
+#include "FileBrowser.h"
 
 namespace OpenGLEngine
 {

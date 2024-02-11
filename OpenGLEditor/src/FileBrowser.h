@@ -22,7 +22,7 @@ namespace OpenGLEngine
 		bool OpenFile();
 		bool SaveFile();
 
-		char const* OpenFolder();
+		char* OpenFolder();
 
 		FileInfo& GetInfos() { return m_FileInfos; }
 	private:

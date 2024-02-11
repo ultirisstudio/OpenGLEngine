@@ -80,7 +80,7 @@ namespace OpenGLEngine
         return true;
     }
 
-    char const* FileBrowser::OpenFolder()
+    char* FileBrowser::OpenFolder()
     {
         return tinyfd_selectFolderDialog("Open", "");
     }

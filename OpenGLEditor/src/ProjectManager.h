@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <OpenGLEngine/Tools/FileBrowser.h>
+#include "FileBrowser.h"
 
 namespace OpenGLEngine
 {
@@ -10,7 +10,6 @@ namespace OpenGLEngine
 	{
 	public:
 		ProjectManager();
-		ProjectManager(std::string projectPath);
 		~ProjectManager();
 
 		void CreateNewProject();
@@ -26,5 +25,6 @@ namespace OpenGLEngine
 		FileBrowser m_FileBrowser;
 
 		bool m_CreateNewProjectDialog;
+		bool m_OpenProjectDialog;
 	};
 }

@@ -13,6 +13,7 @@
 #include "Panels/Viewport.h"
 
 #include "SceneManager.h"
+#include "ProjectManager.h"
 
 #include <map>
 
@@ -42,6 +43,7 @@ namespace OpenGLEngine
 		Viewport m_Viewport;
 
 		std::unique_ptr<SceneManager> m_SceneManager;
+		std::unique_ptr<ProjectManager> m_ProjectManager;
 	private:
 		double last_time = Renderer::GetTime();
 		int nb_frame = 0;

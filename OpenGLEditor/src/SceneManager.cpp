@@ -3,7 +3,8 @@
 #include <filesystem>
 
 #include <OpenGLEngine.h>
-#include <OpenGLEngine/Scene/SceneSerializer.h>
+
+#include "SceneSerializer.h"
 
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>

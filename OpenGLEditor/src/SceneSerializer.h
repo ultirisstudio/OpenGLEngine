@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scene.h"
+#include <OpenGLEngine/Scene/Scene.h>
 
 namespace OpenGLEngine
 {

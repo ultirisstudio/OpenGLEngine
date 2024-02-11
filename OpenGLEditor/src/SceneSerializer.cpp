@@ -1,6 +1,8 @@
 #include "depch.h"
 #include "SceneSerializer.h"
 
+#include <yaml-cpp/yaml.h>
+
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
@@ -10,9 +12,7 @@
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
 
-
 #include <fstream>
-#include <yaml-cpp/yaml.h>
 
 namespace YAML
 {

@@ -21,6 +21,7 @@ namespace OpenGLEngine
 		Renderer::Init();
 
 		m_SceneManager = std::make_unique<SceneManager>();
+		m_ProjectManager = std::make_unique<ProjectManager>();
 	}
 
 	void Editor::OnDetach()
@@ -92,11 +93,43 @@ namespace OpenGLEngine
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("File"))
+			if (ImGui::BeginMenu("Project"))
 			{
-				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile();
-				ImGui::Separator();
+				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile(); ImGui::Separator();
 
+				if (ImGui::MenuItem("New project"))
+				{
+					m_ProjectManager->CreateNewProject();
+				}
+
+				if (ImGui::MenuItem("Save project"))
+				{
+					m_ProjectManager->SaveProject();
+				}
+
+				if (ImGui::MenuItem("Save project as"))
+				{
+					m_ProjectManager->SaveProjectAs();
+				}
+
+				if (ImGui::MenuItem("Open project"))
+				{
+					m_ProjectManager->OpenProject();
+				}
+
+				if (ImGui::MenuItem("Close project"))
+				{
+					m_ProjectManager->CloseProject();
+				}
+
+				ImGui::Separator();
+				if (ImGui::MenuItem("Quit"))
+					OpenGLEngine::Application::Get().Close();
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Scene"))
+			{
 				if (ImGui::MenuItem("New scene"))
 				{
 					m_SceneManager->createNewScene();
@@ -111,14 +144,10 @@ namespace OpenGLEngine
 				{
 					m_SceneManager->LoadScene();
 				}
-
-				ImGui::Separator();
-				if (ImGui::MenuItem("Quit"))
-					OpenGLEngine::Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Project"))
+			if (ImGui::BeginMenu("Runtime"))
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
@@ -157,6 +186,8 @@ namespace OpenGLEngine
 
 			ImGui::EndMenuBar();
 		}
+
+		m_ProjectManager->OnImGuiRender();
 
 		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_EditorViewport.OnImGuiRender(*m_SceneManager);

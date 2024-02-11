@@ -80,6 +80,11 @@ namespace OpenGLEngine
         return true;
     }
 
+    char const* FileBrowser::OpenFolder()
+    {
+        return tinyfd_selectFolderDialog("Open", "");
+    }
+
     void FileBrowser::Reset()
     {
         m_FileInfos.m_SelectedFile = "";

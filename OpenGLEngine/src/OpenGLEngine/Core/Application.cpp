@@ -4,6 +4,7 @@
 
 #include "Application.h"
 #include "OpenGLEngine/Renderer/Renderer.h"
+#include "OpenGLEngine/Scripting/ScriptEngine.h"
 #include "OpenGLEngine/Core/Input.h"
 
 namespace OpenGLEngine
@@ -18,13 +19,15 @@ namespace OpenGLEngine
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetVSync(false);
 
+		ScriptEngine::Init();
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
 	{
-
+		ScriptEngine::Shutdown();
 	}
 
 	void Application::OnEvent(Event& e)

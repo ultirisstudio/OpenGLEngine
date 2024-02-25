@@ -1,7 +1,10 @@
 .vs/
 .vscode/
+
 bin/
 bin-int/
+Intermediates/
+
 OpenGLEngine/vendor/assimp/bin/
 OpenGLEngine/vendor/assimp/bin-int/
 OpenGLEngine/vendor/Glad/bin/
@@ -11,11 +14,13 @@ OpenGLEngine/vendor/GLFW/bin-int/
 OpenGLEngine/vendor/imgui/bin/
 OpenGLEngine/vendor/imgui/bin-int/
 
-*.user
-*.vcxproj
-*.filters
-*.sln
-*.ini
-*.exe
+**.user
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
+**.sln
+**.ini
+**.exe
 
 **/Makefile

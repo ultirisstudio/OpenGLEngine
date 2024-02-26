@@ -121,6 +121,7 @@ namespace OpenGLEngine
 		LoadAssembly("Scripts/OpenGLEngine-ScriptCore.dll");
 		LoadAssemblyClasses(s_Data->CoreAssembly);
 
+		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
 		s_Data->EntityClass = ScriptClass("OpenGLEngine", "Entity");
@@ -230,6 +231,11 @@ namespace OpenGLEngine
 		}
 	}
 
+	MonoImage* ScriptEngine::GetCoreAssemblyImage()
+	{
+		return s_Data->CoreAssemblyImage;
+	}
+
 	void ScriptEngine::InitMono()
 	{
 		mono_set_assemblies_path("mono/lib");
@@ -292,12 +298,16 @@ namespace OpenGLEngine
 
 	void ScriptInstance::InvokeOnCreate()
 	{
-		m_ScriptClass->InvokeMethod(m_OnCreateMethod, m_Instance);
+		if (m_OnCreateMethod)
+			m_ScriptClass->InvokeMethod(m_OnCreateMethod, m_Instance);
 	}
 
 	void ScriptInstance::InvokeOnUpdate(float ts)
 	{
-		void* param = &ts;
-		m_ScriptClass->InvokeMethod(m_OnUpdateMethod, m_Instance, &param);
+		if (m_OnUpdateMethod)
+		{
+			void* param = &ts;
+			m_ScriptClass->InvokeMethod(m_OnUpdateMethod, m_Instance, &param);
+		}
 	}
 }

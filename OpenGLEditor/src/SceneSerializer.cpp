@@ -8,6 +8,7 @@
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -180,6 +181,19 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
+		if (entity->HasComponent<ScriptComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "ScriptComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& sc = entity->GetComponent<ScriptComponent>();
+			out << YAML::Key << "scriptName" << YAML::Value << sc.m_Name;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 	}
@@ -328,6 +342,13 @@ namespace OpenGLEngine
 							auto& cc = deserializedEntity->AddComponent<CameraComponent>();
 							cc.Init();
 							cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
+						}
+
+						auto scriptComponent = component["ScriptComponent"];
+						if (scriptComponent)
+						{
+							auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
+							sc.m_Name = scriptComponent["scriptName"].as<std::string>();
 						}
 					}
 				}

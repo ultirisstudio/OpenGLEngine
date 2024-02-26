@@ -95,10 +95,20 @@ namespace OpenGLEngine
 
 		if (ImGui::BeginMenuBar())
 		{
+			if (ImGui::BeginMenu("file"))
+			{
+				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile();
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Quit"))
+					OpenGLEngine::Application::Get().Close();
+
+				ImGui::EndMenu();
+			}
+
 			if (ImGui::BeginMenu("Project"))
 			{
-				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile(); ImGui::Separator();
-
 				if (ImGui::MenuItem("New project"))
 				{
 					m_ProjectManager->CreateNewProject();
@@ -107,11 +117,6 @@ namespace OpenGLEngine
 				if (ImGui::MenuItem("Save project"))
 				{
 					m_ProjectManager->SaveProject();
-				}
-
-				if (ImGui::MenuItem("Save project as"))
-				{
-					m_ProjectManager->SaveProjectAs();
 				}
 
 				if (ImGui::MenuItem("Open project"))
@@ -124,9 +129,6 @@ namespace OpenGLEngine
 					m_ProjectManager->CloseProject();
 				}
 
-				ImGui::Separator();
-				if (ImGui::MenuItem("Quit"))
-					OpenGLEngine::Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
@@ -153,11 +155,13 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
+					m_SceneManager->SaveScene();
 					m_SceneManager->getActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
 					m_SceneManager->getActiveScene().OnRuntimeStop();
+					m_SceneManager->LoadScene(m_SceneManager->getActiveScene().getPath());
 				}
 				ImGui::EndMenu();
 			}

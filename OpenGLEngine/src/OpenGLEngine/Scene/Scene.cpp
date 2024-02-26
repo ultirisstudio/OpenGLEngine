@@ -50,11 +50,6 @@ namespace OpenGLEngine
 	void Scene::Init()
 	{
 		m_Skybox = std::make_unique<Skybox>();
-
-		Entity* camera = CreateEntity("Main Camera");
-		camera->AddComponent<CameraComponent>().Init();
-
-		m_ActiveCamera = &camera->GetComponent<CameraComponent>().GetCamera();
 	}
 
 	Entity* Scene::CreateEntity(const std::string& name)

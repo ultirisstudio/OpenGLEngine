@@ -11,6 +11,7 @@ extern "C"
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoAssembly MonoAssembly;
+	typedef struct _MonoImage MonoImage;
 }
 
 class Entity;
@@ -69,6 +70,8 @@ namespace OpenGLEngine
 		static Scene* GetSceneContext();
 
 		static std::unordered_map<std::string, std::shared_ptr<ScriptClass>> GetEntityClasses();
+
+		static MonoImage* GetCoreAssemblyImage();
 	private:
 		static void InitMono();
 		static void ShutdownMono();
@@ -77,5 +80,6 @@ namespace OpenGLEngine
 		static void LoadAssemblyClasses(MonoAssembly* assembly);
 
 		friend class ScriptClass;
+		friend class ScriptGlue;
 	};
 }

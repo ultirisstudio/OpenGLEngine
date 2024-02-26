@@ -1,0 +1,22 @@
+Scene: simple
+Entities:
+  - Entity: Main Camera
+    ID: 13241177033984686656
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - CameraComponent:
+          fov: 45
+  - Entity: Cube
+    ID: 13807774960275258789
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - ModelComponent:
+          model: Assets/Models/cube.obj
+      - ScriptComponent:
+          scriptName: Sandbox.Player

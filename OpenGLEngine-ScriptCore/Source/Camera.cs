@@ -1,25 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using OpenGLEngine;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Sandbox
 {
-    public class Player : Entity
+    public class Camera : Entity
     {
         void OnCreate()
         {
-            Console.WriteLine($"Player.OnCreate - {ID}");
+
         }
 
         void OnUpdate(float ts)
         {
-            //Console.WriteLine($"Player.OnUpdate: {ts}");
-
             float speed = 1.0f;
             Vector3 velocity = Vector3.Zero;
 
@@ -34,9 +26,7 @@ namespace Sandbox
 
             velocity *= speed;
 
-            Vector3 position = Translation;
-            position += velocity * ts;
-            Translation = position;
+            GetComponent<TransformComponent>().Translation += velocity * ts;
         }
     }
 }

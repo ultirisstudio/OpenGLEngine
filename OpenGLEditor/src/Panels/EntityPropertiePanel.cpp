@@ -60,7 +60,7 @@ namespace OpenGLEngine
 			std::stringstream sstm2;
 			sstm2 << "##" << uuid;
 			result = sstm2.str();
-			ImGui::InputText(result.c_str(), entity->GetName(), 10);
+			ImGui::InputText(result.c_str(), entity->GetName(), 20);
 
 			ImGui::Separator();
 

@@ -11,6 +11,13 @@
 
 #include <glm/glm.hpp>
 
+#include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/Entity/Entity.h>
+
+#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+
+#include <OpenGLEngine/Tools/UUID.h>
+
 namespace OpenGLEngine
 {
 	namespace Utils
@@ -97,6 +104,11 @@ namespace OpenGLEngine
 		MonoImage* CoreAssemblyImage = nullptr;
 
 		ScriptClass EntityClass;
+
+		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> EntityClasses;
+		std::unordered_map<UUID, std::shared_ptr<ScriptInstance>> EntityInstances;
+
+		Scene* SceneContext = nullptr;
 	};
 
 	static ScriptEngineData* s_Data = nullptr;
@@ -107,21 +119,11 @@ namespace OpenGLEngine
 
 		InitMono();
 		LoadAssembly("Scripts/OpenGLEngine-ScriptCore.dll");
+		LoadAssemblyClasses(s_Data->CoreAssembly);
 
 		ScriptGlue::RegisterFunctions();
 
 		s_Data->EntityClass = ScriptClass("OpenGLEngine", "Entity");
-
-		MonoObject* instance = s_Data->EntityClass.Instantiate();
-
-		// Call function
-		MonoMethod* printMessageFunc = s_Data->EntityClass.GetMethod("PrintMessage", 0);
-		s_Data->EntityClass.InvokeMethod(printMessageFunc, instance);
-
-		MonoMethod* printCustomMessageFunc = s_Data->EntityClass.GetMethod("PrintCustomMessage", 1);
-		MonoString* message = mono_string_new(s_Data->AppDomain, "Hello from C++!");
-		void* param = message;
-		s_Data->EntityClass.InvokeMethod(printCustomMessageFunc, instance, &param);
 	}
 
 	void ScriptEngine::Shutdown()
@@ -138,8 +140,94 @@ namespace OpenGLEngine
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath);
 		s_Data->CoreAssemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
+	}
 
-		//PrintAssemblyTypes(s_Data->CoreAssembly);
+	void ScriptEngine::OnRuntimeStart(Scene* scene)
+	{
+		s_Data->SceneContext = scene;
+	}
+
+	void ScriptEngine::OnRuntimeStop()
+	{
+		s_Data->SceneContext = nullptr;
+
+		s_Data->EntityInstances.clear();
+	}
+
+	bool ScriptEngine::EntityClassExist(const std::string& fullClassName)
+	{
+		return s_Data->EntityClasses.find(fullClassName) != s_Data->EntityClasses.end();
+	}
+
+	void ScriptEngine::OnCreateEntity(Entity entity)
+	{
+		const auto& sc = entity.GetComponent<ScriptComponent>();
+		if (EntityClassExist(sc.m_Name))
+		{
+			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_Data->EntityClasses[sc.m_Name], entity);
+			s_Data->EntityInstances[entity.GetUUID()] = instance;
+
+			instance->InvokeOnCreate();
+		}
+	}
+
+	void ScriptEngine::OnUpdateEntity(Entity entity, float ts)
+	{
+		UUID uuid = entity.GetUUID();
+
+		if (s_Data->EntityInstances.find(uuid) == s_Data->EntityInstances.end())
+			return;
+
+		std::shared_ptr<ScriptInstance> instance = s_Data->EntityInstances[uuid];
+		instance->InvokeOnUpdate(ts);
+	}
+
+	Scene* ScriptEngine::GetSceneContext()
+	{
+		return s_Data->SceneContext;
+	}
+
+	std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptEngine::GetEntityClasses()
+	{
+		return s_Data->EntityClasses;
+	}
+
+	void ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	{
+		s_Data->EntityClasses.clear();
+
+		MonoImage* image = mono_assembly_get_image(assembly);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+
+		MonoClass* entityClass = mono_class_from_name(image, "OpenGLEngine", "Entity");
+
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+			std::string fullName;
+			if (strlen(nameSpace) != 0)
+				fullName = nameSpace + std::string(".") + name;
+			else
+				fullName = name;
+
+			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+
+			if (monoClass == entityClass)
+				continue;
+
+			bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
+			if (isEntity)
+			{
+				s_Data->EntityClasses[fullName] = std::make_shared<ScriptClass>(nameSpace, name);
+				std::cout << "Found entity class: " << fullName << std::endl;
+			}
+		}
 	}
 
 	void ScriptEngine::InitMono()
@@ -187,5 +275,29 @@ namespace OpenGLEngine
 	MonoObject* ScriptClass::InvokeMethod(MonoMethod* method, MonoObject* instance, void** params)
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
+	}
+
+	ScriptInstance::ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, Entity entity) : m_ScriptClass(scriptClass)
+	{
+		m_Instance = scriptClass->Instantiate();
+
+		m_Constructor = s_Data->EntityClass.GetMethod(".ctor", 1);
+		m_OnCreateMethod = scriptClass->GetMethod("OnCreate", 0);
+		m_OnUpdateMethod = scriptClass->GetMethod("OnUpdate", 1);
+
+		uint64_t entityID = entity.GetUUID();
+		void* param = &entityID;
+		scriptClass->InvokeMethod(m_Constructor, m_Instance, &param);
+	}
+
+	void ScriptInstance::InvokeOnCreate()
+	{
+		m_ScriptClass->InvokeMethod(m_OnCreateMethod, m_Instance);
+	}
+
+	void ScriptInstance::InvokeOnUpdate(float ts)
+	{
+		void* param = &ts;
+		m_ScriptClass->InvokeMethod(m_OnUpdateMethod, m_Instance, &param);
 	}
 }

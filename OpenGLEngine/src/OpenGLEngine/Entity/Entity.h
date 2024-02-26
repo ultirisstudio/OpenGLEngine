@@ -8,16 +8,19 @@
 #include <bitset>
 #include <unordered_map>
 
+#include <OpenGLEngine/Tools/UUID.h>
+
 class Component;
 
 class Entity
 {
 public:
 	Entity() = default;
-	Entity(std::string name, std::string uuid);
+	Entity(std::string name, OpenGLEngine::UUID uuid);
 
 	char* GetName() { return m_Name.data(); }
-	char* GetId() { return m_Id.data(); }
+
+	OpenGLEngine::UUID GetUUID() { return m_UUID; }
 
 	void SetName(std::string name) { m_Name = name; }
 
@@ -51,7 +54,7 @@ public:
 	}
 private:
 	std::string m_Name;
-	std::string m_Id;
+	OpenGLEngine::UUID m_UUID;
 
 	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
 	std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;

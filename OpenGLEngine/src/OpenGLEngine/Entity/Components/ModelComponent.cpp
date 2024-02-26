@@ -25,7 +25,7 @@ namespace OpenGLEngine
 		m_SubEntities.clear();
 		for (auto& [name, mesh] : m_Model->GetMeshes())
 		{
-			m_SubEntities.push_back(Entity(name, uuid::generate_uuid_v4()));
+			m_SubEntities.push_back(Entity(name, UUID()));
 			m_SubEntities.back().AddComponent<MeshComponent>(name, mesh);
 			m_SubEntities.back().AddComponent<MaterialComponent>().InitializeMaterial();
 		}

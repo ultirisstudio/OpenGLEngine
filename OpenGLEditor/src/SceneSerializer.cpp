@@ -12,6 +12,8 @@
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
 
+#include <OpenGLEngine/Tools/UUID.h>
+
 #include <fstream>
 
 namespace YAML
@@ -55,7 +57,7 @@ namespace OpenGLEngine
 	{
 		out << YAML::BeginMap;
 		out << YAML::Key << "Entity" << YAML::Value << entity->GetName();
-		out << YAML::Key << "ID" << YAML::Value << entity->GetId();
+		out << YAML::Key << "ID" << YAML::Value << entity->GetUUID();
 
 		out << YAML::Key << "Components" << YAML::Value << YAML::BeginSeq;
 
@@ -229,7 +231,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				std::string name = entity["Entity"].as<std::string>();
-				std::string uuid = entity["ID"].as<std::string>();
+				UUID uuid = entity["ID"].as<uint64_t>();
 
 				std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
 

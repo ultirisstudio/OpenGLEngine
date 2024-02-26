@@ -8,8 +8,11 @@
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
+#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
+
+#include <OpenGLEngine/Scripting/ScriptEngine.h>
 
 namespace OpenGLEngine
 {
@@ -47,24 +50,29 @@ namespace OpenGLEngine
 	void Scene::Init()
 	{
 		m_Skybox = std::make_unique<Skybox>();
+
+		Entity* camera = CreateEntity("Main Camera");
+		camera->AddComponent<CameraComponent>().Init();
+
+		m_ActiveCamera = &camera->GetComponent<CameraComponent>().GetCamera();
 	}
 
 	Entity* Scene::CreateEntity(const std::string& name)
 	{
-		return CreateEntityWithUUID(uuid::generate_uuid_v4(), name);
+		return CreateEntityWithUUID(UUID(), name);
 	}
 
-	Entity* Scene::CreateEntityWithUUID(const std::string& uuid, const std::string& name)
+	Entity* Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
 		Entity entity = Entity(name, uuid);
 		entity.AddComponent<TransformComponent>();
-		m_EntityMap[entity.GetId()] = entity;
-		return &m_EntityMap[entity.GetId()];
+		m_EntityMap[entity.GetUUID()] = entity;
+		return &m_EntityMap[entity.GetUUID()];
 	}
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		m_EntityMap.erase(entity.GetId());
+		m_EntityMap.erase(entity.GetUUID());
 	}
 
 	Entity* Scene::FindEntityByName(std::string name)
@@ -78,7 +86,7 @@ namespace OpenGLEngine
 		return nullptr;
 	}
 
-	Entity* Scene::GetEntityByUUID(std::string uuid)
+	Entity* Scene::GetEntityByUUID(UUID uuid)
 	{
 		if (m_EntityMap.find(uuid) != m_EntityMap.end())
 			return &m_EntityMap.at(uuid);
@@ -110,18 +118,32 @@ namespace OpenGLEngine
 
 	void Scene::UpdateRuntime(double deltaTime)
 	{
-		
+		for (auto entity : View<ScriptComponent>())
+		{
+			ScriptEngine::OnUpdateEntity(*entity, deltaTime);
+		}
 	}
 
-	void Scene::OnScenePlay()
+	void Scene::OnRuntimeStart()
 	{
-		if (m_ActiveCamera)
-			m_OnRuntime = true;
+		if (!m_ActiveCamera)
+			return;
+
+		m_OnRuntime = true;
+
+		ScriptEngine::OnRuntimeStart(this);
+
+		for (auto entity : View<ScriptComponent>())
+		{
+			ScriptEngine::OnCreateEntity(*entity);
+		}
 	}
 
-	void Scene::OnSceneStop()
+	void Scene::OnRuntimeStop()
 	{
 		m_OnRuntime = false;
+
+		ScriptEngine::OnRuntimeStop();
 	}
 
 	void Scene::ResizeEditorCamera(float width, float height)

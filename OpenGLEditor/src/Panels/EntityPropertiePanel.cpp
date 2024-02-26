@@ -15,6 +15,9 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
+#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+
+#include <OpenGLEngine/Tools/UUID.h>
 
 namespace OpenGLEngine
 {
@@ -27,6 +30,7 @@ namespace OpenGLEngine
 		m_TerrainComponentPanel = std::make_unique<TerrainComponentPanel>();
 		m_MaterialComponentPanel = std::make_unique<MaterialComponentPanel>();
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
+		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager)
@@ -43,7 +47,7 @@ namespace OpenGLEngine
 
 			Entity* entity = sceneManager.getActiveScene().m_SelectedEntity;
 
-			char* uuid = entity->GetId();
+			UUID uuid = entity->GetUUID();
 
 			std::string result;
 
@@ -64,6 +68,7 @@ namespace OpenGLEngine
 			m_ModelComponentPanel->Render(entity);
 			m_CameraComponentPanel->Render(entity, sceneManager);
 			m_MeshComponentPanel->Render(entity);
+			m_ScriptComponentPanel->Render(entity);
 			m_TerrainComponentPanel->Render(entity);
 			m_MaterialComponentPanel->Render(entity);
 			m_LightComponentPanel->Render(entity);
@@ -96,6 +101,12 @@ namespace OpenGLEngine
 					if (ImGui::MenuItem("Material Component")) {
 						entity->AddComponent<MaterialComponent>();
 						entity->GetComponent<MaterialComponent>().InitializeMaterial();
+					}
+				}
+
+				if (!entity->HasComponent<ScriptComponent>()) {
+					if (ImGui::MenuItem("Script Component")) {
+						entity->AddComponent<ScriptComponent>();
 					}
 				}
 

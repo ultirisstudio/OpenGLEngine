@@ -3,38 +3,30 @@
 #include <random>
 #include <sstream>
 
-namespace uuid {
-    using UUID = std::string;
+namespace OpenGLEngine {
+    class UUID
+    {
+    public:
+        UUID();
+        UUID(uint64_t uuid);
+        UUID(const UUID&) = default;
 
-    static std::random_device              rd;
-    static std::mt19937                    gen(rd());
-    static std::uniform_int_distribution<> dis(0, 15);
-    static std::uniform_int_distribution<> dis2(8, 11);
+        operator uint64_t() const { return m_UUID; }
+    private:
+        uint64_t m_UUID;
+    };
+}
 
-    static std::string generate_uuid_v4() {
-        std::stringstream ss;
-        int i;
-        ss << std::hex;
-        for (i = 0; i < 8; i++) {
-            ss << dis(gen);
+namespace std {
+    template <typename T> struct hash;
+
+    template<>
+    struct hash<OpenGLEngine::UUID>
+    {
+        std::size_t operator()(const OpenGLEngine::UUID& uuid) const
+        {
+            return (uint64_t)uuid;
         }
-        ss << "-";
-        for (i = 0; i < 4; i++) {
-            ss << dis(gen);
-        }
-        ss << "-4";
-        for (i = 0; i < 3; i++) {
-            ss << dis(gen);
-        }
-        ss << "-";
-        ss << dis2(gen);
-        for (i = 0; i < 3; i++) {
-            ss << dis(gen);
-        }
-        ss << "-";
-        for (i = 0; i < 12; i++) {
-            ss << dis(gen);
-        };
-        return ss.str();
-    }
+    };
+
 }

@@ -2,32 +2,21 @@
 
 #include <filesystem>
 #include <string>
+#include <memory>
+#include <unordered_map>
 
 extern "C"
 {
 	typedef struct _MonoClass MonoClass;
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
+	typedef struct _MonoAssembly MonoAssembly;
 }
+
+class Entity;
 
 namespace OpenGLEngine
 {
-	class ScriptEngine
-	{
-	public:
-		static void Init();
-		static void Shutdown();
-
-		static void LoadAssembly(const std::filesystem::path& filepath);
-	private:
-		static void InitMono();
-		static void ShutdownMono();
-
-		static MonoObject* InstantiateClass(MonoClass* monoClass);
-
-		friend class ScriptClass;
-	};
-
 	class ScriptClass
 	{
 	public:
@@ -42,5 +31,51 @@ namespace OpenGLEngine
 		std::string m_ClassName;
 
 		MonoClass* m_MonoClass = nullptr;
+	};
+
+	class ScriptInstance
+	{
+	public:
+		ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, Entity entity);
+
+		void InvokeOnCreate();
+		void InvokeOnUpdate(float ts);
+	private:
+		std::shared_ptr<ScriptClass> m_ScriptClass;
+
+		MonoObject* m_Instance = nullptr;
+		MonoMethod* m_Constructor = nullptr;
+		MonoMethod* m_OnCreateMethod = nullptr;
+		MonoMethod* m_OnUpdateMethod = nullptr;
+	};
+
+	class Scene;
+
+	class ScriptEngine
+	{
+	public:
+		static void Init();
+		static void Shutdown();
+
+		static void LoadAssembly(const std::filesystem::path& filepath);
+
+		static void OnRuntimeStart(Scene* scene);
+		static void OnRuntimeStop();
+
+		static bool EntityClassExist(const std::string& fullClassName);
+		static void OnCreateEntity(Entity entity);
+		static void OnUpdateEntity(Entity entity, float ts);
+
+		static Scene* GetSceneContext();
+
+		static std::unordered_map<std::string, std::shared_ptr<ScriptClass>> GetEntityClasses();
+	private:
+		static void InitMono();
+		static void ShutdownMono();
+
+		static MonoObject* InstantiateClass(MonoClass* monoClass);
+		static void LoadAssemblyClasses(MonoAssembly* assembly);
+
+		friend class ScriptClass;
 	};
 }

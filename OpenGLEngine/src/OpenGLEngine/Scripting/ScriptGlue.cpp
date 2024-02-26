@@ -5,29 +5,43 @@
 
 #include <glm/glm.hpp>
 
+#include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Scripting/ScriptEngine.h>
+#include <OpenGLEngine/Entity/Components/TransformComponent.h>
+
+#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/KeyCodes.h>
+#include <OpenGLEngine/Core/Input.h>
+
 namespace OpenGLEngine
 {
 #define ADD_INTERNAL_CALL(Name) mono_add_internal_call("OpenGLEngine.InternalCalls::" #Name, Name)
 
-	static void NativeLog(MonoString* message, int parameter)
+	static void Entity_GetTranslation(UUID entityID, glm::vec3* outTranslation)
 	{
-		char* cStr = mono_string_to_utf8(message);
-		std::string str(cStr);
-
-		mono_free(cStr);
-
-		std::cout << str << " - " << parameter << std::endl;
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		*outTranslation = entity->GetComponent<TransformComponent>().Position;
 	}
 
-	static void NativeLog_Vector(glm::vec3* parameter, glm::vec3* outResult)
+	static void Entity_SetTranslation(UUID entityID, glm::vec3* translation)
 	{
-		std::cout << "NativeLog_Vector: " << parameter->x << ", " << parameter->y << ", " << parameter->z << std::endl;
-		*outResult = *parameter;
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<TransformComponent>().Position = *translation;
+	}
+
+	static bool Input_IsKeyDown(KeyCode keycode)
+	{
+		return Input::IsKeyPressed(keycode);
 	}
 
 	void ScriptGlue::RegisterFunctions()
 	{
-		ADD_INTERNAL_CALL(NativeLog);
-		ADD_INTERNAL_CALL(NativeLog_Vector);
+		ADD_INTERNAL_CALL(Entity_GetTranslation);
+		ADD_INTERNAL_CALL(Entity_SetTranslation);
+
+		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}
 }

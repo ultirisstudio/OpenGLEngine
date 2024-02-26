@@ -11,7 +11,7 @@ class PointLight;
 
 namespace OpenGLEngine
 {
-	using EntityMap = std::unordered_map<std::string, Entity>;
+	using EntityMap = std::unordered_map<UUID, Entity>;
 
 	class Scene
 	{
@@ -23,19 +23,19 @@ namespace OpenGLEngine
 		void Init();
 
 		Entity* CreateEntity(const std::string& name = std::string());
-		Entity* CreateEntityWithUUID(const std::string& uuid, const std::string& name = std::string());
+		Entity* CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
 		Entity* FindEntityByName(std::string name);
-		Entity* GetEntityByUUID(std::string uuid);
+		Entity* GetEntityByUUID(UUID uuid);
 
 		std::vector<Entity*> GetEntityVector();
 
 		void Update(double deltaTime);
 		void UpdateRuntime(double deltaTime);
 
-		void OnScenePlay();
-		void OnSceneStop();
+		void OnRuntimeStart();
+		void OnRuntimeStop();
 
 		void ResizeEditorCamera(float width, float height);
 		void ResizeActiveCamera(float width, float height);

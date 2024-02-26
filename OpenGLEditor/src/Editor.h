@@ -45,10 +45,9 @@ namespace OpenGLEngine
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<ProjectManager> m_ProjectManager;
 	private:
-		double last_time = Renderer::GetTime();
-		int nb_frame = 0;
-		int fps = 0;
-		int latency = 0;
+		double currentFrame = Renderer::GetTime();
+		double lastFrame = currentFrame;
+		double deltaTime;
 	private:
 		Chronometer m_Chronometer;
 	private:

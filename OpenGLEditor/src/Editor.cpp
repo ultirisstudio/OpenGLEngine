@@ -31,10 +31,12 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate()
 	{
-		m_SceneManager->update(1.0f);
-		m_EditorViewport.Update(m_SceneManager->getActiveScene());
+		currentFrame = Renderer::GetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
-		CalculateLatency();
+		m_SceneManager->update(deltaTime);
+		m_EditorViewport.Update(m_SceneManager->getActiveScene());
 
 		m_Viewport.Render(m_SceneManager->getActiveScene());
 		m_EditorViewport.Render(m_SceneManager->getActiveScene());
@@ -151,11 +153,11 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
-					m_SceneManager->getActiveScene().OnScenePlay();
+					m_SceneManager->getActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
-					m_SceneManager->getActiveScene().OnSceneStop();
+					m_SceneManager->getActiveScene().OnRuntimeStop();
 				}
 				ImGui::EndMenu();
 			}
@@ -260,18 +262,6 @@ namespace OpenGLEngine
 			"TitleBgCollapsed",
 			"ImGuiCol_Border"
 		};
-	}
-
-	void Editor::CalculateLatency()
-	{
-		double currentTime = Renderer::GetTime();
-		nb_frame++;
-		if (currentTime - last_time >= 1.0) {
-			latency = (1000.0 / double(nb_frame));
-			fps = nb_frame;
-			nb_frame = 0;
-			last_time += 1.0;
-		}
 	}
 
 	void Editor::OptionMenu()

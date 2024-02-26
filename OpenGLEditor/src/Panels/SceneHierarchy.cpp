@@ -4,91 +4,94 @@
 
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 
-OpenGLEngine::SceneHierarchy::SceneHierarchy()
+namespace OpenGLEngine
 {
-
-}
-
-void OpenGLEngine::SceneHierarchy::OnImGuiRender(Scene& scene)
-{
-	//std::string sceneName = scene.getName().c_str();
-	//std::string title = "Scene - " + sceneName;
-
-	ImGui::Begin("Scene");
-
-	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
-
-	for (Entity* entity : scene.GetEntityVector())
+	SceneHierarchy::SceneHierarchy()
 	{
-		std::string id;
-		if (scene.m_SelectedEntity)
-			id = scene.m_SelectedEntity->GetId();
-		else
-			id = "-1";
 
-		ImGuiTreeNodeFlags flags = ((strcmp(id.c_str(), entity->GetId()) == 0) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-		bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetId(), flags, entity->GetName());
+	}
 
-		if (ImGui::IsItemClicked())
+	void SceneHierarchy::OnImGuiRender(Scene& scene)
+	{
+		//std::string sceneName = scene.getName().c_str();
+		//std::string title = "Scene - " + sceneName;
+
+		ImGui::Begin("Scene");
+
+		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
+
+		for (Entity* entity : scene.GetEntityVector())
 		{
-			scene.m_SelectedEntity = entity;
-		}
+			UUID id;
+			if (scene.m_SelectedEntity)
+				id = scene.m_SelectedEntity->GetUUID();
+			else
+				id = 0;
 
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Delete Object")) {
-				scene.DestroyEntity(*entity);
-				scene.m_SelectedEntity = nullptr;
-			}
-			ImGui::EndPopup();
-		}
+			ImGuiTreeNodeFlags flags = ((id == entity->GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+			flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetUUID(), flags, entity->GetName());
 
-		if (opened)
-		{
-			if (entity->HasComponent<ModelComponent>())
+			if (ImGui::IsItemClicked())
 			{
-				auto& mc = entity->GetComponent<ModelComponent>();
+				scene.m_SelectedEntity = entity;
+			}
 
-				if (ImGui::TreeNodeEx("Meshes", ImGuiTreeNodeFlags_SpanFullWidth))
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::MenuItem("Delete Object")) {
+					scene.DestroyEntity(*entity);
+					scene.m_SelectedEntity = nullptr;
+				}
+				ImGui::EndPopup();
+			}
+
+			if (opened)
+			{
+				if (entity->HasComponent<ModelComponent>())
 				{
-					if (mc.GetSubEntities())
+					auto& mc = entity->GetComponent<ModelComponent>();
+
+					if (ImGui::TreeNodeEx("Meshes", ImGuiTreeNodeFlags_SpanFullWidth))
 					{
-						for (auto& subEntity : *mc.GetSubEntities())
+						if (mc.GetSubEntities())
 						{
-							ImGuiTreeNodeFlags flags = ((strcmp(id.c_str(), subEntity.GetId()) == 0) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-							flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-							bool opened = ImGui::TreeNodeEx((void*)(intptr_t)subEntity.GetId(), flags, subEntity.GetName());
-							if (ImGui::IsItemClicked())
+							for (auto& subEntity : *mc.GetSubEntities())
 							{
-								scene.m_SelectedEntity = &subEntity;
-							}
-							if (opened)
-							{
-								ImGui::TreePop();
+								ImGuiTreeNodeFlags flags = ((id == subEntity.GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+								flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+								bool opened = ImGui::TreeNodeEx((void*)(intptr_t)subEntity.GetUUID(), flags, subEntity.GetName());
+								if (ImGui::IsItemClicked())
+								{
+									scene.m_SelectedEntity = &subEntity;
+								}
+								if (opened)
+								{
+									ImGui::TreePop();
+								}
 							}
 						}
+						ImGui::TreePop();
 					}
-					ImGui::TreePop();
 				}
+
+				ImGui::TreePop();
 			}
-
-			ImGui::TreePop();
 		}
-	}
 
-	ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		if (ImGui::BeginDragDropTarget())
 		{
-			const wchar_t* path = (const wchar_t*)payload->Data;
-			//std::filesystem::path file = path;
-			//AddGameObject(file.string());
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				//std::filesystem::path file = path;
+				//AddGameObject(file.string());
+			}
+			ImGui::EndDragDropTarget();
 		}
-		ImGui::EndDragDropTarget();
-	}
 
-	ImGui::End();
+		ImGui::End();
+	}
 }

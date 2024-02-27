@@ -4,8 +4,16 @@
 
 #include "FileBrowser.h"
 
+#include "Panels/ContentBrowserPanel.h"
+
 namespace OpenGLEngine
 {
+	struct ProjectProperties
+	{
+		std::string m_ProjectPath;
+		std::string m_ProjectName;
+	};
+
 	class ProjectManager
 	{
 	public:
@@ -18,11 +26,15 @@ namespace OpenGLEngine
 		void SaveProjectAs();
 		void CloseProject();
 
-		void OnImGuiRender();
+		ProjectProperties* GetProjectProperties() { return m_Properties; }
+
+		void OnImGuiRender(ContentBrowserPanel& contentBrowserPanel);
 	private:
-		std::string m_ProjectPath;
-		std::string m_ProjectName;
+		ProjectProperties* m_Properties;
 		FileBrowser m_FileBrowser;
+
+		std::string tempProjectName = "";
+		std::string tempProjectPath = "";
 
 		bool m_CreateNewProjectDialog;
 		bool m_OpenProjectDialog;

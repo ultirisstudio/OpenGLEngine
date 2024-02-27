@@ -34,7 +34,6 @@ namespace OpenGLEngine
 	private:
 		void InitImGuiStyle();
 		void OptionMenu();
-		void CalculateLatency();
 	private:
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;

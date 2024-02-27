@@ -13,7 +13,7 @@
 
 namespace OpenGLEngine
 {
-	ProjectManager::ProjectManager() : m_ProjectPath(""), m_ProjectName(""), m_CreateNewProjectDialog(false)
+	ProjectManager::ProjectManager() : m_Properties(nullptr), m_CreateNewProjectDialog(false), m_OpenProjectDialog(false)
 	{
 
 	}
@@ -45,10 +45,11 @@ namespace OpenGLEngine
 
 	void ProjectManager::CloseProject()
 	{
-
+		m_Properties = nullptr;
+		Renderer::m_SceneData.m_ResourceManager.Reset();
 	}
 
-	void ProjectManager::OnImGuiRender()
+	void ProjectManager::OnImGuiRender(ContentBrowserPanel& contentBrowserPanel)
 	{
 		if (m_CreateNewProjectDialog)
 		{
@@ -59,89 +60,90 @@ namespace OpenGLEngine
 
 			if (ImGui::BeginPopupModal("Create new project")) {
 				ImGui::SetCursorPos(ImVec2(20, 40));
-				ImGui::InputText("##project_name", &m_ProjectName);
+				ImGui::InputText("##project_name", &tempProjectName);
 
 				ImGui::SetCursorPos(ImVec2(20, 80));
-				ImGui::InputText("##project_path", &m_ProjectPath);
+				ImGui::InputText("##project_path", &tempProjectPath);
 				ImGui::SameLine();
 				if (ImGui::Button("...", ImVec2(20, 20)))
 				{
-					m_ProjectPath = m_FileBrowser.OpenFolder();
+					tempProjectPath = m_FileBrowser.OpenFolder();
 				}
 
 				ImGui::SetCursorPos(ImVec2(20, 120));
 				if (ImGui::Button("Create Project", ImVec2(110, 30)))
 				{
-					std::cout << "Creating new project: " << m_ProjectName << " at " << m_ProjectPath << std::endl;
+					std::string fullPath = tempProjectPath + std::string("\\") + tempProjectName;
 
-					std::string fullPath = m_ProjectPath + std::string("\\") + m_ProjectName;
-
-					if (!std::filesystem::exists(m_ProjectPath + m_ProjectName))
+					if (!std::filesystem::exists(fullPath))
 					{
-						std::filesystem::create_directory(fullPath);
-						std::filesystem::create_directory(fullPath + std::string("\\Assets"));
+						m_Properties = new ProjectProperties();
+						m_Properties->m_ProjectName = tempProjectName;
+						m_Properties->m_ProjectPath = fullPath;
+
+						std::filesystem::create_directory(m_Properties->m_ProjectPath);
+						std::filesystem::create_directory(m_Properties->m_ProjectPath + std::string("\\Assets"));
 
 						YAML::Emitter out;
 						out << YAML::BeginMap;
-						out << YAML::Key << "Project" << YAML::Value << m_ProjectName;
-						out << YAML::Key << "Path" << YAML::Value << m_ProjectPath;
+						out << YAML::Key << "Project" << YAML::Value << m_Properties->m_ProjectName;
+						out << YAML::Key << "Path" << YAML::Value << m_Properties->m_ProjectPath;
 						out << YAML::EndMap;
 
-						std::ofstream fout(fullPath + std::string("\\" + m_ProjectName + std::string(".ultprj")));
+						std::ofstream fout(m_Properties->m_ProjectPath + std::string("\\" + m_Properties->m_ProjectName + std::string(".ultprj")));
 						fout << out.c_str();
+
+						Renderer::m_SceneData.m_ResourceManager.Reset();
+						contentBrowserPanel.ChangeProjectPath(m_Properties->m_ProjectPath);
 					}
 
-					Renderer::m_SceneData.m_ResourceManager.Reset();
 					m_CreateNewProjectDialog = false;
 				}
 				ImGui::EndPopup();
 			}
-
-			/*ImGui::Begin("test", &m_CreateNewProjectDialog);
-			{
-				ImGui::SetCursorPos(ImVec2(20, 40));
-				ImGui::InputText("##project_name", &m_ProjectName);
-
-				ImGui::SetCursorPos(ImVec2(20, 80));
-				ImGui::InputText("##project_path", &m_ProjectPath);
-				ImGui::SameLine();
-				if (ImGui::Button("..."))
-				{
-					m_ProjectPath = m_FileBrowser.OpenFolder();
-				}
-
-				ImGui::SetCursorPos(ImVec2(60, 120));
-				if (ImGui::Button("Create Project", ImVec2(100, 40)))
-				{
-					std::cout << "Creating new project: " << m_ProjectName << " at " << m_ProjectPath << std::endl;
-					Renderer::m_SceneData.m_ResourceManager.Reset();
-					m_CreateNewProjectDialog = false;
-				}
-			}
-			ImGui::End();*/
 		}
 
 		if (m_OpenProjectDialog)
 		{
 			ImGui::SetNextWindowSize(ImVec2(260, 180));
 			ImGui::SetNextWindowBgAlpha(1.0f);
-			ImGui::Begin("test", &m_OpenProjectDialog);
+			ImGui::OpenPopup("Open project");
+
+			if (ImGui::BeginPopupModal("Open project"))
 			{
 				ImGui::SetCursorPos(ImVec2(20, 80));
-				ImGui::InputText("##project_path", &m_ProjectPath);
+				ImGui::InputText("##project_path", &tempProjectPath);
 				ImGui::SameLine();
-				if (ImGui::Button("X"))
+				if (ImGui::Button("..."))
 				{
-					m_ProjectPath = m_FileBrowser.OpenFolder();
+					tempProjectPath = m_FileBrowser.OpenFolder();
 				}
 				ImGui::SetCursorPos(ImVec2(60, 120));
 				if (ImGui::Button("Open Project", ImVec2(100, 40)))
 				{
-					std::cout << "Opening project: " << m_ProjectName << " at " << m_ProjectPath << std::endl;
+					tempProjectName = std::filesystem::path(tempProjectPath + "\\").parent_path().filename().string();
+					std::string projectFilePath = tempProjectPath + "\\" + tempProjectName + ".ultprj";
+
+					bool projectExists = std::filesystem::exists(projectFilePath);
+
+					if (projectExists)
+					{
+						std::ifstream stream(projectFilePath);
+						std::stringstream strStream;
+						strStream << stream.rdbuf();
+
+						YAML::Node data = YAML::Load(strStream.str());
+
+						m_Properties = new ProjectProperties();
+						m_Properties->m_ProjectName = data["Project"].as<std::string>();
+						m_Properties->m_ProjectPath = data["Path"].as<std::string>();
+
+						contentBrowserPanel.ChangeProjectPath(m_Properties->m_ProjectPath);
+					}
 					m_OpenProjectDialog = false;
 				}
+				ImGui::EndPopup();
 			}
-			ImGui::End();
 		}
 	}
 }

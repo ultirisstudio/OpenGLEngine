@@ -26,11 +26,11 @@ namespace OpenGLEngine
 				m_CurrentDirectory = m_CurrentDirectory.parent_path();
 			}
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Refresh"))
-		{
-			
-		}
+		//ImGui::SameLine();
+		//if (ImGui::Button("Refresh"))
+		//{
+		//
+		//}
 
 		static float padding = 16.0f;
 		static float thumbnailSize = 64.0f;
@@ -125,6 +125,13 @@ namespace OpenGLEngine
 		ImGui::Columns(1);
 
 		ImGui::End();
+	}
+
+	void ContentBrowserPanel::ChangeProjectPath(const std::filesystem::path& path)
+	{
+		m_BaseDirectory = path;
+		m_BaseDirectory += "\\Assets";
+		m_CurrentDirectory = m_BaseDirectory;
 	}
 
 	const std::string ContentBrowserPanel::GetFileExtension(std::filesystem::directory_entry e)

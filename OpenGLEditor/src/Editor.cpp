@@ -93,20 +93,10 @@ namespace OpenGLEngine
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
+		bool hasProject = m_ProjectManager->GetProjectProperties() != nullptr;
+
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("file"))
-			{
-				if (ImGui::MenuItem("Open")) m_SceneManager->OpenExternalFile();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Quit"))
-					OpenGLEngine::Application::Get().Close();
-
-				ImGui::EndMenu();
-			}
-
 			if (ImGui::BeginMenu("Project"))
 			{
 				if (ImGui::MenuItem("New project"))
@@ -114,7 +104,7 @@ namespace OpenGLEngine
 					m_ProjectManager->CreateNewProject();
 				}
 
-				if (ImGui::MenuItem("Save project"))
+				if (ImGui::MenuItem("Save project", (const char*)0, false, hasProject))
 				{
 					m_ProjectManager->SaveProject();
 				}
@@ -124,15 +114,20 @@ namespace OpenGLEngine
 					m_ProjectManager->OpenProject();
 				}
 
-				if (ImGui::MenuItem("Close project"))
+				if (ImGui::MenuItem("Close project", (const char*)0, false, hasProject))
 				{
 					m_ProjectManager->CloseProject();
 				}
 
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Quit"))
+					OpenGLEngine::Application::Get().Close();
+
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Scene"))
+			if (ImGui::BeginMenu("Scene", hasProject))
 			{
 				if (ImGui::MenuItem("New scene"))
 				{
@@ -151,7 +146,7 @@ namespace OpenGLEngine
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Runtime"))
+			if (ImGui::BeginMenu("Runtime", hasProject))
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
@@ -166,7 +161,7 @@ namespace OpenGLEngine
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Create"))
+			if (ImGui::BeginMenu("Create", hasProject))
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
@@ -193,7 +188,7 @@ namespace OpenGLEngine
 			ImGui::EndMenuBar();
 		}
 
-		m_ProjectManager->OnImGuiRender();
+		m_ProjectManager->OnImGuiRender(m_ContentBrowserPanel);
 
 		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_EditorViewport.OnImGuiRender(*m_SceneManager);

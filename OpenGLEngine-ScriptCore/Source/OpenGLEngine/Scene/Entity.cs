@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 
 namespace OpenGLEngine
 {
@@ -19,10 +18,6 @@ namespace OpenGLEngine
             Type componentType = typeof(T);
             return InternalCalls.Entity_HasComponent(ID, componentType);
         }
-
-        //public T AddComponent<T>() where T : Component, new()
-        //{
-        //}
 
         public T GetComponent<T>() where T : Component, new()
         {

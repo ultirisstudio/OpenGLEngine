@@ -13,7 +13,7 @@ namespace OpenGLEngine
 		m_Width(0),
 		m_Height(0)
 	{
-		
+
 	}
 
 	Texture::Texture(const std::string& path, bool gamma = false, unsigned int min_filter_param = GL_NEAREST_MIPMAP_LINEAR, unsigned int mag_filter_param = GL_NEAREST) :

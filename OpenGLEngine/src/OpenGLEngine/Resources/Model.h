@@ -15,7 +15,6 @@ namespace OpenGLEngine
 	class Model
 	{
 	private:
-		//std::list<Mesh*> m_meshes;
 		std::unordered_map<std::string, Mesh*> m_meshesMap;
 
 		std::string m_Name;

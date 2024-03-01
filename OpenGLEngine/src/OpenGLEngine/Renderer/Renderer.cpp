@@ -6,7 +6,6 @@
 
 #include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Shader/Generators/ShaderGenerator.h>
 #include <OpenGLEngine/Tools/Log.h>
 
 #include <OpenGLEngine/Scene/Skybox.h>
@@ -108,15 +107,15 @@ namespace OpenGLEngine {
 					m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
 					m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
 					m_SceneData.m_Shader.setUniform("uMaterial.roughness", *material.getFloat("roughness"));
-					m_SceneData.m_Shader.setUniform("uMaterial.ao", *material.getFloat("ao"));
+					m_SceneData.m_Shader.setUniform("uMaterial.ao",*material.getFloat("ao"));
 
-					m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", static_cast<bool>(*material.getBoolean("albedo")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", static_cast<bool>(*material.getBoolean("normal")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", static_cast<bool>(*material.getBoolean("metallic")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", static_cast<bool>(*material.getBoolean("roughness")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", static_cast<bool>(*material.getBoolean("ao")));
+					m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", static_cast<bool>(material.getBoolean("albedo")));
+					m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", static_cast<bool>(material.getBoolean("normal")));
+					m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", static_cast<bool>(material.getBoolean("metallic")));
+					m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", static_cast<bool>(material.getBoolean("roughness")));
+					m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", static_cast<bool>(material.getBoolean("ao")));
 
-					if (*material.getBoolean("albedo"))
+					if (material.getBoolean("albedo"))
 					{
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("albedo")->bind();
@@ -124,7 +123,7 @@ namespace OpenGLEngine {
 						nat++;
 					}
 
-					if (*material.getBoolean("normal"))
+					if (material.getBoolean("normal"))
 					{
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("normal")->bind();
@@ -132,7 +131,7 @@ namespace OpenGLEngine {
 						nat++;
 					}
 
-					if (*material.getBoolean("metallic"))
+					if (material.getBoolean("metallic"))
 					{
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("metallic")->bind();
@@ -140,7 +139,7 @@ namespace OpenGLEngine {
 						nat++;
 					}
 
-					if (*material.getBoolean("roughness"))
+					if (material.getBoolean("roughness"))
 					{
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("roughness")->bind();
@@ -148,7 +147,7 @@ namespace OpenGLEngine {
 						nat++;
 					}
 
-					if (*material.getBoolean("ao"))
+					if (material.getBoolean("ao"))
 					{
 						glActiveTexture(GL_TEXTURE0 + nat);
 						material.getTexture("ao")->bind();

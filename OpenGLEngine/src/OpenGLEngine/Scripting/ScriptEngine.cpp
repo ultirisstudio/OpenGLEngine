@@ -200,7 +200,7 @@ namespace OpenGLEngine
 
 		ScriptGlue::RegisterComponents();
 
-		s_Data->EntityClass = ScriptClass("Hazel", "Entity", true);
+		s_Data->EntityClass = ScriptClass("OpenGLEngine", "Entity", true);
 	}
 
 	void ScriptEngine::OnRuntimeStart(Scene* scene)
@@ -284,7 +284,7 @@ namespace OpenGLEngine
 			bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
 			if (isEntity)
 			{
-				s_Data->EntityClasses[fullName] = std::make_shared<ScriptClass>(nameSpace, name);
+				s_Data->EntityClasses[fullName] = std::make_shared<ScriptClass>(nameSpace, name, false);
 				std::cout << "Found entity class: " << fullName << std::endl;
 			}
 		}

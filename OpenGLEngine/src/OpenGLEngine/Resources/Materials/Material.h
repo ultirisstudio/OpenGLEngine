@@ -41,7 +41,6 @@ namespace OpenGLEngine
 		std::shared_ptr<CubeMap> getCubemap(const std::string& id) const;
 		std::shared_ptr<bool> getBoolean(const std::string& id) const;
 
-		bool hasProperty(const std::string& id) const;
 		bool hasVec3(const std::string& id) const;
 		bool hasFloat(const std::string& id) const;
 		bool hasTexture(const std::string& id) const;

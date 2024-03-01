@@ -26,11 +26,6 @@ namespace OpenGLEngine
 				m_CurrentDirectory = m_CurrentDirectory.parent_path();
 			}
 		}
-		//ImGui::SameLine();
-		//if (ImGui::Button("Refresh"))
-		//{
-		//
-		//}
 
 		static float padding = 16.0f;
 		static float thumbnailSize = 64.0f;
@@ -63,12 +58,10 @@ namespace OpenGLEngine
 			}
 			else if (GetFileExtension(directoryEntry) == "png")
 			{
-				//icon = m_FilePNGIcon;
 				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
 			}
 			else if (GetFileExtension(directoryEntry) == "jpg")
 			{
-				//icon = m_FileJPGIcon;
 				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
 			}
 			else

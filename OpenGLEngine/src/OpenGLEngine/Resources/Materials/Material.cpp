@@ -112,11 +112,6 @@ namespace OpenGLEngine
 		return m_booleans.at(id);
 	}
 
-	bool Material::hasProperty(const std::string& property) const
-	{
-		return hasVec3(property) || hasFloat(property) || hasTexture(property) ||hasCubemap(property);
-	}
-
 	bool Material::hasVec3(const std::string& property) const
 	{
 		return m_vec3s.find(property) != m_vec3s.cend();

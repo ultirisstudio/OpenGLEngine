@@ -61,6 +61,34 @@ namespace OpenGLEngine
 		entity->GetComponent<TransformComponent>().Position = *translation;
 	}
 
+	static void TransformComponent_GetRotation(UUID entityID, glm::vec3* outRotation)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		*outRotation = entity->GetComponent<TransformComponent>().Rotation;
+	}
+
+	static void TransformComponent_SetRotation(UUID entityID, glm::vec3* rotation)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<TransformComponent>().Rotation = *rotation;
+	}
+
+	static void TransformComponent_GetScale(UUID entityID, glm::vec3* outScale)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		*outScale = entity->GetComponent<TransformComponent>().Scale;
+	}
+
+	static void TransformComponent_SetScale(UUID entityID, glm::vec3* scale)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<TransformComponent>().Scale = *scale;
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -100,6 +128,12 @@ namespace OpenGLEngine
 
 		ADD_INTERNAL_CALL(TransformComponent_GetTranslation);
 		ADD_INTERNAL_CALL(TransformComponent_SetTranslation);
+
+		ADD_INTERNAL_CALL(TransformComponent_GetRotation);
+		ADD_INTERNAL_CALL(TransformComponent_SetRotation);
+
+		ADD_INTERNAL_CALL(TransformComponent_GetScale);
+		ADD_INTERNAL_CALL(TransformComponent_SetScale);
 
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

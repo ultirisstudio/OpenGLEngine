@@ -109,16 +109,6 @@ namespace OpenGLEngine
 		glDeleteProgram(m_id);
 	}
 
-	ShaderRenderInfo& Shader::GetVertexRenderInfo()
-	{
-		return m_VertexRenderInfo;
-	}
-
-	ShaderRenderInfo& Shader::GetFragmentRenderInfo()
-	{
-		return m_FragmentRenderInfo;
-	}
-
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs)
 	{
 		unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
@@ -173,39 +163,6 @@ namespace OpenGLEngine
 		glDeleteShader(fragmentShader);
 		glDeleteShader(tessControlShader);
 		glDeleteShader(tessEvaluationShader);
-	}
-
-	void Shader::LoadFromSource(const std::string& vs, const std::string& fs, ShaderRenderInfo vertexRenderInfo, ShaderRenderInfo fragmentRenderInfo)
-	{
-		m_VertexRenderInfo = vertexRenderInfo;
-		m_FragmentRenderInfo = fragmentRenderInfo;
-
-		if (vs.empty() || fs.empty())
-			return;
-
-		unsigned int vertexShader = createShader(vs, GL_VERTEX_SHADER);
-		unsigned int fragmentShader = createShader(fs, GL_FRAGMENT_SHADER);
-
-		m_id = glCreateProgram();
-
-		glAttachShader(m_id, vertexShader);
-		glAttachShader(m_id, fragmentShader);
-
-		glLinkProgram(m_id);
-
-		int linkStatus;
-		glGetProgramiv(m_id, GL_LINK_STATUS, &linkStatus);
-		if (!linkStatus)
-		{
-			char error[512];
-			glGetProgramInfoLog(m_id, 512, NULL, error);
-
-			std::string errorMessage("Failed to link shader : ");
-			Log::error(errorMessage + error);
-		}
-
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
 	}
 
 	void Shader::setUniform(const std::string& name, bool value) const

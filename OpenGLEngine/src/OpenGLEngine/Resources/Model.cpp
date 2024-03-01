@@ -56,7 +56,6 @@ namespace OpenGLEngine
 	{
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
-			//m_meshes.push_back(loadMesh(scene->mMeshes[node->mMeshes[i]], scene));
 			m_meshesMap[scene->mMeshes[node->mMeshes[i]]->mName.C_Str()] = loadMesh(scene->mMeshes[node->mMeshes[i]], scene);
 		}
 
@@ -82,7 +81,6 @@ namespace OpenGLEngine
 
 	Model::Model(std::string name, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) : m_Name(name)
 	{
-		//m_meshes.push_back(new Mesh(vertices, indices));
 		m_meshesMap[m_Name] = new Mesh(vertices, indices);
 	}
 
@@ -91,18 +89,11 @@ namespace OpenGLEngine
 		for (auto& [name, mesh] : m_meshesMap)
 			delete mesh;
 
-		//for (Mesh* mesh : m_meshes)
-			//delete mesh;
-
-		//m_meshes.clear();
 		m_meshesMap.clear();
 	}
 
 	void Model::draw() const
 	{
-		//for (Mesh* mesh : m_meshes)
-			//mesh->draw();
-
 		for (auto& [name, mesh] : m_meshesMap)
 			mesh->draw();
 	}

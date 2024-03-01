@@ -31,6 +31,7 @@ project "OpenGLEngine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.filewatch}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",

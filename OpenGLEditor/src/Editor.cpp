@@ -7,6 +7,8 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
+#include <OpenGLEngine/Scripting/ScriptEngine.h>
+
 namespace OpenGLEngine
 {
 	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
@@ -142,6 +144,15 @@ namespace OpenGLEngine
 				if (ImGui::MenuItem("Load scene"))
 				{
 					m_SceneManager->LoadScene();
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Script", hasProject))
+			{
+				if (ImGui::MenuItem("Build"))
+				{
+					ScriptEngine::ReloadAssembly();
 				}
 				ImGui::EndMenu();
 			}

@@ -2,6 +2,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "%{wks.location}/OpenGLEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/OpenGLEngine/vendor/Glad/include"
 IncludeDir["glm"] = "%{wks.location}/OpenGLEngine/vendor/glm"
+IncludeDir["filewatch"] = "%{wks.location}/OpenGLEngine/vendor/filewatch"
 IncludeDir["ImGui"] = "%{wks.location}/OpenGLEngine/vendor/imgui"
 IncludeDir["assimp"] = "%{wks.location}/OpenGLEngine/vendor/assimp/include"
 IncludeDir["stb_image"] = "%{wks.location}/OpenGLEngine/vendor/stb_image"

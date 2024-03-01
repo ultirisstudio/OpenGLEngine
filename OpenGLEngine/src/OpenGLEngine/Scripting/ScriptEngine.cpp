@@ -11,6 +11,9 @@
 
 #include <glm/glm.hpp>
 
+#include <FileWatch.h>
+
+#include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Entity.h>
 
@@ -103,6 +106,12 @@ namespace OpenGLEngine
 		MonoAssembly* CoreAssembly = nullptr;
 		MonoImage* CoreAssemblyImage = nullptr;
 
+		MonoAssembly* AppAssembly = nullptr;
+		MonoImage* AppAssemblyImage = nullptr;
+
+		std::filesystem::path CoreAssemblyFilepath = "Scripts/OpenGLEngine-ScriptCore.dll";
+		std::filesystem::path AppAssemblyFilepath = "";
+
 		ScriptClass EntityClass;
 
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> EntityClasses;
@@ -118,13 +127,27 @@ namespace OpenGLEngine
 		s_Data = new ScriptEngineData();
 
 		InitMono();
-		LoadAssembly("Scripts/OpenGLEngine-ScriptCore.dll");
-		LoadAssemblyClasses(s_Data->CoreAssembly);
-
-		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
-		s_Data->EntityClass = ScriptClass("OpenGLEngine", "Entity");
+		bool status = LoadAssembly(s_Data->CoreAssemblyFilepath);
+		if (!status)
+		{
+			std::cout << "Failed to load the core assembly" << std::endl;
+			return;
+		}
+
+		status = LoadAppAssembly(s_Data->AppAssemblyFilepath);
+		if (!status)
+		{
+			std::cout << "Failed to load the app assembly" << std::endl;
+			return;
+		}
+
+		LoadAssemblyClasses();
+
+		ScriptGlue::RegisterComponents();
+
+		s_Data->EntityClass = ScriptClass("OpenGLEngine", "Entity", true);
 	}
 
 	void ScriptEngine::Shutdown()
@@ -134,13 +157,50 @@ namespace OpenGLEngine
 		delete s_Data;
 	}
 
-	void ScriptEngine::LoadAssembly(const std::filesystem::path& filepath)
+	bool ScriptEngine::LoadAssembly(const std::filesystem::path& filepath)
 	{
 		s_Data->AppDomain = mono_domain_create_appdomain("OpenGLEngineScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath);
+		if (s_Data->CoreAssembly == nullptr)
+		{
+			std::cout << "Failed to load the core assembly" << std::endl;
+			return false;
+		}
+
 		s_Data->CoreAssemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
+
+		return true;
+	}
+
+	bool ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
+	{
+		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath);
+		if (s_Data->AppAssembly == nullptr)
+		{
+			std::cout << "Failed to load the app assembly" << std::endl;
+			return false;
+		}
+
+		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
+
+		return true;
+	}
+
+	void ScriptEngine::ReloadAssembly()
+	{
+		mono_domain_set(mono_get_root_domain(), false);
+
+		mono_domain_unload(s_Data->AppDomain);
+
+		LoadAssembly(s_Data->CoreAssemblyFilepath);
+		LoadAppAssembly(s_Data->AppAssemblyFilepath);
+		LoadAssemblyClasses();
+
+		ScriptGlue::RegisterComponents();
+
+		s_Data->EntityClass = ScriptClass("Hazel", "Entity", true);
 	}
 
 	void ScriptEngine::OnRuntimeStart(Scene* scene)
@@ -193,23 +253,22 @@ namespace OpenGLEngine
 		return s_Data->EntityClasses;
 	}
 
-	void ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	void ScriptEngine::LoadAssemblyClasses()
 	{
 		s_Data->EntityClasses.clear();
 
-		MonoImage* image = mono_assembly_get_image(assembly);
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_Data->AppAssemblyImage, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 
-		MonoClass* entityClass = mono_class_from_name(image, "OpenGLEngine", "Entity");
+		MonoClass* entityClass = mono_class_from_name(s_Data->CoreAssemblyImage, "OpenGLEngine", "Entity");
 
 		for (int32_t i = 0; i < numTypes; i++)
 		{
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string fullName;
 			if (strlen(nameSpace) != 0)
@@ -217,7 +276,7 @@ namespace OpenGLEngine
 			else
 				fullName = name;
 
-			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+			MonoClass* monoClass = mono_class_from_name(s_Data->AppAssemblyImage, nameSpace, name);
 
 			if (monoClass == entityClass)
 				continue;
@@ -234,6 +293,11 @@ namespace OpenGLEngine
 	MonoImage* ScriptEngine::GetCoreAssemblyImage()
 	{
 		return s_Data->CoreAssemblyImage;
+	}
+
+	void ScriptEngine::SetAppAssemblyPath(const std::filesystem::path& filepath)
+	{
+		s_Data->AppAssemblyFilepath = filepath;
 	}
 
 	void ScriptEngine::InitMono()
@@ -263,9 +327,9 @@ namespace OpenGLEngine
 		return instance;
 	}
 
-	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className) : m_ClassNamespace(classNamespace), m_ClassName(className)
+	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className, bool isCore) : m_ClassNamespace(classNamespace), m_ClassName(className)
 	{
-		m_MonoClass = mono_class_from_name(s_Data->CoreAssemblyImage, classNamespace.c_str(), className.c_str());
+		m_MonoClass = mono_class_from_name(isCore ? s_Data->CoreAssemblyImage : s_Data->AppAssemblyImage, classNamespace.c_str(), className.c_str());
 	}
 
 	MonoObject* ScriptClass::Instantiate()

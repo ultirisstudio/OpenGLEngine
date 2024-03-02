@@ -12,10 +12,5 @@ namespace OpenGLEngine
         {
             InternalCalls.Debug_Log(message);
         }
-
-        public static void Test(List<int> list)
-        {
-            InternalCalls.Test(list);
-        }
     }
 }

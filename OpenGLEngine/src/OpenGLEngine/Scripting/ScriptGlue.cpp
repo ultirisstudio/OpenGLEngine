@@ -50,17 +50,6 @@ namespace OpenGLEngine
 
 #define ADD_INTERNAL_CALL(Name) mono_add_internal_call("OpenGLEngine.InternalCalls::" #Name, Name)
 
-	static void Test(MonoArray* list)
-	{
-		int length = mono_array_length(list);
-		std::cout << "Length: " << length << std::endl;
-
-		for (int i = 0; i < length; i++) {
-			int value = mono_array_get(list, int, i);
-			std::cout << value << std::endl;
-		}
-	}
-
 	static void Debug_Log(MonoString* message)
 	{
 		std::string str = Utils::MonoStringToString(message);
@@ -153,8 +142,6 @@ namespace OpenGLEngine
 
 	void ScriptGlue::RegisterFunctions()
 	{
-		ADD_INTERNAL_CALL(Test);
-
 		ADD_INTERNAL_CALL(Debug_Log);
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);

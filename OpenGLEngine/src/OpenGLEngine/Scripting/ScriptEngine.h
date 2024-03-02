@@ -12,6 +12,7 @@ extern "C"
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoImage MonoImage;
+	typedef struct _MonoDomain MonoDomain;
 }
 
 class Entity;
@@ -75,6 +76,7 @@ namespace OpenGLEngine
 		static std::unordered_map<std::string, std::shared_ptr<ScriptClass>> GetEntityClasses();
 
 		static MonoImage* GetCoreAssemblyImage();
+		static MonoDomain* GetCoreDomain();
 
 		static void SetAppAssemblyPath(const std::filesystem::path& filepath);
 	private:

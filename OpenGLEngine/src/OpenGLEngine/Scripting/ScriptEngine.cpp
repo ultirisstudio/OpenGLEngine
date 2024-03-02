@@ -295,6 +295,11 @@ namespace OpenGLEngine
 		return s_Data->CoreAssemblyImage;
 	}
 
+	MonoDomain* ScriptEngine::GetCoreDomain()
+	{
+		return s_Data->RootDomain;
+	}
+
 	void ScriptEngine::SetAppAssemblyPath(const std::filesystem::path& filepath)
 	{
 		s_Data->AppAssemblyFilepath = filepath;

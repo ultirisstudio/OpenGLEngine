@@ -10,37 +10,40 @@ namespace OpenGLEngine
     public static class InternalCalls
     {
         // Debug
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void Debug_Log(string message);
+        
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static string[] Debug_ListTest();
 
         // Entity
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static bool Entity_HasComponent(ulong entityID, Type componentType);
 
         // Tranform Component
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_GetTranslation(ulong entityID, out Vector3 translation);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_SetTranslation(ulong entityID, ref Vector3 translation);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_GetRotation(ulong entityID, out Vector3 rotation);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_SetRotation(ulong entityID, ref Vector3 rotation);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_GetScale(ulong entityID, out Vector3 scale);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_SetScale(ulong entityID, ref Vector3 scale);
 
         // Input
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static bool Input_IsKeyDown(KeyCode keycode);
     }
 }

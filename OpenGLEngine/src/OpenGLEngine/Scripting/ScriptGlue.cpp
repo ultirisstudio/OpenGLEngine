@@ -23,6 +23,7 @@
 #include <OpenGLEngine/Core/KeyCodes.h>
 #include <OpenGLEngine/Core/Input.h>
 #include <mono/metadata/reflection.h>
+#include <mono/metadata/appdomain.h>
 
 namespace OpenGLEngine
 {
@@ -54,6 +55,22 @@ namespace OpenGLEngine
 	{
 		std::string str = Utils::MonoStringToString(message);
 		std::cout << str << std::endl;
+	}
+
+	static MonoArray* Debug_ListTest()
+	{
+		MonoDomain* domain = ScriptEngine::GetCoreDomain();
+		MonoClass* stringClass = mono_get_string_class();
+		MonoArray* array = mono_array_new(domain, stringClass, 3);
+
+		MonoString* str1 = mono_string_new(domain, "Hello");
+		MonoString* str2 = mono_string_new(domain, "World");
+		MonoString* str3 = mono_string_new(domain, "This");
+
+		mono_array_set(array, MonoString*, 0, str1);
+		mono_array_set(array, MonoString*, 1, str2);
+		mono_array_set(array, MonoString*, 2, str3);
+		return array;
 	}
 
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
@@ -143,6 +160,7 @@ namespace OpenGLEngine
 	void ScriptGlue::RegisterFunctions()
 	{
 		ADD_INTERNAL_CALL(Debug_Log);
+		ADD_INTERNAL_CALL(Debug_ListTest);
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);
 

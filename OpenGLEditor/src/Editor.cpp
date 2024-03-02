@@ -24,6 +24,8 @@ namespace OpenGLEngine
 
 		m_SceneManager = std::make_unique<SceneManager>();
 		m_ProjectManager = std::make_unique<ProjectManager>();
+
+		m_ProjectManager->OpenProjectFromPath("C:\\Users\\rouff\\Documents\\Ultiris Projects\\test", m_ContentBrowserPanel);
 	}
 
 	void Editor::OnDetach()

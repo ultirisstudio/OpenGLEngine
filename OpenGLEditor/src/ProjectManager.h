@@ -26,12 +26,13 @@ namespace OpenGLEngine
 		void SaveProjectAs();
 		void CloseProject();
 
+		void OpenProjectFromPath(const std::string& projectPath, ContentBrowserPanel& contentBrowserPanel);
+
 		ProjectProperties* GetProjectProperties() { return m_Properties; }
 
 		void OnImGuiRender(ContentBrowserPanel& contentBrowserPanel);
 	private:
-		void CreateSolutionFile(const std::string& projectName, const std::string& projectPath);
-		void CreateProjectFile(const std::string& projectName, const std::string& projectPath);
+		void CreateProjectFiles(const std::string& projectName, const std::string& projectPath);
 	private:
 		ProjectProperties* m_Properties;
 		FileBrowser m_FileBrowser;

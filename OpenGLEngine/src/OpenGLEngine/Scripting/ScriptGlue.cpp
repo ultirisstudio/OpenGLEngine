@@ -26,6 +26,18 @@
 
 namespace OpenGLEngine
 {
+	namespace Utils {
+
+		std::string MonoStringToString(MonoString* string)
+		{
+			char* cStr = mono_string_to_utf8(string);
+			std::string str(cStr);
+			mono_free(cStr);
+			return str;
+		}
+
+	}
+
 	template<typename... Component>
 	struct ComponentGroup
 	{
@@ -37,6 +49,23 @@ namespace OpenGLEngine
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntityHasComponentFuncs;
 
 #define ADD_INTERNAL_CALL(Name) mono_add_internal_call("OpenGLEngine.InternalCalls::" #Name, Name)
+
+	static void Test(MonoArray* list)
+	{
+		int length = mono_array_length(list);
+		std::cout << "Length: " << length << std::endl;
+
+		for (int i = 0; i < length; i++) {
+			int value = mono_array_get(list, int, i);
+			std::cout << value << std::endl;
+		}
+	}
+
+	static void Debug_Log(MonoString* message)
+	{
+		std::string str = Utils::MonoStringToString(message);
+		std::cout << str << std::endl;
+	}
 
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
 	{
@@ -124,6 +153,10 @@ namespace OpenGLEngine
 
 	void ScriptGlue::RegisterFunctions()
 	{
+		ADD_INTERNAL_CALL(Test);
+
+		ADD_INTERNAL_CALL(Debug_Log);
+
 		ADD_INTERNAL_CALL(Entity_HasComponent);
 
 		ADD_INTERNAL_CALL(TransformComponent_GetTranslation);

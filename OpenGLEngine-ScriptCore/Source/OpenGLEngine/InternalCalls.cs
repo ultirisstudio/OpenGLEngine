@@ -1,10 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
     public static class InternalCalls
     {
+        // Test
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Test(List<int> list);
+
+        // Debug
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Debug_Log(string message);
+
+        // Entity
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool Entity_HasComponent(ulong entityID, Type componentType);
 

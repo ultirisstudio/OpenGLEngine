@@ -47,6 +47,10 @@ namespace OpenGLEngine
 		double currentFrame = Renderer::GetTime();
 		double lastFrame = currentFrame;
 		double deltaTime;
+
+		float m_secondCounter;
+		float m_tempFps;
+		float fps;
 	private:
 		Chronometer m_Chronometer;
 	private:

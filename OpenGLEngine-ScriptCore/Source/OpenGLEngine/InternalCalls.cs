@@ -49,6 +49,14 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void MeshComponent_GenerateMesh(ulong entityID, float[] vertices, uint[] indices);
 
+        // Perlin
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static ulong Perlin_Initialize();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static float Perlin_GetNoise(ulong ID, float x, float z);
+
         // Input
 
         [MethodImpl(MethodImplOptions.InternalCall)]

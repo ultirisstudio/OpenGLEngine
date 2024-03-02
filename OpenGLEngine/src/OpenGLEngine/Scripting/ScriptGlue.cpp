@@ -9,6 +9,8 @@
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Scripting/ScriptEngine.h>
 
+#include <OpenGLEngine/Perlin/PerlinManager.h>
+
 #include <OpenGLEngine/Entity/Component.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
@@ -175,6 +177,18 @@ namespace OpenGLEngine
 		entity->GetComponent<MeshComponent>().GenerateMesh(vertexData, indexData);
 	}
 
+	static uint64_t Perlin_Initialize()
+	{
+		uint64_t uuid = PerlinManager::AddPerlinNoise();
+		return uuid;
+	}
+
+	static float Perlin_GetNoise(uint64_t id, float x, float z)
+	{
+		float result = PerlinManager::GetPerlinNoise(id, x, z);
+		return result;
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -227,6 +241,9 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(TransformComponent_SetScale);
 
 		ADD_INTERNAL_CALL(MeshComponent_GenerateMesh);
+
+		ADD_INTERNAL_CALL(Perlin_Initialize);
+		ADD_INTERNAL_CALL(Perlin_GetNoise);
 
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

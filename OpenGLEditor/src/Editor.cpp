@@ -11,7 +11,7 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
+	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_secondCounter(0), m_tempFps(0), fps(0)
 	{
 		
 	}
@@ -38,6 +38,17 @@ namespace OpenGLEngine
 		currentFrame = Renderer::GetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+
+		if (m_secondCounter <= 1) {
+			m_secondCounter += deltaTime;
+			m_tempFps++;
+		}
+		else
+		{
+			fps = m_tempFps;
+			m_secondCounter = 0;
+			m_tempFps = 0;
+		}
 
 		m_SceneManager->update(deltaTime);
 		m_EditorViewport.Update(m_SceneManager->getActiveScene());
@@ -212,6 +223,8 @@ namespace OpenGLEngine
 		ImGui::Begin("World infos:");
 		{
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
+			ImGui::Separator();
+			ImGui::Text("FPS: ", (int)fps);
 		}
 
 		ImGui::End();

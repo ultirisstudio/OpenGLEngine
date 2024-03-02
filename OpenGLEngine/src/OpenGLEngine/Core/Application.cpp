@@ -6,6 +6,7 @@
 #include "OpenGLEngine/Renderer/Renderer.h"
 #include "OpenGLEngine/Scripting/ScriptEngine.h"
 #include "OpenGLEngine/Core/Input.h"
+#include "OpenGLEngine/Perlin/PerlinManager.h"
 
 namespace OpenGLEngine
 {
@@ -20,6 +21,8 @@ namespace OpenGLEngine
 		m_Window->SetVSync(false);
 
 		ScriptEngine::Init();
+
+		PerlinManager::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

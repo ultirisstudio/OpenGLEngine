@@ -89,6 +89,76 @@ namespace OpenGLEngine {
 				}
 			}
 
+			if (entity->second.HasComponent<MeshComponent>() && entity->second.GetComponent<MeshComponent>().HasMesh())
+			{
+				m_SceneData.m_Shader.use();
+
+				Material& material = entity->second.GetComponent<MaterialComponent>().GetMaterial();
+
+				m_SceneData.m_Shader.setUniform("uModel", transform);
+				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
+				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
+				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
+
+				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
+				m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
+				m_SceneData.m_Shader.setUniform("uMaterial.roughness", *material.getFloat("roughness"));
+				m_SceneData.m_Shader.setUniform("uMaterial.ao", *material.getFloat("ao"));
+
+				m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", static_cast<bool>(*material.getBoolean("albedo")));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", static_cast<bool>(*material.getBoolean("normal")));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", static_cast<bool>(*material.getBoolean("metallic")));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", static_cast<bool>(*material.getBoolean("roughness")));
+				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", static_cast<bool>(*material.getBoolean("ao")));
+
+				if (*material.getBoolean("albedo"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("albedo")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.albedoMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("normal"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("normal")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.normalMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("metallic"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("metallic")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.metallicMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("roughness"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("roughness")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.roughnessMap", nat);
+					nat++;
+				}
+
+				if (*material.getBoolean("ao"))
+				{
+					glActiveTexture(GL_TEXTURE0 + nat);
+					material.getTexture("ao")->bind();
+					m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
+					nat++;
+				}
+
+				glActiveTexture(GL_TEXTURE0 + nat);
+				m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
+				m_SceneData.m_Shader.setUniform("uIrradianceMap", nat);
+				nat++;
+
+				entity->second.GetComponent<MeshComponent>().GetMesh().draw();
+			}
+
 			if (entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())
 			{
 				m_SceneData.m_Shader.use();
@@ -163,8 +233,8 @@ namespace OpenGLEngine {
 					subEntity.GetComponent<MeshComponent>().GetMesh().draw();
 				}
 				
-				if (entity->second.HasComponent<ModelComponent>())
-					entity->second.GetComponent<ModelComponent>().GetModel().draw();
+				//if (entity->second.HasComponent<ModelComponent>())
+					//entity->second.GetComponent<ModelComponent>().GetModel().draw();
 			}
 
 			if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())

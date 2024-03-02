@@ -17,5 +17,10 @@ namespace OpenGLEngine
         {
             return InternalCalls.Debug_ListTest();
         }
+
+        public static void sendArray(int[] array)
+        {
+            InternalCalls.Debug_SendArray(array);
+        }
     }
 }

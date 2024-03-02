@@ -16,6 +16,9 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static string[] Debug_ListTest();
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void Debug_SendArray(int[] array);
+
         // Entity
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -40,6 +43,11 @@ namespace OpenGLEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_SetScale(ulong entityID, ref Vector3 scale);
+
+        // Mesh Component
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void MeshComponent_GenerateMesh(ulong entityID, float[] vertices, uint[] indices);
 
         // Input
 

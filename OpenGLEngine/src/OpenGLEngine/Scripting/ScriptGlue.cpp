@@ -73,6 +73,16 @@ namespace OpenGLEngine
 		return array;
 	}
 
+	static void Debug_SendArray(MonoArray* array)
+	{
+		MonoDomain* domain = ScriptEngine::GetCoreDomain();
+		uint32_t length = mono_array_length(array);
+		for (uint32_t i = 0; i < length; i++)
+		{
+			std::cout << mono_array_get(array, int, i) << std::endl;
+		}
+	}
+
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
@@ -124,6 +134,47 @@ namespace OpenGLEngine
 		entity->GetComponent<TransformComponent>().Scale = *scale;
 	}
 
+	static void MeshComponent_GenerateMesh(UUID entityID, MonoArray* vertices, MonoArray* indices)
+	{
+		uint32_t verticesCount = mono_array_length(vertices);
+		uint32_t indicesCount = mono_array_length(indices);
+
+		std::cout << "Vertices: " << verticesCount << " Indices: " << indicesCount << std::endl;
+
+		std::vector<Vertex> vertexData;
+		vertexData.reserve(verticesCount);
+		for (uint32_t i = 0; i < verticesCount; i+=8)
+		{
+			Vertex vertex;
+			vertex.position = glm::vec3(
+				mono_array_get(vertices, float, i),
+				mono_array_get(vertices, float, i+1),
+				mono_array_get(vertices, float, i+2)
+			);
+			vertex.normal = glm::vec3(
+				mono_array_get(vertices, float, i+3),
+				mono_array_get(vertices, float, i+4),
+				mono_array_get(vertices, float, i+5)
+			);
+			vertex.texCoord = glm::vec2(
+				mono_array_get(vertices, float, i+6),
+				mono_array_get(vertices, float, i+7)
+			);
+			vertexData.push_back(vertex);
+		}
+
+		std::vector<uint32_t> indexData;
+		indexData.reserve(indicesCount);
+		for (uint32_t i = 0; i < indicesCount; i++)
+		{
+			indexData.push_back(mono_array_get(indices, uint32_t, i));
+		}
+
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<MeshComponent>().GenerateMesh(vertexData, indexData);
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -154,24 +205,28 @@ namespace OpenGLEngine
 
 	void ScriptGlue::RegisterComponents()
 	{
-		RegisterComponent(AllComponents{});
+		//RegisterComponent(AllComponents{});
+
+		RegisterComponent<TransformComponent>();
+		RegisterComponent<MeshComponent>();
 	}
 
 	void ScriptGlue::RegisterFunctions()
 	{
 		ADD_INTERNAL_CALL(Debug_Log);
 		ADD_INTERNAL_CALL(Debug_ListTest);
+		ADD_INTERNAL_CALL(Debug_SendArray);
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);
 
 		ADD_INTERNAL_CALL(TransformComponent_GetTranslation);
 		ADD_INTERNAL_CALL(TransformComponent_SetTranslation);
-
 		ADD_INTERNAL_CALL(TransformComponent_GetRotation);
 		ADD_INTERNAL_CALL(TransformComponent_SetRotation);
-
 		ADD_INTERNAL_CALL(TransformComponent_GetScale);
 		ADD_INTERNAL_CALL(TransformComponent_SetScale);
+
+		ADD_INTERNAL_CALL(MeshComponent_GenerateMesh);
 
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

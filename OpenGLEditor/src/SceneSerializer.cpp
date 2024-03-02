@@ -5,6 +5,7 @@
 
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
@@ -144,6 +145,18 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
+		if (entity->HasComponent<MeshComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "MeshComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			//auto& mc = entity->GetComponent<MeshComponent>();
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
 		if (entity->HasComponent<LightComponent>())
 		{
 			out << YAML::BeginMap;
@@ -269,6 +282,12 @@ namespace OpenGLEngine
 						if (modelComponent)
 						{
 							auto& mc = deserializedEntity->AddComponent<ModelComponent>(modelComponent["model"].as<std::string>());
+						}
+
+						auto meshComponent = component["MeshComponent"];
+						if (meshComponent)
+						{
+							auto& mc = deserializedEntity->AddComponent<MeshComponent>();
 						}
 
 						auto materialComponent = component["MaterialComponent"];

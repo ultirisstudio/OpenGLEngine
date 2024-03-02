@@ -91,6 +91,12 @@ namespace OpenGLEngine
 					}
 				}
 
+				if (!entity->HasComponent<MeshComponent>()) {
+					if (ImGui::MenuItem("Mesh Component")) {
+						entity->AddComponent<MeshComponent>();
+					}
+				}
+
 				if (!entity->HasComponent<TerrainComponent>()) {
 					if (ImGui::MenuItem("Terrain Component")) {
 						entity->AddComponent<TerrainComponent>();

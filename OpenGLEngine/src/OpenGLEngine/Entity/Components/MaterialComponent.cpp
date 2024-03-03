@@ -6,6 +6,8 @@ namespace OpenGLEngine
 	MaterialComponent::MaterialComponent()
 	{
 		m_Material = Material::CreateMaterial();
+
+		InitializeMaterial();
 	}
 
 	void MaterialComponent::InitializeMaterial()

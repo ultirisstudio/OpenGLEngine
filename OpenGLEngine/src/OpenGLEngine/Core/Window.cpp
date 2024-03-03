@@ -170,4 +170,9 @@ namespace OpenGLEngine {
 		return m_Data.VSync;
 	}
 
+	void Window::SetTitle(const std::string& title)
+	{
+		glfwSetWindowTitle(m_Window, title.c_str());
+	}
+
 }

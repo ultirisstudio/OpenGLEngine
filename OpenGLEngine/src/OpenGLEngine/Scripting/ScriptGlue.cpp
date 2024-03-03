@@ -50,6 +50,7 @@ namespace OpenGLEngine
 	using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent>;
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntityHasComponentFuncs;
+	static std::unordered_map<MonoType*, std::function<Component(Entity*)>> m_EntityAddComponentFuncs;
 
 #define ADD_INTERNAL_CALL(Name) mono_add_internal_call("OpenGLEngine.InternalCalls::" #Name, Name)
 
@@ -59,30 +60,11 @@ namespace OpenGLEngine
 		std::cout << str << std::endl;
 	}
 
-	static MonoArray* Debug_ListTest()
+	static uint64_t Scene_CreateEntity(MonoString* name)
 	{
-		MonoDomain* domain = ScriptEngine::GetCoreDomain();
-		MonoClass* stringClass = mono_get_string_class();
-		MonoArray* array = mono_array_new(domain, stringClass, 3);
-
-		MonoString* str1 = mono_string_new(domain, "Hello");
-		MonoString* str2 = mono_string_new(domain, "World");
-		MonoString* str3 = mono_string_new(domain, "This");
-
-		mono_array_set(array, MonoString*, 0, str1);
-		mono_array_set(array, MonoString*, 1, str2);
-		mono_array_set(array, MonoString*, 2, str3);
-		return array;
-	}
-
-	static void Debug_SendArray(MonoArray* array)
-	{
-		MonoDomain* domain = ScriptEngine::GetCoreDomain();
-		uint32_t length = mono_array_length(array);
-		for (uint32_t i = 0; i < length; i++)
-		{
-			std::cout << mono_array_get(array, int, i) << std::endl;
-		}
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->CreateEntity(Utils::MonoStringToString(name));
+		return entity->GetUUID();
 	}
 
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
@@ -92,6 +74,15 @@ namespace OpenGLEngine
 
 		MonoType* managedType = mono_reflection_type_get_type(componentType);
 		return m_EntityHasComponentFuncs.at(managedType)(*entity);
+	}
+
+	static void Entity_AddComponent(UUID entityID, MonoReflectionType* componentType)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+
+		MonoType* managedType = mono_reflection_type_get_type(componentType);
+		auto& c = m_EntityAddComponentFuncs.at(managedType)(entity);
 	}
 
 	static void TransformComponent_GetTranslation(UUID entityID, glm::vec3* outTranslation)
@@ -141,7 +132,7 @@ namespace OpenGLEngine
 		uint32_t verticesCount = mono_array_length(vertices);
 		uint32_t indicesCount = mono_array_length(indices);
 
-		std::cout << "Vertices: " << verticesCount << " Indices: " << indicesCount << std::endl;
+		//std::cout << "Vertices: " << verticesCount << " Indices: " << indicesCount << std::endl;
 
 		std::vector<Vertex> vertexData;
 		vertexData.reserve(verticesCount);
@@ -189,6 +180,21 @@ namespace OpenGLEngine
 		return result;
 	}
 
+	static float Perlin_GetMapHeight(uint64_t id, float x, float z)
+	{
+		float result = PerlinManager::GetMapHeight(id, x, z);
+		return result;
+	}
+
+	static void ScriptComponent_SetScriptName(uint64_t entityID, MonoString* scriptName)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<ScriptComponent>().m_Name = Utils::MonoStringToString(scriptName);
+
+		ScriptEngine::OnCreateEntity(*entity);
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -208,6 +214,7 @@ namespace OpenGLEngine
 			if (!managedType)
 				std::cout << "Failed to find managed type: " << managedTypename << std::endl;
 			m_EntityHasComponentFuncs[managedType] = [](Entity entity) { return entity.HasComponent<Component>(); };
+			m_EntityAddComponentFuncs[managedType] = [](Entity* entity) { return entity->AddComponent<Component>(); };
 		}(), ...);
 	}
 
@@ -223,15 +230,18 @@ namespace OpenGLEngine
 
 		RegisterComponent<TransformComponent>();
 		RegisterComponent<MeshComponent>();
+		RegisterComponent<MaterialComponent>();
+		RegisterComponent<ScriptComponent>();
 	}
 
 	void ScriptGlue::RegisterFunctions()
 	{
 		ADD_INTERNAL_CALL(Debug_Log);
-		ADD_INTERNAL_CALL(Debug_ListTest);
-		ADD_INTERNAL_CALL(Debug_SendArray);
+
+		ADD_INTERNAL_CALL(Scene_CreateEntity);
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);
+		ADD_INTERNAL_CALL(Entity_AddComponent);
 
 		ADD_INTERNAL_CALL(TransformComponent_GetTranslation);
 		ADD_INTERNAL_CALL(TransformComponent_SetTranslation);
@@ -244,6 +254,9 @@ namespace OpenGLEngine
 
 		ADD_INTERNAL_CALL(Perlin_Initialize);
 		ADD_INTERNAL_CALL(Perlin_GetNoise);
+		ADD_INTERNAL_CALL(Perlin_GetMapHeight);
+
+		ADD_INTERNAL_CALL(ScriptComponent_SetScriptName);
 
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

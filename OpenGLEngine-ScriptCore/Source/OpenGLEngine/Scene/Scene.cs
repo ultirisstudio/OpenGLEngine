@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
-    public class Debug
+    public class Scene
     {
-        public static void Log(string message)
+        public static Entity CreateEntity(string name)
         {
-            InternalCalls.Debug_Log(message);
+            ulong id = InternalCalls.Scene_CreateEntity(name);
+            return new Entity(id);
         }
     }
 }

@@ -12,17 +12,19 @@ namespace OpenGLEngine
         // Debug
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void Debug_Log(string message);
-        
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern static string[] Debug_ListTest();
+
+        // Scene
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern static void Debug_SendArray(int[] array);
+        internal extern static ulong Scene_CreateEntity(string name);
 
         // Entity
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static bool Entity_HasComponent(ulong entityID, Type componentType);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void Entity_AddComponent(ulong entityID, Type componentType);
 
         // Tranform Component
 
@@ -56,6 +58,14 @@ namespace OpenGLEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static float Perlin_GetNoise(ulong ID, float x, float z);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static float Perlin_GetMapHeight(ulong ID, float x, float z);
+
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //internal extern static string ScriptComponent_GetScriptName(ulong ID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void ScriptComponent_SetScriptName(ulong ID, string scriptName);
 
         // Input
 

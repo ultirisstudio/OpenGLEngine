@@ -15,5 +15,10 @@ namespace OpenGLEngine
         {
             return InternalCalls.Perlin_GetNoise(ID, x, z);
         }
+
+        public float GetMapHeight(float x, float z)
+        {
+            return InternalCalls.Perlin_GetMapHeight(ID, x, z);
+        }
     }
 }

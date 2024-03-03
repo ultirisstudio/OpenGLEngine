@@ -294,7 +294,6 @@ namespace OpenGLEngine
 						if (materialComponent)
 						{
 							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
-							mc.InitializeMaterial();
 
 							bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
 							bool hasNormal = materialComponent["hasNormal"].as<bool>();

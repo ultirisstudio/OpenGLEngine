@@ -106,7 +106,7 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<MaterialComponent>()) {
 					if (ImGui::MenuItem("Material Component")) {
 						entity->AddComponent<MaterialComponent>();
-						entity->GetComponent<MaterialComponent>().InitializeMaterial();
+						entity->GetComponent<MaterialComponent>();
 					}
 				}
 

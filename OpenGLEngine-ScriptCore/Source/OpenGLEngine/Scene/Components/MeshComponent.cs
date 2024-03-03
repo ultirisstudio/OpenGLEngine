@@ -12,10 +12,5 @@ namespace OpenGLEngine
         {
             InternalCalls.MeshComponent_GenerateMesh(Entity.ID, vertices, indices);
         }
-
-        public void Test(int[] array)
-        {
-            InternalCalls.Debug_SendArray(array);
-        }
     }
 }

@@ -91,6 +91,8 @@ namespace OpenGLEngine {
 
 			if (entity->second.HasComponent<MeshComponent>() && entity->second.GetComponent<MeshComponent>().HasMesh())
 			{
+				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 				m_SceneData.m_Shader.use();
 
 				Material& material = entity->second.GetComponent<MaterialComponent>().GetMaterial();
@@ -157,6 +159,8 @@ namespace OpenGLEngine {
 				nat++;
 
 				entity->second.GetComponent<MeshComponent>().GetMesh().draw();
+
+				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
 			if (entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())

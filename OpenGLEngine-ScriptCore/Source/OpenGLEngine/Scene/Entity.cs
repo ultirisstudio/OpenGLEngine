@@ -20,6 +20,18 @@ namespace OpenGLEngine
             return InternalCalls.Entity_HasComponent(ID, componentType);
         }
 
+        public T AddComponent<T>() where T : Component, new()
+        {
+            if (HasComponent<T>())
+                return null;
+
+            Type componentType = typeof(T);
+            InternalCalls.Entity_AddComponent(ID, componentType);
+
+            T component = new T() { Entity = this };
+            return component;
+        }
+
         public T GetComponent<T>() where T : Component, new()
         {
             if (!HasComponent<T>())

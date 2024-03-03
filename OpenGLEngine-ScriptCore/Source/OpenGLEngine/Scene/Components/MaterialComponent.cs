@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
-    public class Debug
+    public class MaterialComponent : Component
     {
-        public static void Log(string message)
-        {
-            InternalCalls.Debug_Log(message);
-        }
     }
 }

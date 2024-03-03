@@ -11,7 +11,7 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_secondCounter(0), m_tempFps(0), fps(0)
+	Editor::Editor() : Layer("Editor"), m_secondCounter(0), m_tempFps(0), fps(0), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
 	{
 		
 	}
@@ -26,6 +26,11 @@ namespace OpenGLEngine
 		m_ProjectManager = std::make_unique<ProjectManager>();
 
 		m_ProjectManager->OpenProjectFromPath("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf", m_ContentBrowserPanel);
+		m_SceneManager->LoadScene("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\test.scene");
+
+		ScriptEngine::ReloadAssembly();
+
+		m_SceneManager->getActiveScene().OnRuntimeStart();
 	}
 
 	void Editor::OnDetach()
@@ -49,6 +54,8 @@ namespace OpenGLEngine
 			m_secondCounter = 0;
 			m_tempFps = 0;
 		}
+
+		Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(fps));
 
 		m_SceneManager->update(deltaTime);
 		m_EditorViewport.Update(m_SceneManager->getActiveScene());
@@ -224,7 +231,7 @@ namespace OpenGLEngine
 		{
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
 			ImGui::Separator();
-			ImGui::Text("FPS: ", (int)fps);
+			ImGui::Text("FPS: %f", fps);
 		}
 
 		ImGui::End();

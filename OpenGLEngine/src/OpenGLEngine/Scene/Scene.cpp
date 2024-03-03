@@ -20,7 +20,7 @@ namespace OpenGLEngine
 		m_Name("Untitled"),
 		m_Path(""),
 		m_SelectedEntity(nullptr),
-		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
+		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 200.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0),
@@ -33,7 +33,7 @@ namespace OpenGLEngine
 		m_Name(name),
 		m_Path(""),
 		m_SelectedEntity(nullptr),
-		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
+		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 200.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0),
@@ -62,6 +62,7 @@ namespace OpenGLEngine
 		Entity entity = Entity(name, uuid);
 		entity.AddComponent<TransformComponent>();
 		m_EntityMap[entity.GetUUID()] = entity;
+
 		return &m_EntityMap[entity.GetUUID()];
 	}
 

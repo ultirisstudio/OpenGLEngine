@@ -40,6 +40,8 @@ namespace OpenGLEngine {
 
 		inline virtual void* GetNativeWindow() const { return m_Window; }
 
+		void SetTitle(const std::string& title);
+
 		inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 	private:
 		virtual void Shutdown();

@@ -27,7 +27,7 @@ namespace OpenGLEngine
 		{
 			m_SubEntities.push_back(Entity(name, UUID()));
 			m_SubEntities.back().AddComponent<MeshComponent>(name, mesh);
-			m_SubEntities.back().AddComponent<MaterialComponent>().InitializeMaterial();
+			m_SubEntities.back().AddComponent<MaterialComponent>();
 		}
 	}
 }

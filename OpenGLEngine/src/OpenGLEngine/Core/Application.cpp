@@ -4,9 +4,7 @@
 
 #include "Application.h"
 #include "OpenGLEngine/Renderer/Renderer.h"
-#include "OpenGLEngine/Scripting/ScriptEngine.h"
 #include "OpenGLEngine/Core/Input.h"
-#include "OpenGLEngine/Perlin/PerlinManager.h"
 
 namespace OpenGLEngine
 {
@@ -20,17 +18,13 @@ namespace OpenGLEngine
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetVSync(false);
 
-		ScriptEngine::Init();
-
-		PerlinManager::Init();
-
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
 	{
-		ScriptEngine::Shutdown();
+		
 	}
 
 	void Application::OnEvent(Event& e)
@@ -65,10 +59,23 @@ namespace OpenGLEngine
 	{
 		while (m_Running)
 		{
+			double currentTime = glfwGetTime();
+			double dt = currentTime - previousTime;
+
+			frameCount++;
+
+			if (currentTime - previousTime >= 1.0)
+			{
+				Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(frameCount));
+
+				frameCount = 0;
+				previousTime = currentTime;
+			}
+
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerManager)
-					layer->OnUpdate();
+					layer->OnUpdate(dt);
 			}
 
 			m_ImGuiLayer->Begin();

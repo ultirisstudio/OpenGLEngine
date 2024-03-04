@@ -27,7 +27,7 @@ namespace OpenGLEngine
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnUpdate() override;
+		void OnUpdate(double dt) override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
 
@@ -43,14 +43,6 @@ namespace OpenGLEngine
 
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<ProjectManager> m_ProjectManager;
-	private:
-		double currentFrame = Renderer::GetTime();
-		double lastFrame = currentFrame;
-		double deltaTime;
-
-		float m_secondCounter;
-		float m_tempFps;
-		float fps;
 	private:
 		Chronometer m_Chronometer;
 	private:

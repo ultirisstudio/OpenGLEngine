@@ -36,6 +36,9 @@ namespace OpenGLEngine
 		bool m_Running = true;
 		bool m_Minimized = false;
 
+		double previousTime = Renderer::GetTime();
+		int frameCount = 0;
+
 		static Application* s_Instance;
 
 		std::unique_ptr<Window> m_Window;

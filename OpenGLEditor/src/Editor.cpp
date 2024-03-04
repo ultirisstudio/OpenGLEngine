@@ -7,11 +7,12 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include <OpenGLEngine/Scripting/ScriptEngine.h>
+#include "OpenGLEngine/Scripting/ScriptEngine.h"
+#include "OpenGLEngine/Perlin/PerlinManager.h"
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor"), m_secondCounter(0), m_tempFps(0), fps(0), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
+	Editor::Editor() : Layer("Editor")//, m_secondCounter(0), m_tempFps(0), fps(0), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
 	{
 		
 	}
@@ -20,6 +21,8 @@ namespace OpenGLEngine
 	{
 		InitImGuiStyle();
 
+		ScriptEngine::Init();
+		PerlinManager::Init();
 		Renderer::Init();
 
 		m_SceneManager = std::make_unique<SceneManager>();
@@ -28,36 +31,19 @@ namespace OpenGLEngine
 		m_ProjectManager->OpenProjectFromPath("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf", m_ContentBrowserPanel);
 		m_SceneManager->LoadScene("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\test.scene");
 
-		ScriptEngine::ReloadAssembly();
+		//ScriptEngine::ReloadAssembly();
 
-		m_SceneManager->getActiveScene().OnRuntimeStart();
+		//m_SceneManager->getActiveScene().OnRuntimeStart();
 	}
 
 	void Editor::OnDetach()
 	{
-		
+		ScriptEngine::Shutdown();
 	}
 
-	void Editor::OnUpdate()
+	void Editor::OnUpdate(double dt)
 	{
-		currentFrame = Renderer::GetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
-		if (m_secondCounter <= 1) {
-			m_secondCounter += deltaTime;
-			m_tempFps++;
-		}
-		else
-		{
-			fps = m_tempFps;
-			m_secondCounter = 0;
-			m_tempFps = 0;
-		}
-
-		Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(fps));
-
-		m_SceneManager->update(deltaTime);
+		m_SceneManager->update(dt);
 		m_EditorViewport.Update(m_SceneManager->getActiveScene());
 
 		m_Viewport.Render(m_SceneManager->getActiveScene());
@@ -230,8 +216,6 @@ namespace OpenGLEngine
 		ImGui::Begin("World infos:");
 		{
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
-			ImGui::Separator();
-			ImGui::Text("FPS: %f", fps);
 		}
 
 		ImGui::End();

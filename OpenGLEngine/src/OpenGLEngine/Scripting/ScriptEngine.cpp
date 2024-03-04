@@ -131,17 +131,11 @@ namespace OpenGLEngine
 
 		bool status = LoadAssembly(s_Data->CoreAssemblyFilepath);
 		if (!status)
-		{
-			std::cout << "Failed to load the core assembly" << std::endl;
 			return;
-		}
 
 		status = LoadAppAssembly(s_Data->AppAssemblyFilepath);
 		if (!status)
-		{
-			std::cout << "Failed to load the app assembly" << std::endl;
 			return;
-		}
 
 		LoadAssemblyClasses();
 
@@ -164,10 +158,7 @@ namespace OpenGLEngine
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath);
 		if (s_Data->CoreAssembly == nullptr)
-		{
-			std::cout << "Failed to load the core assembly" << std::endl;
 			return false;
-		}
 
 		s_Data->CoreAssemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
 
@@ -178,10 +169,7 @@ namespace OpenGLEngine
 	{
 		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath);
 		if (s_Data->AppAssembly == nullptr)
-		{
-			std::cout << "Failed to load the app assembly" << std::endl;
 			return false;
-		}
 
 		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
 
@@ -285,7 +273,7 @@ namespace OpenGLEngine
 			if (isEntity)
 			{
 				s_Data->EntityClasses[fullName] = std::make_shared<ScriptClass>(nameSpace, name, false);
-				std::cout << "Found entity class: " << fullName << std::endl;
+				//std::cout << "Found entity class: " << fullName << std::endl;
 			}
 		}
 	}

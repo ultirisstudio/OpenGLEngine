@@ -1,6 +1,8 @@
-﻿namespace OpenGLEngine
+﻿using System;
+
+namespace OpenGLEngine
 {
-    public struct IVector3
+    public struct IVector3 : IEquatable<IVector3>
     {
         public int X, Y, Z;
 
@@ -31,6 +33,11 @@
         public static IVector3 operator -(IVector3 left, IVector3 right)
         {
             return new IVector3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+        }
+
+        public bool Equals(IVector3 other)
+        {
+            return (X == other.X && Y == other.Y && Z == other.Z);
         }
     }
 }

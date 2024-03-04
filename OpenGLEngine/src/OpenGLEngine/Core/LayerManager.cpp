@@ -3,11 +3,6 @@
 
 namespace OpenGLEngine
 {
-	LayerManager::LayerManager()
-	{
-
-	}
-
 	LayerManager::~LayerManager()
 	{
 		for (Layer* layer : m_Layers)
@@ -17,6 +12,7 @@ namespace OpenGLEngine
 	void LayerManager::PushLayer(Layer* layer)
 	{
 		m_Layers.emplace(m_Layers.begin() + m_LayerIndex, layer);
+		m_LayerIndex++;
 	}
 
 	void LayerManager::PushOverlay(Layer* overlay)

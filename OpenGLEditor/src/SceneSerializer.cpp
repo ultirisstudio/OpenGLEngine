@@ -260,8 +260,6 @@ namespace OpenGLEngine
 				std::string name = entity["Entity"].as<std::string>();
 				UUID uuid = entity["ID"].as<uint64_t>();
 
-				std::cout << "Deserializing entity with ID: " << uuid << ", Name: " << name << std::endl;
-
 				Entity* deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
 				auto components = entity["Components"];

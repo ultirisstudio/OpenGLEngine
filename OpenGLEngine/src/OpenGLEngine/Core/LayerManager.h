@@ -8,7 +8,7 @@ namespace OpenGLEngine
 	class LayerManager
 	{
 	public:
-		LayerManager();
+		LayerManager() = default;
 		~LayerManager();
 
 		void PushLayer(Layer* layer);

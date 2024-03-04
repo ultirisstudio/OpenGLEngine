@@ -2,7 +2,7 @@
 
 namespace OpenGLEngine
 {
-    public struct Vector4
+    public struct Vector4 : IEquatable<Vector4>
     {
         public float X, Y, Z, W;
 
@@ -34,6 +34,11 @@ namespace OpenGLEngine
         public static Vector4 operator -(Vector4 left, Vector4 right)
         {
             return new Vector4(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+        }
+
+        public bool Equals(Vector4 other)
+        {
+            return (X == other.X && Y == other.Y && Z == other.Z && W == other.W);
         }
     }
 }

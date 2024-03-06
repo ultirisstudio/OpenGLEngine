@@ -9,11 +9,9 @@ namespace OpenGLEngine
 	class ContentBrowserPanel
 	{
 	public:
-		ContentBrowserPanel();
+		ContentBrowserPanel(const std::string& projectPath);
 
 		void OnImGuiRender();
-
-		void ChangeProjectPath(const std::filesystem::path& path);
 	private:
 		const std::string GetFileExtension(std::filesystem::directory_entry e);
 

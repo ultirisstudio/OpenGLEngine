@@ -6,7 +6,7 @@
 
 namespace OpenGLEngine
 {
-	ContentBrowserPanel::ContentBrowserPanel() : m_BaseDirectory("Assets"), m_CurrentDirectory(m_BaseDirectory)
+	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory)
 	{
 		m_DirectoryIcon = Texture::CreateTexture("Icons/texture_dossier.png", false);
 		m_FilePNGIcon = Texture::CreateTexture("Icons/texture_png.png", false);
@@ -118,13 +118,6 @@ namespace OpenGLEngine
 		ImGui::Columns(1);
 
 		ImGui::End();
-	}
-
-	void ContentBrowserPanel::ChangeProjectPath(const std::filesystem::path& path)
-	{
-		m_BaseDirectory = path;
-		m_BaseDirectory += "\\Assets";
-		m_CurrentDirectory = m_BaseDirectory;
 	}
 
 	const std::string ContentBrowserPanel::GetFileExtension(std::filesystem::directory_entry e)

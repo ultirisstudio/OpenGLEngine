@@ -12,9 +12,11 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor() : Layer("Editor")//, m_secondCounter(0), m_tempFps(0), fps(0), m_ContentBrowserPanel(), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
+	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
 	{
-		
+		//std::cout << spec.EngineExecutablePath << std::endl;
+		//std::cout << spec.ProjectName << std::endl;
+		//std::cout << spec.ProjectPath << std::endl;
 	}
 
 	void Editor::OnAttach()
@@ -26,12 +28,10 @@ namespace OpenGLEngine
 		Renderer::Init();
 
 		m_SceneManager = std::make_unique<SceneManager>();
-		m_ProjectManager = std::make_unique<ProjectManager>();
+		m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test.scene");
 
-		m_ProjectManager->OpenProjectFromPath("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf", m_ContentBrowserPanel);
-		m_SceneManager->LoadScene("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\test.scene");
-
-		//ScriptEngine::ReloadAssembly();
+		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\Intermediates\\Release\\" + m_Specification.ProjectName + ".dll");
+		ScriptEngine::ReloadAssembly();
 
 		//m_SceneManager->getActiveScene().OnRuntimeStart();
 	}
@@ -101,34 +101,12 @@ namespace OpenGLEngine
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		bool hasProject = m_ProjectManager->GetProjectProperties() != nullptr;
+		bool hasProject = true;
 
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("Project"))
 			{
-				if (ImGui::MenuItem("New project"))
-				{
-					m_ProjectManager->CreateNewProject();
-				}
-
-				if (ImGui::MenuItem("Save project", (const char*)0, false, hasProject))
-				{
-					m_ProjectManager->SaveProject();
-				}
-
-				if (ImGui::MenuItem("Open project"))
-				{
-					m_ProjectManager->OpenProject();
-				}
-
-				if (ImGui::MenuItem("Close project", (const char*)0, false, hasProject))
-				{
-					m_ProjectManager->CloseProject();
-				}
-
-				ImGui::Separator();
-
 				if (ImGui::MenuItem("Quit"))
 					OpenGLEngine::Application::Get().Close();
 
@@ -204,8 +182,6 @@ namespace OpenGLEngine
 
 			ImGui::EndMenuBar();
 		}
-
-		m_ProjectManager->OnImGuiRender(m_ContentBrowserPanel);
 
 		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_EditorViewport.OnImGuiRender(*m_SceneManager);

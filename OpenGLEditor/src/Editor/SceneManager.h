@@ -5,7 +5,7 @@
 
 #include <OpenGLEngine/Scene/Scene.h>
 
-#include "FileBrowser.h"
+#include "../Utils/FileBrowser.h"
 
 namespace OpenGLEngine
 {

@@ -13,16 +13,23 @@
 #include "Panels/Viewport.h"
 
 #include "SceneManager.h"
-#include "ProjectManager.h"
 
 #include <map>
 
 namespace OpenGLEngine
 {
+	struct EditorSpecification
+	{
+		std::string EngineExecutablePath;
+
+		std::string ProjectName;
+		std::string ProjectPath;
+	};
+
 	class Editor : public Layer
 	{
 	public:
-		Editor();
+		Editor(const EditorSpecification& spec);
 		virtual ~Editor() = default;
 
 		void OnAttach() override;
@@ -35,6 +42,8 @@ namespace OpenGLEngine
 		void InitImGuiStyle();
 		void OptionMenu();
 	private:
+		EditorSpecification m_Specification;
+
 		ContentBrowserPanel m_ContentBrowserPanel;
 		EntityPropertiePanel m_EntityPropertiePanel;
 		SceneHierarchy m_SceneHierarchy;
@@ -42,7 +51,6 @@ namespace OpenGLEngine
 		Viewport m_Viewport;
 
 		std::unique_ptr<SceneManager> m_SceneManager;
-		std::unique_ptr<ProjectManager> m_ProjectManager;
 	private:
 		Chronometer m_Chronometer;
 	private:

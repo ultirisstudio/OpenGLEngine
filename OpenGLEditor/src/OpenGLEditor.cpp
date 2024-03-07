@@ -11,6 +11,8 @@ namespace OpenGLEngine
 	public:
 		OpenGLEditor(const ApplicationSpecification& spec) : Application(spec)
 		{
+			//PushLayer(new Launcher());
+
 			EditorSpecification editorSpec;
 			editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
 			editorSpec.ProjectName = "CallOf";

@@ -14,6 +14,8 @@ namespace OpenGLEngine
 {
 	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
 	{
+		Application::Get().MaximizeWindow(true);
+
 		//std::cout << spec.EngineExecutablePath << std::endl;
 		//std::cout << spec.ProjectName << std::endl;
 		//std::cout << spec.ProjectPath << std::endl;

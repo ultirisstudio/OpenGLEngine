@@ -43,6 +43,12 @@ namespace OpenGLEngine
 			layer->OnEvent(e);
 	}
 
+	void Application::MaximizeWindow(bool value)
+	{
+		if (value)
+			glfwMaximizeWindow(static_cast<GLFWwindow*>(m_Window->GetNativeWindow()));
+	}
+
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerManager.PushLayer(layer);

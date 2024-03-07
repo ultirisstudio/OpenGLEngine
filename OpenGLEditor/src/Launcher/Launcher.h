@@ -2,6 +2,8 @@
 
 #include <OpenGLEngine.h>
 
+#include "ProjectManager.h"
+
 namespace OpenGLEngine
 {
 	class Launcher : public Layer
@@ -15,5 +17,7 @@ namespace OpenGLEngine
 		void OnUpdate(double dt) override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
+	private:
+		std::unique_ptr<ProjectManager> m_ProjectManager;
 	};
 }

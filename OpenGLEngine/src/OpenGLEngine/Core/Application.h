@@ -47,6 +47,8 @@ namespace OpenGLEngine
 
 		void OnEvent(Event& e);
 
+		void MaximizeWindow(bool value);
+
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 

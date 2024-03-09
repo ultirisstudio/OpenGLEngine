@@ -17,7 +17,12 @@ namespace OpenGLEngine
 	{
 		s_Data = new PhysicEngineData();
 
-		s_Data->world = s_Data->physicsCommon.createPhysicsWorld();
+		reactphysics3d::PhysicsWorld::WorldSettings settings;
+		settings.defaultVelocitySolverNbIterations = 20;
+		settings.isSleepingEnabled = false;
+		settings.gravity = reactphysics3d::Vector3(0, -9.81, 0);
+
+		s_Data->world = s_Data->physicsCommon.createPhysicsWorld(settings);
 	}
 
 	void PhysicEngine::Shutdown()

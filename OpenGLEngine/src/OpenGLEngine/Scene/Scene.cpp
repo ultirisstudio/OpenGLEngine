@@ -13,6 +13,7 @@
 #include <OpenGLEngine/Core/Input.h>
 
 #include <OpenGLEngine/Scripting/ScriptEngine.h>
+#include <OpenGLEngine/Physic/PhysicEngine.h>
 
 namespace OpenGLEngine
 {
@@ -118,6 +119,8 @@ namespace OpenGLEngine
 		{
 			ScriptEngine::OnUpdateEntity(*entity, deltaTime);
 		}
+
+		PhysicEngine::Update(deltaTime);
 	}
 
 	void Scene::OnRuntimeStart()

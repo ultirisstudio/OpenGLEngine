@@ -12,6 +12,8 @@
 
 #include "OpenGLEngine/Perlin/PerlinManager.h"
 
+#include "OpenGLEngine/Entity/Components/RigidBodyComponent.h"
+
 namespace OpenGLEngine
 {
 	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
@@ -44,11 +46,18 @@ namespace OpenGLEngine
 	void Editor::OnDetach()
 	{
 		ScriptEngine::Shutdown();
+		PhysicEngine::Shutdown();
 	}
 
 	void Editor::OnUpdate(double dt)
 	{
-		PhysicEngine::Update(dt);
+		if (m_SceneManager->getActiveScene().isOnRuntime())
+		{
+			for (Entity* entity : m_SceneManager->getActiveScene().View<RigidBodyComponent>())
+			{
+				entity->GetComponent<RigidBodyComponent>().Update();
+			}
+		}
 
 		m_SceneManager->update(dt);
 		m_EditorViewport.Update(m_SceneManager->getActiveScene());

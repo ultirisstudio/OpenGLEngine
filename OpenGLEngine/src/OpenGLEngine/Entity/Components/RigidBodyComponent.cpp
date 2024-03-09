@@ -2,6 +2,8 @@
 #include "RigidBodyComponent.h"
 
 #include <reactphysics3d/reactphysics3d.h>
+#include <reactphysics3d/decimal.h>
+
 #include <glm/glm.hpp>
 
 #include <OpenGLEngine/Entity/Entity.h>
@@ -10,30 +12,55 @@
 
 namespace OpenGLEngine
 {
-	RigidBodyComponent::RigidBodyComponent()
+	RigidBodyComponent::RigidBodyComponent() : rigidbody(nullptr)
 	{
 		
 	}
 
 	void RigidBodyComponent::Init()
 	{
-		if (Component::entity)
-		{
-			if (Component::entity->HasComponent<TransformComponent>())
-			{
-				auto& tc = Component::entity->GetComponent<TransformComponent>();
-				glm::vec3 entityPosition = tc.Position;
-				glm::vec3 entityRotation = tc.Rotation;
+		auto& tc = Component::entity->GetComponent<TransformComponent>();
+		glm::vec3 entityPosition = tc.Position;
+		glm::vec3 entityRotation = tc.Rotation;
 
-				reactphysics3d::Vector3 position(entityPosition.x, entityPosition.y, entityPosition.z);
-				reactphysics3d::Vector3 rotation(entityRotation.x, entityRotation.y, entityRotation.z);
+		lastPosition = entityPosition;
+		lastRotation = entityRotation;
 
-				reactphysics3d::Quaternion orientation = reactphysics3d::Quaternion::fromEulerAngles(rotation);
+		reactphysics3d::Vector3 position(entityPosition.x, entityPosition.y, entityPosition.z);
+		reactphysics3d::Vector3 rotation(entityRotation.x, entityRotation.y, entityRotation.z);
 
-				reactphysics3d::Transform transform(position, orientation);
+		reactphysics3d::Quaternion orientation = reactphysics3d::Quaternion::fromEulerAngles(rotation);
 
-				rigidbody = PhysicEngine::GetPhysicWorld()->createRigidBody(transform);
-			}
-		}
+		reactphysics3d::Transform transform(position, orientation);
+
+		rigidbody = PhysicEngine::GetPhysicWorld()->createRigidBody(transform);
+		rigidbody->setType(reactphysics3d::BodyType::DYNAMIC);
+		rigidbody->enableGravity(true);
+		rigidbody->setIsActive(true);
+	}
+
+	void RigidBodyComponent::Update()
+	{
+		auto& tc = Component::entity->GetComponent<TransformComponent>();
+
+		const reactphysics3d::Transform& transform = rigidbody->getTransform();
+
+		const reactphysics3d::Vector3& position = transform.getPosition();
+		const reactphysics3d::Vector3& rotation = transform.getOrientation().getVectorV();
+
+		reactphysics3d::decimal delta_pos_x = position.x - lastPosition.x;
+		reactphysics3d::decimal delta_pos_y = position.y - lastPosition.y;
+		reactphysics3d::decimal delta_pos_z = position.z - lastPosition.z;
+
+		reactphysics3d::decimal delta_rot_x = rotation.x - lastPosition.x;
+		reactphysics3d::decimal delta_rot_y = rotation.y - lastPosition.y;
+		reactphysics3d::decimal delta_rot_z = rotation.z - lastPosition.z;
+
+		tc.Position.x += delta_pos_x;
+		tc.Position.y += delta_pos_y;
+		tc.Position.z += delta_pos_z;
+
+		lastPosition = tc.Position;
+		lastRotation = tc.Rotation;
 	}
 }

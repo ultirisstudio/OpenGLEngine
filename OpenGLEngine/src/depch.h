@@ -16,5 +16,8 @@
 #include <unordered_set>
 
 #ifdef PLATFORM_WINDOWS
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
 	#include <Windows.h>
 #endif

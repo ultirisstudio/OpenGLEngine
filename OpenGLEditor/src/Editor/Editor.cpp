@@ -8,6 +8,8 @@
 #include "ImGuizmo.h"
 
 #include "OpenGLEngine/Scripting/ScriptEngine.h"
+#include "OpenGLEngine/Physic/PhysicEngine.h"
+
 #include "OpenGLEngine/Perlin/PerlinManager.h"
 
 namespace OpenGLEngine
@@ -26,6 +28,7 @@ namespace OpenGLEngine
 		InitImGuiStyle();
 
 		ScriptEngine::Init();
+		PhysicEngine::Init();
 		PerlinManager::Init();
 		Renderer::Init();
 
@@ -45,6 +48,8 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate(double dt)
 	{
+		PhysicEngine::Update(dt);
+
 		m_SceneManager->update(dt);
 		m_EditorViewport.Update(m_SceneManager->getActiveScene());
 

@@ -9,6 +9,7 @@
 #include "ComponentPanels/MaterialComponentPanel.h"
 #include "ComponentPanels/LightComponentPanel.h"
 #include "ComponentPanels/ScriptComponentPanel.h"
+#include "ComponentPanels/RigidBodyComponentPanel.h"
 
 namespace OpenGLEngine
 {
@@ -27,5 +28,6 @@ namespace OpenGLEngine
 		std::unique_ptr<MaterialComponentPanel> m_MaterialComponentPanel;
 		std::unique_ptr<LightComponentPanel> m_LightComponentPanel;
 		std::unique_ptr<ScriptComponentPanel> m_ScriptComponentPanel;
+		std::unique_ptr<RigidBodyComponentPanel> m_RigidBodyComponentPanel;
 	};
 }

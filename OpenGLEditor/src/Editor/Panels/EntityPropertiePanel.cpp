@@ -16,6 +16,7 @@
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
 
 #include <OpenGLEngine/Tools/UUID.h>
 
@@ -31,6 +32,7 @@ namespace OpenGLEngine
 		m_MaterialComponentPanel = std::make_unique<MaterialComponentPanel>();
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
 		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
+		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager)
@@ -72,6 +74,7 @@ namespace OpenGLEngine
 			m_TerrainComponentPanel->Render(entity);
 			m_MaterialComponentPanel->Render(entity);
 			m_LightComponentPanel->Render(entity);
+			m_RigidBodyComponentPanel->Render(entity);
 
 			if (ImGui::Button("Add Component")) {
 				ImGui::OpenPopup("AddComponent");
@@ -131,6 +134,12 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<LightComponent>()) {
 					if (ImGui::MenuItem("Point Light Component")) {
 						entity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
+					}
+				}
+
+				if (!entity->HasComponent<RigidBodyComponent>()) {
+					if (ImGui::MenuItem("RigidBody Component")) {
+						entity->AddComponent<RigidBodyComponent>().Init();
 					}
 				}
 

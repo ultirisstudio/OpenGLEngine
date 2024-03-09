@@ -36,7 +36,8 @@ project "OpenGLEngine"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.mono}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.reactphysics3d}"
 	}
 
 	links
@@ -46,6 +47,7 @@ project "OpenGLEngine"
 		"assimp",
 		"ImGui",
 		"ImGuizmo",
+		"reactphysics3d",
 		"opengl32.lib",
 
 		"%{Library.mono}"

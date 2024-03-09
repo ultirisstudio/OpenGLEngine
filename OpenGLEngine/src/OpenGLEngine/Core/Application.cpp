@@ -6,11 +6,6 @@
 #include "OpenGLEngine/Renderer/Renderer.h"
 #include "OpenGLEngine/Core/Input.h"
 
-extern "C" {
-	__declspec(dllexport) DWORD NvOptimusEnablement = 1;
-	__declspec(dllexport) DWORD AmdPowerXpressRequestHeighPerformance = 1;
-}
-
 namespace OpenGLEngine
 {
 	Application* Application::s_Instance = nullptr;

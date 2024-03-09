@@ -70,23 +70,16 @@ namespace OpenGLEngine
 	{
 		while (m_Running)
 		{
-			double currentTime = glfwGetTime();
-			double dt = currentTime - previousTime;
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
 
-			frameCount++;
-
-			if (currentTime - previousTime >= 1.0)
-			{
-				Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(frameCount));
-
-				frameCount = 0;
-				previousTime = currentTime;
-			}
+			//Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(frameCount));
 
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerManager)
-					layer->OnUpdate(dt);
+					layer->OnUpdate(deltaTime);
 			}
 
 			m_ImGuiLayer->Begin();

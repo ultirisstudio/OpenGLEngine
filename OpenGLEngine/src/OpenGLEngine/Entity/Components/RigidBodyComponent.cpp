@@ -35,8 +35,8 @@ namespace OpenGLEngine
 
 		rigidbody = PhysicEngine::GetPhysicWorld()->createRigidBody(transform);
 		rigidbody->setType(reactphysics3d::BodyType::DYNAMIC);
-		rigidbody->enableGravity(true);
-		rigidbody->setIsActive(true);
+		//rigidbody->enableGravity(true);
+		//rigidbody->setIsActive(true);
 	}
 
 	void RigidBodyComponent::Update()
@@ -48,7 +48,10 @@ namespace OpenGLEngine
 		const reactphysics3d::Vector3& position = transform.getPosition();
 		const reactphysics3d::Vector3& rotation = transform.getOrientation().getVectorV();
 
-		reactphysics3d::decimal delta_pos_x = position.x - lastPosition.x;
+		tc.Position = glm::vec3(position.x, position.y, position.z);
+		tc.Rotation = glm::vec3(rotation.x, rotation.y, rotation.z);
+
+		/*reactphysics3d::decimal delta_pos_x = position.x - lastPosition.x;
 		reactphysics3d::decimal delta_pos_y = position.y - lastPosition.y;
 		reactphysics3d::decimal delta_pos_z = position.z - lastPosition.z;
 
@@ -61,6 +64,6 @@ namespace OpenGLEngine
 		tc.Position.z += delta_pos_z;
 
 		lastPosition = tc.Position;
-		lastRotation = tc.Rotation;
+		lastRotation = tc.Rotation;*/
 	}
 }

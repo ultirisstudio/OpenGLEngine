@@ -65,8 +65,8 @@ namespace OpenGLEngine
 		bool m_Running = true;
 		bool m_Minimized = false;
 
-		double previousTime = Renderer::GetTime();
-		int frameCount = 0;
+		float deltaTime = 0;
+		float lastFrame = 0;
 
 		static Application* s_Instance;
 

@@ -21,7 +21,7 @@ namespace OpenGLEngine
 		reactphysics3d::Collider* collider;
 	public:
 		reactphysics3d::BodyType bodyType;
-		const char* bodyTypeString;
+		std::string bodyTypeString;
 
 		bool enableGravity;
 		float mass;

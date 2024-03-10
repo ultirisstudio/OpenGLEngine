@@ -63,15 +63,15 @@ namespace OpenGLEngine
 
 	void RigidBodyComponent::UpdateBodyType()
 	{
-		if (strcmp(bodyTypeString, "DYNAMIC") == 0)
+		if (strcmp(bodyTypeString.c_str(), "DYNAMIC") == 0)
 		{
 			rigidbody->setType(reactphysics3d::BodyType::DYNAMIC);
 		}
-		else if (strcmp(bodyTypeString, "STATIC") == 0)
+		else if (strcmp(bodyTypeString.c_str(), "STATIC") == 0)
 		{
 			rigidbody->setType(reactphysics3d::BodyType::STATIC);
 		}
-		else if (strcmp(bodyTypeString, "KINEMATIC") == 0)
+		else if (strcmp(bodyTypeString.c_str(), "KINEMATIC") == 0)
 		{
 			rigidbody->setType(reactphysics3d::BodyType::KINEMATIC);
 		}

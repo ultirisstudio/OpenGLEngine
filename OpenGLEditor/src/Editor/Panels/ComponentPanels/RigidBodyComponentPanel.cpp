@@ -31,7 +31,7 @@ namespace OpenGLEngine
 
 				const char* items[] = { "STATIC", "KINEMATIC", "DYNAMIC" };
 
-				if (ImGui::BeginCombo("##combo", rbc.bodyTypeString))
+				if (ImGui::BeginCombo("##combo", rbc.bodyTypeString.data()))
 				{
 					for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 					{
@@ -51,19 +51,19 @@ namespace OpenGLEngine
 				ImGui::Separator();
 
 				ImGui::Text("Mass: ");
-				if (ImGui::InputFloat("##Mass", &rbc.mass, 0.1f, 1.0f, 2))
+				if (ImGui::DragFloat("##Mass", &rbc.mass, 1.0f, 1.0f, 1000.0f))
 				{
 					rbc.UpdateMaterial();
 				}
 
 				ImGui::Text("Friction: ");
-				if (ImGui::InputFloat("##Friction", &rbc.friction, 0.1f, 1.0f, 2))
+				if (ImGui::DragFloat("##Friction", &rbc.friction, 0.05f, 0.1f, 10.0f))
 				{
 					rbc.UpdateMaterial();
 				}
 
 				ImGui::Text("Bounciness: ");
-				if (ImGui::InputFloat("##Bounciness", &rbc.bounciness, 0.1f, 1.0f, 2))
+				if (ImGui::DragFloat("##Bounciness", &rbc.bounciness, 0.05f, 0.1f, 1.0f))
 				{
 					rbc.UpdateMaterial();
 				}

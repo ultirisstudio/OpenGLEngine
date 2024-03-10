@@ -392,7 +392,7 @@ namespace OpenGLEngine
 							rbc.Init();
 
 							rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
-							rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>().c_str();
+							rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
 							rbc.mass = rigidBodyComponent["mass"].as<float>();
 							rbc.friction = rigidBodyComponent["friction"].as<float>();
 							rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();

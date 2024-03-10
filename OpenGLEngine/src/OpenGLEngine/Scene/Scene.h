@@ -54,6 +54,8 @@ namespace OpenGLEngine
 
 		bool isOnRuntime() { return m_OnRuntime; }
 
+		void ClearEntities();
+
 		const std::string& getName() { return m_Name; }
 		const std::string& getPath() { return m_Path; }
 

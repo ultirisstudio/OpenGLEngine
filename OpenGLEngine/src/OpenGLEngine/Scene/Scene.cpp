@@ -172,4 +172,9 @@ namespace OpenGLEngine
 	{
 		return &m_EntityMap;
 	}
+
+	void Scene::ClearEntities()
+	{
+		m_EntityMap.clear();
+	}
 }

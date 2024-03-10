@@ -17,6 +17,12 @@ namespace OpenGLEngine
 		
 	}
 
+	RigidBodyComponent::~RigidBodyComponent()
+	{
+		rigidbody->removeCollider(collider);
+		delete rigidbody;
+	}
+
 	void RigidBodyComponent::Init()
 	{
 		auto& tc = Component::entity->GetComponent<TransformComponent>();

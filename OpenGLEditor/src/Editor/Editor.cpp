@@ -157,7 +157,7 @@ namespace OpenGLEngine
 				if (ImGui::MenuItem("Stop scene"))
 				{
 					m_SceneManager->getActiveScene().OnRuntimeStop();
-					m_SceneManager->LoadScene(m_SceneManager->getActiveScene().getPath());
+					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
 				}
 				ImGui::EndMenu();
 			}

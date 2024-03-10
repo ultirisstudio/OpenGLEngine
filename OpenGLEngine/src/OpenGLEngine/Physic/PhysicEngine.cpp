@@ -35,6 +35,11 @@ namespace OpenGLEngine
 		s_Data->world->update(dt);
 	}
 
+	void PhysicEngine::Reload()
+	{
+		Init();
+	}
+
 	reactphysics3d::PhysicsWorld* PhysicEngine::GetPhysicWorld()
 	{
 		return s_Data->world;

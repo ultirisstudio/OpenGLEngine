@@ -29,9 +29,12 @@ namespace OpenGLEngine
 		float bounciness;
 	public:
 		RigidBodyComponent();
+		~RigidBodyComponent();
 
 		void Init();
 		void Update();
+
+		reactphysics3d::RigidBody* GetRigidBody() { return rigidbody; }
 
 		void UpdateEnableGravity();
 		void UpdateBodyType();

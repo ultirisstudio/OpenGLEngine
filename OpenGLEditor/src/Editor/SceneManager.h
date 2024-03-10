@@ -32,6 +32,8 @@ namespace OpenGLEngine
 		void LoadScene();
 		void LoadScene(std::string filePath);
 
+		void ReloadScene(std::string filePath);
+
 		void createNewScene();
 
 		void OpenExternalFile();

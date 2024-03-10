@@ -20,6 +20,9 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
+#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+
+#include <reactphysics3d/reactphysics3d.h>
 
 #include <OpenGLEngine/Tools/UUID.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -47,7 +50,7 @@ namespace OpenGLEngine
 
 	};
 
-	using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent>;
+	using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent, RigidBodyComponent>;
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntityHasComponentFuncs;
 	static std::unordered_map<MonoType*, std::function<Component(Entity*)>> m_EntityAddComponentFuncs;
@@ -195,6 +198,13 @@ namespace OpenGLEngine
 		ScriptEngine::OnCreateEntity(*entity);
 	}
 
+	static void RigidBody_ApplyLocalForceAtCenterOfMass(uint64_t entityID, glm::vec3 force)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -232,6 +242,7 @@ namespace OpenGLEngine
 		RegisterComponent<MeshComponent>();
 		RegisterComponent<MaterialComponent>();
 		RegisterComponent<ScriptComponent>();
+		RegisterComponent<RigidBodyComponent>();
 	}
 
 	void ScriptGlue::RegisterFunctions()
@@ -257,6 +268,8 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(Perlin_GetMapHeight);
 
 		ADD_INTERNAL_CALL(ScriptComponent_SetScriptName);
+
+		ADD_INTERNAL_CALL(RigidBody_ApplyLocalForceAtCenterOfMass);
 
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 	}

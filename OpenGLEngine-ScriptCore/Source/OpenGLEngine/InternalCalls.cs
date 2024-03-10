@@ -62,10 +62,15 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static float Perlin_GetMapHeight(ulong ID, float x, float z);
 
-        //[MethodImpl(MethodImplOptions.InternalCall)]
-        //internal extern static string ScriptComponent_GetScriptName(ulong ID);
+        // Script Component
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void ScriptComponent_SetScriptName(ulong ID, string scriptName);
+
+        // RigidBody Component
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void RigidBody_ApplyLocalForceAtCenterOfMass(ulong ID, Vector3 force);
 
         // Input
 

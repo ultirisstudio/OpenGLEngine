@@ -16,6 +16,8 @@ namespace OpenGLEngine
 		static void Shutdown();
 
 		static void Update(double dt);
+
+		static void Reload();
 		
 		static reactphysics3d::PhysicsWorld* GetPhysicWorld();
 		static reactphysics3d::PhysicsCommon* GetPhysicsCommon();

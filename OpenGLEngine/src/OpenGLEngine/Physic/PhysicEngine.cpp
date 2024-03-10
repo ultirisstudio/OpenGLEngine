@@ -39,4 +39,9 @@ namespace OpenGLEngine
 	{
 		return s_Data->world;
 	}
+
+	reactphysics3d::PhysicsCommon* PhysicEngine::GetPhysicsCommon()
+	{
+		return &s_Data->physicsCommon;
+	}
 }

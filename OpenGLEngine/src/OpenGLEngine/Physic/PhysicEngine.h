@@ -3,6 +3,7 @@
 namespace reactphysics3d {
 	extern "C" {
 		class PhysicsWorld;
+		class PhysicsCommon;
 	}
 }
 
@@ -17,5 +18,6 @@ namespace OpenGLEngine
 		static void Update(double dt);
 		
 		static reactphysics3d::PhysicsWorld* GetPhysicWorld();
+		static reactphysics3d::PhysicsCommon* GetPhysicsCommon();
 	};
 }

@@ -10,6 +10,7 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -207,6 +208,23 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
+		if (entity->HasComponent<RigidBodyComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "RigidBodyComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& rbc = entity->GetComponent<RigidBodyComponent>();
+			out << YAML::Key << "enableGravity" << YAML::Value << rbc.enableGravity;
+			out << YAML::Key << "bodyType" << YAML::Value << rbc.bodyTypeString;
+			out << YAML::Key << "mass" << YAML::Value << rbc.mass;
+			out << YAML::Key << "friction" << YAML::Value << rbc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << rbc.bounciness;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 	}
@@ -365,6 +383,23 @@ namespace OpenGLEngine
 						{
 							auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
 							sc.m_Name = scriptComponent["scriptName"].as<std::string>();
+						}
+
+						auto rigidBodyComponent = component["RigidBodyComponent"];
+						if (rigidBodyComponent)
+						{
+							auto& rbc = deserializedEntity->AddComponent<RigidBodyComponent>();
+							rbc.Init();
+
+							rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
+							rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>().c_str();
+							rbc.mass = rigidBodyComponent["mass"].as<float>();
+							rbc.friction = rigidBodyComponent["friction"].as<float>();
+							rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+
+							rbc.UpdateEnableGravity();
+							rbc.UpdateBodyType();
+							rbc.UpdateMaterial();
 						}
 					}
 				}

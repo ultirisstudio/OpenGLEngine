@@ -17,6 +17,7 @@
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/ColliderComponent.h>
 
 #include <OpenGLEngine/Tools/UUID.h>
 
@@ -33,6 +34,7 @@ namespace OpenGLEngine
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
 		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
 		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
+		m_ColliderComponentPanel = std::make_unique<ColliderComponentPanel>();
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager)
@@ -75,6 +77,7 @@ namespace OpenGLEngine
 			m_MaterialComponentPanel->Render(entity);
 			m_LightComponentPanel->Render(entity);
 			m_RigidBodyComponentPanel->Render(entity);
+			m_ColliderComponentPanel->Render(entity);
 
 			if (ImGui::Button("Add Component")) {
 				ImGui::OpenPopup("AddComponent");
@@ -140,6 +143,12 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<RigidBodyComponent>()) {
 					if (ImGui::MenuItem("RigidBody Component")) {
 						entity->AddComponent<RigidBodyComponent>().Init();
+					}
+				}
+
+				if (!entity->HasComponent<ColliderComponent>()) {
+					if (ImGui::MenuItem("Collider Component")) {
+						entity->AddComponent<ColliderComponent>().Init();
 					}
 				}
 

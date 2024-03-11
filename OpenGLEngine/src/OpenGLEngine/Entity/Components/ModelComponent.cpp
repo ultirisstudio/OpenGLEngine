@@ -7,6 +7,7 @@
 
 #include <OpenGLEngine/Tools/UUID.h>
 
+#include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 
@@ -26,6 +27,7 @@ namespace OpenGLEngine
 		for (auto& [name, mesh] : m_Model->GetMeshes())
 		{
 			m_SubEntities.push_back(Entity(name, UUID()));
+			m_SubEntities.back().AddComponent<TransformComponent>();
 			m_SubEntities.back().AddComponent<MeshComponent>(name, mesh);
 			m_SubEntities.back().AddComponent<MaterialComponent>();
 		}

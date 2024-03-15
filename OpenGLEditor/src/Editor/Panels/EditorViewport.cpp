@@ -25,7 +25,7 @@ namespace OpenGLEngine
 		m_EditorFrameBuffer->Create();
 	}
 
-	void EditorViewport::Render(Scene& scene)
+	void EditorViewport::Render(Scene& scene, EditorCamera& camera)
 	{
 		m_EditorFrameBuffer->bind();
 
@@ -35,18 +35,18 @@ namespace OpenGLEngine
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
 		Renderer::BeginScene(scene);
-		Renderer::Render(false);
+		Renderer::Render(camera);
 		Renderer::EndScene();
 
 		m_EditorFrameBuffer->unbind();
 	}
 
-	void EditorViewport::Update(Scene& scene)
+	void EditorViewport::Update(EditorCamera& camera)
 	{
 		if (m_ViewportHovered)
-			scene.getEditorCamera().m_CameraFocus = true;
+			camera.m_CameraFocus = true;
 		else
-			scene.getEditorCamera().m_CameraFocus = false;
+			camera.m_CameraFocus = false;
 
 		if (Input::IsKeyPressed(Key::E))
 			m_GizmoType = -1;
@@ -61,7 +61,7 @@ namespace OpenGLEngine
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 	}
 
-	void EditorViewport::OnImGuiRender(SceneManager& sceneManager)
+	void EditorViewport::OnImGuiRender(Entity* entity, EditorCamera& camera, SceneManager& sceneManager)
 	{
 		m_EditorFrameBuffer->bind();
 
@@ -73,7 +73,7 @@ namespace OpenGLEngine
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
-		sceneManager.getActiveScene().getEditorCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
+		camera.OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
@@ -89,7 +89,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (sceneManager.getActiveScene().m_SelectedEntity && m_GizmoType != -1)
+		if (entity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -98,10 +98,10 @@ namespace OpenGLEngine
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			glm::mat4 cameraProjection = sceneManager.getActiveScene().getEditorCamera().getProjectionMatrix();
-			glm::mat4 cameraView = sceneManager.getActiveScene().getEditorCamera().getViewMatrix();
+			glm::mat4 cameraProjection = camera.getProjectionMatrix();
+			glm::mat4 cameraView = camera.getViewMatrix();
 
-			auto& tc = sceneManager.getActiveScene().m_SelectedEntity->GetComponent<TransformComponent>();
+			auto& tc = entity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));

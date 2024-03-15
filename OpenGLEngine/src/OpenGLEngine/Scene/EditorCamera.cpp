@@ -57,7 +57,6 @@ namespace OpenGLEngine
 
 	glm::mat4 EditorCamera::GetTransform()
 	{
-		//glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(m_pitch, m_yaw, 0)));
 		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(m_pitch), { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), glm::radians(m_yaw), { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 });
 		return glm::translate(glm::mat4(1.f), m_position) * rotation;
 	}

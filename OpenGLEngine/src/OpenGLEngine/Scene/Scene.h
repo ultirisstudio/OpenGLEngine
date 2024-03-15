@@ -37,17 +37,13 @@ namespace OpenGLEngine
 		void OnRuntimeStart();
 		void OnRuntimeStop();
 
-		void ResizeEditorCamera(float width, float height);
 		void ResizeActiveCamera(float width, float height);
 
-		EditorCamera& getEditorCamera() { return *m_EditorCamera; }
 		Camera* getActiveCamera() { return m_ActiveCamera; }
 
 		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
 
 		EntityMap* getEntities();
-
-		Entity* m_SelectedEntity;
 
 		int m_LightsCount;
 		float m_AmbientLight;
@@ -67,7 +63,6 @@ namespace OpenGLEngine
 		EntityMap m_EntityMap;
 
 		std::unique_ptr<Skybox> m_Skybox;
-		std::unique_ptr<EditorCamera> m_EditorCamera;
 		Camera* m_ActiveCamera;
 
 		std::string m_Name;

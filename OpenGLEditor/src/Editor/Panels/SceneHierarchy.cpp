@@ -11,7 +11,7 @@ namespace OpenGLEngine
 
 	}
 
-	void SceneHierarchy::OnImGuiRender(Scene& scene)
+	void SceneHierarchy::OnImGuiRender(Scene& scene, Entity* selectedEntity)
 	{
 		//std::string sceneName = scene.getName().c_str();
 		//std::string title = "Scene - " + sceneName;
@@ -23,8 +23,8 @@ namespace OpenGLEngine
 		for (Entity* entity : scene.GetEntityVector())
 		{
 			UUID id;
-			if (scene.m_SelectedEntity)
-				id = scene.m_SelectedEntity->GetUUID();
+			if (selectedEntity)
+				id = selectedEntity->GetUUID();
 			else
 				id = 0;
 
@@ -34,14 +34,14 @@ namespace OpenGLEngine
 
 			if (ImGui::IsItemClicked())
 			{
-				scene.m_SelectedEntity = entity;
+				selectedEntity = entity;
 			}
 
 			if (ImGui::BeginPopupContextItem())
 			{
 				if (ImGui::MenuItem("Delete Object")) {
 					scene.DestroyEntity(*entity);
-					scene.m_SelectedEntity = nullptr;
+					selectedEntity = nullptr;
 				}
 				ImGui::EndPopup();
 			}
@@ -63,7 +63,7 @@ namespace OpenGLEngine
 								bool opened = ImGui::TreeNodeEx((void*)(intptr_t)subEntity.GetUUID(), flags, subEntity.GetName());
 								if (ImGui::IsItemClicked())
 								{
-									scene.m_SelectedEntity = &subEntity;
+									selectedEntity = &subEntity;
 								}
 								if (opened)
 								{

@@ -22,8 +22,6 @@ namespace OpenGLEngine
 	Scene::Scene() :
 		m_Name("Untitled"),
 		m_Path(""),
-		m_SelectedEntity(nullptr),
-		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0),
@@ -35,8 +33,6 @@ namespace OpenGLEngine
 	Scene::Scene(const std::string& name) : 
 		m_Name(name),
 		m_Path(""),
-		m_SelectedEntity(nullptr),
-		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0),
@@ -106,8 +102,6 @@ namespace OpenGLEngine
 
 	void Scene::Update(double deltaTime)
 	{
-		m_EditorCamera->Update();
-
 		if (m_ActiveCamera)
 			m_ActiveCamera->Update();
 
@@ -155,11 +149,6 @@ namespace OpenGLEngine
 		m_OnRuntime = false;
 
 		ScriptEngine::OnRuntimeStop();
-	}
-
-	void Scene::ResizeEditorCamera(float width, float height)
-	{
-		m_EditorCamera->OnResize(width, height);
 	}
 
 	void Scene::ResizeActiveCamera(float width, float height)

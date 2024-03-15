@@ -3,7 +3,10 @@
 #include <memory>
 
 #include "../SceneManager.h"
+
+#include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Renderer/Framebuffer.h>
+#include <OpenGLEngine/Scene/EditorCamera.h>
 
 namespace OpenGLEngine
 {
@@ -12,10 +15,10 @@ namespace OpenGLEngine
 	public:
 		EditorViewport();
 
-		void Render(Scene& scene);
-		void Update(Scene& scene);
+		void Render(Scene& scene, EditorCamera& camera);
+		void Update(EditorCamera& camera);
 
-		void OnImGuiRender(SceneManager& sceneManager);
+		void OnImGuiRender(Entity* entity, EditorCamera& camera, SceneManager& sceneManager);
 	private:
 		std::shared_ptr<Framebuffer> m_EditorFrameBuffer;
 		glm::vec2 m_EditorViewportSize = { 0.0f, 0.0f };

@@ -50,7 +50,10 @@ namespace OpenGLEngine
 		EditorViewport m_EditorViewport;
 		Viewport m_Viewport;
 
+		Entity* m_SelectedEntity;
+
 		std::unique_ptr<SceneManager> m_SceneManager;
+		std::unique_ptr<EditorCamera> m_EditorCamera;
 	private:
 		Chronometer m_Chronometer;
 	private:

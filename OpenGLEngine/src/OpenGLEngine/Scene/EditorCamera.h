@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BaseCamera.h"
+
 #include <OpenGLEngine/Scene/Camera.h>
 #include <OpenGLEngine/Events/Event.h>
 #include <OpenGLEngine/Events/MouseEvent.h>
@@ -10,7 +12,7 @@
 
 namespace OpenGLEngine
 {
-	class EditorCamera
+	class EditorCamera : public BaseCamera
 	{
 	private:
 		glm::mat4 m_viewMatrix;
@@ -50,10 +52,10 @@ namespace OpenGLEngine
 	public:
 		EditorCamera(const glm::vec3& position);
 
-		glm::mat4 getViewMatrix() const;
-		const glm::mat4& getProjectionMatrix() const;
+		glm::mat4 getViewMatrix() const override;
+		const glm::mat4& getProjectionMatrix() const override;
 
-		glm::mat4 GetTransform();
+		glm::mat4 GetTransform() override;
 		float getFov() const;
 		void setFov(float fov) { m_fov = fov; }
 

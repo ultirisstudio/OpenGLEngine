@@ -14,7 +14,7 @@
 
 namespace OpenGLEngine
 {
-	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false)
+	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))), m_SelectedEntity(nullptr)
 	{
 		Application::Get().MaximizeWindow(true);
 
@@ -49,11 +49,13 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate(double dt)
 	{
+		m_EditorCamera->Update();
+
 		m_SceneManager->update(dt);
-		m_EditorViewport.Update(m_SceneManager->getActiveScene());
+		m_EditorViewport.Update(*m_EditorCamera);
 
 		m_Viewport.Render(m_SceneManager->getActiveScene());
-		m_EditorViewport.Render(m_SceneManager->getActiveScene());
+		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -190,9 +192,9 @@ namespace OpenGLEngine
 		}
 
 		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
-		m_EditorViewport.OnImGuiRender(*m_SceneManager);
-		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager);
-		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
+		m_EditorViewport.OnImGuiRender(m_SelectedEntity, *m_EditorCamera, *m_SceneManager);
+		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SelectedEntity);
+		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene(), m_SelectedEntity);
 		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::Begin("World infos:");
@@ -212,7 +214,7 @@ namespace OpenGLEngine
 
 	void Editor::OnEvent(Event& e)
 	{
-		m_SceneManager->getActiveScene().getEditorCamera().OnEvent(e);
+		m_EditorCamera->OnEvent(e);
 	}
 
 	void Editor::InitImGuiStyle()

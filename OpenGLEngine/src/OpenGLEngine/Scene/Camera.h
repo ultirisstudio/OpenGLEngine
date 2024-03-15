@@ -1,12 +1,14 @@
 #pragma once
 
+#include "BaseCamera.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace OpenGLEngine
 {
-	class Camera
+	class Camera : public BaseCamera
 	{
 	private:
 		glm::mat4 m_viewMatrix;
@@ -35,10 +37,10 @@ namespace OpenGLEngine
 		Camera();
 		void Init(glm::vec3& position, glm::vec3& rotation);
 
-		glm::mat4 getViewMatrix() const;
-		const glm::mat4& getProjectionMatrix() const;
+		glm::mat4 getViewMatrix() const override;
+		const glm::mat4& getProjectionMatrix() const override;
 
-		glm::mat4 GetTransform();
+		glm::mat4 GetTransform() override;
 
 		float m_fov;
 		float getFov() const;

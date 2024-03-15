@@ -26,7 +26,7 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 	Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
 	Renderer::BeginScene(scene);
-	Renderer::Render(true);
+	Renderer::Render(*scene.getActiveCamera());
 	Renderer::EndScene();
 
 	m_ViewportFrameBuffer->unbind();

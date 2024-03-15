@@ -19,7 +19,7 @@ namespace OpenGLEngine
 	public:
 		EntityPropertiePanel();
 
-		void OnImGuiRender(SceneManager& sceneManager);
+		void OnImGuiRender(SceneManager& sceneManager, Entity* selectedEntity);
 	private:
 		std::unique_ptr<TransformComponentPanel> m_TransformComponentPanel;
 		std::unique_ptr<ModelComponentPanel> m_ModelComponentPanel;

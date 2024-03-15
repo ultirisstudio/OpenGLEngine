@@ -33,32 +33,20 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene = &scene;
 	}
 
-	void Renderer::Render(bool runtime)
+	void Renderer::Render(BaseCamera& camera)
 	{
 		m_SceneData.m_Shader.use();
 
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
-		if (runtime)
-		{
-			viewMatrix = m_SceneData.m_Scene->getActiveCamera()->getViewMatrix();
-			projectionMatrix = m_SceneData.m_Scene->getActiveCamera()->getProjectionMatrix();
+		
+		viewMatrix = camera.getViewMatrix();
+		projectionMatrix = camera.getProjectionMatrix();
 
-			glm::vec3 position, rotation, scale;
-			Math::DecomposeTransform(m_SceneData.m_Scene->getActiveCamera()->GetTransform(), position, rotation, scale);
+		glm::vec3 position, rotation, scale;
+		Math::DecomposeTransform(camera.GetTransform(), position, rotation, scale);
 
-			m_SceneData.m_Shader.setUniform("uCameraPosition", position);
-		}
-		else
-		{
-			viewMatrix = m_SceneData.m_Scene->getEditorCamera().getViewMatrix();
-			projectionMatrix = m_SceneData.m_Scene->getEditorCamera().getProjectionMatrix();
-
-			glm::vec3 position, rotation, scale;
-			Math::DecomposeTransform(m_SceneData.m_Scene->getEditorCamera().GetTransform(), position, rotation, scale);
-
-			m_SceneData.m_Shader.setUniform("uCameraPosition", position);
-		}
+		m_SceneData.m_Shader.setUniform("uCameraPosition", position);
 
 		int dirLightCount = 0;
 		int pointLightCount = 0;

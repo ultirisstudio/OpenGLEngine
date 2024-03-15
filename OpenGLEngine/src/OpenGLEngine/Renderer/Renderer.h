@@ -7,6 +7,7 @@
 #include <OpenGLEngine/Shader/Shader.h>
 #include <OpenGLEngine/Resources/ResourceManager.h>
 #include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/Scene/BaseCamera.h>
 
 namespace OpenGLEngine
 {
@@ -24,7 +25,7 @@ namespace OpenGLEngine
 		static void Init();
 
 		static void BeginScene(Scene& scene);
-		static void Render(bool runtime);
+		static void Render(BaseCamera& camera);
 		static void EndScene();
 
 		static void Clear();

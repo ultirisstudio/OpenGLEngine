@@ -10,7 +10,7 @@ namespace OpenGLEngine
 	public:
 		SceneHierarchy();
 
-		void OnImGuiRender(Scene& scene);
+		void OnImGuiRender(Scene& scene, Entity* selectedEntity);
 	private:
 	};
 }

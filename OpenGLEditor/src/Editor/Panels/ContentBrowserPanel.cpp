@@ -47,7 +47,7 @@ namespace OpenGLEngine
 
 			ImGui::PushID(filenameString.c_str());
 
-			std::shared_ptr<Texture> icon;
+			std::weak_ptr<Texture> icon;
 			if (directoryEntry.is_directory())
 			{
 				icon = m_DirectoryIcon;
@@ -70,7 +70,7 @@ namespace OpenGLEngine
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			ImGui::ImageButton((ImTextureID)icon.lock()->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
 
 			if (ImGui::BeginPopupContextItem())
 			{

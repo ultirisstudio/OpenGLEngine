@@ -2,7 +2,11 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 #include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Renderer/Renderer.h>
@@ -157,6 +161,16 @@ namespace OpenGLEngine {
 
 				for (Entity subEntity : *entity->second.GetComponent<ModelComponent>().GetSubEntities())
 				{
+					//glm::vec3 position, scale;
+					//glm::quat rotationQuat;
+					//glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
+					//glm::vec3 rotation = glm::eulerAngles(rotationQuat);
+
+					//glm::mat4 subEntityTransform = glm::translate(subEntity.GetComponent<TransformComponent>().GetTransform(), position);
+					//subEntityTransform = glm::rotate(subEntityTransform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+					//subEntityTransform = glm::rotate(subEntityTransform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+					//subEntityTransform = glm::rotate(subEntityTransform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
 					m_SceneData.m_Shader.use();
 
 					Material& material = subEntity.GetComponent<MaterialComponent>().GetMaterial();

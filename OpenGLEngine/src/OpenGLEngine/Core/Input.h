@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 namespace OpenGLEngine {
-	extern "C" class Input
+	class Input
 	{
 	public:
 		static bool IsKeyPressed(KeyCode key);

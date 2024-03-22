@@ -37,11 +37,11 @@ namespace OpenGLEngine
 		m_ColliderComponentPanel = std::make_unique<ColliderComponentPanel>();
 	}
 
-	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager, Entity* selectedEntity)
+	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager, SceneHierarchy& sceneHierarchy)
 	{
 		ImGui::Begin("Inspector");
 
-		if (selectedEntity)
+		if (sceneHierarchy.m_SelectedEntity)
 		{
 			if (sceneManager.getActiveScene().isOnRuntime())
 			{
@@ -49,7 +49,7 @@ namespace OpenGLEngine
 				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			}
 
-			Entity* entity = selectedEntity;
+			Entity* entity = sceneHierarchy.m_SelectedEntity;
 
 			UUID uuid = entity->GetUUID();
 

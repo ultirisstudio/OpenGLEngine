@@ -9,6 +9,8 @@ namespace OpenGLEngine
 	{
 		reactphysics3d::PhysicsCommon physicsCommon;
 		reactphysics3d::PhysicsWorld* world;
+
+		reactphysics3d::DebugRenderer* debugRenderer;
 	};
 
 	static PhysicEngineData* s_Data = nullptr;
@@ -18,11 +20,14 @@ namespace OpenGLEngine
 		s_Data = new PhysicEngineData();
 
 		reactphysics3d::PhysicsWorld::WorldSettings settings;
-		//settings.defaultVelocitySolverNbIterations = 20;
-		//settings.isSleepingEnabled = false;
 		settings.gravity = reactphysics3d::Vector3(0, -9.81, 0);
 
 		s_Data->world = s_Data->physicsCommon.createPhysicsWorld(settings);
+
+		s_Data->world->setIsDebugRenderingEnabled(true);
+		s_Data->debugRenderer = &s_Data->world->getDebugRenderer();
+		s_Data->debugRenderer->setIsDebugItemDisplayed(reactphysics3d::DebugRenderer::DebugItem::CONTACT_POINT, true);
+		s_Data->debugRenderer->setIsDebugItemDisplayed(reactphysics3d::DebugRenderer::DebugItem::CONTACT_NORMAL, true);		
 	}
 
 	void PhysicEngine::Shutdown()
@@ -48,5 +53,10 @@ namespace OpenGLEngine
 	reactphysics3d::PhysicsCommon* PhysicEngine::GetPhysicsCommon()
 	{
 		return &s_Data->physicsCommon;
+	}
+
+	reactphysics3d::DebugRenderer& PhysicEngine::GetDebugRenderer()
+	{
+		return *s_Data->debugRenderer;
 	}
 }

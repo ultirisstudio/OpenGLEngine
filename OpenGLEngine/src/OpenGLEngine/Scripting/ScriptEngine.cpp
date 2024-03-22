@@ -109,7 +109,7 @@ namespace OpenGLEngine
 		MonoAssembly* AppAssembly = nullptr;
 		MonoImage* AppAssemblyImage = nullptr;
 
-		std::filesystem::path CoreAssemblyFilepath = "Scripts/OpenGLEngine-ScriptCore.dll";
+		std::filesystem::path CoreAssemblyFilepath = "";
 		std::filesystem::path AppAssemblyFilepath = "";
 
 		ScriptClass EntityClass;
@@ -286,6 +286,11 @@ namespace OpenGLEngine
 	MonoDomain* ScriptEngine::GetCoreDomain()
 	{
 		return s_Data->RootDomain;
+	}
+
+	void ScriptEngine::SetAssemblyPath(const std::filesystem::path& filepath)
+	{
+		s_Data->CoreAssemblyFilepath = filepath;
 	}
 
 	void ScriptEngine::SetAppAssemblyPath(const std::filesystem::path& filepath)

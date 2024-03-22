@@ -5,6 +5,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "ImGuizmo.h"
 
 #include "OpenGLEngine/Scripting/ScriptEngine.h"
@@ -12,15 +13,13 @@
 
 #include "OpenGLEngine/Perlin/PerlinManager.h"
 
+#include "mbedtls/aes.h"
+
 namespace OpenGLEngine
 {
-	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f))), m_SelectedEntity(nullptr)
+	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
 		Application::Get().MaximizeWindow(true);
-
-		//std::cout << spec.EngineExecutablePath << std::endl;
-		//std::cout << spec.ProjectName << std::endl;
-		//std::cout << spec.ProjectPath << std::endl;
 	}
 
 	void Editor::OnAttach()
@@ -35,10 +34,37 @@ namespace OpenGLEngine
 		m_SceneManager = std::make_unique<SceneManager>();
 		m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test.scene");
 
+		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
 		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\Intermediates\\Release\\" + m_Specification.ProjectName + ".dll");
+
 		ScriptEngine::ReloadAssembly();
 
-		//m_SceneManager->getActiveScene().OnRuntimeStart();
+		//////////////////////////////////////////////
+
+		mbedtls_aes_context aes;
+		mbedtls_aes_context aes2;
+
+		unsigned char key[16] = "itzkbgulrcsjmnv";
+
+		unsigned char eiv[16] = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
+		unsigned char div[16] = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
+
+		unsigned char input[128] = "Julien";
+		unsigned char output[128];
+		unsigned char output2[128];
+
+		size_t input_len = 40;
+		size_t output_len = 0;
+
+		mbedtls_aes_setkey_enc(&aes, key, 256);
+		mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, 48, eiv, input, output);
+
+		std::cout << output << std::endl;
+
+		mbedtls_aes_setkey_dec(&aes2, key, 256);
+		mbedtls_aes_crypt_cbc(&aes2, MBEDTLS_AES_DECRYPT, 48, div, output, output2);
+
+		std::cout << output2 << std::endl;
 	}
 
 	void Editor::OnDetach()
@@ -192,16 +218,15 @@ namespace OpenGLEngine
 		}
 
 		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
-		m_EditorViewport.OnImGuiRender(m_SelectedEntity, *m_EditorCamera, *m_SceneManager);
-		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SelectedEntity);
-		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene(), m_SelectedEntity);
+		m_EditorViewport.OnImGuiRender(*m_EditorCamera, *m_SceneManager, m_SceneHierarchy);
+		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SceneHierarchy);
+		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::Begin("World infos:");
 		{
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
 		}
-
 		ImGui::End();
 
 		if (m_optionMenu)

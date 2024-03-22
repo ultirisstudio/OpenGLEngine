@@ -21,14 +21,18 @@ project "OpenGLEditor"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.tinyfiledialogs}"
+		"%{IncludeDir.tinyfiledialogs}",
+		"%{IncludeDir.reactphysics3d}",
+		"%{IncludeDir.mbedtls}"
 	}
 
 	links
 	{
 		"OpenGLEngine",
 		"tinyfiledialogs",
-		"yaml-cpp"
+		"yaml-cpp",
+		"mbedtls",
+		"reactphysics3d"
 	}
 	
 	filter "system:windows"

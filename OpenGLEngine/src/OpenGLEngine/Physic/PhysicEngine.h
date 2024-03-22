@@ -4,6 +4,7 @@ namespace reactphysics3d {
 	extern "C" {
 		class PhysicsWorld;
 		class PhysicsCommon;
+		class DebugRenderer;
 	}
 }
 
@@ -21,5 +22,7 @@ namespace OpenGLEngine
 		
 		static reactphysics3d::PhysicsWorld* GetPhysicWorld();
 		static reactphysics3d::PhysicsCommon* GetPhysicsCommon();
+
+		static reactphysics3d::DebugRenderer& GetDebugRenderer();
 	};
 }

@@ -26,6 +26,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/yaml_cpp"
 	include "OpenGLEngine/vendor/tinyfiledialogs"
 	include "OpenGLEngine/vendor/rp3d"
+	include "OpenGLEngine/vendor/mbedtls"
 
 group ""
 

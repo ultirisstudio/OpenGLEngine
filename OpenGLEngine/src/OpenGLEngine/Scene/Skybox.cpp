@@ -77,7 +77,7 @@ namespace OpenGLEngine
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, hdrTexture);
 
-		glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
+		glViewport(0, 0, 512, 512);
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
@@ -88,9 +88,6 @@ namespace OpenGLEngine
 			m_Model->draw();
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		// pbr: create an irradiance cubemap, and re-scale capture FBO to irradiance scale.
-		// --------------------------------------------------------------------------------
 
 		glGenTextures(1, &irradianceMap);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
@@ -108,15 +105,13 @@ namespace OpenGLEngine
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
-		// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
-	// -----------------------------------------------------------------------------
 		m_IrradianceShader.use();
 		m_IrradianceShader.setUniform("environmentMap", 0);
 		m_IrradianceShader.setUniform("projection", captureProjection);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 
-		glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+		glViewport(0, 0, 32, 32);
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{

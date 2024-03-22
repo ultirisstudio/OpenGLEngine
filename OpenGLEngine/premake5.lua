@@ -37,7 +37,8 @@ project "OpenGLEngine"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.mono}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.reactphysics3d}"
+		"%{IncludeDir.reactphysics3d}",
+		"%{IncludeDir.mbedtls}"
 	}
 
 	links
@@ -48,6 +49,7 @@ project "OpenGLEngine"
 		"ImGui",
 		"ImGuizmo",
 		"reactphysics3d",
+		"mbedtls",
 		"opengl32.lib",
 
 		"%{Library.mono}"

@@ -78,6 +78,7 @@ namespace OpenGLEngine
 		static MonoImage* GetCoreAssemblyImage();
 		static MonoDomain* GetCoreDomain();
 
+		static void SetAssemblyPath(const std::filesystem::path& filepath);
 		static void SetAppAssemblyPath(const std::filesystem::path& filepath);
 	private:
 		static void InitMono();

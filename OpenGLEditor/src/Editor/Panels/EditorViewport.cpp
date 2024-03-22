@@ -61,7 +61,7 @@ namespace OpenGLEngine
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 	}
 
-	void EditorViewport::OnImGuiRender(Entity* entity, EditorCamera& camera, SceneManager& sceneManager)
+	void EditorViewport::OnImGuiRender(EditorCamera& camera, SceneManager& sceneManager, SceneHierarchy& sceneHierarchy)
 	{
 		m_EditorFrameBuffer->bind();
 
@@ -89,7 +89,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (entity && m_GizmoType != -1)
+		if (sceneHierarchy.m_SelectedEntity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -101,7 +101,7 @@ namespace OpenGLEngine
 			glm::mat4 cameraProjection = camera.getProjectionMatrix();
 			glm::mat4 cameraView = camera.getViewMatrix();
 
-			auto& tc = entity->GetComponent<TransformComponent>();
+			auto& tc = sceneHierarchy.m_SelectedEntity->GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
@@ -139,6 +139,7 @@ namespace OpenGLEngine
 
 				if (fileExtension == "scene")
 				{
+					sceneHierarchy.m_SelectedEntity = nullptr;
 					sceneManager.LoadScene(filePath);
 				}
 			}

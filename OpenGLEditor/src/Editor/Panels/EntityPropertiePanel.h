@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../SceneManager.h"
+
+#include "SceneHierarchy.h"
+
 #include "ComponentPanels/TransformComponentPanel.h"
 #include "ComponentPanels/ModelComponentPanel.h"
 #include "ComponentPanels/CameraComponentPanel.h"
@@ -19,7 +22,7 @@ namespace OpenGLEngine
 	public:
 		EntityPropertiePanel();
 
-		void OnImGuiRender(SceneManager& sceneManager, Entity* selectedEntity);
+		void OnImGuiRender(SceneManager& sceneManager, SceneHierarchy& sceneHierarchy);
 	private:
 		std::unique_ptr<TransformComponentPanel> m_TransformComponentPanel;
 		std::unique_ptr<ModelComponentPanel> m_ModelComponentPanel;

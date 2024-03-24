@@ -12,6 +12,7 @@ IncludeDir["tinyfiledialogs"] = "%{wks.location}/OpenGLEngine/vendor/tinyfiledia
 IncludeDir["mono"] = "%{wks.location}/OpenGLEngine/vendor/mono/include"
 IncludeDir["reactphysics3d"] = "%{wks.location}/OpenGLEngine/vendor/rp3d/include"
 IncludeDir["mbedtls"] = "%{wks.location}/OpenGLEngine/vendor/mbedtls/include"
+IncludeDir["zlib"] = "%{wks.location}/OpenGLEngine/vendor/zlib"
 
 LibraryDir = {}
 LibraryDir["Mono"] = "%{wks.location}/OpenGLEngine/vendor/mono/lib/%{cfg.buildcfg}"

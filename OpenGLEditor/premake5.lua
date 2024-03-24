@@ -18,6 +18,7 @@ project "OpenGLEditor"
 		"../OpenGLEngine/src",
 		"../OpenGLEngine/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.zlib}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",

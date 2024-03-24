@@ -15,6 +15,8 @@
 
 #include "mbedtls/aes.h"
 
+#include "Export.h"
+
 namespace OpenGLEngine
 {
 	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
@@ -41,7 +43,7 @@ namespace OpenGLEngine
 
 		//////////////////////////////////////////////
 
-		mbedtls_aes_context aes;
+		/*mbedtls_aes_context aes;
 		mbedtls_aes_context aes2;
 
 		unsigned char key[16] = "itzkbgulrcsjmnv";
@@ -64,7 +66,23 @@ namespace OpenGLEngine
 		mbedtls_aes_setkey_dec(&aes2, key, 256);
 		mbedtls_aes_crypt_cbc(&aes2, MBEDTLS_AES_DECRYPT, 48, div, output, output2);
 
-		std::cout << output2 << std::endl;
+		std::cout << output2 << std::endl;*/
+
+		/////////////////////////////////////////
+
+		std::vector<std::filesystem::path> ressources;
+		ressources.push_back("Assets\\Textures\\diffuse.png");
+		//ressources.push_back("Assets\\Textures\\specular.png");
+		//ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
+		//ressources.push_back("Assets\\Textures\\white_texture.jpg");
+		//ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
+		Export::CreatePakFile(ressources, "ressources.pak", false);
+
+		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("ressources.pak");
+
+		for (auto& [key, value] : loaded_ressources) {
+			std::cout << key << std::endl;
+		}
 	}
 
 	void Editor::OnDetach()

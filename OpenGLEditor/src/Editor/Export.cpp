@@ -4,6 +4,8 @@
 #include <fstream>
 #include <algorithm>
 
+#include <intrin.h>
+
 #include "../Utils/MyZLib.h"
 
 namespace OpenGLEngine
@@ -122,5 +124,31 @@ namespace OpenGLEngine
 
         pakFile.close();
         return resources;
+    }
+
+    bool Export::GetImageHeader(const std::string& imagePath, ImageHeader& header)
+    {
+        std::ifstream imageFile(imagePath, std::ios::binary);
+        if (!imageFile.is_open()) {
+            return false;
+        }
+
+        imageFile.read((char*)&header, sizeof(ImageHeader));
+
+        if (header.signature != 0x4D42) {
+            return false;
+        }
+
+        header.width = _byteswap_ushort(header.width);
+        header.height = _byteswap_ushort(header.height);
+        header.bitsPerPixel = _byteswap_ushort(header.bitsPerPixel);
+        header.imageSize = _byteswap_ushort(header.imageSize);
+        header.planes = _byteswap_ushort(header.planes);
+        header.compression = _byteswap_ushort(header.compression);
+        header.imageOffset = _byteswap_ushort(header.imageOffset);
+
+        imageFile.close();
+
+        return true;
     }
 }

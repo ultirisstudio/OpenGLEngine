@@ -85,6 +85,13 @@ namespace OpenGLEngine
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
 		}
+
+		Export::ImageHeader header;
+		Export::GetImageHeader("Assets\\Textures\\YgK4ozkE.png", header);
+
+		std::cout << header.width << std::endl;
+		std::cout << header.height << std::endl;
+		std::cout << header.bitsPerPixel << std::endl;
 	}
 
 	void Editor::OnDetach()

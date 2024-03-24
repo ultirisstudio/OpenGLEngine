@@ -20,6 +20,11 @@ namespace OpenGLEngine
         std::vector<char> data(fileSize);
         resource.seekg(0, std::ios::beg);
         resource.read(data.data(), fileSize);
+
+        std::ofstream myfile;
+        myfile.open(resourcePath.filename().string());
+        myfile.write(data.data(), fileSize);
+        myfile.close();
         
         if (isCompressed) {
             std::vector<char> compressedData = MyZLib::compress(data);
@@ -50,7 +55,7 @@ namespace OpenGLEngine
         uint32_t totalSize = 0;
 
         PakHeader header;
-        header.magic = 0x00008;
+        header.magic = 1;
         header.numResources = resources.size();
         pakFile.write((char*)&header, sizeof(PakHeader));
 

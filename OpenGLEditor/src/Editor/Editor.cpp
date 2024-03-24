@@ -84,12 +84,6 @@ namespace OpenGLEngine
 
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
-
-			std::ofstream myfile;
-			myfile.open(key);
-			for (char c : value)
-				myfile << c;
-			myfile.close();
 		}
 	}
 

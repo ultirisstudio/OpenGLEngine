@@ -27,6 +27,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/tinyfiledialogs"
 	include "OpenGLEngine/vendor/rp3d"
 	include "OpenGLEngine/vendor/mbedtls"
+	include "OpenGLEngine/vendor/zlib"
 
 group ""
 

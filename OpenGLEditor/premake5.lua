@@ -24,7 +24,8 @@ project "OpenGLEditor"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.reactphysics3d}",
-		"%{IncludeDir.mbedtls}"
+		"%{IncludeDir.mbedtls}",
+		"%{IncludeDir.zlib}"
 	}
 
 	links
@@ -33,6 +34,7 @@ project "OpenGLEditor"
 		"tinyfiledialogs",
 		"yaml-cpp",
 		"mbedtls",
+		"zlib",
 		"reactphysics3d"
 	}
 	

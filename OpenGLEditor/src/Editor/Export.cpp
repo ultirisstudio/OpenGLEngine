@@ -1,10 +1,10 @@
 #include "Export.h"
 
+#include <iostream>
 #include <fstream>
-#include <zlib.h>
 #include <algorithm>
 
-#include <iostream>
+#include "../Utils/MyZLib.h"
 
 namespace OpenGLEngine
 {
@@ -21,18 +21,12 @@ namespace OpenGLEngine
         resource.seekg(0, std::ios::beg);
         resource.read(data.data(), fileSize);
         
-        // Compress data if enabled
-        /*if (isCompressed) {
-            std::vector<char> compressedData;
-            compressedData.resize(compressBound(fileSize));
-            uLongf compressedSize = compressedData.size();
-            int compressResult = compress((Bytef*)compressedData.data(), &compressedSize, (Bytef*)data.data(), fileSize);
-            if (compressResult != Z_OK) {
-                return false;
-            }
+        if (isCompressed) {
+            std::vector<char> compressedData = MyZLib::compress(data);
+            size_t compressedSize = compressedData.size();
             data = compressedData;
             fileSize = compressedSize;
-        }*/
+        }
         
         PakEntry entry;
         entry.name = resourcePath.filename().string();
@@ -56,7 +50,7 @@ namespace OpenGLEngine
         uint32_t totalSize = 0;
 
         PakHeader header;
-        header.magic = 0x00008; // Replace with your identifier
+        header.magic = 0x00008;
         header.numResources = resources.size();
         pakFile.write((char*)&header, sizeof(PakHeader));
 
@@ -97,11 +91,18 @@ namespace OpenGLEngine
                 break;
             }
 
-            std::cout << entry.name << std::endl;
-
             std::vector<char> data;
             if (entry.flags & 1) {
-                
+                data.resize(entry.size);
+                pakFile.read(data.data(), entry.size);
+                if (!pakFile.good()) {
+                    break;
+                }
+
+                std::vector<char> decompressedData = MyZLib::compress(data);
+                size_t decompressedSize = decompressedData.size();
+                data = decompressedData;
+                entry.size = decompressedSize;
             }
             else {
                 data.resize(entry.size);

@@ -1,5 +1,7 @@
 #include "Editor.h"
 
+#include <fstream>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -72,16 +74,22 @@ namespace OpenGLEngine
 
 		std::vector<std::filesystem::path> ressources;
 		ressources.push_back("Assets\\Textures\\diffuse.png");
-		//ressources.push_back("Assets\\Textures\\specular.png");
-		//ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
-		//ressources.push_back("Assets\\Textures\\white_texture.jpg");
-		//ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
+		ressources.push_back("Assets\\Textures\\specular.png");
+		ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
+		ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
+		ressources.push_back("Assets\\Models\\BackPack.obj");
 		Export::CreatePakFile(ressources, "ressources.pak", false);
 
 		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("ressources.pak");
 
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
+
+			std::ofstream myfile;
+			myfile.open(key);
+			for (char c : value)
+				myfile << c;
+			myfile.close();
 		}
 	}
 

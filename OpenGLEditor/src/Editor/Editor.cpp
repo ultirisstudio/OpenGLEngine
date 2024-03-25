@@ -78,12 +78,17 @@ namespace OpenGLEngine
 		ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
 		ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
 		ressources.push_back("Assets\\Models\\BackPack.obj");
-		Export::CreatePakFile(ressources, "ressources.pak", false);
+		Export::CreatePakFile(ressources, "ressources.pak", true);
 
 		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("ressources.pak");
 
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
+
+			std::ofstream myfile;
+			myfile.open(key, std::ios::binary);
+			myfile.write(value.data(), value.size());
+			myfile.close();
 		}
 
 		Export::ImageHeader header;

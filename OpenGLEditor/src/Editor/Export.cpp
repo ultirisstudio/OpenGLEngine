@@ -22,11 +22,6 @@ namespace OpenGLEngine
         std::vector<char> data(fileSize);
         resource.seekg(0, std::ios::beg);
         resource.read(data.data(), fileSize);
-
-        std::ofstream myfile;
-        myfile.open(resourcePath.filename().string());
-        myfile.write(data.data(), fileSize);
-        myfile.close();
         
         if (isCompressed) {
             std::vector<char> compressedData = MyZLib::compress(data);
@@ -69,7 +64,7 @@ namespace OpenGLEngine
 
         totalSize = pakFile.tellp();
 
-        pakFile.seekp(sizeof(PakHeader), std::ios::beg);
+        pakFile.seekp(offsetof(PakHeader, totalSize), std::ios::beg);
         pakFile.write((char*)&totalSize, sizeof(uint32_t));
 
         pakFile.close();

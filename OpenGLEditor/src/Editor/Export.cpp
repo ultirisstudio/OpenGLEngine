@@ -64,7 +64,8 @@ namespace OpenGLEngine
 
         totalSize = pakFile.tellp();
 
-        pakFile.seekp(offsetof(PakHeader, totalSize), std::ios::beg);
+        //pakFile.seekp(offsetof(PakHeader, totalSize), std::ios::beg);
+        pakFile.seekp((const int)(void*)&((PakHeader*)0)->totalSize, std::ios::beg);
         pakFile.write((char*)&totalSize, sizeof(uint32_t));
 
         pakFile.close();
@@ -101,7 +102,7 @@ namespace OpenGLEngine
                     break;
                 }
 
-                std::vector<char> decompressedData = MyZLib::compress(data);
+                std::vector<char> decompressedData = MyZLib::decompress(data);
                 size_t decompressedSize = decompressedData.size();
                 data = decompressedData;
                 entry.size = decompressedSize;

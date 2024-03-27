@@ -21,6 +21,13 @@
 
 namespace OpenGLEngine
 {
+	std::vector<unsigned char> convert_to_unsigned_char(const std::vector<char>& original) {
+		std::vector<unsigned char> converted(original.size());
+		std::transform(original.begin(), original.end(), converted.begin(),
+			[](char c) { return static_cast<unsigned char>(c); });
+		return converted;
+	}
+
 	Editor::Editor(const EditorSpecification& spec) : Layer("Editor"), m_Specification(spec), m_ContentBrowserPanel(spec.ProjectPath), m_EntityPropertiePanel(), m_SceneHierarchy(), m_Viewport(), m_EditorViewport(), m_Chronometer(false), m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
 		Application::Get().MaximizeWindow(true);
@@ -74,10 +81,10 @@ namespace OpenGLEngine
 
 		std::vector<std::filesystem::path> ressources;
 		ressources.push_back("Assets\\Textures\\diffuse.png");
-		ressources.push_back("Assets\\Textures\\specular.png");
-		ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
-		ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
-		ressources.push_back("Assets\\Models\\BackPack.obj");
+		//ressources.push_back("Assets\\Textures\\specular.png");
+		//ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
+		//ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
+		//ressources.push_back("Assets\\Models\\BackPack.obj");
 		Export::CreatePakFile(ressources, "ressources.pak", true);
 
 		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("ressources.pak");
@@ -85,10 +92,14 @@ namespace OpenGLEngine
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
 
-			std::ofstream myfile;
-			myfile.open(key, std::ios::binary);
-			myfile.write(value.data(), value.size());
-			myfile.close();
+			std::vector<unsigned char> uData = convert_to_unsigned_char(value);
+
+			m_TextureTest = Texture::CreateTexture(uData, false);
+
+			//std::ofstream myfile;
+			//myfile.open(key, std::ios::binary);
+			//myfile.write(value.data(), value.size());
+			//myfile.close();
 		}
 
 		Export::ImageHeader header;
@@ -260,6 +271,14 @@ namespace OpenGLEngine
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
 		}
 		ImGui::End();
+
+		ImGui::Begin("Test");
+		{
+			if (m_TextureTest)
+				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
+		}
+		ImGui::End();
+		
 
 		if (m_optionMenu)
 		{

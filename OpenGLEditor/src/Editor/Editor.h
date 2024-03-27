@@ -4,6 +4,8 @@
 #include <OpenGLEngine/Events/Event.h>
 #include <OpenGLEngine/Events/KeyEvent.h>
 
+#include <OpenGLEngine/Resources/Texture.h>
+
 #include <OpenGLEngine/Tools/Chronometer.h>
 
 #include "Panels/ContentBrowserPanel.h"
@@ -52,6 +54,8 @@ namespace OpenGLEngine
 
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<EditorCamera> m_EditorCamera;
+
+		std::shared_ptr<Texture> m_TextureTest;
 	private:
 		Chronometer m_Chronometer;
 	private:

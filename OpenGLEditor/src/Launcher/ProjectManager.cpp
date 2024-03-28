@@ -13,7 +13,7 @@
 #include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Scripting/ScriptEngine.h>
 
-//#include <Windows.h>
+#include <Windows.h>
 
 namespace OpenGLEngine
 {
@@ -187,12 +187,31 @@ namespace OpenGLEngine
 
 			std::string command;
 			command += std::filesystem::current_path().generic_string() + "\\OpenGLEditor.exe";
-			command += " --projectName=" + m_Properties->m_ProjectName;
-			command += " --projectPath=" + m_Properties->m_ProjectPath;
+			//command += " --projectName=" + m_Properties->m_ProjectName;
+			//command += " --projectPath=" + m_Properties->m_ProjectPath;
 
 			//std::cout << command << std::endl;
 
-			Application::Get().Close();
+			//run_process(command.c_str());
+
+
+			STARTUPINFO StartupInfo;
+			PROCESS_INFORMATION ProcessInfo;
+
+			ZeroMemory(&StartupInfo, sizeof(StartupInfo));
+			StartupInfo.cb = sizeof(LPSTARTUPINFO);
+			ZeroMemory(&ProcessInfo, sizeof(ProcessInfo));
+
+			CreateProcessW(LPCWSTR(command.c_str()),
+				NULL, NULL, NULL,
+				NULL, NULL, NULL, NULL,
+				&StartupInfo,
+				&ProcessInfo
+			);
+
+			//Application::Get().Close();
+
+			// Lancer une nouvelle application
 
 			//system(command.c_str());
 
@@ -215,5 +234,38 @@ namespace OpenGLEngine
 				CREATE_NEW_PROCESS_GROUP, 0, 0,
 				&StartInfo, &ProcessInfo);*/
 		}
+	}
+
+	void ProjectManager::run_process(const char* path)
+	{
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		bool ret = CreateProcess(
+			NULL,          // No module name (use command line)
+			LPWSTR(path),  // Command line
+			NULL,          // Process handle not inheritable
+			NULL,          // Thread handle not inheritable
+			false,         // Set handle inheritance to FALSE
+			0,             // No creation flags
+			NULL,          // Use parent's environment block
+			NULL,          // Use parent's starting directory 
+			&si,           // Pointer to STARTUPINFO structure
+			&pi            // Pointer to PROCESS_INFORMATION structure
+		);
+
+		if (!ret) {
+			printf("Error");
+			abort();
+		}
+
+		WaitForSingleObject(pi.hProcess, INFINITE);
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
 }

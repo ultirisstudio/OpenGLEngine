@@ -8,7 +8,7 @@
 #include <bitset>
 #include <unordered_map>
 
-#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/UUID.h>
 
 class Component;
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "OpenGLEngine/Core/PlatformDetection.h"
+
 #include <memory>
 
 #ifdef PLATFORM_WINDOWS
@@ -13,5 +15,5 @@
 	#define DUCK_API
 #endif
 #else
-	#error DuckEngine ne support que Windows !
+	#error DuckEngine only support Windows !
 #endif

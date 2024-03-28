@@ -19,12 +19,6 @@ project "OpenGLEngine"
 		"vendor/stb_image/**.cpp"
 	}
 
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
-	}
-
 	includedirs
 	{
 		"src",
@@ -39,6 +33,11 @@ project "OpenGLEngine"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_NONE"
 	}
 
 	links
@@ -59,11 +58,6 @@ project "OpenGLEngine"
 
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
-		{
-			"PLATFORM_WINDOWS"
-		}
 		
 		links
 		{

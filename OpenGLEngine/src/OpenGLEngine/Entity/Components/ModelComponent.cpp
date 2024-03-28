@@ -5,7 +5,7 @@
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Entity.h>
 
-#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/UUID.h>
 
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>

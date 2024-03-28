@@ -4,7 +4,7 @@
 #include "OpenGLEngine/Core/Application.h"
 #include <GLFW/glfw3.h>
 
-#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/UUID.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>

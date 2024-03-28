@@ -95,19 +95,7 @@ namespace OpenGLEngine
 			std::vector<unsigned char> uData = convert_to_unsigned_char(value);
 
 			m_TextureTest = Texture::CreateTexture(uData, false);
-
-			//std::ofstream myfile;
-			//myfile.open(key, std::ios::binary);
-			//myfile.write(value.data(), value.size());
-			//myfile.close();
 		}
-
-		Export::ImageHeader header;
-		Export::GetImageHeader("Assets\\Textures\\YgK4ozkE.png", header);
-
-		std::cout << header.width << std::endl;
-		std::cout << header.height << std::endl;
-		std::cout << header.bitsPerPixel << std::endl;
 	}
 
 	void Editor::OnDetach()

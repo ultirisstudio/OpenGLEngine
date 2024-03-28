@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/UUID.h>
 #include <OpenGLEngine/Tools/PerlinNoise.h>
 
 #include <OpenGLEngine/Tools/Math.h>

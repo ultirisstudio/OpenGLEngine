@@ -23,6 +23,8 @@ namespace OpenGLEngine
 
 		void OpenProjectFromPath(const std::string& projectPath);
 
+		void run_process(const char* path);
+
 		ProjectProperties* GetProjectProperties() { return m_Properties; }
 
 		void OnImGuiRender();

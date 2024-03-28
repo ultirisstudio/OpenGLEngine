@@ -19,7 +19,7 @@
 #include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/ColliderComponent.h>
 
-#include <OpenGLEngine/Tools/UUID.h>
+#include <OpenGLEngine/Core/UUID.h>
 
 namespace OpenGLEngine
 {

@@ -1,15 +1,16 @@
 #include "depch.h"
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include "Application.h"
 #include "OpenGLEngine/Renderer/Renderer.h"
 #include "OpenGLEngine/Core/Input.h"
 
-extern "C" {
-	_declspec(dllexport) DWORD NvOptimusEnablement = 1;
-	_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-}
+//extern "C" {
+//	_declspec(dllexport) DWORD NvOptimusEnablement = 1;
+//	_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+//}
 
 namespace OpenGLEngine
 {

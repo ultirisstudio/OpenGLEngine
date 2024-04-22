@@ -8,6 +8,7 @@
 #include <OpenGLEngine/Resources/ResourceManager.h>
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Scene/BaseCamera.h>
+#include <OpenGLEngine/Asset/AssetManager.h>
 
 namespace OpenGLEngine
 {
@@ -19,6 +20,7 @@ namespace OpenGLEngine
 			Scene* m_Scene;
 			ResourceManager m_ResourceManager;
 			Shader m_Shader;
+			std::shared_ptr<AssetManager> m_AssetManager;
 		};
 		static SceneData m_SceneData;
 

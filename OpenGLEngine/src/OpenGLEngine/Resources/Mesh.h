@@ -1,12 +1,13 @@
 #pragma once
 
-#include <OpenGLEngine/Resources/Vertex.h>
-
 #include <vector>
+
+#include <OpenGLEngine/Resources/Vertex.h>
+#include <OpenGLEngine/Asset/Asset.h>
 
 namespace OpenGLEngine
 {
-	class Mesh
+	class Mesh : public Asset
 	{
 	private:
 		unsigned int m_vao;
@@ -21,5 +22,8 @@ namespace OpenGLEngine
 		~Mesh();
 
 		void draw() const;
+
+		static AssetType GetStaticType() { return AssetType::MESH; }
+		virtual AssetType GetType() override { return GetStaticType(); }
 	};
 }

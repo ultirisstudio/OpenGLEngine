@@ -5,6 +5,7 @@
 
 #include <OpenGLEngine/Resources/Mesh.h>
 #include <OpenGLEngine/Tools/Log.h>
+#include <OpenGLEngine/Asset/Asset.h>
 
 struct aiScene;
 struct aiNode;
@@ -12,7 +13,7 @@ struct aiMesh;
 
 namespace OpenGLEngine
 {
-	class Model
+	class Model : public Asset
 	{
 	private:
 		std::unordered_map<std::string, Mesh*> m_meshesMap;
@@ -32,5 +33,8 @@ namespace OpenGLEngine
 		std::unordered_map<std::string, Mesh*>& GetMeshes();
 
 		void draw() const;
+
+		static AssetType GetStaticType() { return AssetType::MODEL; }
+		virtual AssetType GetType() override { return GetStaticType(); }
 	};
 }

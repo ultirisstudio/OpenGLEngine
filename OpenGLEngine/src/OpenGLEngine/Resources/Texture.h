@@ -5,9 +5,11 @@
 #include <string>
 #include <vector>
 
+#include <OpenGLEngine/Asset/Asset.h>
+
 namespace OpenGLEngine
 {
-	class Texture
+	class Texture : public Asset
 	{
 	private:
 		unsigned int m_id;
@@ -34,5 +36,8 @@ namespace OpenGLEngine
 		std::string getPath() const;
 
 		void bind() const;
+
+		static AssetType GetStaticType() { return AssetType::TEXTURE; }
+		virtual AssetType GetType() override { return GetStaticType(); }
 	};
 }

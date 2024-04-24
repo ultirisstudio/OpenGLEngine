@@ -15,7 +15,7 @@ namespace OpenGLEngine
 	{
 		if (!IsAssetLoaded(name))
 		{
-			m_LoadedAssets[name] = std::make_shared<Asset>();
+			//m_LoadedAssets[name] = std::make_shared<Asset>();
 		}
 	}
 

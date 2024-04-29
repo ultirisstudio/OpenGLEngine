@@ -260,12 +260,12 @@ namespace OpenGLEngine
 		}
 		ImGui::End();
 
-		ImGui::Begin("Test");
+		/*ImGui::Begin("Test");
 		{
 			if (m_TextureTest)
 				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
 		}
-		ImGui::End();
+		ImGui::End();*/
 		
 
 		if (m_optionMenu)

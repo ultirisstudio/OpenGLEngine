@@ -15,8 +15,8 @@ namespace OpenGLEngine
 
 			EditorSpecification editorSpec;
 			editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
-			editorSpec.ProjectName = "CallOf";
-			editorSpec.ProjectPath = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf";
+			editorSpec.ProjectName = "zigounette";
+			editorSpec.ProjectPath = "C:\\Users\\thelo\\Documents\\Ultiris Projects\\zigounette";
 
 			PushLayer(new Editor(editorSpec));
 

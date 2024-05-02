@@ -38,5 +38,32 @@ namespace OpenGLEngine
         {
             return (X == other.X && Z == other.Z);
         }
+
+        //Returns a new vector whose elements are the smallest integral values that are greater than or equal to the given vector's elements.
+        public static Vector2 Floor(Vector2 vector)
+        {
+            return new Vector2(FloorComponent(vector.X), FloorComponent(vector.Z));
+        }
+
+        private static float FloorComponent(float value)
+        {
+            // Check if the value is already an integer
+            if (value % 1 == 0)
+            {
+                return value; // Return the value unchanged
+            }
+            else
+            {
+                // If the value is negative, subtract 1 before casting to an integer
+                if (value < 0)
+                {
+                    return (int)(value - 1);
+                }
+                else
+                {
+                    return (int)value; // Cast to an integer if the value is positive
+                }
+            }
+        }
     }
 }

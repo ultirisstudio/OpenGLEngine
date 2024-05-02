@@ -43,13 +43,14 @@ namespace OpenGLEngine
 		Renderer::Init();
 
 		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test.scene");
+		m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\scene1.scene");
 
 		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
 		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\Intermediates\\Release\\" + m_Specification.ProjectName + ".dll");
 
 		ScriptEngine::ReloadAssembly();
 
+		m_SceneManager->getActiveScene().OnRuntimeStart();
 		//////////////////////////////////////////////
 
 		/*mbedtls_aes_context aes;
@@ -78,7 +79,7 @@ namespace OpenGLEngine
 		std::cout << output2 << std::endl;*/
 
 		/////////////////////////////////////////
-
+/*
 		std::vector<std::filesystem::path> ressources;
 		ressources.push_back("Assets\\Textures\\diffuse.png");
 		//ressources.push_back("Assets\\Textures\\specular.png");
@@ -88,7 +89,7 @@ namespace OpenGLEngine
 		Export::CreatePakFile(ressources, "Test/ressources.pak", true);
 
 		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("Test/ressources.pak");
-
+		
 		for (auto& [key, value] : loaded_ressources) {
 			std::cout << key << std::endl;
 
@@ -96,8 +97,9 @@ namespace OpenGLEngine
 
 			m_TextureTest = Texture::CreateTexture(uData, false);
 		}
+		*/
 	}
-
+	
 	void Editor::OnDetach()
 	{
 		ScriptEngine::Shutdown();
@@ -259,14 +261,14 @@ namespace OpenGLEngine
 			ImGui::SliderFloat("Ambiant light", &m_SceneManager->getActiveScene().m_AmbientLight, 0.0f, 1.0f);
 		}
 		ImGui::End();
-
+		/*
 		ImGui::Begin("Test");
 		{
 			if (m_TextureTest)
 				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
 		}
 		ImGui::End();
-		
+		*/
 
 		if (m_optionMenu)
 		{

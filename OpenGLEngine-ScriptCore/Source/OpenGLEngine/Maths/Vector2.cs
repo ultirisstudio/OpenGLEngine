@@ -92,5 +92,16 @@ namespace OpenGLEngine
                 }
             }
         }
+
+        public float Distance(Vector2 vector)
+        {
+            float dx = vector.X - X;
+            float dz = vector.Z - Z;
+            return Math.SquareRoot(dx * dx + dz * dz);
+        }
+
+        
+
     }
+
 }

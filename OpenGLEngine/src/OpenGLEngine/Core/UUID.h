@@ -15,6 +15,19 @@ namespace OpenGLEngine {
     private:
         uint64_t m_UUID;
     };
+
+    struct UUIDMapping
+    {
+        size_t operator()(const UUID& k)const
+        {
+            return std::hash<int>()(k);
+        }
+
+        bool operator()(const UUID& a, const UUID& b)const
+        {
+            return a == b;
+        }
+    };
 }
 
 namespace std {

@@ -34,15 +34,18 @@ namespace OpenGLEngine
 		{
 		case CUBE:
 			temp->SetName("Cube");
-			temp->AddComponent<ModelComponent>("Assets/Models/cube.obj");
+			temp->AddComponent<ModelComponent>();
+			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/cube.obj");
 			break;
 		case SPHERE:
 			temp->SetName("Sphere");
-			temp->AddComponent<ModelComponent>("Assets/Models/sphere.obj");
+			temp->AddComponent<ModelComponent>();
+			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/sphere.obj");
 			break;
 		case PLANE:
 			temp->SetName("Plane");
-			temp->AddComponent<ModelComponent>("Assets/Models/plane.obj");
+			temp->AddComponent<ModelComponent>();
+			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/plane.obj");
 			break;
 		}
 	}
@@ -57,7 +60,8 @@ namespace OpenGLEngine
 
 		Entity* temp = m_Scene->CreateEntity(m_FileName);
 		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<ModelComponent>(file);
+		temp->AddComponent<ModelComponent>();
+		temp->GetComponent<ModelComponent>().SetModel(file);
 	}
 
 	void SceneManager::SaveScene()
@@ -102,6 +106,9 @@ namespace OpenGLEngine
 		PhysicEngine::Reload();
 
 		m_Scene = std::make_unique<Scene>();
+
+		Renderer::BeginScene(*m_Scene);
+
 		SceneSerializer serializer(*m_Scene);
 		serializer.Deserialize(filePath);
 
@@ -114,6 +121,8 @@ namespace OpenGLEngine
 	void SceneManager::ReloadScene(std::string filePath)
 	{
 		PhysicEngine::Reload();
+
+		//TODO : Clear scene entities
 
 		SceneSerializer serializer(*m_Scene);
 		serializer.DeserializeRuntime(filePath);

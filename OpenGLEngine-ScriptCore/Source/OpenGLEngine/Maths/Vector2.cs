@@ -93,6 +93,12 @@ namespace OpenGLEngine
             }
         }
 
+        public static Vector2 Normalize (Vector2 vector)
+        {
+            float length = (float)Math.SquareRoot(vector.X * vector.X + vector.Z * vector.Z);
+            return new Vector2(vector.X / length, vector.Z / length);
+        }
+
         public float Distance(Vector2 vector)
         {
             float dx = vector.X - X;
@@ -100,7 +106,10 @@ namespace OpenGLEngine
             return Math.SquareRoot(dx * dx + dz * dz);
         }
 
-        
+        public float Length()
+        {
+            return Math.SquareRoot(X * X + Z * Z);
+        }
 
     }
 

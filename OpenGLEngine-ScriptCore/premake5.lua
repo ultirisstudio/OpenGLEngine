@@ -1,8 +1,9 @@
 project "OpenGLEngine-ScriptCore"
 	kind "SharedLib"
 	language "C#"
-	dotnetframework "4.7.2"
-	
+	dotnetframework "4.8"
+	csversion ("10.0")
+
 	targetdir ("%{wks.location}/OpenGLEditor/Scripts")
 	objdir ("%{wks.location}/OpenGLEditor/Scripts/Intermediates")
 	

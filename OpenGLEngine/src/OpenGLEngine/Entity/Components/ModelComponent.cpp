@@ -29,7 +29,7 @@ namespace OpenGLEngine
 
 			this->entity->AddChild(entity);
 
-			entity->AddComponent<MeshComponent>(name, mesh);
+			entity->AddComponent<MeshComponent>(name, mesh, path);
 			entity->AddComponent<MaterialComponent>();
 		}
 	}

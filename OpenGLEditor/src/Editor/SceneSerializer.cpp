@@ -3,6 +3,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
@@ -134,26 +135,16 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<ModelComponent>())
-		{
-			out << YAML::BeginMap;
-			out << YAML::Key << "ModelComponent";
-			out << YAML::Value << YAML::BeginMap;
-
-			auto& mc = entity->GetComponent<ModelComponent>();
-			out << YAML::Key << "model" << YAML::Value << mc.m_ModelPath;
-
-			out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
-
 		if (entity->HasComponent<MeshComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MeshComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			//auto& mc = entity->GetComponent<MeshComponent>();
+			auto& mc = entity->GetComponent<MeshComponent>();
+
+			out << YAML::Key << "Path" << YAML::Value << mc.GetModelPath();
+			out << YAML::Key << "Name" << YAML::Value << mc.GetName();
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -288,16 +279,15 @@ namespace OpenGLEngine
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
 				}
 
-				auto modelComponent = component["ModelComponent"];
-				if (modelComponent)
-				{
-					auto mc = deserializedEntity->AddComponent<ModelComponent>();
-				}
-
 				auto meshComponent = component["MeshComponent"];
 				if (meshComponent)
 				{
-					auto& mc = deserializedEntity->AddComponent<MeshComponent>();
+					std::string path = meshComponent["Path"].as<std::string>();
+					std::string name = meshComponent["Name"].as<std::string>();
+
+					Mesh* mesh = Renderer::m_SceneData.m_ResourceManager.getModel(path)->GetMesh(name);
+
+					auto& mc = deserializedEntity->AddComponent<MeshComponent>(name, mesh, path);
 				}
 
 				auto materialComponent = component["MaterialComponent"];

@@ -30,6 +30,7 @@ namespace OpenGLEngine
 		static std::shared_ptr<Model> CreateModel(const std::string& path);
 		static std::shared_ptr<Model> CreateModel(std::string name, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
+		Mesh* GetMesh(const std::string& name);
 		std::unordered_map<std::string, Mesh*>& GetMeshes();
 
 		void draw() const;

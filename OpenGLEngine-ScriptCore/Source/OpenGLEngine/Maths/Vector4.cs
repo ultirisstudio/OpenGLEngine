@@ -100,9 +100,13 @@ namespace OpenGLEngine
             return new Vector4(value.X / length, value.Y / length, value.Z / length, value.W / length);
         }
 
-        public float Distance(Vector4 value)
+        public float Distance(Vector4 vector)
         {
-            return (float)Math.SquareRoot((X - value.X) * (X - value.X) + (Y - value.Y) * (Y - value.Y) + (Z - value.Z) * (Z - value.Z) + (W - value.W) * (W - value.W));
+            float dx = vector.X - X;
+            float dy = vector.Y - Y;
+            float dz = vector.Z - Z;
+            float dw = vector.W - W;
+            return Math.SquareRoot(dx * dx + dy * dy + dz * dz + dw * dw);
         }
 
         public float Length()

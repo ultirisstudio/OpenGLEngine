@@ -105,7 +105,7 @@ namespace OpenGLEngine
             float dx = vector.X - X;
             float dy = vector.Y - Y;
             float dz = vector.Z - Z;
-            return Math.SquareRoot(dx * dx + dz * dz);
+            return Math.SquareRoot(dx * dx + dy * dy + dz * dz);
         }
 
         public float Length()

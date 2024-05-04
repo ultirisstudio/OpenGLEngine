@@ -3,6 +3,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
@@ -14,7 +15,7 @@
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
-#include <OpenGLEngine/Core/UUID.h>
+//#include <OpenGLEngine/Core/UUID.h>
 
 #include <fstream>
 
@@ -60,6 +61,8 @@ namespace OpenGLEngine
 		out << YAML::BeginMap;
 		out << YAML::Key << "Entity" << YAML::Value << entity->GetName();
 		out << YAML::Key << "ID" << YAML::Value << entity->GetUUID();
+		uint64_t parentID = ((entity->m_Parent != UUID::Null()) ? entity->m_Parent : UUID::Null());
+		out << YAML::Key << "ParentID" << YAML::Value << parentID;
 
 		out << YAML::Key << "Components" << YAML::Value << YAML::BeginSeq;
 
@@ -132,26 +135,16 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<ModelComponent>())
-		{
-			out << YAML::BeginMap;
-			out << YAML::Key << "ModelComponent";
-			out << YAML::Value << YAML::BeginMap;
-
-			auto& mc = entity->GetComponent<ModelComponent>();
-			out << YAML::Key << "model" << YAML::Value << mc.m_ModelPath;
-
-			out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
-
 		if (entity->HasComponent<MeshComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MeshComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			//auto& mc = entity->GetComponent<MeshComponent>();
+			auto& mc = entity->GetComponent<MeshComponent>();
+
+			out << YAML::Key << "Path" << YAML::Value << mc.GetModelPath();
+			out << YAML::Key << "Name" << YAML::Value << mc.GetName();
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -226,6 +219,14 @@ namespace OpenGLEngine
 
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
+
+		std::vector<UUID> childrens = entity->m_Children;
+
+		for (auto& child : childrens)
+		{
+			Entity* childEntity = Renderer::m_SceneData.m_Scene->GetEntityByUUID(child);
+			SerializeEntity(out, childEntity);
+		}
 	}
 
 	void SceneSerializer::Serialize(const std::string& filepath)
@@ -237,7 +238,8 @@ namespace OpenGLEngine
 
 		for (auto& entity : m_Scene->GetEntityVector())
 		{
-			SerializeEntity(out, entity);
+			if (!entity->m_Parent)
+				SerializeEntity(out, entity);
 		};
 
 		out << YAML::EndSeq;
@@ -251,6 +253,145 @@ namespace OpenGLEngine
 
 	void SceneSerializer::SerializeRuntime(const std::string& filepath)
 	{
+	}
+
+	static void DeserializeEntity(YAML::Node entity, Scene* scene)
+	{
+		std::string name = entity["Entity"].as<std::string>();
+		UUID uuid = entity["ID"].as<uint64_t>();
+		UUID parent_uuid = entity["ParentID"].as<uint64_t>();
+
+		Entity* deserializedEntity = scene->CreateEntityWithUUID(uuid, name);
+		Entity* deserializedEntityParent = scene->GetEntityByUUID(parent_uuid);
+
+		if (deserializedEntityParent)
+		{
+			deserializedEntity->m_Parent = deserializedEntityParent->GetUUID();
+			deserializedEntityParent->AddChild(deserializedEntity->GetUUID());
+		}
+
+		auto components = entity["Components"];
+		if (components)
+		{
+			for (auto component : components)
+			{
+				auto transformComponent = component["TransformComponent"];
+				if (transformComponent)
+				{
+					auto& tc = deserializedEntity->AddComponent<TransformComponent>();
+					tc.Position = transformComponent["Position"].as<glm::vec3>();
+					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
+					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+				}
+
+				auto meshComponent = component["MeshComponent"];
+				if (meshComponent)
+				{
+					std::string path = meshComponent["Path"].as<std::string>();
+					std::string name = meshComponent["Name"].as<std::string>();
+
+					Mesh* mesh = Renderer::m_SceneData.m_ResourceManager.getModel(path)->GetMesh(name);
+
+					auto& mc = deserializedEntity->AddComponent<MeshComponent>(name, mesh, path);
+				}
+
+				auto materialComponent = component["MaterialComponent"];
+				if (materialComponent)
+				{
+					auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
+
+					bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
+					bool hasNormal = materialComponent["hasNormal"].as<bool>();
+					bool hasMetallic = materialComponent["hasMetallic"].as<bool>();
+					bool hasRoughness = materialComponent["hasRoughness"].as<bool>();
+					bool hasAO = materialComponent["hasAO"].as<bool>();
+
+					*mc.GetMaterial().getBoolean("albedo") = hasAlbedo;
+					*mc.GetMaterial().getBoolean("normal") = hasNormal;
+					*mc.GetMaterial().getBoolean("metallic") = hasMetallic;
+					*mc.GetMaterial().getBoolean("roughness") = hasRoughness;
+					*mc.GetMaterial().getBoolean("ao") = hasAO;
+
+					*mc.GetMaterial().getVec3("albedo") = materialComponent["albedo"].as<glm::vec3>();
+					*mc.GetMaterial().getFloat("metallic") = materialComponent["metallic"].as<float>();
+					*mc.GetMaterial().getFloat("roughness") = materialComponent["roughness"].as<float>();
+					*mc.GetMaterial().getFloat("ao") = materialComponent["ao"].as<float>();
+
+					if (hasAlbedo)
+					{
+						mc.addTexture("albedo", materialComponent["albedoMap"].as<std::string>());
+					}
+
+					if (hasNormal)
+					{
+						mc.addTexture("normal", materialComponent["normalMap"].as<std::string>());
+					}
+
+					if (hasMetallic)
+					{
+						mc.addTexture("metallic", materialComponent["metallicMap"].as<std::string>());
+					}
+
+					if (hasRoughness)
+					{
+						mc.addTexture("roughness", materialComponent["roughnessMap"].as<std::string>());
+					}
+
+					if (hasAO)
+					{
+						mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
+					}
+				}
+
+				auto lightComponent = component["LightComponent"];
+				if (lightComponent)
+				{
+					if (lightComponent["lightType"].as<std::string>() == "Directional")
+					{
+						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+						lc.dir_color = lightComponent["color"].as<glm::vec3>();
+					}
+
+					if (lightComponent["lightType"].as<std::string>() == "Point")
+					{
+						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
+						lc.point_color = lightComponent["color"].as<glm::vec3>();
+					}
+				}
+
+				auto cameraComponent = component["CameraComponent"];
+				if (cameraComponent)
+				{
+					auto& cc = deserializedEntity->AddComponent<CameraComponent>();
+					cc.Init();
+					cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
+				}
+
+				auto scriptComponent = component["ScriptComponent"];
+				if (scriptComponent)
+				{
+					auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
+					sc.m_Name = scriptComponent["scriptName"].as<std::string>();
+				}
+
+				auto rigidBodyComponent = component["RigidBodyComponent"];
+				if (rigidBodyComponent)
+				{
+					auto& rbc = deserializedEntity->AddComponent<RigidBodyComponent>();
+					rbc.Init();
+
+					rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
+					rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
+					rbc.mass = rigidBodyComponent["mass"].as<float>();
+					rbc.friction = rigidBodyComponent["friction"].as<float>();
+					rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+
+					rbc.UpdateEnableGravity();
+					rbc.UpdateBodyType();
+					rbc.UpdateMaterial();
+				}
+			}
+		}
 	}
 
 	bool SceneSerializer::Deserialize(const std::string& filepath)
@@ -274,134 +415,8 @@ namespace OpenGLEngine
 		{
 			for (auto entity : entities)
 			{
-				std::string name = entity["Entity"].as<std::string>();
-				UUID uuid = entity["ID"].as<uint64_t>();
-
-				Entity* deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
-
-				auto components = entity["Components"];
-				if (components)
-				{
-					for (auto component : components)
-					{
-						auto transformComponent = component["TransformComponent"];
-						if (transformComponent)
-						{
-							auto& tc = deserializedEntity->AddComponent<TransformComponent>();
-							tc.Position = transformComponent["Position"].as<glm::vec3>();
-							tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
-							tc.Scale = transformComponent["Scale"].as<glm::vec3>();
-						}
-
-						auto modelComponent = component["ModelComponent"];
-						if (modelComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<ModelComponent>(modelComponent["model"].as<std::string>());
-						}
-
-						auto meshComponent = component["MeshComponent"];
-						if (meshComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<MeshComponent>();
-						}
-
-						auto materialComponent = component["MaterialComponent"];
-						if (materialComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
-
-							bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
-							bool hasNormal = materialComponent["hasNormal"].as<bool>();
-							bool hasMetallic = materialComponent["hasMetallic"].as<bool>();
-							bool hasRoughness = materialComponent["hasRoughness"].as<bool>();
-							bool hasAO = materialComponent["hasAO"].as<bool>();
-
-							*mc.GetMaterial().getBoolean("albedo") = hasAlbedo;
-							*mc.GetMaterial().getBoolean("normal") = hasNormal;
-							*mc.GetMaterial().getBoolean("metallic") = hasMetallic;
-							*mc.GetMaterial().getBoolean("roughness") = hasRoughness;
-							*mc.GetMaterial().getBoolean("ao") = hasAO;
-
-							*mc.GetMaterial().getVec3("albedo") = materialComponent["albedo"].as<glm::vec3>();
-							*mc.GetMaterial().getFloat("metallic") = materialComponent["metallic"].as<float>();
-							*mc.GetMaterial().getFloat("roughness") = materialComponent["roughness"].as<float>();
-							*mc.GetMaterial().getFloat("ao") = materialComponent["ao"].as<float>();
-
-							if (hasAlbedo)
-							{
-								mc.addTexture("albedo", materialComponent["albedoMap"].as<std::string>());
-							}
-
-							if (hasNormal)
-							{
-								mc.addTexture("normal", materialComponent["normalMap"].as<std::string>());
-							}
-
-							if (hasMetallic)
-							{
-								mc.addTexture("metallic", materialComponent["metallicMap"].as<std::string>());
-							}
-
-							if (hasRoughness)
-							{
-								mc.addTexture("roughness", materialComponent["roughnessMap"].as<std::string>());
-							}
-
-							if (hasAO)
-							{
-								mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
-							}
-						}
-
-						auto lightComponent = component["LightComponent"];
-						if (lightComponent)
-						{
-							if (lightComponent["lightType"].as<std::string>() == "Directional")
-							{
-								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
-								lc.dir_color = lightComponent["color"].as<glm::vec3>();
-							}
-
-							if (lightComponent["lightType"].as<std::string>() == "Point")
-							{
-								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
-								lc.point_color = lightComponent["color"].as<glm::vec3>();
-							}
-						}
-
-						auto cameraComponent = component["CameraComponent"];
-						if (cameraComponent)
-						{
-							auto& cc = deserializedEntity->AddComponent<CameraComponent>();
-							cc.Init();
-							cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
-						}
-
-						auto scriptComponent = component["ScriptComponent"];
-						if (scriptComponent)
-						{
-							auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
-							sc.m_Name = scriptComponent["scriptName"].as<std::string>();
-						}
-
-						auto rigidBodyComponent = component["RigidBodyComponent"];
-						if (rigidBodyComponent)
-						{
-							auto& rbc = deserializedEntity->AddComponent<RigidBodyComponent>();
-							rbc.Init();
-
-							rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
-							rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
-							rbc.mass = rigidBodyComponent["mass"].as<float>();
-							rbc.friction = rigidBodyComponent["friction"].as<float>();
-							rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
-
-							rbc.UpdateEnableGravity();
-							rbc.UpdateBodyType();
-							rbc.UpdateMaterial();
-						}
-					}
-				}
+				//if (entity["ParentID"].as<uint64_t>() != 0)
+					DeserializeEntity(entity, m_Scene);
 			}
 		}
 
@@ -425,134 +440,8 @@ namespace OpenGLEngine
 		{
 			for (auto entity : entities)
 			{
-				std::string name = entity["Entity"].as<std::string>();
-				UUID uuid = entity["ID"].as<uint64_t>();
-
-				Entity* deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
-
-				auto components = entity["Components"];
-				if (components)
-				{
-					for (auto component : components)
-					{
-						auto transformComponent = component["TransformComponent"];
-						if (transformComponent)
-						{
-							auto& tc = deserializedEntity->AddComponent<TransformComponent>();
-							tc.Position = transformComponent["Position"].as<glm::vec3>();
-							tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
-							tc.Scale = transformComponent["Scale"].as<glm::vec3>();
-						}
-
-						auto modelComponent = component["ModelComponent"];
-						if (modelComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<ModelComponent>(modelComponent["model"].as<std::string>());
-						}
-
-						auto meshComponent = component["MeshComponent"];
-						if (meshComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<MeshComponent>();
-						}
-
-						auto materialComponent = component["MaterialComponent"];
-						if (materialComponent)
-						{
-							auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
-
-							bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
-							bool hasNormal = materialComponent["hasNormal"].as<bool>();
-							bool hasMetallic = materialComponent["hasMetallic"].as<bool>();
-							bool hasRoughness = materialComponent["hasRoughness"].as<bool>();
-							bool hasAO = materialComponent["hasAO"].as<bool>();
-
-							*mc.GetMaterial().getBoolean("albedo") = hasAlbedo;
-							*mc.GetMaterial().getBoolean("normal") = hasNormal;
-							*mc.GetMaterial().getBoolean("metallic") = hasMetallic;
-							*mc.GetMaterial().getBoolean("roughness") = hasRoughness;
-							*mc.GetMaterial().getBoolean("ao") = hasAO;
-
-							*mc.GetMaterial().getVec3("albedo") = materialComponent["albedo"].as<glm::vec3>();
-							*mc.GetMaterial().getFloat("metallic") = materialComponent["metallic"].as<float>();
-							*mc.GetMaterial().getFloat("roughness") = materialComponent["roughness"].as<float>();
-							*mc.GetMaterial().getFloat("ao") = materialComponent["ao"].as<float>();
-
-							if (hasAlbedo)
-							{
-								mc.addTexture("albedo", materialComponent["albedoMap"].as<std::string>());
-							}
-
-							if (hasNormal)
-							{
-								mc.addTexture("normal", materialComponent["normalMap"].as<std::string>());
-							}
-
-							if (hasMetallic)
-							{
-								mc.addTexture("metallic", materialComponent["metallicMap"].as<std::string>());
-							}
-
-							if (hasRoughness)
-							{
-								mc.addTexture("roughness", materialComponent["roughnessMap"].as<std::string>());
-							}
-
-							if (hasAO)
-							{
-								mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
-							}
-						}
-
-						auto lightComponent = component["LightComponent"];
-						if (lightComponent)
-						{
-							if (lightComponent["lightType"].as<std::string>() == "Directional")
-							{
-								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
-								lc.dir_color = lightComponent["color"].as<glm::vec3>();
-							}
-
-							if (lightComponent["lightType"].as<std::string>() == "Point")
-							{
-								auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
-								lc.point_color = lightComponent["color"].as<glm::vec3>();
-							}
-						}
-
-						auto cameraComponent = component["CameraComponent"];
-						if (cameraComponent)
-						{
-							auto& cc = deserializedEntity->AddComponent<CameraComponent>();
-							cc.Init();
-							cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
-						}
-
-						auto scriptComponent = component["ScriptComponent"];
-						if (scriptComponent)
-						{
-							auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
-							sc.m_Name = scriptComponent["scriptName"].as<std::string>();
-						}
-
-						auto rigidBodyComponent = component["RigidBodyComponent"];
-						if (rigidBodyComponent)
-						{
-							auto& rbc = deserializedEntity->AddComponent<RigidBodyComponent>();
-							rbc.Init();
-
-							rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
-							rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
-							rbc.mass = rigidBodyComponent["mass"].as<float>();
-							rbc.friction = rigidBodyComponent["friction"].as<float>();
-							rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
-
-							rbc.UpdateEnableGravity();
-							rbc.UpdateBodyType();
-							rbc.UpdateMaterial();
-						}
-					}
-				}
+				//if (entity["ParentID"].as<uint64_t>() != 0)
+					DeserializeEntity(entity, m_Scene);
 			}
 		}
 

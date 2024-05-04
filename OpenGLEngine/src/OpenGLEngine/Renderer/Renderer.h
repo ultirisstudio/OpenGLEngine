@@ -9,7 +9,6 @@
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Scene/BaseCamera.h>
 
-
 namespace OpenGLEngine
 {
 	class Renderer
@@ -32,6 +31,8 @@ namespace OpenGLEngine
 		static void Clear();
 		static void ClearColor(const glm::vec4& color);
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+
+		static Scene* GetScene();
 
 		static double GetTime();
 	};

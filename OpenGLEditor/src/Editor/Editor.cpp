@@ -43,7 +43,7 @@ namespace OpenGLEngine
 		Renderer::Init();
 
 		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test.scene");
+		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test2.scene");
 
 		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
 		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\Intermediates\\Release\\" + m_Specification.ProjectName + ".dll");
@@ -79,7 +79,7 @@ namespace OpenGLEngine
 
 		/////////////////////////////////////////
 
-		std::vector<std::filesystem::path> ressources;
+		/*std::vector<std::filesystem::path> ressources;
 		ressources.push_back("Assets\\Textures\\diffuse.png");
 		//ressources.push_back("Assets\\Textures\\specular.png");
 		//ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
@@ -95,7 +95,7 @@ namespace OpenGLEngine
 			std::vector<unsigned char> uData = convert_to_unsigned_char(value);
 
 			m_TextureTest = Texture::CreateTexture(uData, false);
-		}
+		}*/
 	}
 
 	void Editor::OnDetach()
@@ -217,6 +217,7 @@ namespace OpenGLEngine
 				{
 					m_SceneManager->getActiveScene().OnRuntimeStop();
 					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
+
 				}
 				ImGui::EndMenu();
 			}

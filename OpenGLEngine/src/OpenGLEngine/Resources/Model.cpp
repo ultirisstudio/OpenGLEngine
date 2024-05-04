@@ -108,6 +108,11 @@ namespace OpenGLEngine
 		return std::make_shared<Model>(name, vertices, indices);
 	}
 
+	Mesh* Model::GetMesh(const std::string& name)
+	{
+		return m_meshesMap[name];
+	}
+
 	std::unordered_map<std::string, Mesh*>& Model::GetMeshes()
 	{
 		return m_meshesMap;

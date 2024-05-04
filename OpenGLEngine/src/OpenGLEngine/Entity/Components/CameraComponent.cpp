@@ -6,8 +6,7 @@
 
 namespace OpenGLEngine
 {
-	CameraComponent::CameraComponent() :
-		m_Camera(std::make_unique<Camera>())
+	CameraComponent::CameraComponent() : m_Camera(std::make_unique<Camera>())
 	{
 		
 	}

@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 
+#include <OpenGLEngine/Core/UUID.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 
 namespace OpenGLEngine
@@ -19,7 +20,7 @@ namespace OpenGLEngine
 
 		for (Entity* entity : scene.GetEntityVector())
 		{
-			if (entity->m_Parent != nullptr)
+			if (entity->m_Parent != UUID::Null())
 				continue;
 
 			OnDrawEntityNode(scene, entity);
@@ -63,14 +64,15 @@ namespace OpenGLEngine
 
 			if (opened)
 			{
-				std::vector<Entity*> childrens = entity->m_Children;
+				std::vector<UUID> childrens = entity->m_Children;
 
 				if (childrens.size() != 0)
 				{
-					for (Entity* child : childrens)
+					for (UUID child : childrens)
 					{
 						ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3);
-						OnDrawEntityNode(scene, child);
+						Entity* entityChild = scene.GetEntityByUUID(child);
+						OnDrawEntityNode(scene, entityChild);
 						ImGui::PopStyleVar();
 					}
 				}
@@ -141,24 +143,34 @@ namespace OpenGLEngine
 				Entity* sourceEntity = scene.GetEntityByUUID(entityID);
 				if (sourceEntity)
 				{
-					if (sourceEntity->m_Parent != nullptr)
-						sourceEntity->m_Parent->m_Children.erase(std::remove(sourceEntity->m_Parent->m_Children.begin(), sourceEntity->m_Parent->m_Children.end(), sourceEntity), sourceEntity->m_Parent->m_Children.end());
-					sourceEntity->m_Parent = entity;
-					entity->m_Children.push_back(sourceEntity);
+					if (sourceEntity->m_Parent != UUID::Null())
+					{
+						for (auto& child : scene.GetEntityByUUID(sourceEntity->m_Parent)->m_Children)
+						{
+							if (child == sourceEntity->GetUUID())
+							{
+								scene.GetEntityByUUID(sourceEntity->m_Parent)->m_Children.erase(std::remove(scene.GetEntityByUUID(sourceEntity->m_Parent)->m_Children.begin(), scene.GetEntityByUUID(sourceEntity->m_Parent)->m_Children.end(), sourceEntity->GetUUID()), scene.GetEntityByUUID(sourceEntity->m_Parent)->m_Children.end());
+								break;
+							}
+						}
+					}
+					sourceEntity->m_Parent = entity->GetUUID();
+					entity->m_Children.push_back(sourceEntity->GetUUID());
 				}
 			}
 			ImGui::EndDragDropTarget();
 		}
 		if (opened)
 		{
-			std::vector<Entity*> childrens = entity->m_Children;
+			std::vector<UUID> childrens = entity->m_Children;
 
 			if (childrens.size() != 0)
 			{
-				for (Entity* child : childrens)
+				for (UUID child : childrens)
 				{
 					ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3);
-					OnDrawEntityNode(scene, child);
+					Entity* childEntity = scene.GetEntityByUUID(child);
+					OnDrawEntityNode(scene, childEntity);
 					ImGui::PopStyleVar();
 				}
 			}

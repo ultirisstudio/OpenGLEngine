@@ -11,7 +11,19 @@ namespace OpenGLEngine {
         UUID(uint64_t uuid);
         UUID(const UUID&) = default;
 
+        static UUID Null() { return UUID(0); }
+
         operator uint64_t() const { return m_UUID; }
+
+        bool UUID::operator==(const UUID& other) const { return m_UUID == other.m_UUID; }
+        bool UUID::operator!=(const UUID& other) const { return m_UUID != other.m_UUID; }
+
+        std::string ToString() const
+        {
+			std::stringstream ss;
+			ss << m_UUID;
+			return ss.str();
+		}
     private:
         uint64_t m_UUID;
     };

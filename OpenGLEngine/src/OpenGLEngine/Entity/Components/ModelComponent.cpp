@@ -27,7 +27,7 @@ namespace OpenGLEngine
 		{
 			Entity* entity = Renderer::GetScene()->CreateEntity(name);
 
-			this->entity->AddChild(entity);
+			this->entity->AddChild(entity->GetUUID());
 
 			entity->AddComponent<MeshComponent>(name, mesh, path);
 			entity->AddComponent<MaterialComponent>();

@@ -52,17 +52,13 @@ public:
 		return *static_cast<T*>(pointer);
 	}
 
-	void AddChild(Entity* entity)
-	{
-		m_Children.emplace_back(entity);
-		m_Children.back()->m_Parent = this;
-	}
+	void AddChild(const OpenGLEngine::UUID& id);
 public:
 	std::string m_Name;
 	OpenGLEngine::UUID m_UUID;
 
-	std::vector<Entity*> m_Children;
-	Entity* m_Parent = nullptr;
+	std::vector<OpenGLEngine::UUID> m_Children;
+	OpenGLEngine::UUID m_Parent = OpenGLEngine::UUID::Null();
 
 private:
 	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;

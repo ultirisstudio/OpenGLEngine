@@ -15,7 +15,7 @@
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
-#include <OpenGLEngine/Core/UUID.h>
+//#include <OpenGLEngine/Core/UUID.h>
 
 #include <fstream>
 
@@ -61,7 +61,7 @@ namespace OpenGLEngine
 		out << YAML::BeginMap;
 		out << YAML::Key << "Entity" << YAML::Value << entity->GetName();
 		out << YAML::Key << "ID" << YAML::Value << entity->GetUUID();
-		uint64_t parentID = ((entity->m_Parent != nullptr) ? entity->m_Parent->GetUUID() : 0);
+		uint64_t parentID = ((entity->m_Parent != UUID::Null()) ? entity->m_Parent : UUID::Null());
 		out << YAML::Key << "ParentID" << YAML::Value << parentID;
 
 		out << YAML::Key << "Components" << YAML::Value << YAML::BeginSeq;
@@ -220,11 +220,12 @@ namespace OpenGLEngine
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		std::vector<Entity*> childrens = entity->m_Children;
+		std::vector<UUID> childrens = entity->m_Children;
 
 		for (auto& child : childrens)
 		{
-			SerializeEntity(out, child);
+			Entity* childEntity = Renderer::m_SceneData.m_Scene->GetEntityByUUID(child);
+			SerializeEntity(out, childEntity);
 		}
 	}
 
@@ -262,8 +263,12 @@ namespace OpenGLEngine
 
 		Entity* deserializedEntity = scene->CreateEntityWithUUID(uuid, name);
 		Entity* deserializedEntityParent = scene->GetEntityByUUID(parent_uuid);
-		deserializedEntity->m_Parent = deserializedEntityParent;
-		deserializedEntityParent->AddChild(deserializedEntity);
+
+		if (deserializedEntityParent)
+		{
+			deserializedEntity->m_Parent = deserializedEntityParent->GetUUID();
+			deserializedEntityParent->AddChild(deserializedEntity->GetUUID());
+		}
 
 		auto components = entity["Components"];
 		if (components)

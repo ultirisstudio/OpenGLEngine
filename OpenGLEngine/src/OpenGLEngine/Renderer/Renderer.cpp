@@ -60,7 +60,29 @@ namespace OpenGLEngine {
 			m_SceneData.m_Shader.use();
 
 			int nat = 0;
+
 			glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
+
+			/*UUID parentID = entity->second.m_Parent;
+			while (parentID != UUID::Null())
+			{
+				auto parent = m_SceneData.m_Scene->getEntities()->find(parentID);
+				if (parent != m_SceneData.m_Scene->getEntities()->end())
+				{
+					glm::mat4& parentTransform = parent->second.GetComponent<TransformComponent>().GetTransform();
+					glm::vec3 parentPosition, parentScale;
+					glm::quat parentRotationQuat;
+					glm::decompose(parentTransform, parentScale, parentRotationQuat, parentPosition, glm::vec3(), glm::vec4());
+					glm::vec3 rotation = glm::eulerAngles(parentRotationQuat);
+					
+					transform = glm::translate(transform, parentPosition);
+					transform = glm::rotate(transform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+					transform = glm::rotate(transform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+					transform = glm::rotate(transform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+					parentID = parent->second.m_Parent;
+				}
+			}*/
 
 			if (entity->second.HasComponent<LightComponent>())
 			{
@@ -76,6 +98,8 @@ namespace OpenGLEngine {
 				{
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].attenuation", lc.point_attenuation);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].power", lc.point_power);
 
 					pointLightCount++;
 				}
@@ -84,16 +108,6 @@ namespace OpenGLEngine {
 			if (entity->second.HasComponent<MeshComponent>() && entity->second.GetComponent<MeshComponent>().HasMesh())
 			{
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-				//glm::vec3 position, scale;
-				//glm::quat rotationQuat;
-				//glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
-				//glm::vec3 rotation = glm::eulerAngles(rotationQuat);
-
-				//glm::mat4 subEntityTransform = glm::translate(subEntity.GetComponent<TransformComponent>().GetTransform(), position);
-				//subEntityTransform = glm::rotate(subEntityTransform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-				//subEntityTransform = glm::rotate(subEntityTransform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-				//subEntityTransform = glm::rotate(subEntityTransform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
 				m_SceneData.m_Shader.use();
 

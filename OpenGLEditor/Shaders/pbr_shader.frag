@@ -31,6 +31,9 @@ struct Material
 struct PointLight {    
     vec3 position;
     vec3 color;
+
+    float attenuation;
+    float power;
 };
 #define NR_POINT_LIGHTS 4
 uniform int uUsePointLight;
@@ -123,7 +126,7 @@ vec3 calculatePointLightReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, v
     vec3 L = normalize(light.position - fWorldPos);
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance)); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
+    float attenuation = 1.0 / ((1.0 + 0.09 * distance + 0.032 * (distance * distance)) * light.attenuation); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
     vec3 radiance = light.color * attenuation;
 
     // Cook-Torrance BRDF
@@ -141,7 +144,7 @@ vec3 calculatePointLightReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, v
 
     float NdotL = max(dot(N, L), 0.0);
 
-    return (kD * albedo / PI + specular) * radiance * NdotL;
+    return ((kD * albedo / PI + specular) * radiance * NdotL) * vec3(light.power);
 }
 // ----------------------------------------------------------------------------
 vec3 calculateDirLightReflectance(DirLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo, float roughness, float metallic)
@@ -221,7 +224,7 @@ void main()
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
     vec3 irradiance = texture(uIrradianceMap, N).rgb;
-    vec3 diffuse      = albedo; // irradiance * 
+    vec3 diffuse      = albedo; // irradiance *
     vec3 ambient = (kD * diffuse) * ao;
     
     vec3 result = (ambient * uAmbiantLight) + Lo;

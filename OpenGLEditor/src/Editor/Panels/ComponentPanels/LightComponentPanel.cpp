@@ -59,6 +59,12 @@ namespace OpenGLEngine
 				{
 					ImGui::Text("Point light color: ");
 					ImGui::ColorEdit3("##pointlightcolor", glm::value_ptr(lc.point_color));
+
+					ImGui::Text("Point light attenuation: ");
+					ImGui::SliderFloat("##pointattenuation", &lc.point_attenuation, 0.0f, 2.0f);
+
+					ImGui::Text("Point light power: ");
+					ImGui::SliderFloat("##pointpower", &lc.point_power, 0.0f, 100.0f);
 				}
 
 				ImGui::TreePop();

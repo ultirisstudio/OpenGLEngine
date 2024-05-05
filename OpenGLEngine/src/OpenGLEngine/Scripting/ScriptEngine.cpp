@@ -8,6 +8,7 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/object.h>
+#include <mono/metadata/tabledefs.h>
 
 #include <glm/glm.hpp>
 
@@ -19,10 +20,37 @@
 
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 
-#include <OpenGLEngine/Core/UUID.h>
-
 namespace OpenGLEngine
 {
+	static std::unordered_map<std::string, ScriptFieldType> s_ScriptFieldTypeMap = {
+		{ "System.Single", ScriptFieldType::Float },
+		{ "System.Double", ScriptFieldType::Double },
+
+		{ "System.Boolean", ScriptFieldType::Bool },
+
+		{ "System.Byte", ScriptFieldType::Byte },
+		{ "System.Char", ScriptFieldType::Char },
+
+		{ "System.Int16", ScriptFieldType::Short },
+		{ "System.UInt16", ScriptFieldType::UShort },
+
+		{ "System.Int32", ScriptFieldType::Int },
+		{ "System.UInt32", ScriptFieldType::UInt },
+
+		{ "System.Int64", ScriptFieldType::Long },
+		{ "System.UInt64", ScriptFieldType::ULong },
+
+		{ "System.String", ScriptFieldType::String },
+
+		{ "OpenGLEngine.Vector2", ScriptFieldType::Vector2 },
+		{ "OpenGLEngine.Vector3", ScriptFieldType::Vector3 },
+		{ "OpenGLEngine.Vector4", ScriptFieldType::Vector4 },
+
+		{ "OpenGLEngine.Mat2x2", ScriptFieldType::Mat2x2 },
+
+		{ "OpenGLEngine.Entity", ScriptFieldType::Entity }
+	};
+
 	namespace Utils
 	{
 		static char* ReadBytes(const std::filesystem::path& filepath, uint32_t* outSize)
@@ -95,6 +123,51 @@ namespace OpenGLEngine
 
 				std::cout << nameSpace << "." << name << std::endl;
 			}
+		}
+
+		ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType)
+		{
+			std::string typeName = mono_type_get_name(monoType);
+
+			auto it = s_ScriptFieldTypeMap.find(typeName);
+			if (it == s_ScriptFieldTypeMap.end())
+				return ScriptFieldType::Unknown;
+
+			return it->second;
+		}
+
+		const char* ScriptFieldTypeToString(ScriptFieldType type)
+		{
+			switch (type)
+			{
+			case ScriptFieldType::Float: return "float";
+			case ScriptFieldType::Double: return "double";
+
+			case ScriptFieldType::Bool: return "bool";
+
+			case ScriptFieldType::Byte: return "byte";
+			case ScriptFieldType::Char: return "char";
+
+			case ScriptFieldType::Short: return "short";
+			case ScriptFieldType::UShort: return "ushort";
+
+			case ScriptFieldType::Int: return "int";
+			case ScriptFieldType::UInt: return "uint";
+
+			case ScriptFieldType::Long: return "long";
+			case ScriptFieldType::ULong: return "ulong";
+
+			case ScriptFieldType::String: return "string";
+
+			case ScriptFieldType::Vector2: return "Vector2";
+			case ScriptFieldType::Vector3: return "Vector3";
+			case ScriptFieldType::Vector4: return "Vector4";
+
+			case ScriptFieldType::Mat2x2: return "Mat2x2";
+
+			case ScriptFieldType::Entity: return "Entity";
+			}
+			return "Unknown";
 		}
 	}
 
@@ -236,6 +309,15 @@ namespace OpenGLEngine
 		return s_Data->SceneContext;
 	}
 
+	std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityScriptInstance(UUID entityID)
+	{
+		auto it = s_Data->EntityInstances.find(entityID);
+		if (it == s_Data->EntityInstances.end())
+			return nullptr;
+
+		return it->second;
+	}
+
 	std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptEngine::GetEntityClasses()
 	{
 		return s_Data->EntityClasses;
@@ -270,10 +352,28 @@ namespace OpenGLEngine
 				continue;
 
 			bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
-			if (isEntity)
+			if (!isEntity)
+				continue;
+
+			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name, false);
+			s_Data->EntityClasses[fullName] = scriptClass;
+
+			int fieldCount = mono_class_num_fields(monoClass);
+
+			std::cout << name << " has " << fieldCount << " fields: " << std::endl;
+			void* iterator = nullptr;
+			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
 			{
-				s_Data->EntityClasses[fullName] = std::make_shared<ScriptClass>(nameSpace, name, false);
-				//std::cout << "Found entity class: " << fullName << std::endl;
+				const char* fieldName = mono_field_get_name(field);
+				uint32_t flags = mono_field_get_flags(field);
+				if (flags & FIELD_ATTRIBUTE_PUBLIC)
+				{
+					MonoType* type = mono_field_get_type(field);
+					ScriptFieldType fieldType = Utils::MonoTypeToScriptFieldType(type);
+					//std::cout << "    " << fieldName << "(" << Utils::ScriptFieldTypeToString(fieldType) << ")" << std::endl;
+
+					scriptClass->m_Fields[fieldName] = { fieldType, fieldName, field };
+				}
 			}
 		}
 	}
@@ -373,5 +473,29 @@ namespace OpenGLEngine
 			void* param = &ts;
 			m_ScriptClass->InvokeMethod(m_OnUpdateMethod, m_Instance, &param);
 		}
+	}
+
+	bool ScriptInstance::GetFieldValueInternal(const std::string& name, void* buffer)
+	{
+		const auto& fields = m_ScriptClass->GetFields();
+		auto it = fields.find(name);
+		if (it == fields.end())
+			return false;
+
+		const ScriptField& field = it->second;
+		mono_field_get_value(m_Instance, field.ClassField, buffer);
+
+		return true;
+	}
+
+	void ScriptInstance::SetFieldValueInternal(const std::string& name, const void* value)
+	{
+		const auto& fields = m_ScriptClass->GetFields();
+		auto it = fields.find(name);
+		if (it == fields.end())
+			return;
+
+		const ScriptField& field = it->second;
+		mono_field_set_value(m_Instance, field.ClassField, (void*)value);
 	}
 }

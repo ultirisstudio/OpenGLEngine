@@ -10,7 +10,6 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/ColliderComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 
@@ -121,11 +120,6 @@ namespace OpenGLEngine
 		for (Entity* entity : View<RigidBodyComponent>())
 		{
 			entity->GetComponent<RigidBodyComponent>().Update();
-		}
-
-		for (Entity* entity : View<ColliderComponent>())
-		{
-			entity->GetComponent<ColliderComponent>().Update();
 		}
 	}
 

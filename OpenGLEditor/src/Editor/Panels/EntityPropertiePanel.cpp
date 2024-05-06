@@ -17,7 +17,8 @@
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/ColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/BoxColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshColliderComponent.h>
 
 #include <OpenGLEngine/Core/UUID.h>
 
@@ -34,7 +35,8 @@ namespace OpenGLEngine
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
 		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
 		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
-		m_ColliderComponentPanel = std::make_unique<ColliderComponentPanel>();
+		m_BoxColliderComponentPanel = std::make_unique<BoxColliderComponentPanel>();
+		m_MeshColliderComponentPanel = std::make_unique<MeshColliderComponentPanel>();
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager, SceneHierarchy& sceneHierarchy)
@@ -77,7 +79,8 @@ namespace OpenGLEngine
 			m_MaterialComponentPanel->Render(entity);
 			m_LightComponentPanel->Render(entity);
 			m_RigidBodyComponentPanel->Render(entity);
-			m_ColliderComponentPanel->Render(entity);
+			m_BoxColliderComponentPanel->Render(entity);
+			m_MeshColliderComponentPanel->Render(entity);
 
 			if (ImGui::Button("Add Component")) {
 				ImGui::OpenPopup("AddComponent");
@@ -146,9 +149,15 @@ namespace OpenGLEngine
 					}
 				}
 
-				if (!entity->HasComponent<ColliderComponent>()) {
-					if (ImGui::MenuItem("Collider Component")) {
-						entity->AddComponent<ColliderComponent>().Init();
+				if (!entity->HasComponent<BoxColliderComponent>()) {
+					if (ImGui::MenuItem("Box Collider Component")) {
+						entity->AddComponent<BoxColliderComponent>().Init();
+					}
+				}
+
+				if (!entity->HasComponent<MeshColliderComponent>()) {
+					if (ImGui::MenuItem("Mesh Collider Component")) {
+						entity->AddComponent<MeshColliderComponent>().Init();
 					}
 				}
 

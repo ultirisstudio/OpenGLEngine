@@ -23,13 +23,26 @@
 
 #include <OpenGLEngine/Tools/Math.h>
 
+#include <OpenGLEngine/Physic/PhysicEngine.h>
+#include <reactphysics3d/reactphysics3d.h>
+
+#include <OpenGLEngine/Resources/Debug/DebugLineMesh.h>
+#include <OpenGLEngine/Resources/Debug/DebugTriangleMesh.h>
+
 namespace OpenGLEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
+	Renderer::DebugRenderData Renderer::m_DebugRenderData = Renderer::DebugRenderData();
 
 	void Renderer::Init()
 	{
 		m_SceneData.m_Shader = Shader();
 		m_SceneData.m_Shader.LoadFromFile("Shaders/pbr_shader.vert", "Shaders/pbr_shader.frag");
+
+		m_DebugRenderData.m_DebugTriangleShader = Shader();
+		m_DebugRenderData.m_DebugTriangleShader.LoadFromFile("Shaders/debug_triangle.vert", "Shaders/debug_triangle.frag");
+
+		m_DebugRenderData.m_DebugLineShader = Shader();
+		m_DebugRenderData.m_DebugLineShader.LoadFromFile("Shaders/debug_line.vert", "Shaders/debug_line.frag");
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -39,13 +52,82 @@ namespace OpenGLEngine {
 
 	void Renderer::Render(BaseCamera& camera)
 	{
-		m_SceneData.m_Shader.use();
+		// view and projection matrices
 
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
-		
+
 		viewMatrix = camera.getViewMatrix();
 		projectionMatrix = camera.getProjectionMatrix();
+
+		// render degub stuff
+
+		std::vector<DebugLineVertex> lines;
+		std::vector<DebugTriangleVertex> triangles;
+
+		for (const reactphysics3d::DebugRenderer::DebugLine& line : PhysicEngine::GetDebugRenderer().getLines())
+		{
+			DebugLineVertex lineVertex_1;
+			DebugLineVertex lineVertex_2;
+
+			lineVertex_1.position = glm::vec3(line.point1.x, line.point1.y, line.point1.z);
+			lineVertex_1.color = m_DebugRenderData.GetColorFromUint_32t(line.color1);
+
+			lineVertex_2.position = glm::vec3(line.point2.x, line.point2.y, line.point2.z);
+			lineVertex_2.color = m_DebugRenderData.GetColorFromUint_32t(line.color1);
+
+			lines.push_back(lineVertex_1);
+			lines.push_back(lineVertex_2);
+		}
+
+		for (const reactphysics3d::DebugRenderer::DebugTriangle& triangle : PhysicEngine::GetDebugRenderer().getTriangles())
+		{
+			DebugTriangleVertex triangleVertex_1;
+			DebugTriangleVertex triangleVertex_2;
+			DebugTriangleVertex triangleVertex_3;
+
+			triangleVertex_1.position = glm::vec3(triangle.point1.x, triangle.point1.y, triangle.point1.z);
+			triangleVertex_1.color = m_DebugRenderData.GetColorFromUint_32t(triangle.color1);
+
+			triangleVertex_2.position = glm::vec3(triangle.point2.x, triangle.point2.y, triangle.point2.z);
+			triangleVertex_2.color = m_DebugRenderData.GetColorFromUint_32t(triangle.color2);
+
+			triangleVertex_3.position = glm::vec3(triangle.point3.x, triangle.point3.y, triangle.point3.z);
+			triangleVertex_3.color = m_DebugRenderData.GetColorFromUint_32t(triangle.color3);
+
+			triangles.push_back(triangleVertex_1);
+			triangles.push_back(triangleVertex_2);
+			triangles.push_back(triangleVertex_3);
+		}
+
+		//Render lines and triangles
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		DebugLineMesh lineMesh(lines);
+
+		m_DebugRenderData.m_DebugLineShader.use();
+
+		m_DebugRenderData.m_DebugLineShader.setUniform("view", viewMatrix);
+		m_DebugRenderData.m_DebugLineShader.setUniform("projection", projectionMatrix);
+
+		lineMesh.draw();
+
+		DebugTriangleMesh triangleMesh(triangles);
+
+		m_DebugRenderData.m_DebugTriangleShader.use();
+
+		m_DebugRenderData.m_DebugTriangleShader.setUniform("view", viewMatrix);
+		m_DebugRenderData.m_DebugTriangleShader.setUniform("projection", projectionMatrix);
+
+		triangleMesh.draw();
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		// Renderer
+
+		m_SceneData.m_Shader.use();
+
+		
 
 		glm::vec3 position, rotation, scale;
 		Math::DecomposeTransform(camera.GetTransform(), position, rotation, scale);
@@ -249,5 +331,18 @@ namespace OpenGLEngine {
 	double Renderer::GetTime()
 	{
 		return glfwGetTime();
+	}
+
+	const glm::vec3& Renderer::DebugRenderData::GetColorFromUint_32t(uint32_t color)
+	{
+		unsigned char rouge = (color >> 24) & 0xFF;
+		unsigned char vert = (color >> 16) & 0xFF;
+		unsigned char bleu = (color >> 8) & 0xFF;
+
+		float rougeNormalise = rouge / 255.0f;
+		float vertNormalise = vert / 255.0f;
+		float bleuNormalise = bleu / 255.0f;
+
+		return glm::vec3(rougeNormalise, vertNormalise, bleuNormalise);
 	}
 }

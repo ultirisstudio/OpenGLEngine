@@ -40,6 +40,7 @@ namespace OpenGLEngine
 		rigidbody = PhysicEngine::GetPhysicWorld()->createRigidBody(transform);
 		rigidbody->setType(bodyType);
 		rigidbody->enableGravity(enableGravity);
+		rigidbody->setIsDebugEnabled(true);
 
 		const reactphysics3d::Vector3 halfExtents(entityScale.x, entityScale.y, entityScale.z);
 		reactphysics3d::BoxShape* boxShape = PhysicEngine::GetPhysicsCommon()->createBoxShape(halfExtents);

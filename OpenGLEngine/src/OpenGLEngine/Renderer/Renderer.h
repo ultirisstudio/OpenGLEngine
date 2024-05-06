@@ -22,6 +22,15 @@ namespace OpenGLEngine
 		};
 		static SceneData m_SceneData;
 
+		struct DebugRenderData
+		{
+			Shader m_DebugLineShader;
+			Shader m_DebugTriangleShader;
+
+			const glm::vec3& GetColorFromUint_32t(uint32_t color);
+		};
+		static DebugRenderData m_DebugRenderData;
+
 		static void Init();
 
 		static void BeginScene(Scene& scene);

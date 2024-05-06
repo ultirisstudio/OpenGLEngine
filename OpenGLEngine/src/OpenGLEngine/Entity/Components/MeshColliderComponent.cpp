@@ -22,6 +22,7 @@ namespace OpenGLEngine
 
         // Create the TriangleVertexArray
         const int nbVertices = mc.GetMesh().GetVerticesCount();
+        const int nbIndices = mc.GetMesh().GetIndicesCount();
         const int nbTriangles = mc.GetMesh().GetIndicesCount() / 3;
 
         float* vertices = new float[nbVertices];
@@ -32,12 +33,15 @@ namespace OpenGLEngine
 			vertices[i] = mc.GetMesh().GetVertices()[i].position.z;
 		}
 
-        int* indices = new int[nbTriangles];
-        std::copy(mc.GetMesh().GetIndices().begin(), mc.GetMesh().GetIndices().end(), indices);
+        int* indices = new int[nbIndices];
+        for (int i = 0; i < nbIndices; i++)
+        {
+			indices[i] = mc.GetMesh().GetIndices()[i];
+		}
 
         triangleVertexArray =
-            new reactphysics3d::TriangleVertexArray(nbVertices, vertices, 3 * sizeof(float), nbTriangles,
-                indices, 3 * sizeof(int),
+            new reactphysics3d::TriangleVertexArray(nbVertices, &(vertices[0]), 3 * sizeof(float), nbTriangles,
+                &(indices[0]), 3 * sizeof(int),
                 reactphysics3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
                 reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
 

@@ -127,8 +127,6 @@ namespace OpenGLEngine {
 
 		m_SceneData.m_Shader.use();
 
-		
-
 		glm::vec3 position, rotation, scale;
 		Math::DecomposeTransform(camera.GetTransform(), position, rotation, scale);
 
@@ -145,26 +143,28 @@ namespace OpenGLEngine {
 
 			glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
 
-			/*UUID parentID = entity->second.m_Parent;
+			UUID parentID = entity->second.m_Parent;
 			while (parentID != UUID::Null())
 			{
-				auto parent = m_SceneData.m_Scene->getEntities()->find(parentID);
-				if (parent != m_SceneData.m_Scene->getEntities()->end())
+				Entity* parent = &m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+				if (parent != nullptr)
 				{
-					glm::mat4& parentTransform = parent->second.GetComponent<TransformComponent>().GetTransform();
+					glm::mat4& parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
 					glm::vec3 parentPosition, parentScale;
 					glm::quat parentRotationQuat;
 					glm::decompose(parentTransform, parentScale, parentRotationQuat, parentPosition, glm::vec3(), glm::vec4());
 					glm::vec3 rotation = glm::eulerAngles(parentRotationQuat);
 					
 					transform = glm::translate(transform, parentPosition);
-					transform = glm::rotate(transform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-					transform = glm::rotate(transform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-					transform = glm::rotate(transform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+					//transform = glm::rotate(transform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+					//transform = glm::rotate(transform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+					//transform = glm::rotate(transform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
-					parentID = parent->second.m_Parent;
+					transform = glm::scale(transform, parentScale);
+
+					parentID = parent->m_Parent;
 				}
-			}*/
+			}
 
 			if (entity->second.HasComponent<LightComponent>())
 			{

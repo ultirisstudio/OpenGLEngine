@@ -108,6 +108,11 @@ namespace OpenGLEngine
 
 			if (ImGuizmo::IsUsing())
 			{
+				if (ImGuizmo::IsOver())
+					camera.useGuizmo();
+				else
+					camera.unuseGuizmo();
+
 				glm::vec3 position, scale;
 				glm::quat rotationQuat;
 				glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
@@ -118,6 +123,8 @@ namespace OpenGLEngine
 				tc.Rotation += deltaRotation;
 				tc.Scale = scale;
 			}
+			else
+				camera.unuseGuizmo();
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////

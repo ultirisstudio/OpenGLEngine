@@ -29,13 +29,16 @@ namespace OpenGLEngine
 		glm::vec3 m_target;
 		glm::vec3 m_up;
 		glm::vec3 m_right;
+		glm::vec3 m_forward;
 		glm::vec3 m_worldUp;
 	private:
 		glm::uvec2 m_lastMousePos;
 
 		bool m_canMove;
-
+		bool m_usingGuizmo;
 		bool m_moving;
+
+		bool m_walk;
 		bool m_rotate;
 		bool m_translate;
 
@@ -66,6 +69,9 @@ namespace OpenGLEngine
 
 		void freeze() { m_canMove = false; }
 		void free() { m_canMove = true; }
+
+		void useGuizmo() { m_usingGuizmo = true; }
+		void unuseGuizmo() { m_usingGuizmo = false; }
 
 		void OnEvent(Event& e);
 

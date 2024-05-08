@@ -26,9 +26,10 @@ namespace OpenGLEngine
 
 		m_lastMousePos(0),
 		m_canMove(true),
+		m_usingGuizmo(false),
 		m_moving(false),
 		m_RotateSensitivity(0.16f),
-		m_TranslateSensitivity(0.1f),
+		m_TranslateSensitivity(0.2f),
 
 		m_ScrollSensitivity(2.0f),
 		m_CameraFocus(false),
@@ -75,6 +76,7 @@ namespace OpenGLEngine
 		m_target = glm::normalize(front);
 		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
 		m_up = glm::normalize(glm::cross(m_right, m_target));
+		m_forward = glm::normalize(glm::cross(m_right, m_up));
 	}
 
 	void EditorCamera::Update()
@@ -106,6 +108,9 @@ namespace OpenGLEngine
 		if (!m_canMove)
 			return false;
 
+		if (m_usingGuizmo)
+			return false;
+
 		if (!m_moving)
 			return false;
 
@@ -135,6 +140,20 @@ namespace OpenGLEngine
 			m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
 		}
 
+		if (m_walk)
+		{
+			m_yaw -= (offsetX * m_RotateSensitivity);
+
+			glm::vec3 horizontalForward = glm::normalize(m_forward);
+			horizontalForward.y = 0.0f;
+
+			glm::mat4 translationMatrix(1.0f);
+			translationMatrix = glm::translate(translationMatrix, m_right * (-offsetX * m_TranslateSensitivity));
+			translationMatrix = glm::translate(translationMatrix, horizontalForward * (-offsetY * m_TranslateSensitivity));
+
+			m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
+		}
+
 		updateViewMatrix();
 		UpdateCameraVectors();
 
@@ -151,6 +170,7 @@ namespace OpenGLEngine
 		if (m_CameraFocus)
 			m_moving = true;
 
+		m_walk = (e.GetMouseButton() == 0);
 		m_rotate = (e.GetMouseButton() == 1);
 		m_translate = (e.GetMouseButton() == 2);
 

@@ -40,5 +40,79 @@ namespace OpenGLEngine
         {
             return (X == other.X && Y == other.Y && Z == other.Z && W == other.W);
         }
+
+        //Returns a new vector whose elements are the smallest integral values that are greater than or equal to the given vector's elements.
+        public static Vector4 Floor(Vector4 vector)
+        {
+            return new Vector4(FloorComponent(vector.X), FloorComponent(vector.Y), FloorComponent(vector.Z), FloorComponent(vector.W));
+        }
+
+        public static float FloorComponent(float value)
+        {
+            // Check if the value is already an integer
+            if (value % 1 == 0)
+            {
+                return value; // Return the value unchanged
+            }
+            else
+            {
+                // If the value is negative, subtract 1 before casting to an integer
+                if (value < 0)
+                {
+                    return (int)(value - 1);
+                }
+                else
+                {
+                    return (int)value;
+                }
+            }
+        }
+
+        public static Vector4 Ceil(Vector4 vector)
+        {
+            return new Vector4(CeilComponent(vector.X), CeilComponent(vector.Y), CeilComponent(vector.Z), CeilComponent(vector.W));
+        }
+
+        public static float CeilComponent(float value)
+        {
+            // Check if the value is already an integer
+            if (value % 1 == 0)
+            {
+                return value; // Return the value unchanged
+            }
+            else
+            {
+                // If the value is negative, subtract 1 before casting to an integer
+                if (value < 0)
+                {
+                    return (int)(value - 1);
+                }
+                else
+                {
+                    return (int)value + 1; // Cast to an integer if the value is positive
+                }
+            }
+        }
+
+        public static Vector4 Normalize(Vector4 value)
+        {
+            float length = (float)Math.SquareRoot(value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W);
+            return new Vector4(value.X / length, value.Y / length, value.Z / length, value.W / length);
+        }
+
+        public float Distance(Vector4 vector)
+        {
+            float dx = vector.X - X;
+            float dy = vector.Y - Y;
+            float dz = vector.Z - Z;
+            float dw = vector.W - W;
+            return Math.SquareRoot(dx * dx + dy * dy + dz * dz + dw * dw);
+        }
+
+        public float Length()
+        {
+            return (float)Math.SquareRoot(X * X + Y * Y + Z * Z + W * W);
+        }
+
     }
 }

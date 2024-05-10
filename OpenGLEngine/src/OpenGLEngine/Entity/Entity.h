@@ -6,11 +6,10 @@
 #include <vector>
 #include <array>
 #include <bitset>
+#include <memory>
 #include <unordered_map>
 
 #include <OpenGLEngine/Core/UUID.h>
-
-class Component;
 
 class Entity
 {
@@ -52,10 +51,29 @@ public:
 		auto pointer(m_ComponentsArray[GetComponentTypeID<T>()]);
 		return *static_cast<T*>(pointer);
 	}
-private:
+
+	void AddChild(const OpenGLEngine::UUID& id);
+public:
 	std::string m_Name;
 	OpenGLEngine::UUID m_UUID;
 
+	std::vector<OpenGLEngine::UUID> m_Children;
+	OpenGLEngine::UUID m_Parent = OpenGLEngine::UUID::Null();
+
+private:
 	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
 	std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;
+};
+
+struct EntityMapping
+{
+	size_t operator()(const Entity& k)const
+	{
+		return std::hash<int>()(k.m_UUID);
+	}
+
+	bool operator()(const Entity& a, const Entity& b)const
+	{
+		return a.m_UUID == b.m_UUID;
+	}
 };

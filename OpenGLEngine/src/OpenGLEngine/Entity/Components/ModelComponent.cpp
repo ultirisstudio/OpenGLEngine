@@ -13,9 +13,9 @@
 
 namespace OpenGLEngine
 {
-	ModelComponent::ModelComponent(const std::string& path)
+	ModelComponent::ModelComponent() : m_Model(nullptr)
 	{
-		SetModel(path);
+		
 	}
 
 	void ModelComponent::SetModel(const std::string& path)
@@ -23,13 +23,14 @@ namespace OpenGLEngine
 		m_Model = OpenGLEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path);
 		m_ModelPath = path;
 
-		m_SubEntities.clear();
 		for (auto& [name, mesh] : m_Model->GetMeshes())
 		{
-			m_SubEntities.push_back(Entity(name, UUID()));
-			m_SubEntities.back().AddComponent<TransformComponent>();
-			m_SubEntities.back().AddComponent<MeshComponent>(name, mesh);
-			m_SubEntities.back().AddComponent<MaterialComponent>();
+			Entity* entity = Renderer::GetScene()->CreateEntity(name);
+
+			this->entity->AddChild(entity->GetUUID());
+
+			entity->AddComponent<MeshComponent>(name, mesh, path);
+			entity->AddComponent<MaterialComponent>();
 		}
 	}
 }

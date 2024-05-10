@@ -24,6 +24,7 @@ namespace OpenGLEngine
 
 		Entity* CreateEntity(const std::string& name = std::string());
 		Entity* CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+
 		void DestroyEntity(Entity entity);
 
 		Entity* FindEntityByName(std::string name);

@@ -24,6 +24,8 @@ namespace OpenGLEngine
 
 		//pointlight params
 		glm::vec3 point_color = { 1.0f, 1.0f, 1.0f };
+		float point_attenuation = 1.0f;
+		float point_power = 1.0f;
 
 		LightComponent();
 		LightComponent(LightType type);

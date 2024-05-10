@@ -62,8 +62,8 @@ namespace OpenGLEngine
 		bool m_optionMenu = false;
 		int m_optionTab = 0;
 
-		std::vector<int> m_ImGuiColor;
+		std::vector<unsigned int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;
-		std::map<int, glm::vec4> m_ThemeColor;
+		std::map<unsigned int, glm::vec4> m_ThemeColor;
 	};
 }

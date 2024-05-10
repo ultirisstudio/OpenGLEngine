@@ -60,7 +60,29 @@ namespace OpenGLEngine {
 			m_SceneData.m_Shader.use();
 
 			int nat = 0;
+
 			glm::mat4& transform = entity->second.GetComponent<TransformComponent>().GetTransform();
+
+			/*UUID parentID = entity->second.m_Parent;
+			while (parentID != UUID::Null())
+			{
+				auto parent = m_SceneData.m_Scene->getEntities()->find(parentID);
+				if (parent != m_SceneData.m_Scene->getEntities()->end())
+				{
+					glm::mat4& parentTransform = parent->second.GetComponent<TransformComponent>().GetTransform();
+					glm::vec3 parentPosition, parentScale;
+					glm::quat parentRotationQuat;
+					glm::decompose(parentTransform, parentScale, parentRotationQuat, parentPosition, glm::vec3(), glm::vec4());
+					glm::vec3 rotation = glm::eulerAngles(parentRotationQuat);
+					
+					transform = glm::translate(transform, parentPosition);
+					transform = glm::rotate(transform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+					transform = glm::rotate(transform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+					transform = glm::rotate(transform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+					parentID = parent->second.m_Parent;
+				}
+			}*/
 
 			if (entity->second.HasComponent<LightComponent>())
 			{
@@ -76,6 +98,8 @@ namespace OpenGLEngine {
 				{
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity->second.GetComponent<TransformComponent>().Position);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].attenuation", lc.point_attenuation);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].power", lc.point_power);
 
 					pointLightCount++;
 				}
@@ -155,94 +179,6 @@ namespace OpenGLEngine {
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			if (entity->second.HasComponent<ModelComponent>() && entity->second.GetComponent<ModelComponent>().GetPtr())
-			{
-				m_SceneData.m_Shader.use();
-
-				for (Entity subEntity : *entity->second.GetComponent<ModelComponent>().GetSubEntities())
-				{
-					//glm::vec3 position, scale;
-					//glm::quat rotationQuat;
-					//glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
-					//glm::vec3 rotation = glm::eulerAngles(rotationQuat);
-
-					//glm::mat4 subEntityTransform = glm::translate(subEntity.GetComponent<TransformComponent>().GetTransform(), position);
-					//subEntityTransform = glm::rotate(subEntityTransform, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-					//subEntityTransform = glm::rotate(subEntityTransform, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-					//subEntityTransform = glm::rotate(subEntityTransform, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
-					m_SceneData.m_Shader.use();
-
-					Material& material = subEntity.GetComponent<MaterialComponent>().GetMaterial();
-
-					m_SceneData.m_Shader.setUniform("uModel", transform);
-					m_SceneData.m_Shader.setUniform("uView", viewMatrix);
-					m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
-					m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
-
-					m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
-					m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
-					m_SceneData.m_Shader.setUniform("uMaterial.roughness", *material.getFloat("roughness"));
-					m_SceneData.m_Shader.setUniform("uMaterial.ao",*material.getFloat("ao"));
-
-					m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", static_cast<bool>(*material.getBoolean("albedo")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", static_cast<bool>(*material.getBoolean("normal")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", static_cast<bool>(*material.getBoolean("metallic")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", static_cast<bool>(*material.getBoolean("roughness")));
-					m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", static_cast<bool>(*material.getBoolean("ao")));
-
-					if (*material.getBoolean("albedo"))
-					{
-						glActiveTexture(GL_TEXTURE0 + nat);
-						material.getTexture("albedo")->bind();
-						m_SceneData.m_Shader.setUniform("uMaterial.albedoMap", nat);
-						nat++;
-					}
-
-					if (*material.getBoolean("normal"))
-					{
-						glActiveTexture(GL_TEXTURE0 + nat);
-						material.getTexture("normal")->bind();
-						m_SceneData.m_Shader.setUniform("uMaterial.normalMap", nat);
-						nat++;
-					}
-
-					if (*material.getBoolean("metallic"))
-					{
-						glActiveTexture(GL_TEXTURE0 + nat);
-						material.getTexture("metallic")->bind();
-						m_SceneData.m_Shader.setUniform("uMaterial.metallicMap", nat);
-						nat++;
-					}
-
-					if (*material.getBoolean("roughness"))
-					{
-						glActiveTexture(GL_TEXTURE0 + nat);
-						material.getTexture("roughness")->bind();
-						m_SceneData.m_Shader.setUniform("uMaterial.roughnessMap", nat);
-						nat++;
-					}
-
-					if (*material.getBoolean("ao"))
-					{
-						glActiveTexture(GL_TEXTURE0 + nat);
-						material.getTexture("ao")->bind();
-						m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
-						nat++;
-					}
-
-					glActiveTexture(GL_TEXTURE0 + nat);
-					m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-					m_SceneData.m_Shader.setUniform("uIrradianceMap", nat);
-					nat++;
-
-					subEntity.GetComponent<MeshComponent>().GetMesh().draw();
-				}
-				
-				//if (entity->second.HasComponent<ModelComponent>())
-					//entity->second.GetComponent<ModelComponent>().GetModel().draw();
-			}
-
 			if (entity->second.HasComponent<TerrainComponent>() && entity->second.GetComponent<TerrainComponent>().IsGenerated())
 			{
 				if (entity->second.GetComponent<TerrainComponent>().m_PolygonMode)
@@ -303,6 +239,11 @@ namespace OpenGLEngine {
 	void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
 		glViewport(x, y, width, height);
+	}
+
+	Scene* Renderer::GetScene()
+	{
+		return m_SceneData.m_Scene;
 	}
 
 	double Renderer::GetTime()

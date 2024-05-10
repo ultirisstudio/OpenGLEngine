@@ -45,8 +45,8 @@ namespace OpenGLEngine
 		{
 			if (sceneManager.getActiveScene().isOnRuntime())
 			{
-				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			}
 
 			Entity* entity = sceneHierarchy.m_SelectedEntity;
@@ -157,8 +157,8 @@ namespace OpenGLEngine
 
 			if (sceneManager.getActiveScene().isOnRuntime())
 			{
-				ImGui::PopItemFlag();
-				ImGui::PopStyleVar();
+				//ImGui::PopItemFlag();
+				//ImGui::PopStyleVar();
 			}
 		}
 

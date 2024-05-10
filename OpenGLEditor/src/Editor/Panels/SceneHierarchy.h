@@ -13,5 +13,8 @@ namespace OpenGLEngine
 		void OnImGuiRender(Scene& scene);
 
 		Entity* m_SelectedEntity;
+
+	private:
+		void OnDrawEntityNode(Scene& scene, Entity* entity);
 	};
 }

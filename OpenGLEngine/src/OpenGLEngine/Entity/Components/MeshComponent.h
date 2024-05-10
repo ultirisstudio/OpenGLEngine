@@ -9,12 +9,14 @@ namespace OpenGLEngine
 	private:
 		Mesh* m_Mesh;
 		std::string m_Name;
+		std::string m_ModelPath;
 	public:
 		MeshComponent();
-		MeshComponent(std::string name, Mesh* mesh);
+		MeshComponent(std::string name, Mesh* mesh, std::string modelPath);
 
 		Mesh& GetMesh() { return *m_Mesh; }
 		std::string GetName() { return m_Name; }
+		std::string GetModelPath() { return m_ModelPath; }
 
 		bool HasMesh() { return !(m_Mesh == nullptr); }
 

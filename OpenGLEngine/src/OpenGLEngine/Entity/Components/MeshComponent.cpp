@@ -8,7 +8,7 @@ namespace OpenGLEngine
 
 	}
 
-	MeshComponent::MeshComponent(std::string name, Mesh* mesh) : m_Mesh(mesh), m_Name(name)
+	MeshComponent::MeshComponent(std::string name, Mesh* mesh, std::string modelPath) : m_Mesh(mesh), m_Name(name), m_ModelPath(modelPath)
 	{
 		
 	}

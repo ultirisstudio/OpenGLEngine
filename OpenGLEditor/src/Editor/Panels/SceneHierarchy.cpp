@@ -24,61 +24,6 @@ namespace OpenGLEngine
 				continue;
 
 			OnDrawEntityNode(scene, entity);
-
-			/*UUID id;
-			if (m_SelectedEntity)
-				id = m_SelectedEntity->GetUUID();
-			else
-				id = 0;
-
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen | ((id == entity->GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ((entity->m_Children.size() != 0) ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
-			flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity->GetUUID(), flags, entity->GetName());
-			ImGui::PopStyleVar();
-
-			ImGui::PushID(entity->GetName());
-			if (ImGui::BeginPopupContextItem())
-			{
-				if (ImGui::MenuItem("Delete Object")) {
-					scene.DestroyEntity(*entity);
-					m_SelectedEntity = nullptr;
-				}
-				ImGui::EndPopup();
-			}
-			ImGui::PopID();
-
-			if (ImGui::IsItemClicked())
-			{
-				m_SelectedEntity = entity;
-			}
-
-			if (ImGui::BeginDragDropSource()) {
-				ImGui::Text(entity->GetName());
-				ImGui::EndDragDropSource();
-			}
-
-			if (ImGui::BeginDragDropTarget()) {
-				ImGui::EndDragDropTarget();
-			}
-
-			if (opened)
-			{
-				std::vector<UUID> childrens = entity->m_Children;
-
-				if (childrens.size() != 0)
-				{
-					for (UUID child : childrens)
-					{
-						ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3);
-						Entity* entityChild = scene.GetEntityByUUID(child);
-						OnDrawEntityNode(scene, entityChild);
-						ImGui::PopStyleVar();
-					}
-				}
-
-				ImGui::TreePop();
-			}*/
 		}
 
 		ImGui::PopStyleVar();
@@ -168,10 +113,8 @@ namespace OpenGLEngine
 			{
 				for (UUID child : childrens)
 				{
-					ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3);
 					Entity* childEntity = scene.GetEntityByUUID(child);
 					OnDrawEntityNode(scene, childEntity);
-					ImGui::PopStyleVar();
 				}
 			}
 

@@ -3,6 +3,7 @@
 #include <OpenGLEngine.h>
 #include <OpenGLEngine/Events/Event.h>
 #include <OpenGLEngine/Events/KeyEvent.h>
+#include <OpenGLEngine/Events/MouseEvent.h>
 
 #include <OpenGLEngine/Resources/Texture.h>
 
@@ -39,7 +40,8 @@ namespace OpenGLEngine
 		void OnUpdate(double dt) override;
 		void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
-
+	private:
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 	private:
 		void InitImGuiStyle();
 		void OptionMenu();
@@ -62,8 +64,8 @@ namespace OpenGLEngine
 		bool m_optionMenu = false;
 		int m_optionTab = 0;
 
-		std::vector<int> m_ImGuiColor;
+		std::vector<unsigned int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;
-		std::map<int, glm::vec4> m_ThemeColor;
+		std::map<unsigned int, glm::vec4> m_ThemeColor;
 	};
 }

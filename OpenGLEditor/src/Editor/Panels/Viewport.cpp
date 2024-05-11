@@ -7,10 +7,12 @@
 
 OpenGLEngine::Viewport::Viewport() : m_ViewportSize({ 0.0f, 0.0f})
 {
-	m_ViewportFrameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-	m_ViewportFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-	m_ViewportFrameBuffer->setDepthAttachment();
-	m_ViewportFrameBuffer->Create();
+	FramebufferSpecification spec;
+	spec.Width = Application::Get().GetWindow().GetWidth();
+	spec.Height = Application::Get().GetWindow().GetHeight();
+	spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+
+	m_ViewportFrameBuffer = Framebuffer::Create(spec);
 }
 
 void OpenGLEngine::Viewport::Render(Scene& scene)
@@ -18,7 +20,7 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 	if (!scene.getActiveCamera())
 		return;
 
-	m_ViewportFrameBuffer->bind();
+	m_ViewportFrameBuffer->Bind();
 
 	Renderer::SetViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
@@ -27,14 +29,15 @@ void OpenGLEngine::Viewport::Render(Scene& scene)
 
 	Renderer::BeginScene(scene);
 	Renderer::Render(*scene.getActiveCamera());
+	Renderer::RenderSkybox(*scene.getActiveCamera());
 	Renderer::EndScene();
 
-	m_ViewportFrameBuffer->unbind();
+	m_ViewportFrameBuffer->Unbind();
 }
 
 void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 {
-	m_ViewportFrameBuffer->bind();
+	m_ViewportFrameBuffer->Bind();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 	ImGui::Begin("Viewport");
@@ -51,20 +54,16 @@ void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
-			m_ViewportFrameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_ViewportFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-			m_ViewportFrameBuffer->setDepthAttachment();
-			m_ViewportFrameBuffer->Create();
-
+			m_ViewportFrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		}
 
-		uint32_t textureID = m_ViewportFrameBuffer->getColorAttachment(0);
+		uint32_t textureID = m_ViewportFrameBuffer->GetColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	}
 
 	ImGui::End();
 	ImGui::PopStyleVar();
 
-	m_ViewportFrameBuffer->unbind();
+	m_ViewportFrameBuffer->Unbind();
 }

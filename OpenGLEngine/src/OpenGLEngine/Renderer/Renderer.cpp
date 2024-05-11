@@ -138,6 +138,7 @@ namespace OpenGLEngine {
 		for (auto entity = m_SceneData.m_Scene->getEntities()->begin(); entity != m_SceneData.m_Scene->getEntities()->end(); entity++)
 		{
 			m_SceneData.m_Shader.use();
+			m_SceneData.m_Shader.setUniform("uEntity", entity->second.GetUUID());
 
 			int nat = 0;
 
@@ -295,6 +296,17 @@ namespace OpenGLEngine {
 		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
 		m_SceneData.m_Shader.setUniform("uAmbiantLight", m_SceneData.m_Scene->m_AmbientLight);
+
+		
+	}
+
+	void Renderer::RenderSkybox(BaseCamera& camera)
+	{
+		glm::mat4 viewMatrix;
+		glm::mat4 projectionMatrix;
+
+		viewMatrix = camera.getViewMatrix();
+		projectionMatrix = camera.getProjectionMatrix();
 
 		m_SceneData.m_Scene->getSkybox().GetShader()->use();
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);

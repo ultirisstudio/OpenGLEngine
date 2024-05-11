@@ -1,10 +1,11 @@
 #version 440 core
 
+layout(location = 0) out vec4 color;
+layout(location = 1) out uint outEntityID;
+
 in vec2 fTextureCoordinates;
 in vec3 fWorldPos;
 in vec3 fNormal;
-
-out vec4 color;
 
 // material parameters
 struct Material
@@ -55,6 +56,8 @@ uniform vec3 uCameraPosition;
 uniform samplerCube uIrradianceMap;
 
 uniform float uAmbiantLight;
+
+uniform uint uEntity;
 
 const float PI = 3.14159265359;
 
@@ -235,4 +238,6 @@ void main()
     result = pow(result, vec3(1.0/2.2)); 
 
     color = vec4(result, 1.0);
+
+    outEntityID = uEntity;
 }

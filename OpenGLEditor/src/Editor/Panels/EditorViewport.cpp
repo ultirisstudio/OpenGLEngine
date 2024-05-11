@@ -19,26 +19,48 @@ namespace OpenGLEngine
 {
 	EditorViewport::EditorViewport() : m_EditorViewportSize({ 0.0f, 0.0f })
 	{
-		m_EditorFrameBuffer = std::make_shared<Framebuffer>(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-		m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-		m_EditorFrameBuffer->setDepthAttachment();
-		m_EditorFrameBuffer->Create();
+		FramebufferSpecification spec;
+		spec.Width = Application::Get().GetWindow().GetWidth();
+		spec.Height = Application::Get().GetWindow().GetHeight();
+		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+
+		m_EditorFrameBuffer = Framebuffer::Create(spec);
 	}
 
 	void EditorViewport::Render(Scene& scene, EditorCamera& camera)
 	{
-		m_EditorFrameBuffer->bind();
-
-		Renderer::SetViewport(0, 0, m_EditorViewportSize.x, m_EditorViewportSize.y);
+		m_EditorFrameBuffer->Bind();
 
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
+		m_EditorFrameBuffer->ClearAttachment(1, -1);
+
 		Renderer::BeginScene(scene);
 		Renderer::Render(camera);
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_EditorViewportBounds[0].x;
+		my -= m_EditorViewportBounds[0].y;
+		glm::vec2 editorViewportSize = m_EditorViewportBounds[1] - m_EditorViewportBounds[0];
+		my = editorViewportSize.y - my;
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < editorViewportSize.x && mouseY < editorViewportSize.y)
+		{
+			int pixelData = m_EditorFrameBuffer->ReadPixel(1, mouseX, mouseY);
+			
+			std::cout << "Pixel data = " << pixelData << std::endl;
+			//std::cout << ((pixelData < 0) ? "" : scene.getEntities()->at(pixelData).GetName()) << std::endl;
+
+			m_HoveredEntity = scene.GetEntityByUUID(pixelData);
+		}
+
+		Renderer::RenderSkybox(camera);
 		Renderer::EndScene();
 
-		m_EditorFrameBuffer->unbind();
+		m_EditorFrameBuffer->Unbind();
 	}
 
 	void EditorViewport::Update(EditorCamera& camera)
@@ -63,29 +85,39 @@ namespace OpenGLEngine
 
 	void EditorViewport::OnImGuiRender(EditorCamera& camera, SceneManager& sceneManager, SceneHierarchy& sceneHierarchy)
 	{
-		m_EditorFrameBuffer->bind();
+		m_EditorFrameBuffer->Bind();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Editor");
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 
+		auto windowSize = ImGui::GetWindowSize();
+		auto viewportOffset = ImGui::GetCursorPos();
+
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
+
 
 		camera.OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
-			m_EditorFrameBuffer = std::make_shared<Framebuffer>((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_EditorFrameBuffer->addColorAttachment(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-			m_EditorFrameBuffer->setDepthAttachment();
-			m_EditorFrameBuffer->Create();
-
+			m_EditorFrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		}
-		uint32_t textureID = m_EditorFrameBuffer->getColorAttachment(0);
+		uint32_t textureID = m_EditorFrameBuffer->GetColorAttachment(0);
 		ImGui::Image((void*)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		ImVec2 minBound = ImGui::GetWindowPos();
+		minBound.x += viewportOffset.x;
+		minBound.y += viewportOffset.y;
+
+		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+		m_EditorViewportBounds[0] = { minBound.x, minBound.y };
+		m_EditorViewportBounds[1] = { maxBound.x, maxBound.y };
+
+		//std::cout << "Min Bounds = " << m_EditorViewportBounds[0].x << ", " << m_EditorViewportBounds[0].y << std::endl;
+		//std::cout << "Max Bounds = " << m_EditorViewportBounds[1].x << ", " << m_EditorViewportBounds[1].y << std::endl;
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,6 +188,10 @@ namespace OpenGLEngine
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		m_EditorFrameBuffer->unbind();
+		ImGui::Begin("Editor infos");
+		ImGui::Text(std::string(std::string("Hovered entity: ") + std::string(m_HoveredEntity ? m_HoveredEntity->GetName() : "none")).c_str());
+		ImGui::End();
+
+		m_EditorFrameBuffer->Unbind();
 	}
 }

@@ -35,6 +35,7 @@ namespace OpenGLEngine
 
 		static void BeginScene(Scene& scene);
 		static void Render(BaseCamera& camera);
+		static void RenderSkybox(BaseCamera& camera);
 		static void EndScene();
 
 		static void Clear();

@@ -360,7 +360,7 @@ namespace OpenGLEngine
 
 			int fieldCount = mono_class_num_fields(monoClass);
 
-			std::cout << name << " has " << fieldCount << " fields: " << std::endl;
+			//std::cout << name << " has " << fieldCount << " fields: " << std::endl;
 			void* iterator = nullptr;
 			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
 			{

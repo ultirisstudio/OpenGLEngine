@@ -10,6 +10,7 @@
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 
+#include "OpenGLEngine/Core/MouseCodes.h"
 #include "OpenGLEngine/Scripting/ScriptEngine.h"
 #include "OpenGLEngine/Physic/PhysicEngine.h"
 
@@ -109,10 +110,11 @@ namespace OpenGLEngine
 		m_EditorCamera->Update();
 
 		m_SceneManager->update(dt);
+
+		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
 		m_EditorViewport.Update(*m_EditorCamera);
 
 		m_Viewport.Render(m_SceneManager->getActiveScene());
-		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -261,13 +263,12 @@ namespace OpenGLEngine
 		}
 		ImGui::End();
 
-		ImGui::Begin("Test");
+		/*ImGui::Begin("Test");
 		{
 			if (m_TextureTest)
 				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
 		}
-		ImGui::End();
-		
+		ImGui::End();*/
 
 		if (m_optionMenu)
 		{
@@ -280,6 +281,23 @@ namespace OpenGLEngine
 	void Editor::OnEvent(Event& e)
 	{
 		m_EditorCamera->OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(std::bind(&Editor::OnMouseButtonPressed, this, std::placeholders::_1));
+	}
+
+	bool Editor::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		/*if (!m_EditorViewport.IsViewportHovered())
+			return false;
+
+		if (e.GetMouseButton() == Mouse::Button0)
+		{
+			m_SceneHierarchy.m_SelectedEntity = m_EditorViewport.GetHoveredEntity();
+			return true;
+		}*/
+
+		return false;
 	}
 
 	void Editor::InitImGuiStyle()
@@ -325,7 +343,7 @@ namespace OpenGLEngine
 			"TitleBg",
 			"TitleBgActive",
 			"TitleBgCollapsed",
-			"ImGuiCol_Border"
+			"Border"
 		};
 	}
 
@@ -359,21 +377,22 @@ namespace OpenGLEngine
 				ImGui::StyleColorsLight();
 
 			ImGuiStyle* style = &ImGui::GetStyle();
+			ImVec4* colors = style->Colors;
 
-			for (int color : m_ImGuiColor)
+			for (int temp1 = 0; temp1 < m_ImGuiColor.size(); temp1++)
 			{
-				m_ThemeColor[color] = { style->Colors[color].x, style->Colors[color].y, style->Colors[color].z, style->Colors[color].w };
+				m_ThemeColor[m_ImGuiColor[temp1]] = { colors[m_ImGuiColor[temp1]].x, colors[m_ImGuiColor[temp1]].y, colors[m_ImGuiColor[temp1]].z, colors[m_ImGuiColor[temp1]].w };
 			}
 
-			for (int i = 0; i < m_ImGuiColor.size(); i++)
+			for (int temp2 = 0; temp2 < m_ImGuiColor.size(); temp2++)
 			{
-				std::string temp("##" + std::string(m_ThemeName[i]));
-				ImGui::Text(m_ThemeName[i]); ImGui::SameLine(); ImGui::ColorEdit4(temp.c_str(), glm::value_ptr(m_ThemeColor[i]));
+				std::string temp("##" + std::string(m_ThemeName[temp2]));
+				ImGui::Text(m_ThemeName[temp2]); ImGui::SameLine(); ImGui::ColorEdit4(temp.c_str(), glm::value_ptr(m_ThemeColor[m_ImGuiColor[temp2]]));
 			}
 
-			for (int color : m_ImGuiColor)
+			for (int temp3 = 0; temp3 < m_ImGuiColor.size(); temp3++)
 			{
-				style->Colors[color] = ImColor(m_ThemeColor[color].x, m_ThemeColor[color].y, m_ThemeColor[color].z, m_ThemeColor[color].w);
+				colors[m_ImGuiColor[temp3]] = ImVec4(m_ThemeColor[m_ImGuiColor[temp3]].x, m_ThemeColor[m_ImGuiColor[temp3]].y, m_ThemeColor[m_ImGuiColor[temp3]].z, m_ThemeColor[m_ImGuiColor[temp3]].w);
 			}
 		}
 

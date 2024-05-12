@@ -18,6 +18,8 @@
 
 #include "mbedtls/aes.h"
 
+#include <yaml-cpp/yaml.h>
+
 #include "Export.h"
 
 namespace OpenGLEngine
@@ -348,6 +350,20 @@ namespace OpenGLEngine
 			"TitleBgCollapsed",
 			"Border"
 		};
+
+		std::ifstream fin(std::filesystem::current_path().generic_string() + "/theme.ini");
+		if (fin.is_open())
+		{
+			YAML::Node data = YAML::Load(fin);
+			for (int temp = 0; temp < m_ImGuiColor.size(); temp++)
+			{
+				m_ThemeColor[m_ImGuiColor[temp]] = { data[m_ThemeName[temp]]["x"].as<float>(), data[m_ThemeName[temp]]["y"].as<float>(), data[m_ThemeName[temp]]["z"].as<float>(), data[m_ThemeName[temp]]["w"].as<float>() };
+				ImGuiStyle* style = &ImGui::GetStyle();
+				ImVec4* colors = style->Colors;
+				colors[m_ImGuiColor[temp]] = ImVec4(m_ThemeColor[m_ImGuiColor[temp]].x, m_ThemeColor[m_ImGuiColor[temp]].y, m_ThemeColor[m_ImGuiColor[temp]].z, m_ThemeColor[m_ImGuiColor[temp]].w);
+			}
+			fin.close();
+		}
 	}
 
 	void Editor::OptionMenu()
@@ -359,6 +375,25 @@ namespace OpenGLEngine
 
 			if (ImGui::Button("Theme", ImVec2(230 - 15, 39)))
 				m_optionTab = 0;
+
+			if (ImGui::Button("Save", ImVec2(230 - 15, 39)))
+			{
+				YAML::Emitter out;
+				out << YAML::BeginMap;
+				for (int temp = 0; temp < m_ImGuiColor.size(); temp++)
+				{
+					out << m_ThemeName[temp] << YAML::BeginMap;
+					out << "x" << m_ThemeColor[m_ImGuiColor[temp]].x;
+					out << "y" << m_ThemeColor[m_ImGuiColor[temp]].y;
+					out << "z" << m_ThemeColor[m_ImGuiColor[temp]].z;
+					out << "w" << m_ThemeColor[m_ImGuiColor[temp]].w;
+					out << YAML::EndMap;
+				}
+				out << YAML::EndMap;
+				std::ofstream fout(std::filesystem::current_path().generic_string() + "/theme.ini");
+				fout << out.c_str();
+				fout.close();
+			}
 
 			if (ImGui::Button("Close", ImVec2(230 - 15, 39)))
 				m_optionMenu = false;

@@ -288,14 +288,17 @@ namespace OpenGLEngine
 
 	bool Editor::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		/*if (!m_EditorViewport.IsViewportHovered())
+		if (ImGuizmo::IsOver())
+			return false;
+
+		if (!m_EditorViewport.IsViewportHovered())
 			return false;
 
 		if (e.GetMouseButton() == Mouse::Button0)
 		{
 			m_SceneHierarchy.m_SelectedEntity = m_EditorViewport.GetHoveredEntity();
 			return true;
-		}*/
+		}
 
 		return false;
 	}

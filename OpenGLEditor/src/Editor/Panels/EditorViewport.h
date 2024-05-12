@@ -24,8 +24,8 @@ namespace OpenGLEngine
 
 		Entity* GetHoveredEntity() { return m_HoveredEntity; }
 
-		bool IsViewportFocused() { return m_ViewportFocused; }
-		bool IsViewportHovered() { return m_ViewportHovered; }
+		inline bool const IsViewportFocused() const { return m_ViewportFocused; }
+		inline bool const IsViewportHovered() const { return m_ViewportHovered; }
 	private:
 		std::shared_ptr<Framebuffer> m_EditorFrameBuffer;
 		glm::vec2 m_EditorViewportSize = { 0.0f, 0.0f };

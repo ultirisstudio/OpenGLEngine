@@ -51,7 +51,7 @@ namespace OpenGLEngine
 		{
 			int pixelData = m_EditorFrameBuffer->ReadPixel(1, mouseX, mouseY);
 			
-			std::cout << "Pixel data = " << pixelData << std::endl;
+			//std::cout << "Pixel data = " << pixelData << std::endl;
 			//std::cout << ((pixelData < 0) ? "" : scene.getEntities()->at(pixelData).GetName()) << std::endl;
 
 			m_HoveredEntity = scene.GetEntityByUUID(pixelData);
@@ -141,9 +141,13 @@ namespace OpenGLEngine
 			if (ImGuizmo::IsUsing())
 			{
 				if (ImGuizmo::IsOver())
+				{
 					camera.useGuizmo();
+				}
 				else
+				{
 					camera.unuseGuizmo();
+				}
 
 				glm::vec3 position, scale;
 				glm::quat rotationQuat;
@@ -156,7 +160,9 @@ namespace OpenGLEngine
 				tc.Scale = scale;
 			}
 			else
+			{
 				camera.unuseGuizmo();
+			}
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////

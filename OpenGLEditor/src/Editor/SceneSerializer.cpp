@@ -17,6 +17,8 @@
 #include <OpenGLEngine/Core/KeyCodes.h>
 //#include <OpenGLEngine/Core/UUID.h>
 
+#include "Importer/TextureConfigImporter.h"
+
 #include <fstream>
 
 namespace YAML
@@ -307,8 +309,6 @@ namespace OpenGLEngine
 				auto materialComponent = component["MaterialComponent"];
 				if (materialComponent)
 				{
-					//TODO : implements load of the texture config file
-
 					auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
 
 					bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
@@ -330,27 +330,62 @@ namespace OpenGLEngine
 
 					if (hasAlbedo)
 					{
-						mc.addTexture("albedo", materialComponent["albedoMap"].as<std::string>());
+						std::string albedoPath = materialComponent["albedoMap"].as<std::string>();
+
+						mc.addTexture("albedo", albedoPath);
+
+						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(albedoPath))
+						{
+							Renderer::m_SceneData.m_ResourceManager.CreateTexture(albedoPath, TextureConfigImporter::ImportTextureConfig(albedoPath));
+						}
 					}
 
 					if (hasNormal)
 					{
-						mc.addTexture("normal", materialComponent["normalMap"].as<std::string>());
+						std::string normalPath = materialComponent["normalMap"].as<std::string>();
+
+						mc.addTexture("normal", normalPath);
+
+						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(normalPath))
+						{
+							Renderer::m_SceneData.m_ResourceManager.CreateTexture(normalPath, TextureConfigImporter::ImportTextureConfig(normalPath));
+						}
 					}
 
 					if (hasMetallic)
 					{
-						mc.addTexture("metallic", materialComponent["metallicMap"].as<std::string>());
+						std::string metallicPath = materialComponent["metallicMap"].as<std::string>();
+
+						mc.addTexture("metallic", metallicPath);
+
+						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(metallicPath))
+						{
+							Renderer::m_SceneData.m_ResourceManager.CreateTexture(metallicPath, TextureConfigImporter::ImportTextureConfig(metallicPath));
+						}
 					}
 
 					if (hasRoughness)
 					{
-						mc.addTexture("roughness", materialComponent["roughnessMap"].as<std::string>());
+						std::string roughnessPath = materialComponent["roughnessMap"].as<std::string>();
+
+						mc.addTexture("roughness", roughnessPath);
+
+						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(roughnessPath))
+						{
+							Renderer::m_SceneData.m_ResourceManager.CreateTexture(roughnessPath, TextureConfigImporter::ImportTextureConfig(roughnessPath));
+						}
 					}
 
 					if (hasAO)
 					{
-						mc.addTexture("ao", materialComponent["aoMap"].as<std::string>());
+						std::string aoPath = materialComponent["aoMap"].as<std::string>();
+
+						mc.addTexture("ao", aoPath);
+
+						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(aoPath))
+						{
+							Renderer::m_SceneData.m_ResourceManager.CreateTexture(aoPath, TextureConfigImporter::ImportTextureConfig(aoPath));
+						}
 					}
 				}
 

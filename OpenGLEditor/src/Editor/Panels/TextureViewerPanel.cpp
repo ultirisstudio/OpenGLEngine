@@ -3,59 +3,12 @@
 #include <iostream>
 #include <imgui.h>
 
+#include "../Importer/TextureConfigImporter.h"
+
 #include <OpenGLEngine/Renderer/Renderer.h>
 
 namespace OpenGLEngine
 {
-	namespace Utils
-	{
-		static const char* TextureWrapToChar(TextureWrap wrap)
-		{
-			switch (wrap)
-			{
-			case TextureWrap::REPEAT: return "Repeat";
-			case TextureWrap::MIRRORED_REPEAT: return "Mirrored Repeat";
-			case TextureWrap::CLAMP_TO_EDGE: return "Clamp to Edge";
-			case TextureWrap::CLAMP_TO_BORDER: return "Clamp to Border";
-			}
-			return "Unknown";
-		}
-
-		static const char* TextureFilterToChar(TextureFilter filter)
-		{
-			switch (filter)
-			{
-			case TextureFilter::NEAREST: return "Nearest";
-			case TextureFilter::LINEAR: return "Linear";
-			case TextureFilter::NEAREST_MIPMAP_NEAREST: return "Nearest Mipmap Nearest";
-			case TextureFilter::LINEAR_MIPMAP_NEAREST: return "Linear Mipmap Nearest";
-			case TextureFilter::NEAREST_MIPMAP_LINEAR: return "Nearest Mipmap Linear";
-			case TextureFilter::LINEAR_MIPMAP_LINEAR: return "Linear Mipmap Linear";
-			}
-			return "Unknown";
-		}
-
-		static TextureWrap CharToTextureWrap(const char* wrap)
-		{
-			if (strcmp(wrap, "Repeat") == 0) return TextureWrap::REPEAT;
-			if (strcmp(wrap, "Mirrored Repeat") == 0) return TextureWrap::MIRRORED_REPEAT;
-			if (strcmp(wrap, "Clamp to Edge") == 0) return TextureWrap::CLAMP_TO_EDGE;
-			if (strcmp(wrap, "Clamp to Border") == 0) return TextureWrap::CLAMP_TO_BORDER;
-			return TextureWrap::REPEAT;
-		}
-
-		static TextureFilter CharToTextureFilter(const char* filter)
-		{
-			if (strcmp(filter, "Nearest") == 0) return TextureFilter::NEAREST;
-			if (strcmp(filter, "Linear") == 0) return TextureFilter::LINEAR;
-			if (strcmp(filter, "Nearest Mipmap Nearest") == 0) return TextureFilter::NEAREST_MIPMAP_NEAREST;
-			if (strcmp(filter, "Linear Mipmap Nearest") == 0) return TextureFilter::LINEAR_MIPMAP_NEAREST;
-			if (strcmp(filter, "Nearest Mipmap Linear") == 0) return TextureFilter::NEAREST_MIPMAP_LINEAR;
-			if (strcmp(filter, "Linear Mipmap Linear") == 0) return TextureFilter::LINEAR_MIPMAP_LINEAR;
-			return TextureFilter::NEAREST;
-		}
-	}
-
 	TextureViewerPanel::TextureViewerPanel(std::filesystem::path path) : m_TexturePath(path)
 	{
 		m_Texture = Renderer::m_SceneData.m_ResourceManager.GetTexture(m_TexturePath.string());
@@ -181,7 +134,7 @@ namespace OpenGLEngine
 			{
 				m_Texture = Renderer::m_SceneData.m_ResourceManager.UpdateTexture(m_TexturePath.string(), m_Specification);
 
-				//TODO : Update config texture file
+				TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 			}
 
 			if (ImGui::Button("Close"))

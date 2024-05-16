@@ -1,8 +1,9 @@
 #include "ContentBrowserPanel.h"
 
-#include <OpenGLEngine/Renderer/Renderer.h>
-
 #include "imgui.h"
+#include "../Importer/TextureConfigImporter.h"
+
+#include <OpenGLEngine/Renderer/Renderer.h>
 
 namespace OpenGLEngine
 {
@@ -57,30 +58,34 @@ namespace OpenGLEngine
 			std::filesystem::path relativePath(path);
 			std::string itemPath = relativePath.string();
 
+			std::string extension = GetFileExtension(directoryEntry);
+
+			if (extension == "ultconf")
+			{
+				continue;
+			}
+
 			ImGui::PushID(filenameString.c_str());
 
 			std::shared_ptr<Texture> icon;
-			std::string extension = GetFileExtension(directoryEntry);
 
 			if (directoryEntry.is_directory())
 			{
 				icon = m_DirectoryIcon;
-			}
+			} 
 			else if (extension == "obj")
 			{
 				icon = m_FileOBJIcon;
 			}
 			else if (extension == "png" || extension == "jpg")
 			{
-				//TODO : load texture config file
-
 				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath))
 				{
 					icon = Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath);
 				}
 				else
 				{
-					TextureSpecification spec;
+					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
 					icon = Renderer::m_SceneData.m_ResourceManager.CreateTexture(itemPath, spec);
 				}
 			}

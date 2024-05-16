@@ -109,6 +109,9 @@ namespace OpenGLEngine
 
 	void Editor::OnUpdate(double dt)
 	{
+		CalculateLatency();
+		Application::Get().GetWindow().SetTitle("OpenGLEditor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
+
 		m_EditorCamera->Update();
 
 		m_SceneManager->update(dt);
@@ -435,5 +438,17 @@ namespace OpenGLEngine
 		}
 
 		ImGui::End();
+	}
+
+	void Editor::CalculateLatency()
+	{
+		double currentTime = Renderer::GetTime();
+		nb_frame++;
+		if (currentTime - last_time >= 1.0) {
+			latency = (1000.0 / double(nb_frame));
+			fps = nb_frame;
+			nb_frame = 0;
+			last_time += 1.0;
+		}
 	}
 }

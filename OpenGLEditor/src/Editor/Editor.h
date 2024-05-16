@@ -67,5 +67,12 @@ namespace OpenGLEngine
 		std::vector<unsigned int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;
 		std::map<unsigned int, glm::vec4> m_ThemeColor;
+	private:
+		void CalculateLatency();
+
+		double last_time = Renderer::GetTime();
+		int nb_frame = 0;
+		int fps = 0;
+		int latency = 0;
 	};
 }

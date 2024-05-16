@@ -10,9 +10,20 @@
 
 namespace OpenGLEngine
 {
-	MaterialComponentPanel::MaterialComponentPanel() : m_NoTexture(*Renderer::m_SceneData.m_ResourceManager.getTexture("Assets/Textures/3d-modeling.png", false))
+	MaterialComponentPanel::MaterialComponentPanel()
 	{
+		if (Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png"))
+		{
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png");
+		}
+		else
+		{
+			TextureSpecification spec;
+			spec.flip = true;
+			spec.alpha = true;
 
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.CreateTexture("Assets/Icons/no_texture.png", spec);
+		}
 	}
 
 	void MaterialComponentPanel::Render(Entity* entity)
@@ -36,7 +47,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("Albedo texture: ");
 
-				id = mc.GetMaterial().hasTexture("albedo") ? mc.GetMaterial().getTexture("albedo")->GetID() : m_NoTexture.GetID();
+				id = mc.GetMaterial().hasTexture("albedo") ? mc.GetMaterial().getTexture("albedo")->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -63,7 +74,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("Normal texture: ");
 
-				id = mc.GetMaterial().hasTexture("normal") ? mc.GetMaterial().getTexture("normal")->GetID() : m_NoTexture.GetID();
+				id = mc.GetMaterial().hasTexture("normal") ? mc.GetMaterial().getTexture("normal")->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -87,7 +98,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("Metallic texture: ");
 
-				id = mc.GetMaterial().hasTexture("metallic") ? mc.GetMaterial().getTexture("metallic")->GetID() : m_NoTexture.GetID();
+				id = mc.GetMaterial().hasTexture("metallic") ? mc.GetMaterial().getTexture("metallic")->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -114,7 +125,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("Roughness texture: ");
 
-				id = mc.GetMaterial().hasTexture("roughness") ? mc.GetMaterial().getTexture("roughness")->GetID() : m_NoTexture.GetID();
+				id = mc.GetMaterial().hasTexture("roughness") ? mc.GetMaterial().getTexture("roughness")->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -141,7 +152,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("AO texture: ");
 
-				id = mc.GetMaterial().hasTexture("ao") ? mc.GetMaterial().getTexture("ao")->GetID() : m_NoTexture.GetID();
+				id = mc.GetMaterial().hasTexture("ao") ? mc.GetMaterial().getTexture("ao")->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())

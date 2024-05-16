@@ -9,9 +9,20 @@
 
 namespace OpenGLEngine
 {
-	TerrainComponentPanel::TerrainComponentPanel() : m_NoTexture(*Renderer::m_SceneData.m_ResourceManager.getTexture("Assets/Textures/3d-modeling.png", false))
+	TerrainComponentPanel::TerrainComponentPanel()
 	{
-		
+		if (Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png"))
+		{
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png");
+		}
+		else
+		{
+			TextureSpecification spec;
+			spec.flip = true;
+			spec.alpha = true;
+
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.CreateTexture("Assets/Icons/no_texture.png", spec);
+		}
 	}
 
 	void TerrainComponentPanel::Render(Entity* entity)
@@ -33,7 +44,17 @@ namespace OpenGLEngine
 
 				ImGui::Text("Heightmap texture: ");
 
-				unsigned int id = tc.GetHeightMapPath() != "" ? Renderer::m_SceneData.m_ResourceManager.getTexture(tc.GetHeightMapPath(), false)->GetID() : m_NoTexture.GetID();
+				unsigned int id;
+
+				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(tc.GetHeightMapPath()))
+				{
+					id = Renderer::m_SceneData.m_ResourceManager.GetTexture(tc.GetHeightMapPath())->GetID();
+				}
+				else
+				{
+					TextureSpecification spec;
+					id = Renderer::m_SceneData.m_ResourceManager.CreateTexture(tc.GetHeightMapPath(), spec)->GetID();
+				}
 
 				ImGui::ImageButton((ImTextureID)id, {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
@@ -59,6 +80,7 @@ namespace OpenGLEngine
 
 				ImGui::SliderInt("Resolution", &tc.rez, 1, 100);
 				ImGui::SliderInt("Texture scale", &tc.textureScale, 1, 100);
+				ImGui::SliderFloat("Height multiply", &tc.heightMult, 16.0f, 512.0f);
 
 				ImGui::TreePop();
 			}

@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+#include "TextureViewerPanel.h"
+
 namespace OpenGLEngine
 {
 	class ContentBrowserPanel
@@ -24,5 +26,7 @@ namespace OpenGLEngine
 		std::shared_ptr<Texture> m_FileOBJIcon;
 		std::shared_ptr<Texture> m_FileOtherIcon;
 		std::shared_ptr<Texture> m_Temp;
+
+		std::shared_ptr<TextureViewerPanel> m_TextureViewerPanel;
 	};
 }

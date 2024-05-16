@@ -5,43 +5,49 @@
 
 namespace OpenGLEngine
 {
-	std::shared_ptr<Texture> ResourceManager::getTexture(const std::string& id, bool gamma)
+	std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string& id)
+	{
+		if (m_Textures.find(id) != m_Textures.cend())
+			return m_Textures.at(id);
+		else
+			return nullptr;
+	}
+
+	std::shared_ptr<Model> ResourceManager::GetModel(const std::string& id)
+	{
+		if (m_Models.find(id) != m_Models.cend())
+			return m_Models.at(id);
+		else
+			return nullptr;
+	}
+
+	std::shared_ptr<Texture> ResourceManager::CreateTexture(const std::string& id, const TextureSpecification& specification)
+	{
+		if (m_Textures.find(id) != m_Textures.cend())
+			return m_Textures.at(id);
+		
+		m_Textures[id] = std::make_shared<Texture>(id, specification);
+		return m_Textures[id];
+	}
+
+	std::shared_ptr<Model> ResourceManager::CreateModel(const std::string& id)
+	{
+		if (m_Models.find(id) != m_Models.cend())
+			return m_Models.at(id);
+
+		m_Models[id] = std::make_shared<Model>(id);
+		return m_Models[id];
+	}
+
+	std::shared_ptr<Texture> ResourceManager::UpdateTexture(const std::string& id, const TextureSpecification& specification)
 	{
 		if (m_Textures.find(id) != m_Textures.cend())
 		{
-			return m_Textures.at(id);
+			m_Textures[id] = std::make_shared<Texture>(id, specification);
+			return m_Textures[id];
 		}
-		else
-		{
-			m_Textures[id] = Texture::CreateTexture(id, gamma);
-			return m_Textures.at(id);
-		}
-	}
 
-	std::shared_ptr<Material> ResourceManager::getMaterial(const std::string& id)
-	{
-		if (m_Materials.find(id) != m_Materials.cend())
-		{
-			return m_Materials.at(id);
-		}
-		else
-		{
-			m_Materials[id] = Material::CreateMaterial();
-			return m_Materials.at(id);
-		}
-	}
-
-	std::shared_ptr<Model> ResourceManager::getModel(const std::string& id)
-	{
-		if (m_Models.find(id) != m_Models.cend())
-		{
-			return m_Models.at(id);
-		}
-		else
-		{
-			m_Models[id] = Model::CreateModel(id);
-			return m_Models.at(id);
-		}
+		return nullptr;
 	}
 
 	void ResourceManager::Reset()
@@ -51,18 +57,12 @@ namespace OpenGLEngine
 			texture.second.reset();
 		}
 
-		for (auto& material : m_Materials)
-		{
-			material.second.reset();
-		}
-
 		for (auto& model : m_Models)
 		{
 			model.second.reset();
 		}
 
 		m_Textures.clear();
-		m_Materials.clear();
 		m_Models.clear();
 	}
 }

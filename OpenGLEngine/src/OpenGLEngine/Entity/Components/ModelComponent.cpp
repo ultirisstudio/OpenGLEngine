@@ -20,7 +20,15 @@ namespace OpenGLEngine
 
 	void ModelComponent::SetModel(const std::string& path)
 	{
-		m_Model = OpenGLEngine::Renderer::m_SceneData.m_ResourceManager.getModel(path);
+		if (Renderer::m_SceneData.m_ResourceManager.GetModel(path))
+		{
+			m_Model = Renderer::m_SceneData.m_ResourceManager.GetModel(path);
+		}
+		else
+		{
+			m_Model = Renderer::m_SceneData.m_ResourceManager.CreateModel(path);
+		}
+
 		m_ModelPath = path;
 
 		for (auto& [name, mesh] : m_Model->GetMeshes())

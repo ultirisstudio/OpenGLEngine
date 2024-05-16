@@ -21,7 +21,7 @@ namespace OpenGLEngine
 	private:
 		std::map<std::string, std::shared_ptr<float>> m_floats;
 		std::map<std::string, std::shared_ptr<glm::vec3>> m_vec3s;
-		std::map<std::string, std::shared_ptr<Texture>> m_textures;
+		std::map<std::string, std::string> m_textures;
 		std::map<std::string, std::shared_ptr<CubeMap>> m_cubemaps;
 		std::map<std::string, std::shared_ptr<bool>> m_booleans;
 
@@ -37,7 +37,7 @@ namespace OpenGLEngine
 
 		std::shared_ptr<float> getFloat(const std::string& id) const;
 		std::shared_ptr<glm::vec3> getVec3(const std::string& id) const;
-		std::shared_ptr<Texture> getTexture(const std::string& id) const;
+		Texture* getTexture(const std::string& id) const;
 		std::shared_ptr<CubeMap> getCubemap(const std::string& id) const;
 		std::shared_ptr<bool> getBoolean(const std::string& id) const;
 

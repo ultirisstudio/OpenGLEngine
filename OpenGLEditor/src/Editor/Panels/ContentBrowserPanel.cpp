@@ -8,15 +8,27 @@ namespace OpenGLEngine
 {
 	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory)
 	{
-		m_DirectoryIcon = Texture::CreateTexture("Icons/texture_dossier.png", false);
-		m_FilePNGIcon = Texture::CreateTexture("Icons/texture_png.png", false);
-		m_FileJPGIcon = Texture::CreateTexture("Icons/texture_jpg.png", false);
-		m_FileOBJIcon = Texture::CreateTexture("Icons/texture_obj.png", false);
-		m_FileOtherIcon = Texture::CreateTexture("Icons/texture_texte.png", false);
+		TextureSpecification spec;
+		spec.flip = true;
+		spec.alpha = true;
+
+		m_DirectoryIcon = Texture::CreateTexture("Assets/Icons/texture_dossier.png", spec);
+		m_FilePNGIcon = Texture::CreateTexture("Assets/Icons/texture_png.png", spec);
+		m_FileJPGIcon = Texture::CreateTexture("Assets/Icons/texture_jpg.png", spec);
+		m_FileOBJIcon = Texture::CreateTexture("Assets/Icons/texture_obj.png", spec);
+		m_FileOtherIcon = Texture::CreateTexture("Assets/Icons/texture_texte.png", spec);
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()
 	{
+		if (m_TextureViewerPanel)
+		{
+			if (!m_TextureViewerPanel->IsOpen())
+				m_TextureViewerPanel.reset();
+			else
+				m_TextureViewerPanel->OnImGuiRender();
+		}
+
 		ImGui::Begin("Content Browser");
 
 		if (m_CurrentDirectory != std::filesystem::path(m_BaseDirectory))
@@ -47,22 +59,28 @@ namespace OpenGLEngine
 
 			ImGui::PushID(filenameString.c_str());
 
-			std::weak_ptr<Texture> icon;
+			std::shared_ptr<Texture> icon;
+			std::string extension = GetFileExtension(directoryEntry);
+
 			if (directoryEntry.is_directory())
 			{
 				icon = m_DirectoryIcon;
 			}
-			else if (GetFileExtension(directoryEntry) == "obj")
+			else if (extension == "obj")
 			{
 				icon = m_FileOBJIcon;
 			}
-			else if (GetFileExtension(directoryEntry) == "png")
+			else if (extension == "png" || extension == "jpg")
 			{
-				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
-			}
-			else if (GetFileExtension(directoryEntry) == "jpg")
-			{
-				icon = Renderer::m_SceneData.m_ResourceManager.getTexture(itemPath, false);
+				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath))
+				{
+					icon = Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath);
+				}
+				else
+				{
+					TextureSpecification spec;
+					icon = Renderer::m_SceneData.m_ResourceManager.CreateTexture(itemPath, spec);
+				}
 			}
 			else
 			{
@@ -70,10 +88,20 @@ namespace OpenGLEngine
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon.lock()->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+			ImGui::ImageButton((ImTextureID)icon->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
 
 			if (ImGui::BeginPopupContextItem())
 			{
+				if (extension == "png" || extension == "jpg")
+				{
+					if (ImGui::MenuItem("Modify"))
+					{
+						m_TextureViewerPanel = std::make_shared<TextureViewerPanel>(relativePath);
+					}
+
+					ImGui::Separator();
+				}
+
 				if (ImGui::MenuItem("Delete"))
 				{
 					std::cout << filenameString.c_str() << std::endl;
@@ -103,7 +131,10 @@ namespace OpenGLEngine
 			{
 				if (directoryEntry.is_directory())
 					m_CurrentDirectory /= path.filename();
-
+				else if (extension == "png" || extension == "jpg")
+				{
+					m_TextureViewerPanel = std::make_shared<TextureViewerPanel>(relativePath);
+				}
 			}
 
 			size_t lastindex = filenameString.find_last_of(".");

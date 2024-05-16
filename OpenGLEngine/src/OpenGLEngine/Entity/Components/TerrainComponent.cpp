@@ -18,6 +18,8 @@ namespace OpenGLEngine
 
 		glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &m_MaxTessLevel);
 		std::cout << "Max available tess level: " << m_MaxTessLevel << std::endl;
+
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
 	}
 
 	Shader& TerrainComponent::GetShader()
@@ -29,11 +31,14 @@ namespace OpenGLEngine
 	{
 		m_Generated = true;
 
-		m_HeightMapTexture = std::make_shared<Texture>(m_HeightMapPath, false, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+		TextureSpecification spec;
+		spec.min_filter_param = TextureFilter::LINEAR_MIPMAP_LINEAR;
+		spec.mag_filter_param = TextureFilter::LINEAR;
+		m_HeightMapTexture = std::make_shared<Texture>(m_HeightMapPath, spec);
 
 		int width, height;
-		width = m_HeightMapTexture->GetWidth();
-		height = m_HeightMapTexture->GetHeight();
+		width = m_HeightMapTexture->GetSpecification().width;
+		height = m_HeightMapTexture->GetSpecification().height;
 
 		std::vector<float> vertices;
 		for (unsigned i = 0; i <= rez - 1; i++)
@@ -81,8 +86,6 @@ namespace OpenGLEngine
 		
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(1);
-
-		glPatchParameteri(GL_PATCH_VERTICES, 4);
 	}
 	void TerrainComponent::Draw()
 	{

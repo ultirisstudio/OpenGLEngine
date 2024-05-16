@@ -12,14 +12,17 @@ namespace OpenGLEngine
 	class ResourceManager
 	{
 	private:
-		std::map<std::string, std::shared_ptr<Material>> m_Materials;
 		std::map<std::string, std::shared_ptr<Texture>> m_Textures;
 		std::map<std::string, std::shared_ptr<Model>> m_Models;
 
 	public:
-		std::shared_ptr<Texture> getTexture(const std::string& id, bool gamma);
-		std::shared_ptr<Material> getMaterial(const std::string& id);
-		std::shared_ptr<Model> getModel(const std::string& id);
+		std::shared_ptr<Texture> GetTexture(const std::string& id);
+		std::shared_ptr<Model> GetModel(const std::string& id);
+
+		std::shared_ptr<Texture> CreateTexture(const std::string& id, const TextureSpecification& specification);
+		std::shared_ptr<Model> CreateModel(const std::string& id);
+
+		std::shared_ptr<Texture> UpdateTexture(const std::string& id, const TextureSpecification& specification);
 
 		void Reset();
 	};

@@ -290,7 +290,16 @@ namespace OpenGLEngine
 					std::string path = meshComponent["Path"].as<std::string>();
 					std::string name = meshComponent["Name"].as<std::string>();
 
-					Mesh* mesh = Renderer::m_SceneData.m_ResourceManager.getModel(path)->GetMesh(name);
+					Mesh* mesh;
+
+					if (Renderer::m_SceneData.m_ResourceManager.GetModel(path))
+					{
+						mesh = Renderer::m_SceneData.m_ResourceManager.GetModel(path)->GetMesh(name);
+					}
+					else
+					{
+						mesh = Renderer::m_SceneData.m_ResourceManager.CreateModel(path)->GetMesh(name);
+					}
 
 					auto& mc = deserializedEntity->AddComponent<MeshComponent>(name, mesh, path);
 				}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <OpenGLEngine/Resources/Texture.h>
 
 class Entity;
@@ -14,6 +15,6 @@ namespace OpenGLEngine
 
 		void Render(Entity* entity);
 	private:
-		Texture& m_NoTexture;
+		std::shared_ptr<Texture> m_NoTexture;
 	};
 }

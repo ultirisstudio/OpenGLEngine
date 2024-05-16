@@ -14,6 +14,6 @@ namespace OpenGLEngine
 
 		void Render(Entity* entity);
 	private:
-		Texture& m_NoTexture;
+		std::shared_ptr<Texture> m_NoTexture;
 	};
 }

@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <filesystem>
 
+#include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 
@@ -10,7 +11,18 @@ namespace OpenGLEngine
 {
 	ModelComponentPanel::ModelComponentPanel()
 	{
-		m_ModelTexture = Texture::CreateTexture("Icons/texture_obj.png", false);
+		if (Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/texture_obj.png"))
+		{
+			m_ModelTexture = Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/texture_obj.png");
+		}
+		else
+		{
+			TextureSpecification spec;
+			spec.flip = true;
+			spec.alpha = true;
+
+			m_ModelTexture = Renderer::m_SceneData.m_ResourceManager.CreateTexture("Assets/Icons/texture_obj.png", spec);
+		}
 	}
 
 	void ModelComponentPanel::Render(Entity* entity)

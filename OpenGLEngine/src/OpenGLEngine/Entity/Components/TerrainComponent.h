@@ -24,6 +24,7 @@ namespace OpenGLEngine
 		bool m_PolygonMode = false;
 		int rez = 20;
 		int textureScale = 1;
+		float heightMult = 16.0f;
 
 		void SetHeightMap(const std::string& path) { m_HeightMapPath = path; }
 

@@ -24,7 +24,7 @@ namespace OpenGLEngine
 	{
 		for (auto& texture : m_textures)
 		{
-			texture.second.reset();
+			//delete texture.second;
 		}
 
 		for (auto& cubemap : m_cubemaps)
@@ -50,7 +50,14 @@ namespace OpenGLEngine
 
 	void Material::addTexture(const std::string& id, const std::string& file, bool gamma)
 	{
-		m_textures[id] = Renderer::m_SceneData.m_ResourceManager.getTexture(file, gamma);
+		if (Renderer::m_SceneData.m_ResourceManager.GetTexture(file))
+		{
+			m_textures[id] = file;
+		}
+		else
+		{
+			m_textures[id] = file;
+		}
 	}
 
 	void Material::addCubemap(const std::string& id, CubeMap value)
@@ -79,7 +86,7 @@ namespace OpenGLEngine
 		return m_vec3s.at(id);
 	}
 
-	std::shared_ptr<Texture> Material::getTexture(const std::string& id) const
+	Texture* Material::getTexture(const std::string& id) const
 	{
 		if (m_textures.find(id) == m_textures.cend())
 		{
@@ -87,7 +94,12 @@ namespace OpenGLEngine
 			return nullptr;
 		}
 
-		return m_textures.at(id);
+		if (Renderer::m_SceneData.m_ResourceManager.GetTexture(m_textures.at(id)))
+		{
+			return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_textures.at(id)).get();
+		}
+
+		return nullptr;
 	}
 
 	std::shared_ptr<CubeMap> Material::getCubemap(const std::string& id) const

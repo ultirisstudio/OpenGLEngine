@@ -228,11 +228,16 @@ namespace OpenGLEngine
     void Framebuffer::Bind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
-        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+        //glViewport(0, 0, m_Specification.Width, m_Specification.Height);
     }
 
     void Framebuffer::Unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void Framebuffer::BindColorAttachment(uint32_t index) const
+    {
+        glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[index]);
     }
 }

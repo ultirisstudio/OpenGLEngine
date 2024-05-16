@@ -60,6 +60,8 @@ namespace OpenGLEngine
         void Bind() const;
         void Unbind() const;
 
+        void BindColorAttachment(uint32_t index = 0) const;
+
         static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);
     private:
         uint32_t m_ID;

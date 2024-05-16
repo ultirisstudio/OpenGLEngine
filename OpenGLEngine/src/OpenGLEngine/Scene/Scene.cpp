@@ -126,7 +126,10 @@ namespace OpenGLEngine
 	void Scene::OnRuntimeStart()
 	{
 		if (!m_ActiveCamera)
+		{
+			std::cout << "No active camera set!" << std::endl;
 			return;
+		}
 
 		m_OnRuntime = true;
 

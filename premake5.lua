@@ -39,3 +39,7 @@ group ""
 group "Editor"
 	include "OpenGLEditor"
 group ""
+
+group "Runtime"
+	include "OpenGLRuntime"
+group ""

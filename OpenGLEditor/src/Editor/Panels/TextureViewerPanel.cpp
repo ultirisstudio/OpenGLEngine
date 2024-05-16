@@ -39,8 +39,6 @@ namespace OpenGLEngine
 			ImGui::Text("Height: %d", m_Specification.height);
 			ImGui::Text("Channels: %d", m_Specification.channels);
 
-			ImGui::Separator();
-
 			ImGui::Checkbox("Alpha", &m_Specification.alpha);
 			ImGui::Checkbox("Gamma", &m_Specification.gamma);
 			ImGui::Checkbox("Flip Vertically", &m_Specification.flip);

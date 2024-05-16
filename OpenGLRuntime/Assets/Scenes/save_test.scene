@@ -1,69 +1,5 @@
 Scene: save_test
 Entities:
-  - Entity: Cube
-    ID: 4235703720
-    ParentID: 0
-    Components:
-      - TransformComponent:
-          Position: [0, 0, 0]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-  - Entity: cube
-    ID: 1546309783
-    ParentID: 4235703720
-    Components:
-      - TransformComponent:
-          Position: [0, -6.57221127, 0]
-          Rotation: [0, 0, 0]
-          Scale: [10, 0.100000001, 10]
-      - MaterialComponent:
-          hasAlbedo: false
-          hasNormal: false
-          hasMetallic: false
-          hasRoughness: false
-          hasAO: false
-          albedo: [1, 1, 1]
-          metallic: 0.5
-          roughness: 0.5
-          ao: 1
-      - MeshComponent:
-          Path: Assets/Models/cube.obj
-          Name: cube
-      - RigidBodyComponent:
-          enableGravity: false
-          bodyType: STATIC
-          mass: 1
-          friction: 0.300000012
-          bounciness: 0.300000012
-  - Entity: Sphere
-    ID: 2680883168
-    ParentID: 0
-    Components:
-      - TransformComponent:
-          Position: [0, 0, 0]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-  - Entity: sphere
-    ID: 215175290
-    ParentID: 2680883168
-    Components:
-      - TransformComponent:
-          Position: [0, 0, 0]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-      - MaterialComponent:
-          hasAlbedo: false
-          hasNormal: false
-          hasMetallic: false
-          hasRoughness: false
-          hasAO: false
-          albedo: [1, 1, 1]
-          metallic: 0.5
-          roughness: 0.5
-          ao: 1
-      - MeshComponent:
-          Path: Assets/Models/sphere.obj
-          Name: sphere
   - Entity: Plane
     ID: 202370376
     ParentID: 0
@@ -81,7 +17,7 @@ Entities:
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - MaterialComponent:
-          hasAlbedo: false
+          hasAlbedo: true
           hasNormal: false
           hasMetallic: false
           hasRoughness: false
@@ -90,9 +26,76 @@ Entities:
           metallic: 0.5
           roughness: 0.5
           ao: 1
+          albedoMap: C:\Users\rouff\Documents\Ultiris Projects\CallOf\Assets\Textures\diffuse.png
       - MeshComponent:
           Path: Assets/Models/plane.obj
           Name: plane
+  - Entity: Sphere
+    ID: 2680883168
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+  - Entity: sphere
+    ID: 215175290
+    ParentID: 2680883168
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - MaterialComponent:
+          hasAlbedo: true
+          hasNormal: false
+          hasMetallic: false
+          hasRoughness: false
+          hasAO: false
+          albedo: [1, 1, 1]
+          metallic: 0.5
+          roughness: 0.5
+          ao: 1
+          albedoMap: C:\Users\rouff\Documents\Ultiris Projects\CallOf\Assets\Textures\mars.png
+      - MeshComponent:
+          Path: Assets/Models/sphere.obj
+          Name: sphere
+  - Entity: Cube
+    ID: 4235703720
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+  - Entity: cube
+    ID: 1546309783
+    ParentID: 4235703720
+    Components:
+      - TransformComponent:
+          Position: [0, -6.57221127, 0]
+          Rotation: [0, 0, 0]
+          Scale: [10, 0.100000001, 10]
+      - MaterialComponent:
+          hasAlbedo: true
+          hasNormal: false
+          hasMetallic: false
+          hasRoughness: false
+          hasAO: false
+          albedo: [1, 1, 1]
+          metallic: 0.5
+          roughness: 0.5
+          ao: 1
+          albedoMap: C:\Users\rouff\Documents\Ultiris Projects\CallOf\Assets\Textures\OTskLEus.jpg
+      - MeshComponent:
+          Path: Assets/Models/cube.obj
+          Name: cube
+      - RigidBodyComponent:
+          enableGravity: false
+          bodyType: STATIC
+          mass: 1
+          friction: 0.300000012
+          bounciness: 0.300000012
   - Entity: Cube
     ID: 1772727391
     ParentID: 0
@@ -159,7 +162,7 @@ Entities:
           Rotation: [0, 0, 0]
           Scale: [1, 1, 1]
       - MaterialComponent:
-          hasAlbedo: false
+          hasAlbedo: true
           hasNormal: false
           hasMetallic: false
           hasRoughness: false
@@ -168,6 +171,7 @@ Entities:
           metallic: 0.5
           roughness: 0.5
           ao: 1
+          albedoMap: C:\Users\rouff\Documents\Ultiris Projects\CallOf\Assets\Textures\specular_2.jpg
       - MeshComponent:
           Path: Assets/Models/cube.obj
           Name: cube
@@ -194,7 +198,7 @@ Entities:
           Rotation: [4.0998043e-06, 0.186007306, 1.33644362e-05]
           Scale: [1, 1, 1]
       - MaterialComponent:
-          hasAlbedo: false
+          hasAlbedo: true
           hasNormal: false
           hasMetallic: false
           hasRoughness: false
@@ -203,6 +207,7 @@ Entities:
           metallic: 0.5
           roughness: 0.5
           ao: 1
+          albedoMap: C:\Users\rouff\Documents\Ultiris Projects\CallOf\Assets\Textures\specular_2.jpg
       - MeshComponent:
           Path: Assets/Models/cube.obj
           Name: cube

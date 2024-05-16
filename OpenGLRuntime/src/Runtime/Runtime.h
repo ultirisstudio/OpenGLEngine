@@ -22,8 +22,6 @@ namespace OpenGLEngine
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnUpdate(double dt) override;
-		void OnImGuiRender() override;
-		void OnEvent(Event& e) override;
 	private:
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<ScreenQuad> m_ScreenQuad;

@@ -36,16 +36,9 @@ namespace OpenGLEngine
 
 		Renderer::SetViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 
-		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\save_test.scene");
-
 		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
 		ScriptEngine::SetAppAssemblyPath(std::filesystem::current_path().generic_string() + "\\Assets\\Scripts\\CallOf.dll");
-
 		ScriptEngine::ReloadAssembly();
-
-		m_SceneManager->getActiveScene().OnRuntimeStart();
-		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 
 		m_ScreenQuad = std::make_unique<ScreenQuad>();
 
@@ -59,6 +52,10 @@ namespace OpenGLEngine
 		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 
 		m_FrameBuffer = Framebuffer::Create(spec);
+
+		m_SceneManager = std::make_unique<SceneManager>();
+		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\save_test.scene");
+		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 	}
 
 	void Runtime::OnDetach()
@@ -69,6 +66,11 @@ namespace OpenGLEngine
 
 	void Runtime::OnUpdate(double dt)
 	{
+		//m_Chronometer.restart();
+
+		if (Input::IsKeyPressed(Key::Space))
+			m_SceneManager->getActiveScene().OnRuntimeStart();
+
 		CalculateLatency();
 		Application::Get().GetWindow().SetTitle("Runtime [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
 
@@ -78,33 +80,22 @@ namespace OpenGLEngine
 			return;
 
 		m_FrameBuffer->Bind();
-
 		Renderer::Clear();
 		Renderer::ClearColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-
 		Renderer::BeginScene(m_SceneManager->getActiveScene());
+
 		Renderer::Render(*m_SceneManager->getActiveScene().getActiveCamera());
 
 		Renderer::RenderSkybox(*m_SceneManager->getActiveScene().getActiveCamera());
+
 		Renderer::EndScene();
-
 		m_FrameBuffer->Unbind();
-		
 		m_Shader->use();
-
 		m_FrameBuffer->BindColorAttachment();
-
 		m_ScreenQuad->Draw();
-	}
 
-	void Runtime::OnImGuiRender()
-	{
-		
-	}
-
-	void Runtime::OnEvent(Event& e)
-	{
-		
+		//std::cout << "Total Render: " << m_Chronometer2.getElapsedTime().milliseconds << "ms" << std::endl;
+		//m_Chronometer.stop();
 	}
 
 	void Runtime::CalculateLatency()

@@ -72,6 +72,8 @@ namespace OpenGLEngine
 			}
 			else if (extension == "png" || extension == "jpg")
 			{
+				//TODO : load texture config file
+
 				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath))
 				{
 					icon = Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath);

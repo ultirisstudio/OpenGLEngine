@@ -180,6 +180,8 @@ namespace OpenGLEngine
 			if (ImGui::Button("Apply"))
 			{
 				m_Texture = Renderer::m_SceneData.m_ResourceManager.UpdateTexture(m_TexturePath.string(), m_Specification);
+
+				//TODO : Update config texture file
 			}
 
 			if (ImGui::Button("Close"))

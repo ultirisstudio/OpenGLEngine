@@ -307,6 +307,8 @@ namespace OpenGLEngine
 				auto materialComponent = component["MaterialComponent"];
 				if (materialComponent)
 				{
+					//TODO : implements load of the texture config file
+
 					auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
 
 					bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();

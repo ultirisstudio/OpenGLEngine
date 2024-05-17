@@ -1,0 +1,44 @@
+Scene: voxels
+Entities:
+  - Entity: ChunkManager
+    ID: 3111698652
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - ScriptComponent:
+          scriptName: CallOf.ChunkManager
+  - Entity: Light1
+    ID: 1398575827
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0.0174532924, 1.57079637, 0]
+          Scale: [1, 1, 1]
+      - LightComponent:
+          lightType: Directional
+          color: [1, 1, 1]
+  - Entity: Light2
+    ID: 3289194265
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [0, 0, 0]
+          Rotation: [0.0174532924, -1.57079637, 0]
+          Scale: [1, 1, 1]
+      - LightComponent:
+          lightType: Directional
+          color: [1, 1, 1]
+  - Entity: Camera
+    ID: 1781377089
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [-1200, 400, 0]
+          Rotation: [-0.401425719, -0.0506145507, 0]
+          Scale: [1, 1, 1]
+      - CameraComponent:
+          fov: 45

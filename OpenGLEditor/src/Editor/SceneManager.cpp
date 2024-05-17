@@ -122,7 +122,7 @@ namespace OpenGLEngine
 	{
 		PhysicEngine::Reload();
 
-		//TODO : Clear scene entities
+		m_Scene->ClearEntities();
 
 		SceneSerializer serializer(*m_Scene);
 		serializer.DeserializeRuntime(filePath);

@@ -21,6 +21,7 @@ namespace OpenGLEngine
 
 		//dirlight params
 		glm::vec3 dir_color = { 1.0f, 1.0f, 1.0f };
+		float dir_power = 1.0f;
 
 		//pointlight params
 		glm::vec3 point_color = { 1.0f, 1.0f, 1.0f };

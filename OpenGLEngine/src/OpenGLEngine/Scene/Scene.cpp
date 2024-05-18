@@ -23,8 +23,7 @@ namespace OpenGLEngine
 		m_Path(""),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
-		m_LightsCount(0),
-		m_AmbientLight(1.0f)
+		m_LightsCount(0)
 	{
 		Init();
 	}
@@ -34,8 +33,7 @@ namespace OpenGLEngine
 		m_Path(""),
 		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
-		m_LightsCount(0),
-		m_AmbientLight(1.0f)
+		m_LightsCount(0)
 	{
 		Init();
 	}

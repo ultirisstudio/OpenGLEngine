@@ -7,25 +7,27 @@ in vec2 fTextureCoordinates;
 in vec3 fWorldPos;
 in vec3 fNormal;
 
+uniform samplerCube uIrradianceMap;
+
 // material parameters
 struct Material
 {
-    sampler2D albedoMap;
-    sampler2D normalMap;
-    sampler2D metallicMap;
-    sampler2D roughnessMap;
-    sampler2D aoMap;
+    bool use_albedo_texture;
+    bool use_normal_texture;
+    bool use_metallic_texture;
+    bool use_roughness_texture;
+    bool use_ao_texture;
 
     vec3 albedoColor;
     float metallic;
     float roughness;
     float ao;
 
-    bool use_albedo_texture;
-    bool use_normal_texture;
-    bool use_metallic_texture;
-    bool use_roughness_texture;
-    bool use_ao_texture;
+    sampler2D albedoMap;
+    sampler2D normalMap;
+    sampler2D metallicMap;
+    sampler2D roughnessMap;
+    sampler2D aoMap;
 };
 
 //Point light
@@ -44,6 +46,8 @@ uniform PointLight uPointLights[NR_POINT_LIGHTS];
 struct DirLight {    
     vec3 direction;
     vec3 color;
+    
+    float power;
 };
 #define NR_DIR_LIGHTS 4
 uniform int uUseDirLight;
@@ -52,8 +56,6 @@ uniform DirLight uDirLights[NR_DIR_LIGHTS];
 uniform Material uMaterial;
 
 uniform vec3 uCameraPosition;
-
-uniform samplerCube uIrradianceMap;
 
 uniform float uAmbiantLight;
 
@@ -75,7 +77,7 @@ vec3 getNormalFromMap()
     vec3 B  = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
-    return normalize(TBN * tangentNormal);
+    return normalize(TBN * tangentNormal).xyz;
 }
 // ----------------------------------------------------------------------------
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -130,7 +132,7 @@ vec3 calculatePointLightReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, v
     vec3 H = normalize(V + L);
     float distance = length(light.position - fWorldPos);
     float attenuation = 1.0 / ((1.0 + 0.09 * distance + 0.032 * (distance * distance)) * light.attenuation); //(light.constant + light.linear * distance + light.quadratic * (distance * distance)) (distance * distance)
-    vec3 radiance = light.color * attenuation;
+    vec3 radiance = (light.color * vec3(light.power)) * attenuation;
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
@@ -147,7 +149,7 @@ vec3 calculatePointLightReflectance(PointLight light, vec3 V, vec3 N, vec3 F0, v
 
     float NdotL = max(dot(N, L), 0.0);
 
-    return ((kD * albedo / PI + specular) * radiance * NdotL) * vec3(light.power);
+    return ((kD * albedo / PI + specular) * radiance * NdotL);
 }
 // ----------------------------------------------------------------------------
 vec3 calculateDirLightReflectance(DirLight light, vec3 V, vec3 N, vec3 F0, vec3 albedo, float roughness, float metallic)
@@ -155,7 +157,7 @@ vec3 calculateDirLightReflectance(DirLight light, vec3 V, vec3 N, vec3 F0, vec3 
     // calculate per-light radiance
     vec3 L = normalize(light.direction);
     vec3 H = normalize(V + L);
-    vec3 radiance = light.color;
+    vec3 radiance = light.color * vec3(light.power);
 
     float NDF = DistributionGGX(N, H, roughness);
     float G   = GeometrySmith(N, V, L, roughness);
@@ -180,11 +182,12 @@ void main()
     float metallic = uMaterial.metallic;
     float roughness = uMaterial.roughness;
     float ao = uMaterial.ao;
-    vec3 N = normalize(fNormal);
+    vec3 N = normalize(fNormal).xyz;
 
     if (uMaterial.use_albedo_texture)
     {
-        albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
+        //albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
+        albedo = texture(uMaterial.albedoMap, fTextureCoordinates).rgb;
     }
 
     if (uMaterial.use_normal_texture)
@@ -226,18 +229,20 @@ void main()
     vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
+
     vec3 irradiance = texture(uIrradianceMap, N).rgb;
-    vec3 diffuse      = albedo; // irradiance *
+    vec3 diffuse      = irradiance * albedo; // 
     vec3 ambient = (kD * diffuse) * ao;
     
-    vec3 result = (ambient * uAmbiantLight) + Lo;
+    vec3 result = (ambient) + Lo;
 
     // HDR tonemapping
     result = result / (result + vec3(1.0));
     // gamma correct
-    result = pow(result, vec3(1.0/2.2)); 
+    //result = pow(result, vec3(1.0/2.2)); 
 
     color = vec4(result, 1.0);
+    //color = vec4(irradiance, 1.0);
 
     outEntityID = uEntity;
 }

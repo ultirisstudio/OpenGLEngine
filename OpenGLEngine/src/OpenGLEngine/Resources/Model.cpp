@@ -66,7 +66,7 @@ namespace OpenGLEngine
 	Model::Model(const std::string& path) : m_Name("Unamed")
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_ImproveCacheLocality);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_FlipUVs | aiProcess_ImproveCacheLocality); // | aiProcess_OptimizeMeshes
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{

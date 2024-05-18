@@ -47,7 +47,6 @@ namespace OpenGLEngine
 		EntityMap* getEntities();
 
 		int m_LightsCount;
-		float m_AmbientLight;
 
 		bool isOnRuntime() { return m_OnRuntime; }
 

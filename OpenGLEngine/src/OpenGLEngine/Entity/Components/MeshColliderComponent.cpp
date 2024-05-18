@@ -26,11 +26,11 @@ namespace OpenGLEngine
         const int nbTriangles = mc.GetMesh().GetIndicesCount() / 3;
 
         float* vertices = new float[nbVertices];
-        for (int i = 0; i < nbVertices; i++)
+        for (int i = 0; i < nbVertices-3; i+=3)
         {
 			vertices[i] = mc.GetMesh().GetVertices()[i].position.x;
-			vertices[i] = mc.GetMesh().GetVertices()[i].position.y;
-			vertices[i] = mc.GetMesh().GetVertices()[i].position.z;
+			vertices[i+1] = mc.GetMesh().GetVertices()[i].position.y;
+			vertices[i+2] = mc.GetMesh().GetVertices()[i].position.z;
 		}
 
         int* indices = new int[nbIndices];

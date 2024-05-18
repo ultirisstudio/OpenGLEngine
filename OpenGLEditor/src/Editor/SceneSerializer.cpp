@@ -15,7 +15,6 @@
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
-//#include <OpenGLEngine/Core/UUID.h>
 
 #include "Importer/TextureConfigImporter.h"
 
@@ -163,13 +162,17 @@ namespace OpenGLEngine
 			if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 			{
 				out << YAML::Key << "lightType" << YAML::Value << "Directional";
+
 				out << YAML::Key << "color" << YAML::Value << lc.dir_color;
+				out << YAML::Key << "power" << YAML::Value << lc.dir_power;
 			}
 			else if (lc.lightType == LightComponent::LightType::POINT)
 			{
 				out << YAML::Key << "lightType" << YAML::Value << "Point";
 
 				out << YAML::Key << "color" << YAML::Value << lc.point_color;
+				out << YAML::Key << "attenuation" << YAML::Value << lc.point_attenuation;
+				out << YAML::Key << "power" << YAML::Value << lc.point_power;
 			}
 
 			out << YAML::EndMap;
@@ -396,12 +399,21 @@ namespace OpenGLEngine
 					{
 						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
 						lc.dir_color = lightComponent["color"].as<glm::vec3>();
+
+						if (lightComponent["power"])
+							lc.dir_power = lightComponent["power"].as<float>();
 					}
 
 					if (lightComponent["lightType"].as<std::string>() == "Point")
 					{
 						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
 						lc.point_color = lightComponent["color"].as<glm::vec3>();
+
+						if (lightComponent["attenuation"])
+							lc.point_attenuation = lightComponent["attenuation"].as<float>();
+
+						if (lightComponent["power"])
+							lc.point_power = lightComponent["power"].as<float>();
 					}
 				}
 

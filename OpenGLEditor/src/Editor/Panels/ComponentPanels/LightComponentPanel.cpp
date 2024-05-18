@@ -54,6 +54,9 @@ namespace OpenGLEngine
 				{
 					ImGui::Text("Directional light color: ");
 					ImGui::ColorEdit3("##dirlightcolor", glm::value_ptr(lc.dir_color));
+
+					ImGui::Text("Directional light power: ");
+					ImGui::SliderFloat("##dirpower", &lc.dir_power, 0.0f, 100.0f);
 				}
 				else if (lc.lightType == LightComponent::LightType::POINT)
 				{
@@ -61,7 +64,7 @@ namespace OpenGLEngine
 					ImGui::ColorEdit3("##pointlightcolor", glm::value_ptr(lc.point_color));
 
 					ImGui::Text("Point light attenuation: ");
-					ImGui::SliderFloat("##pointattenuation", &lc.point_attenuation, 0.0f, 2.0f);
+					ImGui::SliderFloat("##pointattenuation", &lc.point_attenuation, 0.001f, 10.0f);
 
 					ImGui::Text("Point light power: ");
 					ImGui::SliderFloat("##pointpower", &lc.point_power, 0.0f, 100.0f);

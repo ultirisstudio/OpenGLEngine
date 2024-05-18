@@ -21,6 +21,16 @@ Entities:
       - LightComponent:
           lightType: Directional
           color: [1, 1, 1]
+  - Entity: Camera
+    ID: 1781377089
+    ParentID: 0
+    Components:
+      - TransformComponent:
+          Position: [-500, 400, 0]
+          Rotation: [-0.575958669, -0.0506145507, 0]
+          Scale: [1, 1, 1]
+      - CameraComponent:
+          fov: 45
   - Entity: Light2
     ID: 3289194265
     ParentID: 0
@@ -32,13 +42,3 @@ Entities:
       - LightComponent:
           lightType: Directional
           color: [1, 1, 1]
-  - Entity: Camera
-    ID: 1781377089
-    ParentID: 0
-    Components:
-      - TransformComponent:
-          Position: [-1200, 400, 0]
-          Rotation: [-0.401425719, -0.0506145507, 0]
-          Scale: [1, 1, 1]
-      - CameraComponent:
-          fov: 45

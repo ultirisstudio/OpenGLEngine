@@ -150,12 +150,16 @@ namespace OpenGLEngine {
 
 			std::vector<glm::mat4> transforms;
 			UUID parentID = entity->second.m_Parent;
+
+			if (parentID == UUID::Null())
+				finalTransform = transform;
+
 			while (parentID != UUID::Null())
 			{
-				Entity* parent = &m_SceneData.m_Scene->getEntities()->find(parentID)->second;
-				if (parent != nullptr)
+				Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+				if (parent)
 				{
-					glm::mat4& parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
+					glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
 
 					transforms.push_back(parentTransform);
 

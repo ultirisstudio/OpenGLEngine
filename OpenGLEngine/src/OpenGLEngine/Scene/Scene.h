@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Scene/EditorCamera.h>
+#include <OpenGLEngine/Scene/Camera.h>
 #include <OpenGLEngine/Tools/Chronometer.h>
 #include <OpenGLEngine/Scene/Skybox.h>
 

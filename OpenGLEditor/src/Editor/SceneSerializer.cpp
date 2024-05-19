@@ -483,9 +483,9 @@ namespace OpenGLEngine
 					auto& bcc = deserializedEntity->AddComponent<BoxColliderComponent>();
 					bcc.Init();
 
-					bcc.mass = rigidBodyComponent["mass"].as<float>();
-					bcc.friction = rigidBodyComponent["friction"].as<float>();
-					bcc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+					//bcc.mass = rigidBodyComponent["mass"].as<float>();
+					//bcc.friction = rigidBodyComponent["friction"].as<float>();
+					//bcc.bounciness = rigidBodyComponent["bounciness"].as<float>();
 
 					bcc.UpdateMaterial();
 				}

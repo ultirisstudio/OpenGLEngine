@@ -203,6 +203,7 @@ namespace OpenGLEngine
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
 		entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
+		//entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalTorque(reactphysics3d::Vector3(0.0f, 10.0f, 0.0f));
 	}
 
 	static bool Input_IsKeyDown(KeyCode keycode)

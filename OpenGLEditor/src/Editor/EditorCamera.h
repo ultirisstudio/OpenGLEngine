@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseCamera.h"
+#include <OpenGLEngine/Scene/BaseCamera.h>
 
 #include <OpenGLEngine/Scene/Camera.h>
 #include <OpenGLEngine/Events/Event.h>

@@ -3,12 +3,12 @@
 #include <memory>
 
 #include "../SceneManager.h"
+#include "../EditorCamera.h"
 
 #include "SceneHierarchy.h"
 
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Renderer/Framebuffer.h>
-#include <OpenGLEngine/Scene/EditorCamera.h>
 
 namespace OpenGLEngine
 {

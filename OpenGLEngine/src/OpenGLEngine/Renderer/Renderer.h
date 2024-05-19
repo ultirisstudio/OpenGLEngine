@@ -1,6 +1,5 @@
 #pragma once
 
-#include <OpenGLEngine/Scene/EditorCamera.h>
 #include <OpenGLEngine/Resources/Texture.h>
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Materials/Material.h>

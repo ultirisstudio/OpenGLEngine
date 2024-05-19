@@ -8,6 +8,7 @@
 #include "OpenGLEngine/Core/Layer.h"
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
 #include "OpenGLEngine/Renderer/Renderer.h"
+#include <OpenGLEngine/Events/MouseEvent.h>
 
 int main(int argc, char** argv);
 

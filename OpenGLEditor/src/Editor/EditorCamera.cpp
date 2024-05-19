@@ -1,11 +1,10 @@
 #include "depch.h"
 
-#include <OpenGLEngine/Scene/EditorCamera.h>
-#include <OpenGLEngine/Core/Window.h>
-#include "OpenGLEngine/Core/Application.h"
+#include "EditorCamera.h"
 
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <OpenGLEngine/Core/Window.h>
+#include <OpenGLEngine/Core/Application.h>
+#include <OpenGLEngine/Core/Input.h>
 
 namespace OpenGLEngine
 {
@@ -91,7 +90,7 @@ namespace OpenGLEngine
 	{
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
-		glViewport(0, 0, static_cast<GLsizei>(m_ViewportSize.x), static_cast<GLsizei>(m_ViewportSize.y));
+		Renderer::SetViewport(0, 0, static_cast<int>(width), static_cast<int>(height));
 	}
 
 	void EditorCamera::OnEvent(Event& e)
@@ -162,10 +161,12 @@ namespace OpenGLEngine
 
 	bool EditorCamera::OnMousePressed(MouseButtonPressedEvent& e)
 	{
-		Window::WindowData& data = *(Window::WindowData*)glfwGetWindowUserPointer(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()));
+		//Window::WindowData& data = *(Window::WindowData*)glfwGetWindowUserPointer(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()));
 
-		m_lastMousePos.x = data.MousePos.x;
-		m_lastMousePos.y = data.MousePos.y;
+		//m_lastMousePos.x = data.MousePos.x;
+		m_lastMousePos.x = Input::GetMouseX();
+		//m_lastMousePos.y = data.MousePos.y;
+		m_lastMousePos.y = Input::GetMouseY();
 
 		if (m_CameraFocus)
 			m_moving = true;

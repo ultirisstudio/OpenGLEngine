@@ -29,7 +29,7 @@ namespace OpenGLEngine
 
 		void updateViewMatrix();
 
-		friend class EditorCamera;
+		//friend class EditorCamera;
 		friend class EntityPropertiePanel;
 		friend class CameraComponent;
 		friend class Scene;

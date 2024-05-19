@@ -144,13 +144,13 @@ namespace OpenGLEngine
                 reactphysics3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
                 reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
 
-        /*
-        reactphysics3d::TriangleVertexArray* triangleVertexArray =
+        
+        /*reactphysics3d::TriangleVertexArray* triangleVertexArray =
             new reactphysics3d::TriangleVertexArray(nbVertices, vertices, 3 * sizeof(float), normals, 3 * sizeof(float), nbTriangles, indices, 3 * sizeof(int),
                 reactphysics3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
                 reactphysics3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
-                reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-        */
+                reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);*/
+        
 
         std::vector<rp3d::Message> messages;
         reactphysics3d::TriangleMesh* triangleMesh = PhysicEngine::GetPhysicsCommon()->createTriangleMesh(*triangleVertexArray, messages);
@@ -178,7 +178,8 @@ namespace OpenGLEngine
 
         assert(triangleMesh != nullptr);
 
-        const reactphysics3d::Vector3 scaling(1, 1, 1);
+        glm::vec3 scale = entity->GetComponent<TransformComponent>().Scale;
+        const reactphysics3d::Vector3 scaling(scale.x, scale.y, scale.z);
 
         m_concaveMeshShape = PhysicEngine::GetPhysicsCommon()->createConcaveMeshShape(triangleMesh, scaling);
 

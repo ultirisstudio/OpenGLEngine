@@ -236,9 +236,10 @@ namespace OpenGLEngine
 					m_SceneManager->getActiveScene().CreateEntity("GameObject");
 				}
 
-				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddGameObject(CUBE);
-				if (ImGui::MenuItem("Create new Sphere")) m_SceneManager->AddGameObject(SPHERE);
-				if (ImGui::MenuItem("Create new Plane")) m_SceneManager->AddGameObject(PLANE);
+				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddCube();
+				if (ImGui::MenuItem("Create new Sphere")) m_SceneManager->AddSphere();
+				if (ImGui::MenuItem("Create new UV Sphere")) m_SceneManager->AddUVSphere();
+				if (ImGui::MenuItem("Create new Plane")) m_SceneManager->AddPlane();;
 				ImGui::EndMenu();
 			}
 

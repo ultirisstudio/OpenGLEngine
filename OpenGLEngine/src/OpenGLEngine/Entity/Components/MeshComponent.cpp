@@ -12,4 +12,9 @@ namespace OpenGLEngine
 	{
 		
 	}
+
+	void MeshComponent::GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode)
+	{
+		m_Mesh = new Mesh(vertices, indices, drawMode);
+	}
 }

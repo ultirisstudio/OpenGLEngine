@@ -7,6 +7,17 @@
 
 namespace OpenGLEngine
 {
+	enum class DrawMode
+	{
+		TRIANGLES = 0,
+		TRIANGLE_STRIP,
+		TRIANGLE_FAN,
+		LINES,
+		LINE_STRIP,
+		LINE_LOOP,
+		POINTS
+	};
+
 	class Mesh : public Asset
 	{
 	private:
@@ -14,11 +25,13 @@ namespace OpenGLEngine
 		unsigned int m_vbo;
 		unsigned int m_ebo;
 
+		DrawMode m_drawMode;
+
 		std::vector<Vertex> m_vertices;
 		std::vector<unsigned int> m_indices;
 
 	public:
-		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
 		~Mesh();
 
 		void draw() const;

@@ -13,6 +13,7 @@ namespace OpenGLEngine
 	{
 		CUBE,
 		SPHERE,
+		UV_SPHERE,
 		PLANE
 	};
 
@@ -25,8 +26,12 @@ namespace OpenGLEngine
 
 		Scene& getActiveScene() { return *m_Scene; }
 
-		void AddGameObject(DEFAULT_OBJECT_TYPE type);
 		void AddGameObject(const std::string& file);
+
+		void AddCube();
+		void AddSphere();
+		void AddUVSphere();
+		void AddPlane();
 
 		void SaveScene();
 		void LoadScene();

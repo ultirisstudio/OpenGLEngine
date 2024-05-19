@@ -20,6 +20,6 @@ namespace OpenGLEngine
 
 		bool HasMesh() { return !(m_Mesh == nullptr); }
 
-		void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) { m_Mesh = new Mesh(vertices, indices); }
+		void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
 	};
 }

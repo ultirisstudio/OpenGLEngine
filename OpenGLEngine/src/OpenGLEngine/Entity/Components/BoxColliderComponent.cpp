@@ -10,13 +10,17 @@
 
 namespace OpenGLEngine
 {
-	BoxColliderComponent::BoxColliderComponent() : collider(nullptr), rigidbody(nullptr)
+	BoxColliderComponent::BoxColliderComponent() : m_Collider(nullptr), mass(1.0f), friction(0.3f), bounciness(0.3f)
 	{
 	}
 
 	BoxColliderComponent::~BoxColliderComponent()
 	{
-		rigidbody->removeCollider(collider);
+		if (entity->HasComponent<RigidBodyComponent>())
+		{
+			auto& rb = entity->GetComponent<RigidBodyComponent>();
+			rb.GetRigidBody()->removeCollider(m_Collider);
+		}
 	}
 
 	void BoxColliderComponent::Init()
@@ -26,12 +30,20 @@ namespace OpenGLEngine
 		glm::vec3 entityRotation = tc.Rotation;
 		glm::vec3 entityScale = tc.Scale;
 
-		auto& rbc = Component::entity->GetComponent<RigidBodyComponent>();
-		rigidbody = rbc.GetRigidBody();
-
 		const reactphysics3d::Vector3 halfExtents(entityScale.x, entityScale.y, entityScale.z);
 		reactphysics3d::BoxShape* boxShape = PhysicEngine::GetPhysicsCommon()->createBoxShape(halfExtents);
 
-		collider = rigidbody->addCollider(boxShape, reactphysics3d::Transform::identity());
+		if (entity->HasComponent<RigidBodyComponent>())
+		{
+			auto& rb = entity->GetComponent<RigidBodyComponent>();
+			m_Collider = rb.GetRigidBody()->addCollider(boxShape, reactphysics3d::Transform::identity());
+		}
+	}
+
+	void BoxColliderComponent::UpdateMaterial()
+	{
+		m_Collider->getMaterial().setMassDensity(mass);
+		m_Collider->getMaterial().setBounciness(bounciness);
+		m_Collider->getMaterial().setFrictionCoefficient(friction);
 	}
 }

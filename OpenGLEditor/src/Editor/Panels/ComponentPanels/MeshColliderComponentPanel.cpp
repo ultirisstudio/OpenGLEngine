@@ -24,6 +24,13 @@ namespace OpenGLEngine
 					ImGui::EndPopup();
 				}
 
+				ImGui::Checkbox("Is Convex", &cc.m_IsConvex);
+
+				if (ImGui::Button("Generate collider"))
+				{
+					cc.Generate();
+				}
+
 				ImGui::TreePop();
 			}
 		}

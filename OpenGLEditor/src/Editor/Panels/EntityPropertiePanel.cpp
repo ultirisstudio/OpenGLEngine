@@ -157,7 +157,7 @@ namespace OpenGLEngine
 
 				if (!entity->HasComponent<MeshColliderComponent>()) {
 					if (ImGui::MenuItem("Mesh Collider Component")) {
-						entity->AddComponent<MeshColliderComponent>().Init();
+						entity->AddComponent<MeshColliderComponent>();
 					}
 				}
 

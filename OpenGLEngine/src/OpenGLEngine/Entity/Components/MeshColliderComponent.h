@@ -4,7 +4,8 @@
 
 namespace reactphysics3d {
 	extern "C" {
-		class TriangleVertexArray;
+		class ConcaveMeshShape;
+		class ConvexMeshShape;
 	}
 }
 
@@ -13,10 +14,16 @@ namespace OpenGLEngine
 	class MeshColliderComponent : public Component
 	{
 	private:
-		reactphysics3d::TriangleVertexArray* triangleVertexArray;
+		reactphysics3d::ConcaveMeshShape* m_concaveMeshShape;
+		reactphysics3d::ConvexMeshShape* m_convexMeshShape;
+
+		void GenerateConcaveMesh();
+		void GenerateConvexMesh();
 	public:
 		MeshColliderComponent();
 
-		void Init();
+		void Generate();
+
+		bool m_IsConvex = false;
 	};
 }

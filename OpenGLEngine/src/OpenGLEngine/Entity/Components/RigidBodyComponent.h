@@ -24,9 +24,6 @@ namespace OpenGLEngine
 		std::string bodyTypeString;
 
 		bool enableGravity;
-		float mass;
-		float friction;
-		float bounciness;
 	public:
 		RigidBodyComponent();
 		~RigidBodyComponent();
@@ -36,8 +33,9 @@ namespace OpenGLEngine
 
 		reactphysics3d::RigidBody* GetRigidBody() { return rigidbody; }
 
+		void SetCollider(reactphysics3d::Collider* collider) { this->collider = collider; }
+
 		void UpdateEnableGravity();
 		void UpdateBodyType();
-		void UpdateMaterial();
 	};
 }

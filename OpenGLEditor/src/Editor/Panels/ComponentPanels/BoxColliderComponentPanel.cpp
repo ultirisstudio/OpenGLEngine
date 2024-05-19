@@ -24,6 +24,24 @@ namespace OpenGLEngine
 					ImGui::EndPopup();
 				}
 
+				ImGui::Text("Mass: ");
+				if (ImGui::DragFloat("##Mass", &cc.mass, 1.0f, 1.0f, 1000.0f))
+				{
+					cc.UpdateMaterial();
+				}
+
+				ImGui::Text("Friction: ");
+				if (ImGui::DragFloat("##Friction", &cc.friction, 0.05f, 0.1f, 10.0f))
+				{
+					cc.UpdateMaterial();
+				}
+
+				ImGui::Text("Bounciness: ");
+				if (ImGui::DragFloat("##Bounciness", &cc.bounciness, 0.05f, 0.1f, 1.0f))
+				{
+					cc.UpdateMaterial();
+				}
+
 				ImGui::TreePop();
 			}
 		}

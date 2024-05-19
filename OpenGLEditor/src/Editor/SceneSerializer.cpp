@@ -12,6 +12,8 @@
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/BoxColliderComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -214,10 +216,33 @@ namespace OpenGLEngine
 			auto& rbc = entity->GetComponent<RigidBodyComponent>();
 			out << YAML::Key << "enableGravity" << YAML::Value << rbc.enableGravity;
 			out << YAML::Key << "bodyType" << YAML::Value << rbc.bodyTypeString;
-			out << YAML::Key << "mass" << YAML::Value << rbc.mass;
-			out << YAML::Key << "friction" << YAML::Value << rbc.friction;
-			out << YAML::Key << "bounciness" << YAML::Value << rbc.bounciness;
 
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<MeshColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "MeshColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& mcc = entity->GetComponent<MeshColliderComponent>();
+			out << YAML::Key << "IsConvex" << YAML::Value << mcc.m_IsConvex;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<BoxColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "BoxColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+			auto& bcc = entity->GetComponent<BoxColliderComponent>();
+			out << YAML::Key << "mass" << YAML::Value << bcc.mass;
+			out << YAML::Key << "friction" << YAML::Value << bcc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << bcc.bounciness;
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
@@ -440,13 +465,29 @@ namespace OpenGLEngine
 
 					rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
 					rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
-					rbc.mass = rigidBodyComponent["mass"].as<float>();
-					rbc.friction = rigidBodyComponent["friction"].as<float>();
-					rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
 
 					rbc.UpdateEnableGravity();
 					rbc.UpdateBodyType();
-					rbc.UpdateMaterial();
+				}
+
+				auto meshColliderComponent = component["MeshColliderComponent"];
+				if (meshColliderComponent)
+				{
+					auto& mcc = deserializedEntity->AddComponent<MeshColliderComponent>();
+					mcc.m_IsConvex = meshColliderComponent["IsConvex"].as<bool>();
+				}
+
+				auto boxColliderComponent = component["BoxColliderComponent"];
+				if (boxColliderComponent)
+				{
+					auto& bcc = deserializedEntity->AddComponent<BoxColliderComponent>();
+					bcc.Init();
+
+					bcc.mass = rigidBodyComponent["mass"].as<float>();
+					bcc.friction = rigidBodyComponent["friction"].as<float>();
+					bcc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+
+					bcc.UpdateMaterial();
 				}
 			}
 		}

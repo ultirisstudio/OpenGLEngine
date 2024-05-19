@@ -12,7 +12,7 @@
 
 namespace OpenGLEngine
 {
-	RigidBodyComponent::RigidBodyComponent() : rigidbody(nullptr), collider(nullptr), bodyType(reactphysics3d::BodyType::DYNAMIC), enableGravity(true), mass(1.0f), friction(0.3f), bounciness(0.3f), bodyTypeString("DYNAMIC")
+	RigidBodyComponent::RigidBodyComponent() : rigidbody(nullptr), collider(nullptr), bodyType(reactphysics3d::BodyType::DYNAMIC), enableGravity(true), bodyTypeString("DYNAMIC")
 	{
 		
 	}
@@ -42,10 +42,10 @@ namespace OpenGLEngine
 		rigidbody->enableGravity(enableGravity);
 		rigidbody->setIsDebugEnabled(true);
 
-		const reactphysics3d::Vector3 halfExtents(entityScale.x, entityScale.y, entityScale.z);
-		reactphysics3d::BoxShape* boxShape = PhysicEngine::GetPhysicsCommon()->createBoxShape(halfExtents);
+		//const reactphysics3d::Vector3 halfExtents(entityScale.x, entityScale.y, entityScale.z);
+		//reactphysics3d::BoxShape* boxShape = PhysicEngine::GetPhysicsCommon()->createBoxShape(halfExtents);
 
-		collider = rigidbody->addCollider(boxShape, reactphysics3d::Transform::identity());
+		//collider = rigidbody->addCollider(boxShape, reactphysics3d::Transform::identity());
 	}
 
 	void RigidBodyComponent::Update()
@@ -86,12 +86,5 @@ namespace OpenGLEngine
 		{
 			std::cout << "Invalid body type" << std::endl;
 		}
-	}
-
-	void RigidBodyComponent::UpdateMaterial()
-	{
-		collider->getMaterial().setMassDensity(mass);
-		collider->getMaterial().setBounciness(bounciness);
-		collider->getMaterial().setFrictionCoefficient(friction);
 	}
 }

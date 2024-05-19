@@ -48,26 +48,6 @@ namespace OpenGLEngine
 					ImGui::EndCombo();
 				}
 
-				ImGui::Separator();
-
-				ImGui::Text("Mass: ");
-				if (ImGui::DragFloat("##Mass", &rbc.mass, 1.0f, 1.0f, 1000.0f))
-				{
-					rbc.UpdateMaterial();
-				}
-
-				ImGui::Text("Friction: ");
-				if (ImGui::DragFloat("##Friction", &rbc.friction, 0.05f, 0.1f, 10.0f))
-				{
-					rbc.UpdateMaterial();
-				}
-
-				ImGui::Text("Bounciness: ");
-				if (ImGui::DragFloat("##Bounciness", &rbc.bounciness, 0.05f, 0.1f, 1.0f))
-				{
-					rbc.UpdateMaterial();
-				}
-
 				ImGui::TreePop();
 			}
 		}

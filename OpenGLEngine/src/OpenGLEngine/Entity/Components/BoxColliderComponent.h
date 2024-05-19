@@ -6,7 +6,6 @@
 
 namespace reactphysics3d {
 	extern "C" {
-		class RigidBody;
 		class Collider;
 	}
 }
@@ -15,13 +14,17 @@ namespace OpenGLEngine
 {
 	class BoxColliderComponent : public Component
 	{
+	private:
+		reactphysics3d::Collider* m_Collider;
 	public:
-		reactphysics3d::RigidBody* rigidbody;
-		reactphysics3d::Collider* collider;
+		float mass;
+		float friction;
+		float bounciness;
 
 		BoxColliderComponent();
 		~BoxColliderComponent();
 
 		void Init();
+		void UpdateMaterial();
 	};
 }

@@ -36,7 +36,6 @@ namespace OpenGLEngine
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
 		Entity* temp = m_Scene->CreateEntity(m_FileName);
-		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>();
 		temp->GetComponent<ModelComponent>().SetModel(file);
 	}
@@ -44,7 +43,6 @@ namespace OpenGLEngine
 	void SceneManager::AddCube()
 	{
 		Entity* temp = m_Scene->CreateEntity("Cube");
-		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>();
 		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/cube.obj");
 	}
@@ -52,7 +50,6 @@ namespace OpenGLEngine
 	void SceneManager::AddSphere()
 	{
 		Entity* temp = m_Scene->CreateEntity("Sphere");
-		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>();
 		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/sphere.obj");
 	}
@@ -60,7 +57,6 @@ namespace OpenGLEngine
 	void SceneManager::AddUVSphere()
 	{
 		Entity* temp = m_Scene->CreateEntity("UV Sphere");
-		temp->AddComponent<TransformComponent>();
 
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;

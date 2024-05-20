@@ -50,6 +50,7 @@ void OpenGLEngine::Viewport::OnImGuiRender(Scene& scene)
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
 		scene.getActiveCamera()->OnResize(viewportPanelSize.x, viewportPanelSize.y);
+		Renderer::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{

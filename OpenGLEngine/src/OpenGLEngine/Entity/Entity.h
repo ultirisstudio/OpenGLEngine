@@ -19,7 +19,7 @@ public:
 
 	char* GetName() { return m_Name.data(); }
 
-	OpenGLEngine::UUID GetUUID() { return m_UUID; }
+	const OpenGLEngine::UUID GetUUID() const { return m_UUID; }
 
 	void SetName(std::string name) { m_Name = name; }
 
@@ -59,7 +59,6 @@ public:
 
 	std::vector<OpenGLEngine::UUID> m_Children;
 	OpenGLEngine::UUID m_Parent = OpenGLEngine::UUID::Null();
-
 private:
 	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
 	std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;

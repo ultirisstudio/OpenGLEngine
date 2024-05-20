@@ -37,14 +37,9 @@ namespace OpenGLEngine
 		UpdateCameraVectors();
 	}
 
-	void Camera::updateViewMatrix()
-	{
-		m_viewMatrix = glm::lookAt(*m_Position, *m_Position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
 	glm::mat4 Camera::getViewMatrix() const
 	{
-		return m_viewMatrix;
+		return glm::lookAt(*m_Position, *m_Position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	const glm::mat4& Camera::getProjectionMatrix() const
@@ -57,9 +52,15 @@ namespace OpenGLEngine
 		return glm::translate(glm::mat4(1.f), *m_Position) * glm::toMat4(glm::quat(*m_Rotation));
 	}
 
-	float Camera::getFov() const
+	float Camera::GetFov() const
 	{
 		return m_fov;
+	}
+
+	void Camera::SetFov(float fov)
+	{
+		m_fov = fov;
+		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
 	}
 
 	void Camera::UpdateCameraVectors()
@@ -75,9 +76,6 @@ namespace OpenGLEngine
 
 	void Camera::Update()
 	{
-		m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
-
-		updateViewMatrix();
 		UpdateCameraVectors();
 	}
 
@@ -85,6 +83,7 @@ namespace OpenGLEngine
 	{
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
-		glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
+		//glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 	}
 }

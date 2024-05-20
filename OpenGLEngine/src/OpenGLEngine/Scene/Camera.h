@@ -27,9 +27,6 @@ namespace OpenGLEngine
 
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };
 
-		void updateViewMatrix();
-
-		//friend class EditorCamera;
 		friend class EntityPropertiePanel;
 		friend class CameraComponent;
 		friend class Scene;
@@ -43,8 +40,8 @@ namespace OpenGLEngine
 		glm::mat4 GetTransform() override;
 
 		float m_fov;
-		float getFov() const;
-		void setFov(float fov) { m_fov = fov; }
+		float GetFov() const;
+		void SetFov(float fov);
 
 		void UpdateCameraVectors();
 		void Update();

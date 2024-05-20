@@ -2,6 +2,8 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
+#include <glm/glm.hpp>
+
 namespace OpenGLEngine
 {
 	class TransformComponent : public Component

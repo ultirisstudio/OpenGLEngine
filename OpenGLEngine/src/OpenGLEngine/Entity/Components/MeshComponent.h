@@ -1,6 +1,8 @@
 #pragma once
 
 #include <OpenGLEngine/Entity/Component.h>
+#include <OpenGLEngine/Resources/Mesh.h>
+#include <OpenGLEngine/Resources/Vertex.h>
 
 namespace OpenGLEngine
 {

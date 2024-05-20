@@ -188,7 +188,7 @@ namespace OpenGLEngine
 			out << YAML::Value << YAML::BeginMap;
 
 			auto& cc = entity->GetComponent<CameraComponent>();
-			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().getFov();
+			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().GetFov();
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -447,7 +447,7 @@ namespace OpenGLEngine
 				{
 					auto& cc = deserializedEntity->AddComponent<CameraComponent>();
 					cc.Init();
-					cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
+					cc.GetCamera().SetFov(cameraComponent["fov"].as<float>());
 				}
 
 				auto scriptComponent = component["ScriptComponent"];

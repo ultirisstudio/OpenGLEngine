@@ -148,8 +148,11 @@ namespace OpenGLEngine
 
 	void Scene::ResizeActiveCamera(float width, float height)
 	{
-		if (m_ActiveCamera)
-			m_ActiveCamera->OnResize(width, height);
+		if (!m_ActiveCamera)
+			return;
+
+		m_ActiveCamera->OnResize(width, height);
+		Renderer::SetViewport(0, 0, width, height);
 	}
 
 	EntityMap* Scene::getEntities()

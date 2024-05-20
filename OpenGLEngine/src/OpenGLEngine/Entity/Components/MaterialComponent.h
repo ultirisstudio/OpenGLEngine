@@ -1,6 +1,7 @@
 #pragma once
 
 #include <OpenGLEngine/Entity/Component.h>
+#include <OpenGLEngine/Resources/Materials/Material.h>
 
 namespace OpenGLEngine
 {

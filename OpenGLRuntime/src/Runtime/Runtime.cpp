@@ -55,7 +55,10 @@ namespace OpenGLEngine
 
 		m_SceneManager = std::make_unique<SceneManager>();
 		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\save_test.scene");
-		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		uint32_t width = Application::Get().GetWindow().GetWidth();
+		uint32_t height = Application::Get().GetWindow().GetHeight();
+		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(width, height);
+		Renderer::SetViewport(0, 0, width, height);
 	}
 
 	void Runtime::OnDetach()

@@ -133,9 +133,47 @@ namespace OpenGLEngine
 			glm::mat4 cameraView = camera.getViewMatrix();
 
 			auto& tc = sceneHierarchy.m_SelectedEntity->GetComponent<TransformComponent>();
-			glm::mat4 transform = tc.GetTransform();
 
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+			glm::mat4 finalTransform;
+			std::cout << "ImGuizmo : " << sceneHierarchy.m_SelectedEntity->GetName() << std::endl;
+			glm::mat4& transform = tc.GetTransform();
+
+			std::vector<glm::mat4> transforms;
+			UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
+
+			if (parentID == UUID::Null())
+			{
+				finalTransform = transform;
+			}
+			else
+			{
+				while (parentID != UUID::Null())
+				{
+					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+					if (parent != nullptr)
+					{
+						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
+
+						transforms.push_back(parentTransform);
+
+						parentID = parent->m_Parent;
+					}
+				}
+
+				finalTransform = transforms[transforms.size() - 1];
+
+				if (transforms.size() > 1)
+				{
+					for (int i = transforms.size() - 2; i >= 0; i--)
+					{
+						finalTransform *= transforms[i];
+					}
+				}
+
+				finalTransform *= transform;
+			}
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(finalTransform));
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -148,14 +186,31 @@ namespace OpenGLEngine
 					camera.unuseGuizmo();
 				}
 
+				parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
+				while (parentID != UUID::Null())
+				{
+					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+					if (parent)
+					{
+						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
+
+						finalTransform *= glm::inverse(parentTransform);
+
+						parentID = parent->m_Parent;
+					}
+				}
+
 				glm::vec3 position, scale;
 				glm::quat rotationQuat;
-				glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
+				glm::decompose(finalTransform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
 				glm::vec3 rotation = glm::eulerAngles(rotationQuat); // * 3.14159f / 180.f
 
-				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				//std::cout << "Transform Rotation = " << rotation.x << ", " << rotation.y << ", " << rotation.z << std::endl;
+				//std::cout << "Component Rotation = " << tc.Rotation.x << ", " << tc.Rotation.y << ", " << tc.Rotation.z << std::endl;
+
+				glm::vec3 deltaRotation = glm::vec3(0, rotation.y, 0) - glm::vec3(0, tc.Rotation.y, 0);
 				tc.Position = position;
-				tc.Rotation += deltaRotation;
+				//tc.Rotation += deltaRotation;
 				tc.Scale = scale;
 			}
 			else

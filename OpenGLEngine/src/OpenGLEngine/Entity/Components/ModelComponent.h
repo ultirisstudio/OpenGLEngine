@@ -1,8 +1,7 @@
 #pragma once
 
 #include <OpenGLEngine/Entity/Component.h>
-
-class Entity;
+#include <OpenGLEngine/Resources/Model.h>
 
 namespace OpenGLEngine
 {

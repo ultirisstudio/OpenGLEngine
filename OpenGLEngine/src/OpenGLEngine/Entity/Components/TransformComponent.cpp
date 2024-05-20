@@ -10,6 +10,11 @@ namespace OpenGLEngine
 
 	glm::mat4 TransformComponent::GetTransform() const
 	{
+		//for (auto& e : *Renderer::m_SceneData.m_Scene->getEntities())
+			//std::cout << "Renderer: " << e.second.GetName() << " : " << e.second.GetUUID() << std::endl;
+
+		std::cout << "Component: " << this->entity->GetUUID() << std::endl;
+
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 
 		return transform;

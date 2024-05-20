@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include <OpenGLEngine/Entity/Component.h>
+#include <OpenGLEngine/Resources/Texture.h>
 #include <OpenGLEngine/Shader/Shader.h>
 
 namespace OpenGLEngine

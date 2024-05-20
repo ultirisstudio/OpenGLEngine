@@ -233,7 +233,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					m_SceneManager->getActiveScene().CreateEntity("GameObject");
+					Entity* temp = m_SceneManager->getActiveScene().CreateEntity("GameObject");
 				}
 
 				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddCube();

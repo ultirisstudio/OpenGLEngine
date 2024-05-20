@@ -12,8 +12,6 @@ namespace OpenGLEngine
 	public:
 		CameraComponent();
 
-		void Init();
-
 		Camera& GetCamera() { return *m_Camera; }
 	};
 }

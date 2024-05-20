@@ -10,16 +10,4 @@ namespace OpenGLEngine
 	{
 		
 	}
-
-	void CameraComponent::Init()
-	{
-		if (this->entity)
-		{
-			if (this->entity->HasComponent<TransformComponent>())
-			{
-				auto& tc = this->entity->GetComponent<TransformComponent>();
-				m_Camera->Init(tc.Position, tc.Rotation);
-			}
-		}
-	}
 }

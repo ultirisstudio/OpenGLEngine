@@ -55,11 +55,12 @@ namespace OpenGLEngine
 
 	Entity* Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
-		Entity entity = Entity(name, uuid);
-		entity.AddComponent<TransformComponent>();
-		m_EntityMap[entity.GetUUID()] = entity;
+		m_EntityMap[uuid] = Entity(name);
+		Entity* entity = &m_EntityMap[uuid];
+		entity->AddComponent<IDComponent>(uuid);
+		entity->AddComponent<TransformComponent>();
 
-		return &m_EntityMap[entity.GetUUID()];
+		return entity;
 	}
 
 	void Scene::DestroyEntity(Entity entity)
@@ -99,9 +100,6 @@ namespace OpenGLEngine
 
 	void Scene::Update(double deltaTime)
 	{
-		if (m_ActiveCamera)
-			m_ActiveCamera->Update();
-
 		if (m_OnRuntime)
 			UpdateRuntime(deltaTime);
 	}

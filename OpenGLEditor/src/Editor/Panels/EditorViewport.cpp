@@ -134,46 +134,9 @@ namespace OpenGLEngine
 
 			auto& tc = sceneHierarchy.m_SelectedEntity->GetComponent<TransformComponent>();
 
-			glm::mat4 finalTransform;
-			std::cout << "ImGuizmo : " << sceneHierarchy.m_SelectedEntity->GetName() << std::endl;
-			glm::mat4& transform = tc.GetTransform();
+			glm::mat4& transform = tc.GetGlobalTransform();
 
-			std::vector<glm::mat4> transforms;
-			UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
-
-			if (parentID == UUID::Null())
-			{
-				finalTransform = transform;
-			}
-			else
-			{
-				while (parentID != UUID::Null())
-				{
-					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
-					if (parent != nullptr)
-					{
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
-
-						transforms.push_back(parentTransform);
-
-						parentID = parent->m_Parent;
-					}
-				}
-
-				finalTransform = transforms[transforms.size() - 1];
-
-				if (transforms.size() > 1)
-				{
-					for (int i = transforms.size() - 2; i >= 0; i--)
-					{
-						finalTransform *= transforms[i];
-					}
-				}
-
-				finalTransform *= transform;
-			}
-
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(finalTransform));
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -186,13 +149,15 @@ namespace OpenGLEngine
 					camera.unuseGuizmo();
 				}
 
-				parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
+				glm::mat4 finalTransform = transform;
+
+				UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
 				while (parentID != UUID::Null())
 				{
 					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
 					if (parent)
 					{
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
+						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetLocalTransform();
 
 						finalTransform *= glm::inverse(parentTransform);
 

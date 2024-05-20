@@ -127,7 +127,7 @@ namespace OpenGLEngine
 
 				if (!entity->HasComponent<CameraComponent>()) {
 					if (ImGui::MenuItem("Camera Component")) {
-						entity->AddComponent<CameraComponent>().Init();
+						entity->AddComponent<CameraComponent>().GetCamera().Init(&entity->GetComponent<TransformComponent>());
 					}
 				}
 

@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define MAX_COMPONENTS 12
+#define MAX_COMPONENTS 14
 
 class Entity;
 

@@ -3,6 +3,8 @@
 
 #include "Editor/Editor.h"
 #include "Launcher/Launcher.h"
+#include "yaml-cpp/yaml.h"
+#include <fstream>
 
 namespace OpenGLEngine
 {
@@ -11,14 +13,38 @@ namespace OpenGLEngine
 	public:
 		OpenGLEditor(const ApplicationSpecification& spec) : Application(spec)
 		{
-			//PushLayer(new Launcher());
 
-			EditorSpecification editorSpec;
-			editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
-			editorSpec.ProjectName = "CallOf";
-			editorSpec.ProjectPath = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf";
+			//Check if config.yaml exists if it does then load the editor with the project name and path
+			//If it doesn't exist then load the launcher
+			if (std::filesystem::exists("config.yaml"))
+			{
+				YAML::Node config = YAML::LoadFile("config.yaml");
+				if (config["projectName"] && config["projectPath"])
+				{
+					EditorSpecification editorSpec;
+					editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
+					editorSpec.ProjectName = config["projectName"].as<std::string>();
+					editorSpec.ProjectPath = config["projectPath"].as<std::string>();
 
-			PushLayer(new Editor(editorSpec));
+					PushLayer(new Editor(editorSpec));
+				}
+				else
+				{
+					PushLayer(new Launcher());
+				}
+			}
+			else
+			{
+				// create config file with empty values
+				YAML::Node config;
+				config["projectName"] = "null";
+				config["projectPath"] = "null";
+				std::ofstream fout("config.yaml");
+				fout << config;
+				fout.close();
+
+				PushLayer(new Launcher());
+			}
 
 			/*bool haveProjectName = false;
 			bool haveProjectPath = false;

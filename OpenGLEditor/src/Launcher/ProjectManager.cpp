@@ -80,6 +80,15 @@ namespace OpenGLEngine
 					fout << out.c_str();
 
 					Renderer::m_SceneData.m_ResourceManager.Reset();
+
+					//TODO : Fix this with launcher
+					YAML::Node config = YAML::LoadFile("config.yaml");
+					config["projectName"] = m_Properties->m_ProjectName;
+					config["projectPath"] = m_Properties->m_ProjectPath;
+					std::ofstream foutConfig("config.yaml");
+					foutConfig << config;
+					foutConfig.close();
+
 				}
 
 				m_CreateNewProjectDialog = false;

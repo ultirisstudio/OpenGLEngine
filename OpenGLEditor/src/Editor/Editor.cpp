@@ -49,7 +49,7 @@ namespace OpenGLEngine
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\test2.scene");
 
 		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
-		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\Intermediates\\Release\\" + m_Specification.ProjectName + ".dll");
+		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\" + m_Specification.ProjectName + ".dll");
 
 		ScriptEngine::ReloadAssembly();
 

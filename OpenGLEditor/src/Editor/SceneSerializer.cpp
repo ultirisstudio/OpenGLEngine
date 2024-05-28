@@ -475,6 +475,7 @@ namespace OpenGLEngine
 				{
 					auto& mcc = deserializedEntity->AddComponent<MeshColliderComponent>();
 					mcc.m_IsConvex = meshColliderComponent["IsConvex"].as<bool>();
+					mcc.Generate();
 				}
 
 				auto boxColliderComponent = component["BoxColliderComponent"];

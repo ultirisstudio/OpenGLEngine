@@ -285,7 +285,8 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
 
 		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		//m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
 	}
 

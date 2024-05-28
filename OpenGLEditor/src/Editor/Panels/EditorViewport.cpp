@@ -21,6 +21,7 @@ namespace OpenGLEngine
 		FramebufferSpecification spec;
 		spec.Width = Application::Get().GetWindow().GetWidth();
 		spec.Height = Application::Get().GetWindow().GetHeight();
+		//spec.Samples = 4;
 		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 
 		m_EditorFrameBuffer = Framebuffer::Create(spec);
@@ -44,14 +45,11 @@ namespace OpenGLEngine
 		glm::vec2 editorViewportSize = m_EditorViewportBounds[1] - m_EditorViewportBounds[0];
 		my = editorViewportSize.y - my;
 		int mouseX = (int)mx;
-		int mouseY = (int)my;
+		int mouseY = (int)my - 22;
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < editorViewportSize.x && mouseY < editorViewportSize.y)
 		{
 			int pixelData = m_EditorFrameBuffer->ReadPixel(1, mouseX, mouseY);
-			
-			//std::cout << "Pixel data = " << pixelData << std::endl;
-			//std::cout << ((pixelData < 0) ? "" : scene.getEntities()->at(pixelData).GetName()) << std::endl;
 
 			m_HoveredEntity = scene.GetEntityByUUID(pixelData);
 		}
@@ -96,7 +94,6 @@ namespace OpenGLEngine
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-
 		camera.OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
@@ -115,9 +112,6 @@ namespace OpenGLEngine
 		m_EditorViewportBounds[0] = { minBound.x, minBound.y };
 		m_EditorViewportBounds[1] = { maxBound.x, maxBound.y };
 
-		//std::cout << "Min Bounds = " << m_EditorViewportBounds[0].x << ", " << m_EditorViewportBounds[0].y << std::endl;
-		//std::cout << "Max Bounds = " << m_EditorViewportBounds[1].x << ", " << m_EditorViewportBounds[1].y << std::endl;
-
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
 		if (sceneHierarchy.m_SelectedEntity && m_GizmoType != -1)
@@ -134,46 +128,9 @@ namespace OpenGLEngine
 
 			auto& tc = sceneHierarchy.m_SelectedEntity->GetComponent<TransformComponent>();
 
-			glm::mat4 finalTransform;
-			std::cout << "ImGuizmo : " << sceneHierarchy.m_SelectedEntity->GetName() << std::endl;
-			glm::mat4& transform = tc.GetTransform();
+			glm::mat4 transform = tc.GetGlobalTransform();
 
-			std::vector<glm::mat4> transforms;
-			UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
-
-			if (parentID == UUID::Null())
-			{
-				finalTransform = transform;
-			}
-			else
-			{
-				while (parentID != UUID::Null())
-				{
-					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
-					if (parent != nullptr)
-					{
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
-
-						transforms.push_back(parentTransform);
-
-						parentID = parent->m_Parent;
-					}
-				}
-
-				finalTransform = transforms[transforms.size() - 1];
-
-				if (transforms.size() > 1)
-				{
-					for (int i = transforms.size() - 2; i >= 0; i--)
-					{
-						finalTransform *= transforms[i];
-					}
-				}
-
-				finalTransform *= transform;
-			}
-
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(finalTransform));
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -186,15 +143,17 @@ namespace OpenGLEngine
 					camera.unuseGuizmo();
 				}
 
-				parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
+				glm::mat4 finalTransform = transform;
+
+				UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
 				while (parentID != UUID::Null())
 				{
 					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
 					if (parent)
 					{
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
+						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetLocalTransform();
 
-						finalTransform *= glm::inverse(parentTransform);
+						transform *= glm::inverse(parentTransform);
 
 						parentID = parent->m_Parent;
 					}
@@ -203,14 +162,11 @@ namespace OpenGLEngine
 				glm::vec3 position, scale;
 				glm::quat rotationQuat;
 				glm::decompose(finalTransform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
-				glm::vec3 rotation = glm::eulerAngles(rotationQuat); // * 3.14159f / 180.f
+				glm::vec3 rotation = glm::eulerAngles(rotationQuat);
 
-				//std::cout << "Transform Rotation = " << rotation.x << ", " << rotation.y << ", " << rotation.z << std::endl;
-				//std::cout << "Component Rotation = " << tc.Rotation.x << ", " << tc.Rotation.y << ", " << tc.Rotation.z << std::endl;
-
-				glm::vec3 deltaRotation = glm::vec3(0, rotation.y, 0) - glm::vec3(0, tc.Rotation.y, 0);
+				glm::vec3 deltaRotation = rotation.y - tc.Rotation;
 				tc.Position = position;
-				//tc.Rotation += deltaRotation;
+				tc.Rotation += deltaRotation;
 				tc.Scale = scale;
 			}
 			else
@@ -233,7 +189,7 @@ namespace OpenGLEngine
 				std::string selectedFile = filePath.substr(slash + 1);
 				std::string fileExtension = selectedFile.substr(selectedFile.find_last_of(".") + 1);
 
-				if (fileExtension == "obj")
+				if (fileExtension == "obj" || fileExtension == "dae" || fileExtension == "fbx" || fileExtension == "glb" || fileExtension == "gltf")
 					sceneManager.AddGameObject(filePath);
 
 				if (fileExtension == "scene")

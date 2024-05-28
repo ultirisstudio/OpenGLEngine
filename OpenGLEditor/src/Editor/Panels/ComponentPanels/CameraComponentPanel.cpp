@@ -28,7 +28,11 @@ namespace OpenGLEngine
 				ImGui::Separator();
 
 				ImGui::Text("FOV: "); ImGui::SameLine();
-				ImGui::DragFloat("##FOV", &cc.GetCamera().m_fov, 0.1f, 0.0f, 180.0f, "%.1f");
+				float fov = cc.GetCamera().GetFov();
+				if (ImGui::DragFloat("##FOV", &fov, 0.1f, 0.0f, 180.0f, "%.1f"))
+				{
+					cc.GetCamera().SetFov(fov);
+				}
 
 				if (ImGui::BeginPopupContextItem())
 				{

@@ -1,45 +1,21 @@
 #include "depch.h"
 #include <OpenGLEngine/Scene/Camera.h>
 
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-
 namespace OpenGLEngine
 {
-	Camera::Camera()
-		: m_viewMatrix(1.0f),
-		m_target(0.0f, 0.0f, -1.0f),
-		m_up(0.0f, 1.0f, 0.0f),
-		m_right(0.0f, 0.0f, 0.0f),
-		m_worldUp(0.0f, 1.0f, 0.0f),
-		m_Position(nullptr),
-		m_Rotation(nullptr),
-		m_projectionMatrix(1.0f),
-		m_fov(45.0f),
-		m_minFov(15.0f),
-		m_maxFov(95.0f)
+	Camera::Camera() : m_projectionMatrix(1.0f), m_fov(45.0f), m_minFov(15.0f), m_maxFov(95.0f), m_ViewportSize(1.0f, 1.0f), m_TransformComponent(nullptr)
 	{
 
 	}
 
-	void Camera::Init(glm::vec3& position, glm::vec3& rotation)
+	void Camera::Init(TransformComponent* transformComponent)
 	{
-		m_Position = &position;
-		m_Rotation = &rotation;
-		m_viewMatrix = glm::lookAt(*m_Position, *m_Position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		m_target = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-		m_projectionMatrix = glm::mat4(1.0f);
-		m_fov = 45.0f;
-		m_minFov = 15.0f;
-		m_maxFov = 95.0f;
-
-		UpdateCameraVectors();
+		m_TransformComponent = transformComponent;
 	}
 
-	glm::mat4 Camera::getViewMatrix() const
+	const glm::mat4 Camera::getViewMatrix() const
 	{
-		return glm::lookAt(*m_Position, *m_Position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
+		return m_TransformComponent->GetGlobalViewMatrix();
 	}
 
 	const glm::mat4& Camera::getProjectionMatrix() const
@@ -49,7 +25,7 @@ namespace OpenGLEngine
 
 	glm::mat4 Camera::GetTransform()
 	{
-		return glm::translate(glm::mat4(1.f), *m_Position) * glm::toMat4(glm::quat(*m_Rotation));
+		return m_TransformComponent->GetGlobalTransform();
 	}
 
 	float Camera::GetFov() const
@@ -61,22 +37,6 @@ namespace OpenGLEngine
 	{
 		m_fov = fov;
 		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
-	}
-
-	void Camera::UpdateCameraVectors()
-	{
-		glm::vec3 front;
-		front.x = cos(m_Rotation->y) * cos(m_Rotation->x);
-		front.y = sin(m_Rotation->x);
-		front.z = sin(m_Rotation->y) * cos(m_Rotation->x);
-		m_target = glm::normalize(front);
-		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
-		m_up = glm::normalize(glm::cross(m_right, m_target));
-	}
-
-	void Camera::Update()
-	{
-		UpdateCameraVectors();
 	}
 
 	void Camera::OnResize(float width, float height)

@@ -145,43 +145,7 @@ namespace OpenGLEngine {
 
 			int nat = 1;
 
-			glm::mat4 finalTransform;
-			std::cout << "Renderer : " << entity.second.GetUUID() << std::endl;
-			glm::mat4 transform = entity.second.GetComponent<TransformComponent>().GetTransform();
-
-			std::vector<glm::mat4> transforms;
-			UUID parentID = entity.second.m_Parent;
-
-			if (parentID == UUID::Null())
-				finalTransform = transform;
-			else
-			{
-				while (parentID != UUID::Null())
-				{
-					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
-					if (parent)
-					{
-						//std::cout << "Renderer (parent) : " << entity.second.GetUUID() << std::endl;
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetTransform();
-
-						transforms.push_back(parentTransform);
-
-						parentID = parent->m_Parent;
-					}
-				}
-
-				finalTransform = transforms[transforms.size() - 1];
-
-				if (transforms.size() > 1)
-				{
-					for (int i = transforms.size() - 2; i >= 0; i--)
-					{
-						finalTransform *= transforms[i];
-					}
-				}
-
-				finalTransform *= transform;
-			}
+			glm::mat4 transform = entity.second.GetComponent<TransformComponent>().GetGlobalTransform();
 
 			if (entity.second.HasComponent<LightComponent>())
 			{
@@ -211,10 +175,10 @@ namespace OpenGLEngine {
 
 				Material& material = entity.second.GetComponent<MaterialComponent>().GetMaterial();
 
-				m_SceneData.m_Shader.setUniform("uModel", finalTransform);
+				m_SceneData.m_Shader.setUniform("uModel", transform);
 				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
 				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
-				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(finalTransform))));
+				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
 
 				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
 				m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
@@ -321,7 +285,8 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
 
 		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		//m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
 	}
 

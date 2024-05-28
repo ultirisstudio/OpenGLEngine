@@ -73,7 +73,7 @@ namespace OpenGLEngine
 			{
 				icon = m_DirectoryIcon;
 			} 
-			else if (extension == "obj")
+			else if (extension == "obj" || extension == "dae" || extension == "fbx" || extension == "glb" || extension == "gltf")
 			{
 				icon = m_FileOBJIcon;
 			}

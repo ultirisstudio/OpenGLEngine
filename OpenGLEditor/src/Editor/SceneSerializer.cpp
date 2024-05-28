@@ -446,7 +446,7 @@ namespace OpenGLEngine
 				if (cameraComponent)
 				{
 					auto& cc = deserializedEntity->AddComponent<CameraComponent>();
-					cc.Init();
+					cc.GetCamera().Init(&deserializedEntity->GetComponent<TransformComponent>());
 					cc.GetCamera().SetFov(cameraComponent["fov"].as<float>());
 				}
 
@@ -475,6 +475,7 @@ namespace OpenGLEngine
 				{
 					auto& mcc = deserializedEntity->AddComponent<MeshColliderComponent>();
 					mcc.m_IsConvex = meshColliderComponent["IsConvex"].as<bool>();
+					mcc.Generate();
 				}
 
 				auto boxColliderComponent = component["BoxColliderComponent"];

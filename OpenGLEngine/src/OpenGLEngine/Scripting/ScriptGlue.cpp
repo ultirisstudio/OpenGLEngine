@@ -13,6 +13,7 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/Entity/Components/IDComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>

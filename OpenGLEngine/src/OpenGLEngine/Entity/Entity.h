@@ -11,15 +11,15 @@
 
 #include <OpenGLEngine/Core/UUID.h>
 
+#include <OpenGLEngine/Entity/Components/IDComponent.h>
+
 class Entity
 {
 public:
 	Entity() = default;
-	Entity(std::string name, OpenGLEngine::UUID uuid);
+	Entity(std::string name);
 
 	char* GetName() { return m_Name.data(); }
-
-	const OpenGLEngine::UUID GetUUID() const { return m_UUID; }
 
 	void SetName(std::string name) { m_Name = name; }
 
@@ -52,10 +52,11 @@ public:
 		return *static_cast<T*>(pointer);
 	}
 
+	const OpenGLEngine::UUID GetUUID() const { return GetComponent<OpenGLEngine::IDComponent>().ID; }
+
 	void AddChild(const OpenGLEngine::UUID& id);
 public:
 	std::string m_Name;
-	OpenGLEngine::UUID m_UUID;
 
 	std::vector<OpenGLEngine::UUID> m_Children;
 	OpenGLEngine::UUID m_Parent = OpenGLEngine::UUID::Null();
@@ -68,11 +69,11 @@ struct EntityMapping
 {
 	size_t operator()(const Entity& k)const
 	{
-		return std::hash<int>()(k.m_UUID);
+		return std::hash<int>()(k.GetUUID());
 	}
 
 	bool operator()(const Entity& a, const Entity& b)const
 	{
-		return a.m_UUID == b.m_UUID;
+		return a.GetUUID() == b.GetUUID();
 	}
 };

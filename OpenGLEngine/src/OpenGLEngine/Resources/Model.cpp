@@ -7,6 +7,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
+#include <assimp/pbrmaterial.h>
+
 namespace OpenGLEngine
 {
 	Mesh* Model::loadMesh(const aiMesh* mesh, const aiScene* scene)
@@ -15,6 +17,18 @@ namespace OpenGLEngine
 		std::vector<unsigned int> indices;
 
 		vertices.reserve(mesh->mNumVertices);
+
+		//std::cout << "Name: " << mesh->mName.C_Str() << std::endl;
+		//std::cout << "NumColorChannels: " << mesh->GetNumColorChannels() << std::endl;
+		//std::cout << "NumUVChannels: " << mesh->GetNumUVChannels() << std::endl;
+		//std::cout << "MaterialIndex: " << mesh->mMaterialIndex << std::endl;
+
+		//aiString fileGLTFBaseColorTexture;
+		//scene->mMaterials[mesh->mMaterialIndex]->GetTextureCount(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE, &fileGLTFBaseColorTexture);
+
+		//std::cout << "BaseColor: " << fileGLTFBaseColorTexture.C_Str() << std::endl;
+		//std::cout << "BaseColor: " << scene->mMaterials[mesh->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+		//aiTextureType type = aiTextureType_DIFFUSE;
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -66,7 +80,7 @@ namespace OpenGLEngine
 	Model::Model(const std::string& path) : m_Name("Unamed")
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_FlipUVs | aiProcess_ImproveCacheLocality); // | aiProcess_OptimizeMeshes
+		const aiScene* scene = importer.ReadFile(path, aiProcess_PreTransformVertices | aiProcess_Triangulate); // aiProcess_PreTransformVertices | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_GenUVCoords | aiProcess_FlipUVs | aiProcess_ImproveCacheLocality // | aiProcess_OptimizeMeshes
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{

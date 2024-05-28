@@ -55,10 +55,10 @@ namespace OpenGLEngine
 	public:
 		EditorCamera(const glm::vec3& position);
 
-		glm::mat4 getViewMatrix() const override;
+		const glm::mat4 getViewMatrix() const override;
 		const glm::mat4& getProjectionMatrix() const override;
 
-		glm::mat4 GetTransform() override;
+		glm::mat4 GetTransform();
 		float getFov() const;
 		void setFov(float fov) { m_fov = fov; }
 

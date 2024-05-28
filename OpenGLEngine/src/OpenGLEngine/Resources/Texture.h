@@ -53,6 +53,8 @@ namespace OpenGLEngine
 		bool alpha = false;
 		bool gamma = false;
 		bool flip = false;
+		bool mipmap = true; // TODO : implement this
+		bool compressed = false; // TODO : implement this
 
 		uint32_t Samples = 1;
 		uint32_t channels = 3;

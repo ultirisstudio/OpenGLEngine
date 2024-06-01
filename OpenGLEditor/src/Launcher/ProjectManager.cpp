@@ -43,13 +43,20 @@ namespace OpenGLEngine
 	{
 		if (m_CreateNewProjectDialog)
 		{
+			ImGui::Text("Project name");
 			ImGui::InputText("##project_name", &tempProjectName);
+			ImGui::Text("Project path");
 			ImGui::InputText("##project_path", &tempProjectPath);
 			ImGui::SameLine();
-			if (ImGui::Button("...", ImVec2(20, 20)))
+			if (ImGui::Button("...", ImVec2(30, 20)))
 			{
 				tempProjectPath = m_FileBrowser.OpenFolder();
 			}
+
+			ImVec4 color = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+			ImGui::PushStyleColor(ImGuiCol_Text, color);
+			ImGui::Text("Project location: %s\\%s", tempProjectPath.c_str(), tempProjectName.c_str());
+			ImGui::PopStyleColor();
 
 			if (ImGui::Button("Create Project"))
 			{
@@ -60,7 +67,7 @@ namespace OpenGLEngine
 					m_Properties = new ProjectProperties();
 					m_Properties->m_ProjectName = tempProjectName;
 					m_Properties->m_ProjectPath = fullPath;
-
+					
 					std::filesystem::create_directory(m_Properties->m_ProjectPath);
 					std::filesystem::create_directory(m_Properties->m_ProjectPath + std::string("\\Assets"));
 					std::filesystem::create_directory(m_Properties->m_ProjectPath + std::string("\\Scripts"));
@@ -69,7 +76,7 @@ namespace OpenGLEngine
 
 					std::filesystem::path path(m_Properties->m_ProjectPath + "\\Scripts\\Build\\" + m_Properties->m_ProjectName + ".dll");
 					ScriptEngine::SetAppAssemblyPath(path);
-
+					
 					YAML::Emitter out;
 					out << YAML::BeginMap;
 					out << YAML::Key << "Project" << YAML::Value << m_Properties->m_ProjectName;
@@ -78,11 +85,23 @@ namespace OpenGLEngine
 
 					std::ofstream fout(m_Properties->m_ProjectPath + std::string("\\" + m_Properties->m_ProjectName + std::string(".ultprj")));
 					fout << out.c_str();
-
+					
 					Renderer::m_SceneData.m_ResourceManager.Reset();
-
-					//TODO : Fix this with launcher
+					
 					YAML::Node config = YAML::LoadFile("config.yaml");
+					if (config["recentProjects"])
+					{
+						YAML::Node recentProjects = config["recentProjects"];
+						recentProjects.push_back(YAML::Load("{Project: " + m_Properties->m_ProjectName + ", Path: " + m_Properties->m_ProjectPath + "}"));
+						config["recentProjects"] = recentProjects;
+					}
+					else
+					{
+						// if no recent projects exist then create a new list and add the project to it
+						YAML::Node recentProjects;
+						recentProjects.push_back(YAML::Load("{Project: " + m_Properties->m_ProjectName + ", Path: " + m_Properties->m_ProjectPath + "}"));
+						config["recentProjects"] = recentProjects;
+					}
 					config["projectName"] = m_Properties->m_ProjectName;
 					config["projectPath"] = m_Properties->m_ProjectPath;
 					std::ofstream foutConfig("config.yaml");

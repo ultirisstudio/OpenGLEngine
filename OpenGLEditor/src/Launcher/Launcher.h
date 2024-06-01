@@ -3,6 +3,7 @@
 #include <OpenGLEngine.h>
 
 #include "ProjectManager.h"
+#include "yaml-cpp/yaml.h"
 
 namespace OpenGLEngine
 {
@@ -19,5 +20,6 @@ namespace OpenGLEngine
 		void OnEvent(Event& e) override;
 	private:
 		std::unique_ptr<ProjectManager> m_ProjectManager;
+		YAML::Node config;
 	};
 }

@@ -33,7 +33,7 @@ namespace OpenGLEngine
 		FileBrowser m_FileBrowser;
 
 		std::string tempProjectName = "";
-		std::string tempProjectPath = "";
+		std::string tempProjectPath = std::string(getenv("USERPROFILE")) + "\\Documents\\Ultiris Projects";
 
 		bool m_CreateNewProjectDialog;
 		bool m_OpenProjectDialog;

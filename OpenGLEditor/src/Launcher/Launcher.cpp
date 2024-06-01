@@ -3,15 +3,12 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-
-//TOOD Full rework to have a proper launcher, with a panel for creating new projects and another one for opening existing projects
 namespace OpenGLEngine
-{
+{	
 	Launcher::Launcher()
 	{
+		config = YAML::LoadFile("config.yaml");
 		m_ProjectManager = std::make_unique<ProjectManager>();
-
-		m_ProjectManager->CreateNewProject();
 	}
 
 	void Launcher::OnAttach()
@@ -34,7 +31,7 @@ namespace OpenGLEngine
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_AutoHideTabBar;
 
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
@@ -47,6 +44,7 @@ namespace OpenGLEngine
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
 		}
 		else
 		{
@@ -79,25 +77,27 @@ namespace OpenGLEngine
 				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
 
 				auto dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking windows into it
-				auto dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.2f, nullptr, &dock_main_id);
-				auto dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, nullptr, &dock_main_id);
+				auto dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.4f, nullptr, &dock_main_id);
+				auto dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.6f, nullptr, &dock_main_id);
 
-				ImGui::DockBuilderDockWindow("Launcher", dock_id_left);
+				ImGui::DockBuilderDockWindow("Create Project", dock_id_left);
+				ImGui::DockBuilderDockWindow("Project Viewer", dock_id_right);
 
 				ImGui::DockBuilderFinish(dockspace_id);
 				first_time = false;
 			}
 		}
 
-		ImGui::Begin("Launcher", false);
+		ImGui::Begin("Create Project", false);
 
-		if (ImGui::Button("Open project"))
-		{
-			m_ProjectManager->OpenProject();
-		}
+		m_ProjectManager->CreateNewProject();
 
 		m_ProjectManager->OnImGuiRender();
 
+		ImGui::End();
+
+		ImGui::Begin("Project Viewer", false);
+		// TODO project viewer
 		ImGui::End();
 
 		ImGui::End();

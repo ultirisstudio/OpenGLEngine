@@ -101,10 +101,17 @@ namespace OpenGLEngine
 		{
 			for (auto project : config["recentProjects"])
 			{
-				if (ImGui::Button(project["Project"].as<std::string>().c_str()))
+				//Styling button to look like a label
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 1));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.1f, 0.1f, 1));
+
+				if (ImGui::Button(project["Project"].as<std::string>().c_str()), &ImVec2(30, 200))
 				{
 					m_ProjectManager->OpenProjectFromPath(project["Path"].as<std::string>());
 				}
+
+				ImGui::PopStyleColor(3);
 			}
 
 		}

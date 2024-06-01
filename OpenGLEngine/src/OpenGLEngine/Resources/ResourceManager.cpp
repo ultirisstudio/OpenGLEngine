@@ -50,6 +50,16 @@ namespace OpenGLEngine
 		return nullptr;
 	}
 
+	int ResourceManager::GetLoadedTexture() const
+	{
+		return m_Textures.size();
+	}
+
+	int ResourceManager::GetLoadedModel() const
+	{
+		return m_Models.size();
+	}
+
 	void ResourceManager::Reset()
 	{
 		for (auto& texture : m_Textures)

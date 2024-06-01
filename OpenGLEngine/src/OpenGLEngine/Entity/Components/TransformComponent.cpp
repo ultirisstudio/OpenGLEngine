@@ -20,10 +20,10 @@ namespace OpenGLEngine
 	glm::mat4 TransformComponent::GetGlobalTransform() const
 	{
 		glm::mat4 finalTransform;
-		glm::mat4& transform = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 
 		std::vector<glm::mat4> transforms;
-		UUID parentID = Component::entity->m_Parent;
+		UUID parentID = entity->m_Parent;
 
 		if (parentID == UUID::Null())
 		{
@@ -44,13 +44,13 @@ namespace OpenGLEngine
 				}
 			}
 
-			finalTransform = transforms[transforms.size() - 1];
+			finalTransform = transforms.at(transforms.size() - 1);
 
 			if (transforms.size() > 1)
 			{
 				for (int i = transforms.size() - 2; i >= 0; i--)
 				{
-					finalTransform *= transforms[i];
+					finalTransform *= transforms.at(i);
 				}
 			}
 

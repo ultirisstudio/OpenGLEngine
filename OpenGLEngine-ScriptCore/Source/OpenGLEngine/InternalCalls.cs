@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
@@ -72,9 +68,20 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void RigidBody_ApplyLocalForceAtCenterOfMass(ulong ID, Vector3 force);
 
+        // Character Controller Component
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void CharacterController_Move(ulong ID, Vector3 force);
+
         // Input
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static bool Input_IsKeyDown(KeyCode keycode);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static float Input_GetMouseX();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static float Input_GetMouseY();
     }
 }

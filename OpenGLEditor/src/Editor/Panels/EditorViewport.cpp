@@ -45,7 +45,7 @@ namespace OpenGLEngine
 		glm::vec2 editorViewportSize = m_EditorViewportBounds[1] - m_EditorViewportBounds[0];
 		my = editorViewportSize.y - my;
 		int mouseX = (int)mx;
-		int mouseY = (int)my - 22;
+		int mouseY = (int)my - m_WindowTitleBarSize[1];
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < editorViewportSize.x && mouseY < editorViewportSize.y)
 		{
@@ -88,6 +88,8 @@ namespace OpenGLEngine
 		ImGui::Begin("Editor");
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
+
+		m_WindowTitleBarSize = { ImGui::GetWindowContentRegionMin().x, ImGui::GetWindowContentRegionMin().y };
 
 		auto windowSize = ImGui::GetWindowSize();
 		auto viewportOffset = ImGui::GetCursorPos();
@@ -153,7 +155,7 @@ namespace OpenGLEngine
 					{
 						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetLocalTransform();
 
-						transform *= glm::inverse(parentTransform);
+						finalTransform *= glm::inverse(parentTransform);
 
 						parentID = parent->m_Parent;
 					}
@@ -163,8 +165,8 @@ namespace OpenGLEngine
 				glm::quat rotationQuat;
 				glm::decompose(finalTransform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
 				glm::vec3 rotation = glm::eulerAngles(rotationQuat);
+				glm::vec3 deltaRotation = rotation - tc.Rotation;
 
-				glm::vec3 deltaRotation = rotation.y - tc.Rotation;
 				tc.Position = position;
 				tc.Rotation += deltaRotation;
 				tc.Scale = scale;

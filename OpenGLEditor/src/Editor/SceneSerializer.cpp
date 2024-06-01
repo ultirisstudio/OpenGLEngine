@@ -11,9 +11,10 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/BoxColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -216,6 +217,12 @@ namespace OpenGLEngine
 			auto& rbc = entity->GetComponent<RigidBodyComponent>();
 			out << YAML::Key << "enableGravity" << YAML::Value << rbc.enableGravity;
 			out << YAML::Key << "bodyType" << YAML::Value << rbc.bodyTypeString;
+			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << rbc.m_LinearAxisFactorX;
+			out << YAML::Key << "linearAxisFactor_Y" << YAML::Value << rbc.m_LinearAxisFactorY;
+			out << YAML::Key << "linearAxisFactor_Z" << YAML::Value << rbc.m_LinearAxisFactorZ;
+			out << YAML::Key << "angularAxisFactor_X" << YAML::Value << rbc.m_AngularAxisFactorX;
+			out << YAML::Key << "angularAxisFactor_Y" << YAML::Value << rbc.m_AngularAxisFactorY;
+			out << YAML::Key << "angularAxisFactor_Z" << YAML::Value << rbc.m_AngularAxisFactorZ;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -243,6 +250,23 @@ namespace OpenGLEngine
 			out << YAML::Key << "mass" << YAML::Value << bcc.mass;
 			out << YAML::Key << "friction" << YAML::Value << bcc.friction;
 			out << YAML::Key << "bounciness" << YAML::Value << bcc.bounciness;
+			out << YAML::Key << "useEntityScale" << YAML::Value << bcc.m_UseEntityScale;
+			out << YAML::Key << "size" << YAML::Value << bcc.m_Size;
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<CapsuleColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "CapsuleColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+			auto& ccc = entity->GetComponent<CapsuleColliderComponent>();
+			out << YAML::Key << "mass" << YAML::Value << ccc.mass;
+			out << YAML::Key << "friction" << YAML::Value << ccc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << ccc.bounciness;
+			out << YAML::Key << "radius" << YAML::Value << ccc.m_Radius;
+			out << YAML::Key << "height" << YAML::Value << ccc.m_Height;
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
@@ -466,6 +490,21 @@ namespace OpenGLEngine
 					rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
 					rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
 
+					if (rigidBodyComponent["linearAxisFactor_X"])
+						rbc.m_LinearAxisFactorX = rigidBodyComponent["linearAxisFactor_X"].as<bool>();
+
+					if (rigidBodyComponent["linearAxisFactor_Y"])
+						rbc.m_LinearAxisFactorY = rigidBodyComponent["linearAxisFactor_Y"].as<bool>();
+
+					if (rigidBodyComponent["linearAxisFactor_Z"])
+						rbc.m_LinearAxisFactorZ = rigidBodyComponent["linearAxisFactor_Z"].as<bool>();
+
+					if (rigidBodyComponent["angularAxisFactor_X"])
+						rbc.m_AngularAxisFactorX = rigidBodyComponent["angularAxisFactor_X"].as<bool>();
+
+					if (rigidBodyComponent["angularAxisFactor_Y"])
+						rbc.m_AngularAxisFactorY = rigidBodyComponent["angularAxisFactor_Y"].as<bool>();
+
 					rbc.UpdateEnableGravity();
 					rbc.UpdateBodyType();
 				}
@@ -484,11 +523,48 @@ namespace OpenGLEngine
 					auto& bcc = deserializedEntity->AddComponent<BoxColliderComponent>();
 					bcc.Init();
 
-					//bcc.mass = rigidBodyComponent["mass"].as<float>();
-					//bcc.friction = rigidBodyComponent["friction"].as<float>();
-					//bcc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+					if (boxColliderComponent["mass"])
+						bcc.mass = boxColliderComponent["mass"].as<float>();
 
-					bcc.UpdateMaterial();
+					if (boxColliderComponent["friction"])
+						bcc.friction = boxColliderComponent["friction"].as<float>();
+
+					if (boxColliderComponent["bounciness"])
+						bcc.bounciness = boxColliderComponent["bounciness"].as<float>();
+
+					if (boxColliderComponent["useEntityScale"])
+						bcc.m_UseEntityScale = boxColliderComponent["useEntityScale"].as<bool>();
+
+					if (boxColliderComponent["size"])
+						bcc.m_Size = boxColliderComponent["size"].as<glm::vec3>();
+
+					bcc.UpdateColliderMaterial();
+					bcc.UpdateColliderSize();
+				}
+
+				auto capsuleColliderComponent = component["CapsuleColliderComponent"];
+				if (capsuleColliderComponent)
+				{
+					auto& ccc = deserializedEntity->AddComponent<CapsuleColliderComponent>();
+					ccc.Init();
+
+					if (capsuleColliderComponent["mass"])
+						ccc.mass = capsuleColliderComponent["mass"].as<float>();
+
+					if (capsuleColliderComponent["friction"])
+						ccc.friction = capsuleColliderComponent["friction"].as<float>();
+
+					if (capsuleColliderComponent["bounciness"])
+						ccc.bounciness = capsuleColliderComponent["bounciness"].as<float>();
+
+					if (capsuleColliderComponent["radius"])
+						ccc.m_Radius = capsuleColliderComponent["radius"].as<float>();
+
+					if (capsuleColliderComponent["height"])
+						ccc.m_Height = capsuleColliderComponent["height"].as<float>();
+
+					ccc.UpdateColliderMaterial();
+					ccc.UpdateColliderSize();
 				}
 			}
 		}

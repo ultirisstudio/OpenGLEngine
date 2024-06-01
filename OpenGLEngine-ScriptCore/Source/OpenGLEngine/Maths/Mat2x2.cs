@@ -40,8 +40,8 @@ namespace OpenGLEngine
 
         public Mat2x2 Rotate(float angle)
         {
-            double cos = Math.Cos(angle);
-            double sin = Math.Sin(angle);
+            double cos = Mathf.Cos(angle);
+            double sin = Mathf.Sin(angle);
             return new Mat2x2((int)(mat2x2[0, 0] * cos - mat2x2[0, 1] * sin), (int)(mat2x2[0, 0] * sin + mat2x2[0, 1] * cos), (int)(mat2x2[1, 0] * cos - mat2x2[1, 1] * sin), (int)(mat2x2[1, 0] * sin + mat2x2[1, 1] * cos));
         }
 

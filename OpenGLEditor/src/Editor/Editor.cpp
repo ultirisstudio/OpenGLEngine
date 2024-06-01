@@ -53,6 +53,8 @@ namespace OpenGLEngine
 
 		ScriptEngine::ReloadAssembly();
 
+		std::cout << sizeof(Texture) << std::endl;
+
 		//////////////////////////////////////////////
 
 		/*mbedtls_aes_context aes;
@@ -118,6 +120,9 @@ namespace OpenGLEngine
 
 		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
 		m_EditorViewport.Update(*m_EditorCamera);
+
+		//std::cout << "Textures loaded: " << Renderer::m_SceneData.m_ResourceManager.GetLoadedTexture() << std::endl;
+		//std::cout << "Textures model: " << Renderer::m_SceneData.m_ResourceManager.GetLoadedModel() << std::endl;
 
 		m_Viewport.Render(m_SceneManager->getActiveScene());
 

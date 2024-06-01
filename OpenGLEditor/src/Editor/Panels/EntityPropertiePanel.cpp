@@ -16,9 +16,11 @@
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/BoxColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/UUID.h>
 
@@ -37,6 +39,8 @@ namespace OpenGLEngine
 		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
 		m_BoxColliderComponentPanel = std::make_unique<BoxColliderComponentPanel>();
 		m_MeshColliderComponentPanel = std::make_unique<MeshColliderComponentPanel>();
+		m_CapsuleColliderComponentPanel = std::make_unique<CapsuleColliderComponentPanel>();
+		m_CharacterControllerComponentPanel = std::make_unique<CharacterControllerComponentPanel>();
 	}
 
 	void EntityPropertiePanel::OnImGuiRender(SceneManager& sceneManager, SceneHierarchy& sceneHierarchy)
@@ -81,6 +85,8 @@ namespace OpenGLEngine
 			m_RigidBodyComponentPanel->Render(entity);
 			m_BoxColliderComponentPanel->Render(entity);
 			m_MeshColliderComponentPanel->Render(entity);
+			m_CapsuleColliderComponentPanel->Render(entity);
+			m_CharacterControllerComponentPanel->Render(entity);
 
 			if (ImGui::Button("Add Component")) {
 				ImGui::OpenPopup("AddComponent");
@@ -158,6 +164,18 @@ namespace OpenGLEngine
 				if (!entity->HasComponent<MeshColliderComponent>()) {
 					if (ImGui::MenuItem("Mesh Collider Component")) {
 						entity->AddComponent<MeshColliderComponent>();
+					}
+				}
+
+				if (!entity->HasComponent<CapsuleColliderComponent>()) {
+					if (ImGui::MenuItem("Capsule Collider Component")) {
+						entity->AddComponent<CapsuleColliderComponent>().Init();
+					}
+				}
+
+				if (!entity->HasComponent<CharacterControllerComponent>()) {
+					if (ImGui::MenuItem("Character Controller Component")) {
+						entity->AddComponent<CharacterControllerComponent>().Init();
 					}
 				}
 

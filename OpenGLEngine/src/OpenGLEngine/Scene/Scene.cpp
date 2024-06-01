@@ -9,7 +9,8 @@
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 
@@ -116,6 +117,11 @@ namespace OpenGLEngine
 		for (Entity* entity : View<RigidBodyComponent>())
 		{
 			entity->GetComponent<RigidBodyComponent>().Update();
+		}
+
+		for (Entity* entity : View<CharacterControllerComponent>())
+		{
+			entity->GetComponent<CharacterControllerComponent>().Update();
 		}
 	}
 

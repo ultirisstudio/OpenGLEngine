@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
-    public class Math
+    public class Mathf
     {
         public static float SquareRoot(float x)
         {
@@ -55,6 +55,11 @@ namespace OpenGLEngine
         public static float Tan(float x)
         {
             return Sin(x) / Cos(x);
+        }
+
+        public static Vector3 Cross(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
         }
     }
 }

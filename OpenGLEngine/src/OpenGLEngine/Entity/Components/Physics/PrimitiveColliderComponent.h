@@ -2,8 +2,6 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
-#include <glm/glm.hpp>
-
 namespace reactphysics3d {
 	extern "C" {
 		class Collider;
@@ -12,19 +10,19 @@ namespace reactphysics3d {
 
 namespace OpenGLEngine
 {
-	class BoxColliderComponent : public Component
+	class PrimitiveColliderComponent : public Component
 	{
-	private:
+	protected:
 		reactphysics3d::Collider* m_Collider;
 	public:
 		float mass;
 		float friction;
 		float bounciness;
 
-		BoxColliderComponent();
-		~BoxColliderComponent();
+		PrimitiveColliderComponent();
 
-		void Init();
-		void UpdateMaterial();
+		virtual void Init() = 0;
+		virtual void UpdateColliderMaterial() = 0;
+		virtual void UpdateColliderSize() = 0;
 	};
 }

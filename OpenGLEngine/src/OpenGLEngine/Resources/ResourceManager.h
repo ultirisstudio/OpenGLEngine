@@ -24,6 +24,9 @@ namespace OpenGLEngine
 
 		std::shared_ptr<Texture> UpdateTexture(const std::string& id, const TextureSpecification& specification);
 
+		int GetLoadedTexture() const;
+		int GetLoadedModel() const;
+
 		void Reset();
 	};
 }

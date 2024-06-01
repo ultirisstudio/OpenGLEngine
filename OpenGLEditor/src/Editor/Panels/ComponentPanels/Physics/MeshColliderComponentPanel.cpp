@@ -3,7 +3,7 @@
 #include "imgui.h"
 
 #include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
 
 namespace OpenGLEngine
 {

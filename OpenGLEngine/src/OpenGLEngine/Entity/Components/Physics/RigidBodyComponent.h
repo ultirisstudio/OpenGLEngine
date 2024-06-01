@@ -24,6 +24,14 @@ namespace OpenGLEngine
 		std::string bodyTypeString;
 
 		bool enableGravity;
+
+		bool m_LinearAxisFactorX = true;
+		bool m_LinearAxisFactorY = true;
+		bool m_LinearAxisFactorZ = true;
+
+		bool m_AngularAxisFactorX = true;
+		bool m_AngularAxisFactorY = true;
+		bool m_AngularAxisFactorZ = true;
 	public:
 		RigidBodyComponent();
 		~RigidBodyComponent();
@@ -37,5 +45,7 @@ namespace OpenGLEngine
 
 		void UpdateEnableGravity();
 		void UpdateBodyType();
+		void UpdateLinearAxisFactor();
+		void UpdateAngularAxisFactor();
 	};
 }

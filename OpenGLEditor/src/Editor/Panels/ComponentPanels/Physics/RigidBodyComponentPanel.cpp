@@ -3,7 +3,7 @@
 #include "imgui.h"
 
 #include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 
 namespace OpenGLEngine
 {
@@ -46,6 +46,44 @@ namespace OpenGLEngine
 							ImGui::SetItemDefaultFocus();
 					}
 					ImGui::EndCombo();
+				}
+
+				ImGui::Text("Linear Axis Factor");
+				ImGui::Text("X: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##LX", &rbc.m_LinearAxisFactorX))
+				{
+					rbc.UpdateLinearAxisFactor();
+				}
+				ImGui::SameLine();
+				ImGui::Text("Y: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##LY", &rbc.m_LinearAxisFactorY))
+				{
+					rbc.UpdateLinearAxisFactor();
+				}
+				ImGui::SameLine();
+				ImGui::Text("Z: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##LZ", &rbc.m_LinearAxisFactorZ))
+				{
+					rbc.UpdateLinearAxisFactor();
+				}
+
+				ImGui::Text("Angular Axis Factor");
+				ImGui::Text("X: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##AX", &rbc.m_AngularAxisFactorX))
+				{
+					rbc.UpdateAngularAxisFactor();
+				}
+				ImGui::SameLine();
+				ImGui::Text("Y: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##AY", &rbc.m_AngularAxisFactorY))
+				{
+					rbc.UpdateAngularAxisFactor();
+				}
+				ImGui::SameLine();
+				ImGui::Text("Z: "); ImGui::SameLine();
+				if (ImGui::Checkbox("##AZ", &rbc.m_AngularAxisFactorZ))
+				{
+					rbc.UpdateAngularAxisFactor();
 				}
 
 				ImGui::TreePop();

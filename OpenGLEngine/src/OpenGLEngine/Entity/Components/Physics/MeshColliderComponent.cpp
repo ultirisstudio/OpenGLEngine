@@ -7,7 +7,7 @@
 #include <OpenGLEngine/Physic/PhysicEngine.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 
 namespace OpenGLEngine
 {

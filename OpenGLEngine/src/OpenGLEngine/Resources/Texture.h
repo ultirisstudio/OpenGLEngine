@@ -9,7 +9,7 @@
 
 namespace OpenGLEngine
 {
-	enum class TextureFormat
+	enum class TextureFormat : uint8_t
 	{
 		RED = 0,
 		RGB,
@@ -18,7 +18,7 @@ namespace OpenGLEngine
 		SRGBA,
 	};
 
-	enum class TextureWrap
+	enum class TextureWrap : uint8_t
 	{
 		REPEAT = 0,
 		MIRRORED_REPEAT,
@@ -26,7 +26,7 @@ namespace OpenGLEngine
 		CLAMP_TO_BORDER
 	};
 
-	enum class TextureFilter
+	enum class TextureFilter : uint8_t
 	{
 		NEAREST = 0,
 		LINEAR,

@@ -41,11 +41,6 @@ namespace OpenGLEngine
 		rigidbody->setType(bodyType);
 		rigidbody->enableGravity(enableGravity);
 		rigidbody->setIsDebugEnabled(true);
-
-		//const reactphysics3d::Vector3 halfExtents(entityScale.x, entityScale.y, entityScale.z);
-		//reactphysics3d::BoxShape* boxShape = PhysicEngine::GetPhysicsCommon()->createBoxShape(halfExtents);
-
-		//collider = rigidbody->addCollider(boxShape, reactphysics3d::Transform::identity());
 	}
 
 	void RigidBodyComponent::Update()
@@ -86,5 +81,15 @@ namespace OpenGLEngine
 		{
 			std::cout << "Invalid body type" << std::endl;
 		}
+	}
+
+	void RigidBodyComponent::UpdateLinearAxisFactor()
+	{
+		rigidbody->setLinearLockAxisFactor(reactphysics3d::Vector3(m_LinearAxisFactorX, m_LinearAxisFactorY, m_LinearAxisFactorZ));
+	}
+
+	void RigidBodyComponent::UpdateAngularAxisFactor()
+	{
+		rigidbody->setAngularLockAxisFactor(reactphysics3d::Vector3(m_AngularAxisFactorX, m_AngularAxisFactorY, m_AngularAxisFactorZ));
 	}
 }

@@ -21,7 +21,8 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <reactphysics3d/reactphysics3d.h>
 
@@ -207,9 +208,27 @@ namespace OpenGLEngine
 		//entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalTorque(reactphysics3d::Vector3(0.0f, 10.0f, 0.0f));
 	}
 
+	static void CharacterController_Move(uint64_t entityID, glm::vec3 force)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<CharacterControllerComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
+		//entity->GetComponent<CharacterControllerComponent>().Move(force);
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
+	}
+
+	static float Input_GetMouseX()
+	{
+		return Input::GetMouseX();
+	}
+
+	static float Input_GetMouseY()
+	{
+		return Input::GetMouseY();
 	}
 
 	template<typename... Component>
@@ -245,6 +264,7 @@ namespace OpenGLEngine
 		RegisterComponent<MaterialComponent>();
 		RegisterComponent<ScriptComponent>();
 		RegisterComponent<RigidBodyComponent>();
+		RegisterComponent<CharacterControllerComponent>();
 	}
 
 	void ScriptGlue::RegisterFunctions()
@@ -273,6 +293,10 @@ namespace OpenGLEngine
 
 		ADD_INTERNAL_CALL(RigidBody_ApplyLocalForceAtCenterOfMass);
 
+		ADD_INTERNAL_CALL(CharacterController_Move);
+
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
+		ADD_INTERNAL_CALL(Input_GetMouseX);
+		ADD_INTERNAL_CALL(Input_GetMouseY);
 	}
 }

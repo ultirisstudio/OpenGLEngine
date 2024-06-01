@@ -96,7 +96,7 @@ namespace OpenGLEngine
 
         public static Vector4 Normalize(Vector4 value)
         {
-            float length = (float)Math.SquareRoot(value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W);
+            float length = (float)Mathf.SquareRoot(value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W);
             return new Vector4(value.X / length, value.Y / length, value.Z / length, value.W / length);
         }
 
@@ -106,12 +106,12 @@ namespace OpenGLEngine
             float dy = vector.Y - Y;
             float dz = vector.Z - Z;
             float dw = vector.W - W;
-            return Math.SquareRoot(dx * dx + dy * dy + dz * dz + dw * dw);
+            return Mathf.SquareRoot(dx * dx + dy * dy + dz * dz + dw * dw);
         }
 
         public float Length()
         {
-            return (float)Math.SquareRoot(X * X + Y * Y + Z * Z + W * W);
+            return (float)Mathf.SquareRoot(X * X + Y * Y + Z * Z + W * W);
         }
 
     }

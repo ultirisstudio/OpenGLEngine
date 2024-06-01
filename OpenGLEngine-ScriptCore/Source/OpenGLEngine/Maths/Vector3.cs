@@ -96,7 +96,7 @@ namespace OpenGLEngine
 
         public static Vector3 Normalize(Vector3 vector)
         {
-            float length = (float)Math.SquareRoot(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
+            float length = (float)Mathf.SquareRoot(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
             return new Vector3(vector.X / length, vector.Y / length, vector.Z / length);
         }
 
@@ -105,12 +105,12 @@ namespace OpenGLEngine
             float dx = vector.X - X;
             float dy = vector.Y - Y;
             float dz = vector.Z - Z;
-            return Math.SquareRoot(dx * dx + dy * dy + dz * dz);
+            return Mathf.SquareRoot(dx * dx + dy * dy + dz * dz);
         }
 
         public float Length()
         {
-            return Math.SquareRoot(X * X + Y * Y + Z * Z);
+            return Mathf.SquareRoot(X * X + Y * Y + Z * Z);
         }
 
     }

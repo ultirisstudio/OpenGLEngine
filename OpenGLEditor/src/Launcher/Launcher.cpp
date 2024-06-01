@@ -1,7 +1,10 @@
 #include "Launcher.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
+
+//TOOD Full rework to have a proper launcher, with a panel for creating new projects and another one for opening existing projects
 namespace OpenGLEngine
 {
 	Launcher::Launcher()
@@ -56,6 +59,7 @@ namespace OpenGLEngine
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("DockSpace", &dockspaceOpen, window_flags);
+
 		if (!opt_padding)
 			ImGui::PopStyleVar();
 
@@ -67,9 +71,25 @@ namespace OpenGLEngine
 		{
 			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+			static auto first_time = true;
+			if (first_time) {
+				ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+				ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace); // Add empty node
+				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
+
+				auto dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking windows into it
+				auto dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.2f, nullptr, &dock_main_id);
+				auto dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, nullptr, &dock_main_id);
+
+				ImGui::DockBuilderDockWindow("Launcher", dock_id_left);
+
+				ImGui::DockBuilderFinish(dockspace_id);
+				first_time = false;
+			}
 		}
 
-		ImGui::Begin("Launcher");
+		ImGui::Begin("Launcher", false);
 
 		if (ImGui::Button("Open project"))
 		{

@@ -21,6 +21,16 @@ namespace OpenGLEngine
 				YAML::Node config = YAML::LoadFile("config.yaml");
 				if (config["projectName"] && config["projectPath"])
 				{
+					if (config["projectName"].as<std::string>() == "" || config["projectPath"].as<std::string>() == "")
+					{
+						PushLayer(new Launcher());
+						return;
+					}
+					if (!std::filesystem::exists(config["projectPath"].as<std::string>()))
+					{
+						PushLayer(new Launcher());
+						return;
+					}
 					EditorSpecification editorSpec;
 					editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
 					editorSpec.ProjectName = config["projectName"].as<std::string>();
@@ -37,61 +47,14 @@ namespace OpenGLEngine
 			{
 				// create config file with empty values
 				YAML::Node config;
-				config["projectName"] = "null";
-				config["projectPath"] = "null";
+				config["projectName"] = "";
+				config["projectPath"] = "";
 				std::ofstream fout("config.yaml");
 				fout << config;
 				fout.close();
 
 				PushLayer(new Launcher());
 			}
-
-			/*bool haveProjectName = false;
-			bool haveProjectPath = false;
-
-			std::string projectName;
-			std::string projectPath;
-
-			for (int i = 0; i < spec.CommandLineArgs.Count; i++)
-			{
-				std::string temp(spec.CommandLineArgs[i]);
-
-				size_t pos = 0;
-				std::string token;
-
-				if ((pos = temp.find("=")) != std::string::npos)
-				{
-					std::string left = temp.substr(0, pos);
-					temp.erase(0, pos + std::string("=").length());
-					std::string right = temp;
-					
-					if (left == "--projectName")
-					{
-						haveProjectName = true;
-						projectName = right;
-					}
-
-					if (left == "--projectPath")
-					{
-						haveProjectPath = true;
-						projectPath = right;
-					}
-				}
-			}
-
-			if (haveProjectName && haveProjectPath)
-			{
-				EditorSpecification editorSpec;
-				editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
-				editorSpec.ProjectName = projectName;
-				editorSpec.ProjectPath = projectPath;
-
-				PushLayer(new Editor(editorSpec));
-			}
-			else
-			{
-				PushLayer(new Launcher());
-			}*/
 		}
 
 		~OpenGLEditor()

@@ -18,9 +18,12 @@ namespace OpenGLEngine
             mat2x2[1, 1] = m11;
         }
 
-        public static Mat2x2 operator *(Mat2x2 mat2x2, int scalar)
+        public static Mat2x2 Zero => new Mat2x2(0.0f, 0.0f, 0.0f, 0.0f);
+
+
+        public static Mat2x2 operator *(Mat2x2 mat2x2, Mat2x2 other)
         {
-            return new Mat2x2(mat2x2.mat2x2[0, 0] * scalar, mat2x2.mat2x2[0, 1] * scalar, mat2x2.mat2x2[1, 0] * scalar, mat2x2.mat2x2[1, 1] * scalar);
+            return new Mat2x2(mat2x2.mat2x2[0, 0] * other.mat2x2[0, 0] + mat2x2.mat2x2[0, 1] * other.mat2x2[1, 0], mat2x2.mat2x2[0, 0] * other.mat2x2[0, 1] + mat2x2.mat2x2[0, 1] * other.mat2x2[1, 1], mat2x2.mat2x2[1, 0] * other.mat2x2[0, 0] + mat2x2.mat2x2[1, 1] * other.mat2x2[1, 0], mat2x2.mat2x2[1, 0] * other.mat2x2[0, 1] + mat2x2.mat2x2[1, 1] * other.mat2x2[1, 1]);
         }
 
         public static Mat2x2 operator +(Mat2x2 left, Mat2x2 right)
@@ -45,6 +48,7 @@ namespace OpenGLEngine
             return new Mat2x2((int)(mat2x2[0, 0] * cos - mat2x2[0, 1] * sin), (int)(mat2x2[0, 0] * sin + mat2x2[0, 1] * cos), (int)(mat2x2[1, 0] * cos - mat2x2[1, 1] * sin), (int)(mat2x2[1, 0] * sin + mat2x2[1, 1] * cos));
         }
 
+        /*
         public Mat2x2 MultipliedByVec2 (Mat2x2 mat2x2, Vector2 vector2)
         {
             if (vector2.Length() != 2)
@@ -53,6 +57,15 @@ namespace OpenGLEngine
             }
 
             return new Mat2x2(mat2x2.mat2x2[0, 0] * vector2.X , mat2x2.mat2x2[0, 1] * vector2.Z, mat2x2.mat2x2[1, 0] * vector2.X , mat2x2.mat2x2[1, 1] * vector2.Z);
+        }
+        */
+
+        public float[,] MultiplyByVec2(float x, float y)
+        {
+            return new float[2, 1] { 
+                { mat2x2[0, 0] * x + mat2x2[0, 1] * y }, 
+                { mat2x2[1, 0] * x + mat2x2[1, 1] * y } 
+            };
         }
 
         public void Scale(float scalar)

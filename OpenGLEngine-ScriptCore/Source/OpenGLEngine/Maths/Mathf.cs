@@ -57,6 +57,40 @@ namespace OpenGLEngine
             return Sin(x) / Cos(x);
         }
 
+        public static float Pow(float x, float y)
+        {
+            float result = 1;
+            for (int i = 0; i < y; i++)
+            {
+                result *= x;
+            }
+            return result;
+        }
+
+        public static float exp(float x)
+        {
+            float result = 1;
+            float term = 1;
+            for (int i = 1; i < 10; i++)
+            {
+                term *= x / i;
+                result += term;
+            }
+            return result;
+        }
+
+        public static float lerp(float start_value, float end_value, float t)
+        {
+            return start_value + t * (end_value - start_value);
+        }
+
+        public static float clamp(float value, float min, float max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+
+       
+
         public static Vector3 Cross(Vector3 a, Vector3 b)
         {
             return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);

@@ -78,7 +78,7 @@ namespace OpenGLEngine
 
 				auto dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking windows into it
 				auto dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.4f, nullptr, &dock_main_id);
-				auto dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.6f, nullptr, &dock_main_id);
+				auto dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 1, nullptr, &dock_main_id);
 
 				ImGui::DockBuilderDockWindow("Create Project", dock_id_left);
 				ImGui::DockBuilderDockWindow("Project Viewer", dock_id_right);
@@ -97,7 +97,18 @@ namespace OpenGLEngine
 		ImGui::End();
 
 		ImGui::Begin("Project Viewer", false);
-		// TODO project viewer
+		if (config["recentProjects"])
+		{
+			for (auto project : config["recentProjects"])
+			{
+				if (ImGui::Button(project["Project"].as<std::string>().c_str()))
+				{
+					m_ProjectManager->OpenProjectFromPath(project["Path"].as<std::string>());
+				}
+			}
+
+		}
+
 		ImGui::End();
 
 		ImGui::End();

@@ -97,7 +97,6 @@ namespace OpenGLEngine
 					}
 					else
 					{
-						// if no recent projects exist then create a new list and add the project to it
 						YAML::Node recentProjects;
 						recentProjects.push_back(YAML::Load("{Project: " + m_Properties->m_ProjectName + ", Path: " + m_Properties->m_ProjectPath + "}"));
 						config["recentProjects"] = recentProjects;

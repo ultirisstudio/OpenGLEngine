@@ -76,11 +76,6 @@ namespace OpenGLEngine
 			m_ProjectManager->OpenProject();
 		}
 
-		if (ImGui::Button("Create new project"))
-		{
-			m_ProjectManager->CreateNewProject();
-		}
-
 		m_ProjectManager->OnImGuiRender();
 
 		ImGui::End();

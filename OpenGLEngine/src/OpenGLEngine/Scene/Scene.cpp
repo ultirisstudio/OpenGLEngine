@@ -64,9 +64,26 @@ namespace OpenGLEngine
 		return entity;
 	}
 
-	void Scene::DestroyEntity(Entity entity)
+	void Scene::DestroyEntityByUUID(UUID uuid)
 	{
-		m_EntityMap.erase(entity.GetUUID());
+		auto it = m_EntityMap.find(uuid);
+		if (it == m_EntityMap.end()) {
+			std::cerr << "WARNING: Entity with UUID " << uuid << " not found in scene." << std::endl;
+			return;
+		}
+		
+		Entity* entity = &it->second;
+
+		Entity* parent = GetEntityByUUID(entity->m_Parent);
+		if (parent != nullptr) {
+			auto childIt = std::find(parent->m_Children.begin(), parent->m_Children.end(), uuid);
+			if (childIt != parent->m_Children.end()) {
+				parent->m_Children.erase(childIt);
+			}
+		}
+
+		entity->Destroy();
+		m_EntityMap.erase(uuid);
 	}
 
 	Entity* Scene::FindEntityByName(std::string name)

@@ -36,6 +36,8 @@ namespace OpenGLEngine
 		RigidBodyComponent();
 		~RigidBodyComponent();
 
+		void Destroy();
+
 		void Init();
 		void Update();
 

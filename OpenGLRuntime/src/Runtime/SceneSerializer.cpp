@@ -11,11 +11,14 @@
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
-//#include <OpenGLEngine/Core/UUID.h>
 
 #include "Importer/TextureConfigImporter.h"
 
@@ -163,13 +166,17 @@ namespace OpenGLEngine
 			if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 			{
 				out << YAML::Key << "lightType" << YAML::Value << "Directional";
+
 				out << YAML::Key << "color" << YAML::Value << lc.dir_color;
+				out << YAML::Key << "power" << YAML::Value << lc.dir_power;
 			}
 			else if (lc.lightType == LightComponent::LightType::POINT)
 			{
 				out << YAML::Key << "lightType" << YAML::Value << "Point";
 
 				out << YAML::Key << "color" << YAML::Value << lc.point_color;
+				out << YAML::Key << "attenuation" << YAML::Value << lc.point_attenuation;
+				out << YAML::Key << "power" << YAML::Value << lc.point_power;
 			}
 
 			out << YAML::EndMap;
@@ -183,7 +190,7 @@ namespace OpenGLEngine
 			out << YAML::Value << YAML::BeginMap;
 
 			auto& cc = entity->GetComponent<CameraComponent>();
-			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().getFov();
+			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().GetFov();
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -211,10 +218,83 @@ namespace OpenGLEngine
 			auto& rbc = entity->GetComponent<RigidBodyComponent>();
 			out << YAML::Key << "enableGravity" << YAML::Value << rbc.enableGravity;
 			out << YAML::Key << "bodyType" << YAML::Value << rbc.bodyTypeString;
-			out << YAML::Key << "mass" << YAML::Value << rbc.mass;
-			out << YAML::Key << "friction" << YAML::Value << rbc.friction;
-			out << YAML::Key << "bounciness" << YAML::Value << rbc.bounciness;
+			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << rbc.m_LinearAxisFactorX;
+			out << YAML::Key << "linearAxisFactor_Y" << YAML::Value << rbc.m_LinearAxisFactorY;
+			out << YAML::Key << "linearAxisFactor_Z" << YAML::Value << rbc.m_LinearAxisFactorZ;
+			out << YAML::Key << "angularAxisFactor_X" << YAML::Value << rbc.m_AngularAxisFactorX;
+			out << YAML::Key << "angularAxisFactor_Y" << YAML::Value << rbc.m_AngularAxisFactorY;
+			out << YAML::Key << "angularAxisFactor_Z" << YAML::Value << rbc.m_AngularAxisFactorZ;
 
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent< CharacterControllerComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "CharacterControllerComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& ccc = entity->GetComponent<CharacterControllerComponent>();
+
+			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << ccc.m_LinearAxisFactorX;
+			out << YAML::Key << "linearAxisFactor_Y" << YAML::Value << ccc.m_LinearAxisFactorY;
+			out << YAML::Key << "linearAxisFactor_Z" << YAML::Value << ccc.m_LinearAxisFactorZ;
+
+			out << YAML::Key << "angularAxisFactor_X" << YAML::Value << ccc.m_AngularAxisFactorX;
+			out << YAML::Key << "angularAxisFactor_Y" << YAML::Value << ccc.m_AngularAxisFactorY;
+			out << YAML::Key << "angularAxisFactor_Z" << YAML::Value << ccc.m_AngularAxisFactorZ;
+
+			out << YAML::Key << "mass" << YAML::Value << ccc.mass;
+			out << YAML::Key << "friction" << YAML::Value << ccc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << ccc.bounciness;
+
+			out << YAML::Key << "radius" << YAML::Value << ccc.m_Radius;
+			out << YAML::Key << "height" << YAML::Value << ccc.m_Height;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<MeshColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "MeshColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& mcc = entity->GetComponent<MeshColliderComponent>();
+			out << YAML::Key << "IsConvex" << YAML::Value << mcc.m_IsConvex;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<BoxColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "BoxColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+			auto& bcc = entity->GetComponent<BoxColliderComponent>();
+			out << YAML::Key << "mass" << YAML::Value << bcc.mass;
+			out << YAML::Key << "friction" << YAML::Value << bcc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << bcc.bounciness;
+			out << YAML::Key << "useEntityScale" << YAML::Value << bcc.m_UseEntityScale;
+			out << YAML::Key << "size" << YAML::Value << bcc.m_Size;
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<CapsuleColliderComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "CapsuleColliderComponent";
+			out << YAML::Value << YAML::BeginMap;
+			auto& ccc = entity->GetComponent<CapsuleColliderComponent>();
+			out << YAML::Key << "mass" << YAML::Value << ccc.mass;
+			out << YAML::Key << "friction" << YAML::Value << ccc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << ccc.bounciness;
+			out << YAML::Key << "radius" << YAML::Value << ccc.m_Radius;
+			out << YAML::Key << "height" << YAML::Value << ccc.m_Height;
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
@@ -396,12 +476,21 @@ namespace OpenGLEngine
 					{
 						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
 						lc.dir_color = lightComponent["color"].as<glm::vec3>();
+
+						if (lightComponent["power"])
+							lc.dir_power = lightComponent["power"].as<float>();
 					}
 
 					if (lightComponent["lightType"].as<std::string>() == "Point")
 					{
 						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
 						lc.point_color = lightComponent["color"].as<glm::vec3>();
+
+						if (lightComponent["attenuation"])
+							lc.point_attenuation = lightComponent["attenuation"].as<float>();
+
+						if (lightComponent["power"])
+							lc.point_power = lightComponent["power"].as<float>();
 					}
 				}
 
@@ -409,8 +498,8 @@ namespace OpenGLEngine
 				if (cameraComponent)
 				{
 					auto& cc = deserializedEntity->AddComponent<CameraComponent>();
-					cc.Init();
-					cc.GetCamera().setFov(cameraComponent["fov"].as<float>());
+					cc.GetCamera().Init(&deserializedEntity->GetComponent<TransformComponent>());
+					cc.GetCamera().SetFov(cameraComponent["fov"].as<float>());
 				}
 
 				auto scriptComponent = component["ScriptComponent"];
@@ -428,13 +517,125 @@ namespace OpenGLEngine
 
 					rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
 					rbc.bodyTypeString = rigidBodyComponent["bodyType"].as<std::string>();
-					rbc.mass = rigidBodyComponent["mass"].as<float>();
-					rbc.friction = rigidBodyComponent["friction"].as<float>();
-					rbc.bounciness = rigidBodyComponent["bounciness"].as<float>();
+
+					if (rigidBodyComponent["linearAxisFactor_X"])
+						rbc.m_LinearAxisFactorX = rigidBodyComponent["linearAxisFactor_X"].as<bool>();
+
+					if (rigidBodyComponent["linearAxisFactor_Y"])
+						rbc.m_LinearAxisFactorY = rigidBodyComponent["linearAxisFactor_Y"].as<bool>();
+
+					if (rigidBodyComponent["linearAxisFactor_Z"])
+						rbc.m_LinearAxisFactorZ = rigidBodyComponent["linearAxisFactor_Z"].as<bool>();
+
+					if (rigidBodyComponent["angularAxisFactor_X"])
+						rbc.m_AngularAxisFactorX = rigidBodyComponent["angularAxisFactor_X"].as<bool>();
+
+					if (rigidBodyComponent["angularAxisFactor_Y"])
+						rbc.m_AngularAxisFactorY = rigidBodyComponent["angularAxisFactor_Y"].as<bool>();
+
+					if (rigidBodyComponent["angularAxisFactor_Z"])
+						rbc.m_AngularAxisFactorZ = rigidBodyComponent["angularAxisFactor_Z"].as<bool>();
 
 					rbc.UpdateEnableGravity();
 					rbc.UpdateBodyType();
-					rbc.UpdateMaterial();
+				}
+
+				auto characterControllerComponent = component["CharacterControllerComponent"];
+				if (characterControllerComponent)
+				{
+					auto& ccc = deserializedEntity->AddComponent<CharacterControllerComponent>();
+					ccc.Init();
+
+					if (characterControllerComponent["linearAxisFactor_X"])
+						ccc.m_LinearAxisFactorX = characterControllerComponent["linearAxisFactor_X"].as<bool>();
+
+					if (characterControllerComponent["linearAxisFactor_Y"])
+						ccc.m_LinearAxisFactorY = characterControllerComponent["linearAxisFactor_Y"].as<bool>();
+
+					if (characterControllerComponent["linearAxisFactor_Z"])
+						ccc.m_LinearAxisFactorZ = characterControllerComponent["linearAxisFactor_Z"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_X"])
+						ccc.m_AngularAxisFactorX = characterControllerComponent["angularAxisFactor_X"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_Y"])
+						ccc.m_AngularAxisFactorY = characterControllerComponent["angularAxisFactor_Y"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_Z"])
+						ccc.m_AngularAxisFactorZ = characterControllerComponent["angularAxisFactor_Z"].as<bool>();
+
+					if (characterControllerComponent["mass"])
+						ccc.mass = characterControllerComponent["mass"].as<float>();
+
+					if (characterControllerComponent["friction"])
+						ccc.friction = characterControllerComponent["friction"].as<float>();
+
+					if (characterControllerComponent["bounciness"])
+						ccc.bounciness = characterControllerComponent["bounciness"].as<float>();
+
+					if (characterControllerComponent["radius"])
+						ccc.m_Radius = characterControllerComponent["radius"].as<float>();
+
+					if (characterControllerComponent["height"])
+						ccc.m_Height = characterControllerComponent["height"].as<float>();
+				}
+
+				auto meshColliderComponent = component["MeshColliderComponent"];
+				if (meshColliderComponent)
+				{
+					auto& mcc = deserializedEntity->AddComponent<MeshColliderComponent>();
+					mcc.m_IsConvex = meshColliderComponent["IsConvex"].as<bool>();
+					mcc.Generate();
+				}
+
+				auto boxColliderComponent = component["BoxColliderComponent"];
+				if (boxColliderComponent)
+				{
+					auto& bcc = deserializedEntity->AddComponent<BoxColliderComponent>();
+					bcc.Init();
+
+					if (boxColliderComponent["mass"])
+						bcc.mass = boxColliderComponent["mass"].as<float>();
+
+					if (boxColliderComponent["friction"])
+						bcc.friction = boxColliderComponent["friction"].as<float>();
+
+					if (boxColliderComponent["bounciness"])
+						bcc.bounciness = boxColliderComponent["bounciness"].as<float>();
+
+					if (boxColliderComponent["useEntityScale"])
+						bcc.m_UseEntityScale = boxColliderComponent["useEntityScale"].as<bool>();
+
+					if (boxColliderComponent["size"])
+						bcc.m_Size = boxColliderComponent["size"].as<glm::vec3>();
+
+					bcc.UpdateColliderMaterial();
+					bcc.UpdateColliderSize();
+				}
+
+				auto capsuleColliderComponent = component["CapsuleColliderComponent"];
+				if (capsuleColliderComponent)
+				{
+					auto& ccc = deserializedEntity->AddComponent<CapsuleColliderComponent>();
+					ccc.Init();
+
+					if (capsuleColliderComponent["mass"])
+						ccc.mass = capsuleColliderComponent["mass"].as<float>();
+
+					if (capsuleColliderComponent["friction"])
+						ccc.friction = capsuleColliderComponent["friction"].as<float>();
+
+					if (capsuleColliderComponent["bounciness"])
+						ccc.bounciness = capsuleColliderComponent["bounciness"].as<float>();
+
+					if (capsuleColliderComponent["radius"])
+						ccc.m_Radius = capsuleColliderComponent["radius"].as<float>();
+
+					if (capsuleColliderComponent["height"])
+						ccc.m_Height = capsuleColliderComponent["height"].as<float>();
+
+					ccc.UpdateColliderMaterial();
+					ccc.UpdateColliderSize();
 				}
 			}
 		}
@@ -462,7 +663,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene);
+				DeserializeEntity(entity, m_Scene);
 			}
 		}
 
@@ -487,7 +688,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene);
+				DeserializeEntity(entity, m_Scene);
 			}
 		}
 

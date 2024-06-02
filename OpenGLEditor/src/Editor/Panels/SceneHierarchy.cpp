@@ -58,8 +58,8 @@ namespace OpenGLEngine
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Delete Object")) {
-				scene.DestroyEntity(*entity);
 				m_SelectedEntity = nullptr;
+				scene.DestroyEntityByUUID(entity->GetUUID());
 			}
 			ImGui::EndPopup();
 		}

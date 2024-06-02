@@ -18,6 +18,8 @@ namespace OpenGLEngine
 
 	CharacterControllerComponent::~CharacterControllerComponent()
 	{
+		m_Rigidbody->removeCollider(m_Collider);
+		delete m_Rigidbody;
 	}
 
 	void CharacterControllerComponent::Init()

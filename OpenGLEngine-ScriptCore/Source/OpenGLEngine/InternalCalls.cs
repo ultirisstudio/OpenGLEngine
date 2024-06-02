@@ -14,6 +14,9 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static ulong Scene_CreateEntity(string name);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void Scene_RemoveEntity(ulong entityID);
+
         // Entity
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -92,5 +95,10 @@ namespace OpenGLEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static float Input_GetMouseY();
+
+        // Physic
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void Physics_RaycastAll(Vector3 origin, Vector3 direction, float distance, out RaycastInfo raycastInfo);
     }
 }

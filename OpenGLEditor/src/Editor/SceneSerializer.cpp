@@ -15,6 +15,7 @@
 #include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
+#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
@@ -223,6 +224,33 @@ namespace OpenGLEngine
 			out << YAML::Key << "angularAxisFactor_X" << YAML::Value << rbc.m_AngularAxisFactorX;
 			out << YAML::Key << "angularAxisFactor_Y" << YAML::Value << rbc.m_AngularAxisFactorY;
 			out << YAML::Key << "angularAxisFactor_Z" << YAML::Value << rbc.m_AngularAxisFactorZ;
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent< CharacterControllerComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "CharacterControllerComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& ccc = entity->GetComponent<CharacterControllerComponent>();
+
+			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << ccc.m_LinearAxisFactorX;
+			out << YAML::Key << "linearAxisFactor_Y" << YAML::Value << ccc.m_LinearAxisFactorY;
+			out << YAML::Key << "linearAxisFactor_Z" << YAML::Value << ccc.m_LinearAxisFactorZ;
+
+			out << YAML::Key << "angularAxisFactor_X" << YAML::Value << ccc.m_AngularAxisFactorX;
+			out << YAML::Key << "angularAxisFactor_Y" << YAML::Value << ccc.m_AngularAxisFactorY;
+			out << YAML::Key << "angularAxisFactor_Z" << YAML::Value << ccc.m_AngularAxisFactorZ;
+
+			out << YAML::Key << "mass" << YAML::Value << ccc.mass;
+			out << YAML::Key << "friction" << YAML::Value << ccc.friction;
+			out << YAML::Key << "bounciness" << YAML::Value << ccc.bounciness;
+
+			out << YAML::Key << "radius" << YAML::Value << ccc.m_Radius;
+			out << YAML::Key << "height" << YAML::Value << ccc.m_Height;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -505,8 +533,58 @@ namespace OpenGLEngine
 					if (rigidBodyComponent["angularAxisFactor_Y"])
 						rbc.m_AngularAxisFactorY = rigidBodyComponent["angularAxisFactor_Y"].as<bool>();
 
+					if (rigidBodyComponent["angularAxisFactor_Z"])
+						rbc.m_AngularAxisFactorZ = rigidBodyComponent["angularAxisFactor_Z"].as<bool>();
+
 					rbc.UpdateEnableGravity();
 					rbc.UpdateBodyType();
+					rbc.UpdateLinearAxisFactor();
+					rbc.UpdateAngularAxisFactor();
+				}
+
+				auto characterControllerComponent = component["CharacterControllerComponent"];
+				if (characterControllerComponent)
+				{
+					auto& ccc = deserializedEntity->AddComponent<CharacterControllerComponent>();
+					ccc.Init();
+
+					if (characterControllerComponent["linearAxisFactor_X"])
+						ccc.m_LinearAxisFactorX = characterControllerComponent["linearAxisFactor_X"].as<bool>();
+
+					if (characterControllerComponent["linearAxisFactor_Y"])
+						ccc.m_LinearAxisFactorY = characterControllerComponent["linearAxisFactor_Y"].as<bool>();
+
+					if (characterControllerComponent["linearAxisFactor_Z"])
+						ccc.m_LinearAxisFactorZ = characterControllerComponent["linearAxisFactor_Z"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_X"])
+						ccc.m_AngularAxisFactorX = characterControllerComponent["angularAxisFactor_X"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_Y"])
+						ccc.m_AngularAxisFactorY = characterControllerComponent["angularAxisFactor_Y"].as<bool>();
+
+					if (characterControllerComponent["angularAxisFactor_Z"])
+						ccc.m_AngularAxisFactorZ = characterControllerComponent["angularAxisFactor_Z"].as<bool>();
+
+					if (characterControllerComponent["mass"])
+						ccc.mass = characterControllerComponent["mass"].as<float>();
+
+					if (characterControllerComponent["friction"])
+						ccc.friction = characterControllerComponent["friction"].as<float>();
+
+					if (characterControllerComponent["bounciness"])
+						ccc.bounciness = characterControllerComponent["bounciness"].as<float>();
+
+					if (characterControllerComponent["radius"])
+						ccc.m_Radius = characterControllerComponent["radius"].as<float>();
+
+					if (characterControllerComponent["height"])
+						ccc.m_Height = characterControllerComponent["height"].as<float>();
+
+					ccc.UpdateColliderSize();
+					ccc.UpdateColliderMaterial();
+					ccc.UpdateLinearAxisFactor();
+					ccc.UpdateAngularAxisFactor();
 				}
 
 				auto meshColliderComponent = component["MeshColliderComponent"];

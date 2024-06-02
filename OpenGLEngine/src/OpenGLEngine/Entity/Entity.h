@@ -23,6 +23,8 @@ public:
 
 	void SetName(std::string name) { m_Name = name; }
 
+	void Destroy();
+
 	template<typename T>
 	bool HasComponent() const {
 		return m_ComponentsBitset[GetComponentTypeID<T>()];

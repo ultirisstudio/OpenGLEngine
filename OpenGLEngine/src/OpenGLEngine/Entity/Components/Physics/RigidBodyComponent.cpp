@@ -19,8 +19,15 @@ namespace OpenGLEngine
 
 	RigidBodyComponent::~RigidBodyComponent()
 	{
-		rigidbody->removeCollider(collider);
-		delete rigidbody;
+		
+	}
+
+	void RigidBodyComponent::Destroy()
+	{
+		if (rigidbody)
+		{
+			PhysicEngine::GetPhysicWorld()->destroyRigidBody(rigidbody);
+		}
 	}
 
 	void RigidBodyComponent::Init()

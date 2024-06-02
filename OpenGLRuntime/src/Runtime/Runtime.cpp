@@ -54,7 +54,7 @@ namespace OpenGLEngine
 		m_FrameBuffer = Framebuffer::Create(spec);
 
 		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\save_test.scene");
+		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\c.scene");
 		uint32_t width = Application::Get().GetWindow().GetWidth();
 		uint32_t height = Application::Get().GetWindow().GetHeight();
 		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(width, height);
@@ -72,7 +72,10 @@ namespace OpenGLEngine
 		//m_Chronometer.restart();
 
 		if (Input::IsKeyPressed(Key::Space))
+		{
+			ScriptEngine::ReloadAssembly();
 			m_SceneManager->getActiveScene().OnRuntimeStart();
+		}
 
 		CalculateLatency();
 		Application::Get().GetWindow().SetTitle("Runtime [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");

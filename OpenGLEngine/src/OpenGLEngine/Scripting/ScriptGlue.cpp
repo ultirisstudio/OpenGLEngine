@@ -24,6 +24,8 @@
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
+#include <OpenGLEngine/Physic/Raycast.h>
+
 #include <reactphysics3d/reactphysics3d.h>
 
 #include <OpenGLEngine/Core/UUID.h>
@@ -72,6 +74,12 @@ namespace OpenGLEngine
 		return entity->GetUUID();
 	}
 
+	static void Scene_RemoveEntity(UUID entityID)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		scene->DestroyEntityByUUID(entityID);
+	}
+
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
@@ -106,6 +114,15 @@ namespace OpenGLEngine
 		}
 
 		return (child != nullptr) ? child->GetUUID() : UUID::Null();
+	}
+
+	static void Physics_RaycastAll(glm::vec3 origin, glm::vec3 direction, float distance, RaycastInfo* raycastInfo)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+
+		RaycastInfo rayInfo = Raycast::RaycastAll(scene, origin, direction, distance);
+
+		*raycastInfo = rayInfo;
 	}
 
 	static void TransformComponent_GetTranslation(UUID entityID, glm::vec3* outTranslation)
@@ -322,6 +339,7 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(Debug_Log);
 
 		ADD_INTERNAL_CALL(Scene_CreateEntity);
+		ADD_INTERNAL_CALL(Scene_RemoveEntity);
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);
 		ADD_INTERNAL_CALL(Entity_AddComponent);
@@ -351,5 +369,7 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
 		ADD_INTERNAL_CALL(Input_GetMouseX);
 		ADD_INTERNAL_CALL(Input_GetMouseY);
+
+		ADD_INTERNAL_CALL(Physics_RaycastAll);
 	}
 }

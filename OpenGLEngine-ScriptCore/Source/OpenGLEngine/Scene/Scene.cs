@@ -13,5 +13,10 @@ namespace OpenGLEngine
             ulong id = InternalCalls.Scene_CreateEntity(name);
             return new Entity(id);
         }
+
+        public static void RemoveEntity(ulong id)
+        {
+            InternalCalls.Scene_RemoveEntity(id);
+        }
     }
 }

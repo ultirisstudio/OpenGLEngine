@@ -16,11 +16,11 @@
 #include <OpenGLEngine/Entity/Components/IDComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
+//#include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
-#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
+//#include <OpenGLEngine/Entity/Components/ModelComponent.h>
+//#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
@@ -48,13 +48,13 @@ namespace OpenGLEngine
 
 	}
 
-	template<typename... Component>
-	struct ComponentGroup
-	{
+	//template<typename... Component>
+	//struct ComponentGroup
+	//{
+	//
+	//};
 
-	};
-
-	using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent, RigidBodyComponent>;
+	//using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent, RigidBodyComponent>;
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntityHasComponentFuncs;
 	static std::unordered_map<MonoType*, std::function<Component(Entity*)>> m_EntityAddComponentFuncs;
@@ -259,7 +259,7 @@ namespace OpenGLEngine
 		return result;
 	}
 
-	static void ScriptComponent_SetScriptName(uint64_t entityID, MonoString* scriptName)
+	static void ScriptComponent_SetScriptName(UUID entityID, MonoString* scriptName)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
@@ -268,7 +268,7 @@ namespace OpenGLEngine
 		ScriptEngine::OnCreateEntity(*entity);
 	}
 
-	static void RigidBody_ApplyLocalForceAtCenterOfMass(uint64_t entityID, glm::vec3 force)
+	static void RigidBody_ApplyLocalForceAtCenterOfMass(UUID entityID, glm::vec3 force)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
@@ -276,16 +276,28 @@ namespace OpenGLEngine
 		//entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalTorque(reactphysics3d::Vector3(0.0f, 10.0f, 0.0f));
 	}
 
-	static void CharacterController_Move(uint64_t entityID, glm::vec3 force)
+	static void CharacterController_Move(UUID entityID, glm::vec3 force)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
 		entity->GetComponent<CharacterControllerComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
 	}
 
+	static void CameraComponent_SetFOV(UUID entityID, float fov)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		entity->GetComponent<CameraComponent>().GetCamera().SetFov(fov);
+	}
+
 	static bool Input_IsKeyDown(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
+	}
+
+	static bool Input_IsMouseButtonDown(MouseCode button)
+	{
+		return Input::IsMouseButtonPressed(button);
 	}
 
 	static float Input_GetMouseX()
@@ -316,11 +328,11 @@ namespace OpenGLEngine
 		}(), ...);
 	}
 
-	template<typename... Component>
-	static void RegisterComponent(ComponentGroup<Component...>)
-	{
-		RegisterComponent<Component...>();
-	}
+	//template<typename... Component>
+	//static void RegisterComponent(ComponentGroup<Component...>)
+	//{
+	//	RegisterComponent<Component...>();
+	//}
 
 	void ScriptGlue::RegisterComponents()
 	{
@@ -332,6 +344,17 @@ namespace OpenGLEngine
 		RegisterComponent<ScriptComponent>();
 		RegisterComponent<RigidBodyComponent>();
 		RegisterComponent<CharacterControllerComponent>();
+
+		// TODO : corriger l'erreru de referencement pour le component CameraComponent
+		std::string_view typeName = typeid(CameraComponent).name();
+		size_t pos = typeName.find_last_of(':');
+		std::string_view structName = typeName.substr(pos + 1);
+		std::string managedTypename = "OpenGLEngine." + std::string(structName);
+
+		MonoType* managedType = mono_reflection_type_from_name(managedTypename.data(), ScriptEngine::GetCoreAssemblyImage());
+		if (!managedType)
+			std::cout << "Failed to find managed type: " << managedTypename << std::endl;
+		m_EntityHasComponentFuncs[managedType] = [](Entity entity) { return entity.HasComponent<CameraComponent>(); };
 	}
 
 	void ScriptGlue::RegisterFunctions()
@@ -366,7 +389,10 @@ namespace OpenGLEngine
 
 		ADD_INTERNAL_CALL(CharacterController_Move);
 
+		ADD_INTERNAL_CALL(CameraComponent_SetFOV);
+
 		ADD_INTERNAL_CALL(Input_IsKeyDown);
+		ADD_INTERNAL_CALL(Input_IsMouseButtonDown);
 		ADD_INTERNAL_CALL(Input_GetMouseX);
 		ADD_INTERNAL_CALL(Input_GetMouseY);
 

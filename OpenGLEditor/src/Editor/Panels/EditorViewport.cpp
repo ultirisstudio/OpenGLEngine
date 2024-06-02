@@ -207,7 +207,7 @@ namespace OpenGLEngine
 		ImGui::PopStyleVar();
 
 		ImGui::Begin("Editor infos");
-		ImGui::Text(std::string(std::string("Hovered entity: ") + std::string(m_HoveredEntity ? m_HoveredEntity->GetName() : "none")).c_str());
+		//ImGui::Text(std::string(std::string("Hovered entity: ") + std::string(m_HoveredEntity ? m_HoveredEntity->GetName() : "none")).c_str());
 		ImGui::End();
 
 		m_EditorFrameBuffer->Unbind();

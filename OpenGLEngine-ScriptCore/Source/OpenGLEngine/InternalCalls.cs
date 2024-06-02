@@ -85,10 +85,18 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void CharacterController_Move(ulong ID, Vector3 force);
 
+        // Camera Component
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void CameraComponent_SetFOV(ulong ID, float fov);
+
         // Input
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static bool Input_IsKeyDown(KeyCode keycode);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static bool Input_IsMouseButtonDown(MouseCode button);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static float Input_GetMouseX();

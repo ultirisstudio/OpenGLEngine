@@ -75,7 +75,6 @@ namespace OpenGLEngine
 					CreateProjectFiles(m_Properties->m_ProjectName, m_Properties->m_ProjectPath);
 
 					std::filesystem::path path(m_Properties->m_ProjectPath + "\\Scripts\\Build\\" + m_Properties->m_ProjectName + ".dll");
-					ScriptEngine::SetAppAssemblyPath(path);
 					
 					YAML::Emitter out;
 					out << YAML::BeginMap;
@@ -85,8 +84,6 @@ namespace OpenGLEngine
 
 					std::ofstream fout(m_Properties->m_ProjectPath + std::string("\\" + m_Properties->m_ProjectName + std::string(".ultprj")));
 					fout << out.c_str();
-					
-					Renderer::m_SceneData.m_ResourceManager.Reset();
 					
 					YAML::Node config = YAML::LoadFile("config.yaml");
 					if (config["recentProjects"])

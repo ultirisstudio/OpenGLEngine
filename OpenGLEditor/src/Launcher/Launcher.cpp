@@ -88,7 +88,7 @@ namespace OpenGLEngine
 			}
 		}
 
-		ImGui::Begin("Create Project", false);
+		ImGui::Begin("Create Project", false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
 
 		m_ProjectManager->CreateNewProject();
 
@@ -96,7 +96,7 @@ namespace OpenGLEngine
 
 		ImGui::End();
 
-		ImGui::Begin("Project Viewer", false);
+		ImGui::Begin("Project Viewer", false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
 		if (config["recentProjects"])
 		{
 			for (auto project : config["recentProjects"])
@@ -106,12 +106,16 @@ namespace OpenGLEngine
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 1));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.1f, 0.1f, 1));
 
-				if (ImGui::Button(project["Project"].as<std::string>().c_str()), &ImVec2(30, 200))
+				ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
+
+				std::string label = project["Project"].as<std::string>() + std::string("\n") + project["Path"].as<std::string>();
+				if (ImGui::Button(label.c_str(), ImVec2(ImGui::GetWindowSize().x, 70)))
 				{
 					m_ProjectManager->OpenProjectFromPath(project["Path"].as<std::string>());
 				}
 
 				ImGui::PopStyleColor(3);
+				ImGui::PopStyleVar();
 			}
 
 		}

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenGLEngine
 {
@@ -28,28 +23,35 @@ namespace OpenGLEngine
             return x < 0 ? -x : x;
         }
 
-        public static float Cos(float x)
+        public static float Cos(double angle)
         {
-            float result = 1;
-            float term = 1;
-            for (int i = 1; i < 10; i++)
-            {
-                term *= -x * x / (2 * i * (2 * i - 1));
-                result += term;
-            }
-            return result;
-        }
+            angle = angle % (2 * Math.PI);
 
-        public static float Sin(float x)
-        {
-            float result = x;
-            float term = x;
-            for (int i = 1; i < 10; i++)
+            double term = 1;
+            double sum = term;
+
+            for (int i = 1; i <= 10; i++)
             {
-                term *= -x * x / (2 * i * (2 * i + 1));
-                result += term;
+                term *= -angle * angle / (2 * i * (2 * i - 1));
+                sum += term;
             }
-            return result;
+
+            return (float)sum;
+        }
+        public static float Sin(double angle)
+        {
+            angle = angle % (2 * Math.PI);
+
+            double term = angle;
+            double sum = term;
+
+            for (int i = 1; i <= 10; i++)
+            {
+                term *= -angle * angle / ((2 * i) * (2 * i + 1));
+                sum += term;
+            }
+
+            return (float)sum;
         }
 
         public static float Tan(float x)
@@ -89,11 +91,21 @@ namespace OpenGLEngine
             return value < min ? min : value > max ? max : value;
         }
 
-       
-
         public static Vector3 Cross(Vector3 a, Vector3 b)
         {
             return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+        }
+
+        public static float Radians(float degrees)
+        {
+            const float PI = (float)Math.PI;
+            return degrees * (PI / 180.0f);
+        }
+
+        public static float Degrees(float radians)
+        {
+            const float degreesPerRadian = (float)(180.0f / Math.PI);
+            return radians * degreesPerRadian;
         }
     }
 }

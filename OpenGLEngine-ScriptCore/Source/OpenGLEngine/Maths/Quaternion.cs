@@ -67,7 +67,7 @@ namespace OpenGLEngine
 
         public static float Length(Quaternion quaternion)
         {
-            return (float)Math.SquareRoot(quaternion.X * quaternion.X + quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z + quaternion.W * quaternion.W);
+            return (float)Mathf.SquareRoot(quaternion.X * quaternion.X + quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z + quaternion.W * quaternion.W);
         }
 
 

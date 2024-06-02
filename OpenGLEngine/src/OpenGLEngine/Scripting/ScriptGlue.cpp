@@ -65,7 +65,7 @@ namespace OpenGLEngine
 		std::cout << str << std::endl;
 	}
 
-	static uint64_t Scene_CreateEntity(MonoString* name)
+	static uint32_t Scene_CreateEntity(MonoString* name)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->CreateEntity(Utils::MonoStringToString(name));
@@ -88,6 +88,24 @@ namespace OpenGLEngine
 
 		MonoType* managedType = mono_reflection_type_get_type(componentType);
 		auto& c = m_EntityAddComponentFuncs.at(managedType)(entity);
+	}
+
+	static uint32_t Entity_GetChildByName(UUID entityID, MonoString* name)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		Entity* child = nullptr;
+		for (auto& e : entity->m_Children)
+		{
+			Entity* c = scene->GetEntityByUUID(e);
+			if (c->GetName() == Utils::MonoStringToString(name))
+			{
+				child = c;
+				break;
+			}
+		}
+
+		return (child != nullptr) ? child->GetUUID() : UUID::Null();
 	}
 
 	static void TransformComponent_GetTranslation(UUID entityID, glm::vec3* outTranslation)
@@ -130,6 +148,39 @@ namespace OpenGLEngine
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
 		entity->GetComponent<TransformComponent>().Scale = *scale;
+	}
+
+	static void TransformComponent_GetForward(UUID entityID, glm::vec3* outForward)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+
+		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+
+		glm::vec3 front;
+		front.x = cos(rotation.y) * cos(rotation.x);
+		front.y = sin(rotation.x);
+		front.z = sin(rotation.y) * cos(rotation.x);
+		front = glm::normalize(front);
+		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+		glm::vec3 up = glm::normalize(glm::cross(right, front));
+		glm::vec3 forward = glm::normalize(glm::cross(right, up));
+
+		*outForward = forward;
+	}
+
+	static void TransformComponent_GetRight(UUID entityID, glm::vec3* outRight)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+		glm::vec3 front;
+		front.x = cos(rotation.y) * cos(rotation.x);
+		front.y = sin(rotation.x);
+		front.z = sin(rotation.y) * cos(rotation.x);
+		front = glm::normalize(front);
+		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+		*outRight = right;
 	}
 
 	static void MeshComponent_GenerateMesh(UUID entityID, MonoArray* vertices, MonoArray* indices)
@@ -213,7 +264,6 @@ namespace OpenGLEngine
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
 		entity->GetComponent<CharacterControllerComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
-		//entity->GetComponent<CharacterControllerComponent>().Move(force);
 	}
 
 	static bool Input_IsKeyDown(KeyCode keycode)
@@ -275,6 +325,7 @@ namespace OpenGLEngine
 
 		ADD_INTERNAL_CALL(Entity_HasComponent);
 		ADD_INTERNAL_CALL(Entity_AddComponent);
+		ADD_INTERNAL_CALL(Entity_GetChildByName);
 
 		ADD_INTERNAL_CALL(TransformComponent_GetTranslation);
 		ADD_INTERNAL_CALL(TransformComponent_SetTranslation);
@@ -282,6 +333,8 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(TransformComponent_SetRotation);
 		ADD_INTERNAL_CALL(TransformComponent_GetScale);
 		ADD_INTERNAL_CALL(TransformComponent_SetScale);
+		ADD_INTERNAL_CALL(TransformComponent_GetForward);
+		ADD_INTERNAL_CALL(TransformComponent_GetRight);
 
 		ADD_INTERNAL_CALL(MeshComponent_GenerateMesh);
 

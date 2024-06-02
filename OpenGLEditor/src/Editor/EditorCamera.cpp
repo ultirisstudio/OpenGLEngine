@@ -147,7 +147,6 @@ namespace OpenGLEngine
 			horizontalForward.y = 0.0f;
 
 			glm::mat4 translationMatrix(1.0f);
-			translationMatrix = glm::translate(translationMatrix, m_right * (-offsetX * m_TranslateSensitivity));
 			translationMatrix = glm::translate(translationMatrix, horizontalForward * (-offsetY * m_TranslateSensitivity));
 
 			m_position = (translationMatrix * glm::vec4(m_position, 1.0f));

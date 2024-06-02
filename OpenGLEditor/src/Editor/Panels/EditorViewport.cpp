@@ -164,11 +164,11 @@ namespace OpenGLEngine
 				glm::vec3 position, scale;
 				glm::quat rotationQuat;
 				glm::decompose(finalTransform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
-				glm::vec3 rotation = glm::eulerAngles(rotationQuat);
-				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				//glm::vec3 rotation = glm::eulerAngles(rotationQuat);
+				//glm::vec3 deltaRotation = rotation - tc.Rotation;
 
 				tc.Position = position;
-				tc.Rotation += deltaRotation;
+				//tc.Rotation += deltaRotation;
 				tc.Scale = scale;
 			}
 			else

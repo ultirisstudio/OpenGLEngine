@@ -96,6 +96,10 @@ namespace OpenGLEngine
 
         public static Vector3 Normalize(Vector3 vector)
         {
+            if (vector.Equals(Vector3.Zero))
+            {
+                return Vector3.Zero;
+            }
             float length = (float)Mathf.SquareRoot(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
             return new Vector3(vector.X / length, vector.Y / length, vector.Z / length);
         }

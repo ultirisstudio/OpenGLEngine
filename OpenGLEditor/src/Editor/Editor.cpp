@@ -53,8 +53,6 @@ namespace OpenGLEngine
 
 		ScriptEngine::ReloadAssembly();
 
-		std::cout << sizeof(Texture) << std::endl;
-
 		//////////////////////////////////////////////
 
 		/*mbedtls_aes_context aes;

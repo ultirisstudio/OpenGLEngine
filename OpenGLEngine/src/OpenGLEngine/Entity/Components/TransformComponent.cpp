@@ -14,6 +14,8 @@ namespace OpenGLEngine
 
 	glm::mat4 TransformComponent::GetLocalTransform() const
 	{
+		//glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.x), { 1, 0, 0 }) * glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.y), { 0, 1, 0 }) * glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.z), {0, 0, 1});
+		//return glm::translate(glm::mat4(1.0f), Position) * rotation * glm::scale(glm::mat4(1.0f), Scale);
 		return glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 	}
 
@@ -62,28 +64,25 @@ namespace OpenGLEngine
 
 	glm::mat4 TransformComponent::CalculateViewMatrix(glm::mat4 transform) const
 	{
-		glm::mat4 viewMatrix;
-
 		glm::vec3 m_target;
 		glm::vec3 m_up;
 		glm::vec3 m_right;
-		glm::vec3 m_worldUp;
-
-		glm::vec3 front;
 
 		glm::vec3 position, scale;
 		glm::quat rotationQuat;
 		glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
-		glm::vec3 rotation = glm::eulerAngles(rotationQuat);
 
-		front.x = cos(rotation.y) * cos(rotation.x);
-		front.y = sin(rotation.x);
-		front.z = sin(rotation.y) * cos(rotation.x);
-		m_target = glm::normalize(front);
-		m_right = glm::normalize(glm::cross(m_target, m_worldUp));
-		m_up = glm::normalize(glm::cross(m_right, m_target));
+		glm::vec3 front = rotationQuat * glm::vec3(0.0f, 0.0f, -1.0f);
 
-		return glm::lookAt(position, position + m_target, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+		if (fabs(glm::abs(front.y)) >= 1.0f - FLT_EPSILON) {
+			up = glm::normalize(glm::cross(front, glm::vec3(0.0f, 0.0f, 1.0f)));
+		}
+
+		glm::vec3 target = glm::normalize(front);
+		glm::vec3 right = glm::normalize(glm::cross(target, up));
+
+		return glm::lookAt(position, position + target, up);
 	}
 
 	glm::mat4 TransformComponent::GetLocalViewMatrix() const

@@ -41,5 +41,11 @@ namespace OpenGLEngine
             T component = new T() { Entity = this };
             return component;
         }
+
+        public Entity GetChildByName(string name)
+        {
+            ulong id = InternalCalls.Entity_GetChildByName(ID, name);
+            return new Entity(id);
+        }
     }
 }

@@ -46,5 +46,17 @@ namespace OpenGLEngine
                 InternalCalls.TransformComponent_SetScale(Entity.ID, ref value);
             }
         }
+
+        public Vector3 GetForward()
+        {
+            InternalCalls.TransformComponent_GetForward(Entity.ID, out Vector3 forward);
+            return forward;
+        }
+
+        public Vector3 GetRight()
+        {
+            InternalCalls.TransformComponent_GetRight(Entity.ID, out Vector3 right);
+            return right;
+        }
     }
 }

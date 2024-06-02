@@ -22,6 +22,9 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void Entity_AddComponent(ulong entityID, Type componentType);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static ulong Entity_GetChildByName(ulong entityID, string name);
+
         // Tranform Component
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -41,6 +44,12 @@ namespace OpenGLEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_SetScale(ulong entityID, ref Vector3 scale);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void TransformComponent_GetForward(ulong entityID, out Vector3 forward);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void TransformComponent_GetRight(ulong entityID, out Vector3 right);
 
         // Mesh Component
 

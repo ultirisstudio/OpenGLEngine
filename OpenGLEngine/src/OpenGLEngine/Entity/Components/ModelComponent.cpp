@@ -34,8 +34,11 @@ namespace OpenGLEngine
 		for (auto& [name, mesh] : m_Model->GetMeshes())
 		{
 			Entity* entity = Renderer::GetScene()->CreateEntity(name);
-			entity->AddComponent<MeshComponent>(name, mesh, path);
-			entity->AddComponent<MaterialComponent>();
+			auto& mc = entity->AddComponent<MeshComponent>(name, mesh, path);
+			auto& materialComponent = entity->AddComponent<MaterialComponent>();
+			// TODO : Clarifier le code pour charger les textures
+			if (mc.GetMesh().GetMaterial().hasDiffuse && mc.GetMesh().GetMaterial().diffuse != "")
+				materialComponent.addTexture("albedo", mc.GetMesh().GetMaterial().diffuse);
 
 			this->entity->AddChild(entity->GetUUID());
 		}

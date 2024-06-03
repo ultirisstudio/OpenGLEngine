@@ -18,6 +18,15 @@ namespace OpenGLEngine
 		POINTS
 	};
 
+	struct MeshMaterial
+	{
+		bool hasDiffuse;
+		bool hasNormal;
+
+		std::string diffuse;
+		std::string normal;
+	};
+
 	class Mesh : public Asset
 	{
 	private:
@@ -30,11 +39,19 @@ namespace OpenGLEngine
 		std::vector<Vertex> m_vertices;
 		std::vector<unsigned int> m_indices;
 
+		MeshMaterial m_material;
+
 	public:
 		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
+		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, MeshMaterial material, DrawMode drawMode = DrawMode::TRIANGLES);
 		~Mesh();
 
 		void draw() const;
+
+		void SetMaterial(const MeshMaterial& material) {   m_material = material; }
+		const MeshMaterial& GetMaterial() const { return m_material; }
+
+		void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
 		const size_t& GetVerticesCount() { return m_vertices.size(); }
 		const size_t& GetIndicesCount() { return m_indices.size(); }

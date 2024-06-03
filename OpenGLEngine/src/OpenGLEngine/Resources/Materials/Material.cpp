@@ -56,6 +56,9 @@ namespace OpenGLEngine
 		}
 		else
 		{
+			// TODO : refaire la fonction + renvoyer un boolean poiur confirmer si la texture existe
+			//TextureSpecification spec;
+			//Renderer::m_SceneData.m_ResourceManager.CreateTexture(file, spec);
 			m_textures[id] = file;
 		}
 	}

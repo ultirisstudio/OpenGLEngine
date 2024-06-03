@@ -29,7 +29,43 @@ namespace OpenGLEngine
 		m_ebo(0),
 		m_drawMode(drawMode),
 		m_vertices(std::move(vertices)),
-		m_indices(std::move(indices))
+		m_indices(std::move(indices)),
+		m_material({ false, false, "", ""})
+	{
+		GenerateMesh(vertices, indices);
+	}
+
+	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, MeshMaterial material, DrawMode drawMode) :
+		m_vao(0),
+		m_vbo(0),
+		m_ebo(0),
+		m_drawMode(drawMode),
+		m_vertices(std::move(vertices)),
+		m_indices(std::move(indices)),
+		m_material(material)
+	{
+		GenerateMesh(vertices, indices);
+	}
+
+	Mesh::~Mesh()
+	{
+		glDeleteVertexArrays(1, &m_vao);
+		glDeleteBuffers(1, &m_vbo);
+		glDeleteBuffers(1, &m_ebo);
+	}
+
+	// TODO : put DrawMode variable on draw fonction
+	void Mesh::draw() const
+	{
+		glBindVertexArray(m_vao);
+
+		if (m_indices.empty())
+			glDrawArrays(Utils::DrawModeToGLenum(m_drawMode), 0, static_cast<GLsizei>(m_vertices.size()));
+		else
+			glDrawElements(Utils::DrawModeToGLenum(m_drawMode), static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Mesh::GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 	{
 		glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
@@ -51,23 +87,5 @@ namespace OpenGLEngine
 
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
-	}
-
-	Mesh::~Mesh()
-	{
-		glDeleteVertexArrays(1, &m_vao);
-		glDeleteBuffers(1, &m_vbo);
-		glDeleteBuffers(1, &m_ebo);
-	}
-
-	// TODO : put DrawMode variable on draw fonction
-	void Mesh::draw() const
-	{
-		glBindVertexArray(m_vao);
-
-		if (m_indices.empty())
-			glDrawArrays(Utils::DrawModeToGLenum(m_drawMode), 0, static_cast<GLsizei>(m_vertices.size()));
-		else
-			glDrawElements(Utils::DrawModeToGLenum(m_drawMode), static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
 	}
 }

@@ -79,6 +79,8 @@ namespace OpenGLEngine
 		{
 			TextureSpecification spec;
 
+			spec.flip = true;
+
 			YAML::Emitter out;
 			out << YAML::BeginMap;
 			out << YAML::Key << "WrapS" << YAML::Value << Utils::TextureWrapToChar(spec.wrap_s);

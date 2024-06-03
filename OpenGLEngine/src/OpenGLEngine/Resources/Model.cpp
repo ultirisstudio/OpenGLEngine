@@ -1,4 +1,7 @@
 #include "depch.h"
+
+#include <filesystem>
+
 #include <OpenGLEngine/Resources/Model.h>
 
 #include <OpenGLEngine/Tools/Log.h>
@@ -63,7 +66,33 @@ namespace OpenGLEngine
 				indices.push_back(face.mIndices[j]);
 		}
 
-		return new Mesh(vertices, indices);
+		/////////////////////////////// MATERIAL ///////////////////////////////
+
+		MeshMaterial mat;
+
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+		unsigned int nbTexture = material->GetTextureCount(aiTextureType_DIFFUSE);
+
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+		{
+			aiString str;
+			material->GetTexture(aiTextureType_DIFFUSE, i, &str);
+			mat.hasDiffuse = true;
+			std::filesystem::path diffusePath = str.C_Str();
+			mat.diffuse = std::string(("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\3d\\halo_map\\") + std::string(diffusePath.filename().string()));
+			std::cout << "Diffuse: " << mat.diffuse << std::endl;
+		}
+
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_NORMALS); i++)
+		{
+			aiString str;
+			material->GetTexture(aiTextureType_NORMALS, i, &str);
+			mat.hasNormal = true;
+			mat.normal = str.C_Str();
+		}
+
+		return new Mesh(vertices, indices, mat);
 	}
 
 	void Model::loadNode(const aiNode* node, const aiScene* scene)
@@ -80,7 +109,7 @@ namespace OpenGLEngine
 	Model::Model(const std::string& path) : m_Name("Unamed")
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_PreTransformVertices | aiProcess_Triangulate); // aiProcess_PreTransformVertices | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_GenUVCoords | aiProcess_FlipUVs | aiProcess_ImproveCacheLocality // | aiProcess_OptimizeMeshes
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_SortByPType); // aiProcess_PreTransformVertices | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_GenUVCoords | aiProcess_FlipUVs | aiProcess_ImproveCacheLocality // | aiProcess_OptimizeMeshes
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{

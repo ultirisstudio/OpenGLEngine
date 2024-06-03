@@ -47,3 +47,4 @@ OpenGLEngine/vendor/zlib/bin-int/
 **.exe
 
 **/Makefile
+/OpenGLEditor/config.yaml

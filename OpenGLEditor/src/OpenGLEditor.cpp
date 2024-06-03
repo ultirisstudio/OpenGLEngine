@@ -3,6 +3,8 @@
 
 #include "Editor/Editor.h"
 #include "Launcher/Launcher.h"
+#include "yaml-cpp/yaml.h"
+#include <fstream>
 
 namespace OpenGLEngine
 {
@@ -11,61 +13,48 @@ namespace OpenGLEngine
 	public:
 		OpenGLEditor(const ApplicationSpecification& spec) : Application(spec)
 		{
-			//PushLayer(new Launcher());
 
-			EditorSpecification editorSpec;
-			editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
-			editorSpec.ProjectName = "CallOf";
-			editorSpec.ProjectPath = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf";
-
-			PushLayer(new Editor(editorSpec));
-
-			/*bool haveProjectName = false;
-			bool haveProjectPath = false;
-
-			std::string projectName;
-			std::string projectPath;
-
-			for (int i = 0; i < spec.CommandLineArgs.Count; i++)
+			//Check if config.yaml exists if it does then load the editor with the project name and path
+			//If it doesn't exist then load the launcher
+			if (std::filesystem::exists("config.yaml"))
 			{
-				std::string temp(spec.CommandLineArgs[i]);
-
-				size_t pos = 0;
-				std::string token;
-
-				if ((pos = temp.find("=")) != std::string::npos)
+				YAML::Node config = YAML::LoadFile("config.yaml");
+				if (config["projectName"] && config["projectPath"])
 				{
-					std::string left = temp.substr(0, pos);
-					temp.erase(0, pos + std::string("=").length());
-					std::string right = temp;
-					
-					if (left == "--projectName")
+					if (config["projectName"].as<std::string>() == "" || config["projectPath"].as<std::string>() == "")
 					{
-						haveProjectName = true;
-						projectName = right;
+						PushLayer(new Launcher());
+						return;
 					}
+					if (!std::filesystem::exists(config["projectPath"].as<std::string>()))
+					{
+						PushLayer(new Launcher());
+						return;
+					}
+					EditorSpecification editorSpec;
+					editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
+					editorSpec.ProjectName = config["projectName"].as<std::string>();
+					editorSpec.ProjectPath = config["projectPath"].as<std::string>();
 
-					if (left == "--projectPath")
-					{
-						haveProjectPath = true;
-						projectPath = right;
-					}
+					PushLayer(new Editor(editorSpec));
 				}
-			}
-
-			if (haveProjectName && haveProjectPath)
-			{
-				EditorSpecification editorSpec;
-				editorSpec.EngineExecutablePath = spec.CommandLineArgs[0];
-				editorSpec.ProjectName = projectName;
-				editorSpec.ProjectPath = projectPath;
-
-				PushLayer(new Editor(editorSpec));
+				else
+				{
+					PushLayer(new Launcher());
+				}
 			}
 			else
 			{
+				// create config file with empty values
+				YAML::Node config;
+				config["projectName"] = "";
+				config["projectPath"] = "";
+				std::ofstream fout("config.yaml");
+				fout << config;
+				fout.close();
+
 				PushLayer(new Launcher());
-			}*/
+			}
 		}
 
 		~OpenGLEditor()

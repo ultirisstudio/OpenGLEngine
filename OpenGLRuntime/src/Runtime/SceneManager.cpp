@@ -8,6 +8,8 @@
 
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/ModelComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshComponent.h>
+#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 
@@ -25,31 +27,6 @@ namespace OpenGLEngine
 		m_Scene->Update(dt);
 	}
 
-	void SceneManager::AddGameObject(DEFAULT_OBJECT_TYPE type)
-	{
-		Entity* temp = m_Scene->CreateEntity("temp");
-		temp->AddComponent<TransformComponent>();
-
-		switch (type)
-		{
-		case CUBE:
-			temp->SetName("Cube");
-			temp->AddComponent<ModelComponent>();
-			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/cube.obj");
-			break;
-		case SPHERE:
-			temp->SetName("Sphere");
-			temp->AddComponent<ModelComponent>();
-			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/sphere.obj");
-			break;
-		case PLANE:
-			temp->SetName("Plane");
-			temp->AddComponent<ModelComponent>();
-			temp->GetComponent<ModelComponent>().SetModel("Assets/Models/plane.obj");
-			break;
-		}
-	}
-
 	void SceneManager::AddGameObject(const std::string& file)
 	{
 		const size_t slash = file.find_last_of("/\\");
@@ -59,9 +36,89 @@ namespace OpenGLEngine
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
 		Entity* temp = m_Scene->CreateEntity(m_FileName);
-		temp->AddComponent<TransformComponent>();
 		temp->AddComponent<ModelComponent>();
 		temp->GetComponent<ModelComponent>().SetModel(file);
+	}
+
+	void SceneManager::AddCube()
+	{
+		Entity* temp = m_Scene->CreateEntity("Cube");
+		temp->AddComponent<ModelComponent>();
+		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/cube.obj");
+	}
+
+	void SceneManager::AddSphere()
+	{
+		Entity* temp = m_Scene->CreateEntity("Sphere");
+		temp->AddComponent<ModelComponent>();
+		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/sphere.obj");
+	}
+
+	void SceneManager::AddUVSphere()
+	{
+		Entity* temp = m_Scene->CreateEntity("UV Sphere");
+
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+
+		const unsigned int X_SEGMENTS = 64;
+		const unsigned int Y_SEGMENTS = 64;
+
+		const float PI = 3.14159265359f;
+
+		bool oddRow = false;
+
+		for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+		{
+			for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
+			{
+				float xSegment = (float)x / (float)X_SEGMENTS;
+				float ySegment = (float)y / (float)Y_SEGMENTS;
+				float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+				float yPos = std::cos(ySegment * PI);
+				float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+
+				vertices.push_back({ glm::vec3(xPos, yPos, zPos), glm::vec3(xPos, yPos, zPos), glm::vec2(xSegment, ySegment) });
+
+				/*Vertex vertice;
+				vertice.position = glm::vec3(xPos, yPos, zPos);
+				vertice.normal = glm::vec3(xPos, yPos, zPos);
+				vertice.texCoord = glm::vec2(xSegment, ySegment);
+				vertices.push_back(vertice);*/
+			}
+		}
+
+		for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
+		{
+			if (!oddRow)
+			{
+				for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+				{
+					indices.push_back(y * (X_SEGMENTS + 1) + x);
+					indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+				}
+			}
+			else
+			{
+				for (int x = X_SEGMENTS; x >= 0; --x)
+				{
+					indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+					indices.push_back(y * (X_SEGMENTS + 1) + x);
+				}
+			}
+			oddRow = !oddRow;
+		}
+
+		temp->AddComponent<MaterialComponent>();
+		temp->AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
+	}
+
+	void SceneManager::AddPlane()
+	{
+		Entity* temp = m_Scene->CreateEntity("Plane");
+		temp->AddComponent<TransformComponent>();
+		temp->AddComponent<ModelComponent>();
+		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/plane.obj");
 	}
 
 	void SceneManager::SaveScene()
@@ -122,7 +179,7 @@ namespace OpenGLEngine
 	{
 		PhysicEngine::Reload();
 
-		//TODO : Clear scene entities
+		m_Scene->ClearEntities();
 
 		SceneSerializer serializer(*m_Scene);
 		serializer.DeserializeRuntime(filePath);

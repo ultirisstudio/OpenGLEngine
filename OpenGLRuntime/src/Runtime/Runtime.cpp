@@ -54,7 +54,7 @@ namespace OpenGLEngine
 		m_FrameBuffer = Framebuffer::Create(spec);
 
 		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\c.scene");
+		m_SceneManager->LoadScene(std::filesystem::current_path().generic_string() + "\\Assets\\Scenes\\halo_scene.scene");
 		uint32_t width = Application::Get().GetWindow().GetWidth();
 		uint32_t height = Application::Get().GetWindow().GetHeight();
 		m_SceneManager->getActiveScene().getActiveCamera()->OnResize(width, height);

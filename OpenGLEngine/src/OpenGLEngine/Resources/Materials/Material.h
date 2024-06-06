@@ -1,52 +1,61 @@
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////    --CREDITS: BROCOLARBRE--    //////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma once
 
-#include <OpenGLEngine/Resources/Materials/CubeMap.h>
-#include <OpenGLEngine/Resources/Texture.h>
-
+#include <string>
+#include <optional>
 #include <glm/glm.hpp>
 
-#include <map>
-#include <string>
+#include <OpenGLEngine/Resources/Texture.h>
 
 namespace OpenGLEngine
 {
+	enum TextureType
+	{
+		Albedo,
+		Normal,
+		Metallic,
+		Roughness,
+		AO
+	};
+
+	struct MaterialSpecification
+	{
+		std::optional<std::string> AlbedoTexture;
+		std::optional<std::string> NormalTexture;
+		std::optional<std::string> MetallicTexture;
+		std::optional<std::string> RoughnessTexture;
+		std::optional<std::string> AOTexture;
+
+		glm::vec3 Albedo = glm::vec3(1.0f);
+
+		float Metallic = 0.5f;
+		float Roughness = 0.5f;
+		float AO = 1.0f;
+	};
+
 	class Material
 	{
 	private:
-		std::map<std::string, std::shared_ptr<float>> m_floats;
-		std::map<std::string, std::shared_ptr<glm::vec3>> m_vec3s;
-		std::map<std::string, std::string> m_textures;
-		std::map<std::string, std::shared_ptr<CubeMap>> m_cubemaps;
-		std::map<std::string, std::shared_ptr<bool>> m_booleans;
+		MaterialSpecification m_Specification;
 
 	public:
-		Material();
+		Material(const MaterialSpecification& specification);
 		~Material();
 
-		void addFloat(const std::string& id, float value);
-		void addVec3(const std::string& id, glm::vec3 value);
-		void addTexture(const std::string& id, const std::string& file, bool gamma);
-		void addCubemap(const std::string& id, CubeMap value);
-		void addBoolean(const std::string& id, bool value);
+		void SetTexture(TextureType type, std::string path);
+		Texture* GetTexture(TextureType type);
 
-		std::shared_ptr<float> getFloat(const std::string& id) const;
-		std::shared_ptr<glm::vec3> getVec3(const std::string& id) const;
-		Texture* getTexture(const std::string& id) const;
-		std::shared_ptr<CubeMap> getCubemap(const std::string& id) const;
-		std::shared_ptr<bool> getBoolean(const std::string& id) const;
+		bool HasTexture(TextureType type);
 
-		bool hasVec3(const std::string& id) const;
-		bool hasFloat(const std::string& id) const;
-		bool hasTexture(const std::string& id) const;
-		bool hasCubemap(const std::string& id) const;
-		bool hasBoolean(const std::string& id) const;
+		const MaterialSpecification& GetSpecification() { return m_Specification; }
 
-		static std::shared_ptr<Material> CreateMaterial();
+		glm::vec3& GetAlbedo() { return m_Specification.Albedo; }
+
+		float& GetMetallic() { return m_Specification.Metallic; }
+		float& GetRoughness() { return m_Specification.Roughness; }
+		float& GetAO() { return m_Specification.AO; }
+
+		void ResetTexture(TextureType type);
+
+		static std::shared_ptr<Material> CreateMaterial(const MaterialSpecification& specification);
 	};
 }

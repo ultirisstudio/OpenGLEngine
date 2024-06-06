@@ -47,7 +47,7 @@ namespace OpenGLEngine
 
 				ImGui::Text("Albedo texture: ");
 
-				id = mc.GetMaterial().hasTexture("albedo") ? mc.GetMaterial().getTexture("albedo")->GetID() : m_NoTexture->GetID();
+				id = mc.GetMaterial().HasTexture(TextureType::Albedo) ? mc.GetMaterial().GetTexture(TextureType::Albedo)->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -57,24 +57,27 @@ namespace OpenGLEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.addTexture("albedo", file);
+						mc.GetMaterial().SetTexture(TextureType::Albedo, file);
 					}
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("albedo"))
+				if (mc.GetMaterial().HasTexture(TextureType::Albedo))
 				{
-					ImGui::Checkbox("Use Albedo Texture", mc.GetMaterial().getBoolean("albedo").get());
+					if (ImGui::Button("Remove"))
+					{
+						mc.GetMaterial().ResetTexture(TextureType::Albedo);
+					}
 				}
 
 				ImGui::Text("Albedo Color: ");
-				ImGui::ColorEdit3("##AlbedoColor", glm::value_ptr(*mc.GetMaterial().getVec3("albedo")));
+				ImGui::ColorEdit3("##AlbedoColor", glm::value_ptr(mc.GetMaterial().GetAlbedo()));
 
 				ImGui::Separator();
 
 				ImGui::Text("Normal texture: ");
 
-				id = mc.GetMaterial().hasTexture("normal") ? mc.GetMaterial().getTexture("normal")->GetID() : m_NoTexture->GetID();
+				id = mc.GetMaterial().HasTexture(TextureType::Normal) ? mc.GetMaterial().GetTexture(TextureType::Normal)->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -84,21 +87,24 @@ namespace OpenGLEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.addTexture("normal", file);
+						mc.GetMaterial().SetTexture(TextureType::Normal, file);
 					}
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("normal"))
+				if (mc.GetMaterial().HasTexture(TextureType::Normal))
 				{
-					ImGui::Checkbox("Use Normal Texture", mc.GetMaterial().getBoolean("normal").get());
+					if (ImGui::Button("Remove"))
+					{
+						mc.GetMaterial().ResetTexture(TextureType::Normal);
+					}
 				}
 
 				ImGui::Separator();
 
 				ImGui::Text("Metallic texture: ");
 
-				id = mc.GetMaterial().hasTexture("metallic") ? mc.GetMaterial().getTexture("metallic")->GetID() : m_NoTexture->GetID();
+				id = mc.GetMaterial().HasTexture(TextureType::Metallic) ? mc.GetMaterial().GetTexture(TextureType::Metallic)->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -108,24 +114,27 @@ namespace OpenGLEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.addTexture("metallic", file);
+						mc.GetMaterial().SetTexture(TextureType::Metallic, file);
 					}
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("metallic"))
+				if (mc.GetMaterial().HasTexture(TextureType::Metallic))
 				{
-					ImGui::Checkbox("Use Metallic Texture", mc.GetMaterial().getBoolean("metallic").get());
+					if (ImGui::Button("Remove"))
+					{
+						mc.GetMaterial().ResetTexture(TextureType::Metallic);
+					}
 				}
 
 				ImGui::Text("Metallic: ");
-				ImGui::SliderFloat("##Metallic", mc.GetMaterial().getFloat("metallic").get(), 0.0f, 1.0f);
+				ImGui::SliderFloat("##Metallic", &mc.GetMaterial().GetMetallic(), 0.0f, 1.0f);
 
 				ImGui::Separator();
 
 				ImGui::Text("Roughness texture: ");
 
-				id = mc.GetMaterial().hasTexture("roughness") ? mc.GetMaterial().getTexture("roughness")->GetID() : m_NoTexture->GetID();
+				id = mc.GetMaterial().HasTexture(TextureType::Roughness) ? mc.GetMaterial().GetTexture(TextureType::Roughness)->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -135,24 +144,27 @@ namespace OpenGLEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.addTexture("roughness", file);
+						mc.GetMaterial().SetTexture(TextureType::Roughness, file);
 					}
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("roughness"))
+				if (mc.GetMaterial().HasTexture(TextureType::Roughness))
 				{
-					ImGui::Checkbox("Use Roughness Texture", mc.GetMaterial().getBoolean("roughness").get());
+					if (ImGui::Button("Remove"))
+					{
+						mc.GetMaterial().ResetTexture(TextureType::Roughness);
+					}
 				}
 
 				ImGui::Text("Roughness: ");
-				ImGui::SliderFloat("##Roughness", mc.GetMaterial().getFloat("roughness").get(), 0.0f, 1.0f);
+				ImGui::SliderFloat("##Roughness", &mc.GetMaterial().GetRoughness(), 0.0f, 1.0f);
 
 				ImGui::Separator();
 
 				ImGui::Text("AO texture: ");
 
-				id = mc.GetMaterial().hasTexture("ao") ? mc.GetMaterial().getTexture("ao")->GetID() : m_NoTexture->GetID();
+				id = mc.GetMaterial().HasTexture(TextureType::AO) ? mc.GetMaterial().GetTexture(TextureType::AO)->GetID() : m_NoTexture->GetID();
 
 				ImGui::ImageButton((ImTextureID)id, { 64.0f, 64.0f }, { 0, 1 }, { 1, 0 });
 				if (ImGui::BeginDragDropTarget())
@@ -162,18 +174,21 @@ namespace OpenGLEngine
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path filesys = path;
 						std::string file = filesys.string();
-						mc.addTexture("ao", file);
+						mc.GetMaterial().SetTexture(TextureType::AO, file);
 					}
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (mc.GetMaterial().hasTexture("ao"))
+				if (mc.GetMaterial().HasTexture(TextureType::AO))
 				{
-					ImGui::Checkbox("Use AO Texture", mc.GetMaterial().getBoolean("ao").get());
+					if (ImGui::Button("Remove"))
+					{
+						mc.GetMaterial().ResetTexture(TextureType::AO);
+					}
 				}
 
 				ImGui::Text("AO: ");
-				ImGui::SliderFloat("##AO", mc.GetMaterial().getFloat("ao").get(), 0.0f, 1.0f);
+				ImGui::SliderFloat("##AO", &mc.GetMaterial().GetAO(), 0.0f, 1.0f);
 
 				ImGui::TreePop();
 			}

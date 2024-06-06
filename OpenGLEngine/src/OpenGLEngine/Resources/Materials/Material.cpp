@@ -1,157 +1,118 @@
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////    --CREDITS: BROCOLARBRE--    //////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 #include "depch.h"
+#include "Material.h"
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Resources/Materials/Material.h>
 
 namespace OpenGLEngine
 {
-	Material::Material() :
-		m_floats(),
-		m_vec3s(),
-		m_textures(),
-		m_cubemaps()
+	Material::Material(const MaterialSpecification& specification) :
+		m_Specification(specification)
 	{
 
 	}
 
 	Material::~Material()
 	{
-		for (auto& texture : m_textures)
-		{
-			//delete texture.second;
-		}
-
-		for (auto& cubemap : m_cubemaps)
-		{
-			cubemap.second.reset();
-		}
-
-		m_floats.clear();
-		m_vec3s.clear();
-		m_textures.clear();
-		m_cubemaps.clear();
+		
 	}
 
-	void Material::addFloat(const std::string& id, float value)
+	void Material::SetTexture(TextureType type, std::string path)
 	{
-		m_floats[id] = std::make_shared<float>(value);
-	}
-
-	void Material::addVec3(const std::string& id, glm::vec3 value)
-	{
-		m_vec3s[id] = std::make_shared<glm::vec3>(value);
-	}
-
-	void Material::addTexture(const std::string& id, const std::string& file, bool gamma)
-	{
-		if (Renderer::m_SceneData.m_ResourceManager.GetTexture(file))
+		switch (type)
 		{
-			m_textures[id] = file;
-		}
-		else
-		{
-			// TODO : refaire la fonction + renvoyer un boolean poiur confirmer si la texture existe
-			//TextureSpecification spec;
-			//Renderer::m_SceneData.m_ResourceManager.CreateTexture(file, spec);
-			m_textures[id] = file;
+		case TextureType::Albedo:
+			m_Specification.AlbedoTexture = path;
+			break;
+		case TextureType::Normal:
+			m_Specification.NormalTexture = path;
+			break;
+		case TextureType::Metallic:
+			m_Specification.MetallicTexture = path;
+			break;
+		case TextureType::Roughness:
+			m_Specification.RoughnessTexture = path;
+			break;
+		case TextureType::AO:
+			m_Specification.AOTexture = path;
+			break;
 		}
 	}
 
-	void Material::addCubemap(const std::string& id, CubeMap value)
+	Texture* Material::GetTexture(TextureType type)
 	{
-		m_cubemaps[id] = std::make_shared<CubeMap>();
-	}
-
-	void Material::addBoolean(const std::string& id, bool value)
-	{
-		m_booleans[id] = std::make_shared<bool>(value);
-	}
-
-	std::shared_ptr<float> Material::getFloat(const std::string& id) const
-	{
-		return m_floats.at(id);
-	}
-
-	std::shared_ptr<glm::vec3> Material::getVec3(const std::string& id) const
-	{
-		if (m_vec3s.find(id) == m_vec3s.cend())
+		switch (type)
 		{
-			std::cout << "Error: Material::getVec3() - Invalid vec3 id: " << id << std::endl;
-			return nullptr;
+		case TextureType::Albedo:
+			if (HasTexture(type))
+				return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_Specification.AlbedoTexture.value()).get();
+			else
+				return nullptr;
+		case TextureType::Normal:
+			if (HasTexture(type))
+				return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_Specification.NormalTexture.value()).get();
+			else
+				return nullptr;
+		case TextureType::Metallic:
+			if (HasTexture(type))
+				return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_Specification.MetallicTexture.value()).get();
+			else
+				return nullptr;
+		case TextureType::Roughness:
+			if (HasTexture(type))
+				return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_Specification.RoughnessTexture.value()).get();
+			else
+				return nullptr;
+		case TextureType::AO:
+			if (HasTexture(type))
+				return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_Specification.AOTexture.value()).get();
+			else
+				return nullptr;
 		}
-
-		return m_vec3s.at(id);
-	}
-
-	Texture* Material::getTexture(const std::string& id) const
-	{
-		if (m_textures.find(id) == m_textures.cend())
-		{
-			std::cout << "Error: Material::getTexture() - Invalid texture id: " << id << std::endl;
-			return nullptr;
-		}
-
-		if (Renderer::m_SceneData.m_ResourceManager.GetTexture(m_textures.at(id)))
-		{
-			return Renderer::m_SceneData.m_ResourceManager.GetTexture(m_textures.at(id)).get();
-		}
-
 		return nullptr;
 	}
 
-	std::shared_ptr<CubeMap> Material::getCubemap(const std::string& id) const
+	bool Material::HasTexture(TextureType type)
 	{
-		if (m_cubemaps.find(id) == m_cubemaps.cend())
+		switch (type)
 		{
-			std::cout << "Error: Material::getCubemap() - Invalid cubemap id: " << id << std::endl;
-			return nullptr;
+		case TextureType::Albedo:
+			return m_Specification.AlbedoTexture.has_value();
+		case TextureType::Normal:
+			return m_Specification.NormalTexture.has_value();
+		case TextureType::Metallic:
+			return m_Specification.MetallicTexture.has_value();
+		case TextureType::Roughness:
+			return m_Specification.RoughnessTexture.has_value();
+		case TextureType::AO:
+			return m_Specification.AOTexture.has_value();
 		}
-
-		return m_cubemaps.at(id);
+		return false;
 	}
 
-	std::shared_ptr<bool> Material::getBoolean(const std::string& id) const
+	void Material::ResetTexture(TextureType type)
 	{
-		if (m_booleans.find(id) == m_booleans.cend())
+		switch (type)
 		{
-			std::cout << "Error: Material::getBoolean() - Invalid boolean id: " << id << std::endl;
-			return nullptr;
+		case TextureType::Albedo:
+			m_Specification.AlbedoTexture.reset();
+			break;
+		case TextureType::Normal:
+			m_Specification.NormalTexture.reset();
+			break;
+		case TextureType::Metallic:
+			m_Specification.MetallicTexture.reset();
+			break;
+		case TextureType::Roughness:
+			m_Specification.RoughnessTexture.reset();
+			break;
+		case TextureType::AO:
+			m_Specification.AOTexture.reset();
+			break;
 		}
-
-		return m_booleans.at(id);
 	}
 
-	bool Material::hasVec3(const std::string& property) const
+	std::shared_ptr<Material> Material::CreateMaterial(const MaterialSpecification& specification)
 	{
-		return m_vec3s.find(property) != m_vec3s.cend();
-	}
-	bool Material::hasFloat(const std::string& property) const
-	{
-		return m_floats.find(property) != m_floats.cend();
-	}
-	bool Material::hasTexture(const std::string& property) const
-	{
-		return m_textures.find(property) != m_textures.cend();
-	}
-
-	bool Material::hasCubemap(const std::string& property) const
-	{
-		return m_cubemaps.find(property) != m_cubemaps.cend();
-	}
-
-	bool Material::hasBoolean(const std::string& property) const
-	{
-		return m_booleans.find(property) != m_booleans.cend();
-	}
-
-	std::shared_ptr<Material> Material::CreateMaterial()
-	{
-		return std::make_shared<Material>();
+		return std::make_shared<Material>(specification);
 	}
 }

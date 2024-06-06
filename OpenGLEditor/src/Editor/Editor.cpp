@@ -225,11 +225,13 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
+					m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->SaveScene();
 					m_SceneManager->getActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
+					m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->getActiveScene().OnRuntimeStop();
 					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
 

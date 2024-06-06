@@ -47,6 +47,7 @@ namespace OpenGLEngine
 
 		float m_RotateSensitivity;
 		float m_TranslateSensitivity;
+		float m_WalkSensitivity;
 		float m_ScrollSensitivity;
 
 		glm::vec2 m_ViewportSize = { 1.0f, 1.0f };

@@ -29,13 +29,12 @@ namespace OpenGLEngine
 		m_ebo(0),
 		m_drawMode(drawMode),
 		m_vertices(std::move(vertices)),
-		m_indices(std::move(indices)),
-		m_material({ false, false, "", ""})
+		m_indices(std::move(indices))
 	{
 		GenerateMesh(vertices, indices);
 	}
 
-	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, MeshMaterial material, DrawMode drawMode) :
+	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, const MaterialSpecification& material, DrawMode drawMode) :
 		m_vao(0),
 		m_vbo(0),
 		m_ebo(0),

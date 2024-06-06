@@ -1,11 +1,10 @@
 #pragma once
 
-#include <OpenGLEngine/Resources/Texture.h>
-#include <OpenGLEngine/Resources/Model.h>
-#include <OpenGLEngine/Resources/Materials/Material.h>
-
 #include <map>
 #include <string>
+
+#include <OpenGLEngine/Resources/Texture.h>
+#include <OpenGLEngine/Resources/Model.h>
 
 namespace OpenGLEngine
 {
@@ -23,9 +22,6 @@ namespace OpenGLEngine
 		std::shared_ptr<Model> CreateModel(const std::string& id);
 
 		std::shared_ptr<Texture> UpdateTexture(const std::string& id, const TextureSpecification& specification);
-
-		int GetLoadedTexture() const;
-		int GetLoadedModel() const;
 
 		void Reset();
 	};

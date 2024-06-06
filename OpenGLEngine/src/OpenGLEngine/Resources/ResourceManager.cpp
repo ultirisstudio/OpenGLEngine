@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <OpenGLEngine/Resources/ResourceManager.h>
+#include <OpenGLEngine/Resources/Materials/Material.h>
 
 namespace OpenGLEngine
 {
@@ -48,16 +49,6 @@ namespace OpenGLEngine
 		}
 
 		return nullptr;
-	}
-
-	int ResourceManager::GetLoadedTexture() const
-	{
-		return m_Textures.size();
-	}
-
-	int ResourceManager::GetLoadedModel() const
-	{
-		return m_Models.size();
 	}
 
 	void ResourceManager::Reset()

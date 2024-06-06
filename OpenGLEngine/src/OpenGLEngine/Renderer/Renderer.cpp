@@ -180,53 +180,69 @@ namespace OpenGLEngine {
 				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
 				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
 
-				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", *material.getVec3("albedo"));
-				m_SceneData.m_Shader.setUniform("uMaterial.metallic", *material.getFloat("metallic"));
-				m_SceneData.m_Shader.setUniform("uMaterial.roughness", *material.getFloat("roughness"));
-				m_SceneData.m_Shader.setUniform("uMaterial.ao", *material.getFloat("ao"));
+				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", material.GetAlbedo());
+				m_SceneData.m_Shader.setUniform("uMaterial.metallic", material.GetMetallic());
+				m_SceneData.m_Shader.setUniform("uMaterial.roughness", material.GetRoughness());
+				m_SceneData.m_Shader.setUniform("uMaterial.ao", material.GetAO());
 
-				m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", static_cast<bool>(*material.getBoolean("albedo")));
-				m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", static_cast<bool>(*material.getBoolean("normal")));
-				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", static_cast<bool>(*material.getBoolean("metallic")));
-				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", static_cast<bool>(*material.getBoolean("roughness")));
-				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", static_cast<bool>(*material.getBoolean("ao")));				
+				bool hasAlbedo = material.HasTexture(TextureType::Albedo);
+				bool hasNormal = material.HasTexture(TextureType::Normal);
+				bool hasMetallic = material.HasTexture(TextureType::Metallic);
+				bool hasRoughness = material.HasTexture(TextureType::Roughness);
+				bool hasAO = material.HasTexture(TextureType::AO);
 
-				if (*material.getBoolean("albedo"))
+				m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", hasAlbedo);
+				m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", hasNormal);
+				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", hasMetallic);
+				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", hasRoughness);
+				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", hasAO);
+
+				if (hasAlbedo)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("albedo")->Bind();
+					Texture* albedo = material.GetTexture(TextureType::Albedo);
+					if (albedo)
+						albedo->Bind();
 				}
 				m_SceneData.m_Shader.setUniform("uMaterial.albedoMap", nat);
 				nat++;
 
-				if (*material.getBoolean("normal"))
+				if (hasNormal)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("normal")->Bind();
+					Texture* normal = material.GetTexture(TextureType::Normal);
+					if (normal)
+						normal->Bind();
 				}
 				m_SceneData.m_Shader.setUniform("uMaterial.normalMap", nat);
 				nat++;
 
-				if (*material.getBoolean("metallic"))
+				if (hasMetallic)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("metallic")->Bind();
+					Texture* metallic = material.GetTexture(TextureType::Metallic);
+					if (metallic)
+						metallic->Bind();
 				}
 				m_SceneData.m_Shader.setUniform("uMaterial.metallicMap", nat);
 				nat++;
 
-				if (*material.getBoolean("roughness"))
+				if (hasRoughness)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("roughness")->Bind();
+					Texture* roughness = material.GetTexture(TextureType::Roughness);
+					if (roughness)
+						roughness->Bind();
 				}
 				m_SceneData.m_Shader.setUniform("uMaterial.roughnessMap", nat);
 				nat++;
 
-				if (*material.getBoolean("ao"))
+				if (hasAO)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					material.getTexture("ao")->Bind();
+					Texture* ao = material.GetTexture(TextureType::AO);
+					if (ao)
+						ao->Bind();
 				}
 				m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
 				nat++;
@@ -253,7 +269,8 @@ namespace OpenGLEngine {
 				nat++;
 
 				glActiveTexture(GL_TEXTURE0 + nat);
-				entity.second.GetComponent<MaterialComponent>().GetMaterial().getTexture("albedo")->Bind();
+				if (entity.second.GetComponent<MaterialComponent>().GetMaterial().HasTexture(TextureType::Albedo))
+					entity.second.GetComponent<MaterialComponent>().GetMaterial().GetTexture(TextureType::Albedo)->Bind();
 				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
 				nat++;
 

@@ -27,10 +27,12 @@ namespace OpenGLEngine
 		m_canMove(true),
 		m_usingGuizmo(false),
 		m_moving(false),
-		m_RotateSensitivity(0.16f),
-		m_TranslateSensitivity(0.2f),
 
-		m_ScrollSensitivity(2.0f),
+		m_RotateSensitivity(0.1f),
+		m_TranslateSensitivity(0.1f),
+		m_WalkSensitivity(0.1f),
+		m_ScrollSensitivity(1.0f),
+
 		m_CameraFocus(false),
 		m_rotate(false),
 		m_translate(false),

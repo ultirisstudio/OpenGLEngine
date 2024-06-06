@@ -9,14 +9,6 @@
 
 namespace OpenGLEngine
 {
-	enum DEFAULT_OBJECT_TYPE
-	{
-		CUBE,
-		SPHERE,
-		UV_SPHERE,
-		PLANE
-	};
-
 	class SceneManager
 	{
 	public:

@@ -94,46 +94,40 @@ namespace OpenGLEngine
 
 			auto& mc = entity->GetComponent<MaterialComponent>();
 
-			bool hasAlbedo = *mc.GetMaterial().getBoolean("albedo");
-			bool hasNormal = *mc.GetMaterial().getBoolean("normal");
-			bool hasMetallic = *mc.GetMaterial().getBoolean("metallic");
-			bool hasRoughness = *mc.GetMaterial().getBoolean("roughness");
-			bool hasAO = *mc.GetMaterial().getBoolean("ao");
+			bool hasAlbedo = mc.GetMaterial().HasTexture(TextureType::Albedo);
+			bool hasNormal = mc.GetMaterial().HasTexture(TextureType::Normal);
+			bool hasMetallic = mc.GetMaterial().HasTexture(TextureType::Metallic);
+			bool hasRoughness = mc.GetMaterial().HasTexture(TextureType::Roughness);
+			bool hasAO = mc.GetMaterial().HasTexture(TextureType::AO);
 
-			out << YAML::Key << "hasAlbedo" << YAML::Value << hasAlbedo;
-			out << YAML::Key << "hasNormal" << YAML::Value << hasNormal;
-			out << YAML::Key << "hasMetallic" << YAML::Value << hasMetallic;
-			out << YAML::Key << "hasRoughness" << YAML::Value << hasRoughness;
-			out << YAML::Key << "hasAO" << YAML::Value << hasAO;
-
-			out << YAML::Key << "albedo" << YAML::Value << *mc.GetMaterial().getVec3("albedo");
-			out << YAML::Key << "metallic" << YAML::Value << *mc.GetMaterial().getFloat("metallic");
-			out << YAML::Key << "roughness" << YAML::Value << *mc.GetMaterial().getFloat("roughness");
-			out << YAML::Key << "ao" << YAML::Value << *mc.GetMaterial().getFloat("ao");
+			out << YAML::Key << "albedo" << YAML::Value << mc.GetMaterial().GetSpecification().Albedo;
+			out << YAML::Key << "metallic" << YAML::Value << mc.GetMaterial().GetSpecification().Metallic;
+			out << YAML::Key << "roughness" << YAML::Value << mc.GetMaterial().GetSpecification().Roughness;
+			out << YAML::Key << "ao" << YAML::Value << mc.GetMaterial().GetSpecification().AO;
 
 			if (hasAlbedo)
 			{
-				out << YAML::Key << "albedoMap" << YAML::Value << mc.m_AlbedoTexture;
+				out << YAML::Key << "albedoMap" << YAML::Value << mc.GetMaterial().GetSpecification().AlbedoTexture.value();
 			}
 
 			if (hasNormal)
 			{
-				out << YAML::Key << "normalMap" << YAML::Value << mc.m_NormalTexture;
+				out << YAML::Key << "normalMap" << YAML::Value << mc.GetMaterial().GetSpecification().NormalTexture.value();
 			}
 
 			if (hasMetallic)
 			{
-				out << YAML::Key << "metallicMap" << YAML::Value << mc.m_MetallicTexture;
+				out << YAML::Key << "metallicMap" << YAML::Value << mc.GetMaterial().GetSpecification().MetallicTexture.value();
 			}
 
 			if (hasRoughness)
 			{
-				out << YAML::Key << "roughnessMap" << YAML::Value << mc.m_RoughnessTexture;
+				out << YAML::Key << "roughnessMap" << YAML::Value << mc.GetMaterial().GetSpecification().RoughnessTexture.value();
 			}
 
 			if (hasAO)
 			{
-				out << YAML::Key << "aoMap" << YAML::Value << mc.m_AOTexture;
+				out << YAML::Key << "aoMap" << YAML::Value << mc.GetMaterial().GetSpecification().AOTexture.value();
 			}
 
 			out << YAML::EndMap;
@@ -389,84 +383,69 @@ namespace OpenGLEngine
 				auto materialComponent = component["MaterialComponent"];
 				if (materialComponent)
 				{
-					auto& mc = deserializedEntity->AddComponent<MaterialComponent>();
+					MaterialSpecification spec;
 
-					bool hasAlbedo = materialComponent["hasAlbedo"].as<bool>();
-					bool hasNormal = materialComponent["hasNormal"].as<bool>();
-					bool hasMetallic = materialComponent["hasMetallic"].as<bool>();
-					bool hasRoughness = materialComponent["hasRoughness"].as<bool>();
-					bool hasAO = materialComponent["hasAO"].as<bool>();
+					spec.Albedo = materialComponent["albedo"].as<glm::vec3>();
+					spec.Metallic = materialComponent["metallic"].as<float>();
+					spec.Roughness = materialComponent["roughness"].as<float>();
+					spec.AO = materialComponent["ao"].as<float>();
 
-					*mc.GetMaterial().getBoolean("albedo") = hasAlbedo;
-					*mc.GetMaterial().getBoolean("normal") = hasNormal;
-					*mc.GetMaterial().getBoolean("metallic") = hasMetallic;
-					*mc.GetMaterial().getBoolean("roughness") = hasRoughness;
-					*mc.GetMaterial().getBoolean("ao") = hasAO;
-
-					*mc.GetMaterial().getVec3("albedo") = materialComponent["albedo"].as<glm::vec3>();
-					*mc.GetMaterial().getFloat("metallic") = materialComponent["metallic"].as<float>();
-					*mc.GetMaterial().getFloat("roughness") = materialComponent["roughness"].as<float>();
-					*mc.GetMaterial().getFloat("ao") = materialComponent["ao"].as<float>();
-
+					auto hasAlbedo = materialComponent["albedoMap"];
 					if (hasAlbedo)
 					{
-						std::string albedoPath = materialComponent["albedoMap"].as<std::string>();
-
-						mc.addTexture("albedo", albedoPath);
-
+						std::string albedoPath = hasAlbedo.as<std::string>();
+						spec.AlbedoTexture = albedoPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(albedoPath))
 						{
 							Renderer::m_SceneData.m_ResourceManager.CreateTexture(albedoPath, TextureConfigImporter::ImportTextureConfig(albedoPath));
 						}
 					}
 
+					auto hasNormal = materialComponent["normalMap"];
 					if (hasNormal)
 					{
-						std::string normalPath = materialComponent["normalMap"].as<std::string>();
-
-						mc.addTexture("normal", normalPath);
-
+						std::string normalPath = hasNormal.as<std::string>();
+						spec.NormalTexture = normalPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(normalPath))
 						{
 							Renderer::m_SceneData.m_ResourceManager.CreateTexture(normalPath, TextureConfigImporter::ImportTextureConfig(normalPath));
 						}
 					}
 
+					auto hasMetallic = materialComponent["metallicMap"];
 					if (hasMetallic)
 					{
-						std::string metallicPath = materialComponent["metallicMap"].as<std::string>();
-
-						mc.addTexture("metallic", metallicPath);
-
+						std::string metallicPath = hasMetallic.as<std::string>();
+						spec.MetallicTexture = metallicPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(metallicPath))
 						{
 							Renderer::m_SceneData.m_ResourceManager.CreateTexture(metallicPath, TextureConfigImporter::ImportTextureConfig(metallicPath));
 						}
 					}
 
+					auto hasRoughness = materialComponent["roughnessMap"];
 					if (hasRoughness)
 					{
-						std::string roughnessPath = materialComponent["roughnessMap"].as<std::string>();
-
-						mc.addTexture("roughness", roughnessPath);
-
+						std::string roughnessPath = hasRoughness.as<std::string>();
+						spec.RoughnessTexture = roughnessPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(roughnessPath))
 						{
 							Renderer::m_SceneData.m_ResourceManager.CreateTexture(roughnessPath, TextureConfigImporter::ImportTextureConfig(roughnessPath));
 						}
 					}
 
+					auto hasAO = materialComponent["aoMap"];
 					if (hasAO)
 					{
-						std::string aoPath = materialComponent["aoMap"].as<std::string>();
-
-						mc.addTexture("ao", aoPath);
-
+						std::string aoPath = hasAO.as<std::string>();
+						spec.AOTexture = aoPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(aoPath))
 						{
 							Renderer::m_SceneData.m_ResourceManager.CreateTexture(aoPath, TextureConfigImporter::ImportTextureConfig(aoPath));
 						}
 					}
+
+					auto& mc = deserializedEntity->AddComponent<MaterialComponent>(spec);
 				}
 
 				auto lightComponent = component["LightComponent"];
@@ -538,6 +517,8 @@ namespace OpenGLEngine
 
 					rbc.UpdateEnableGravity();
 					rbc.UpdateBodyType();
+					rbc.UpdateLinearAxisFactor();
+					rbc.UpdateAngularAxisFactor();
 				}
 
 				auto characterControllerComponent = component["CharacterControllerComponent"];
@@ -578,6 +559,11 @@ namespace OpenGLEngine
 
 					if (characterControllerComponent["height"])
 						ccc.m_Height = characterControllerComponent["height"].as<float>();
+
+					ccc.UpdateColliderSize();
+					ccc.UpdateColliderMaterial();
+					ccc.UpdateLinearAxisFactor();
+					ccc.UpdateAngularAxisFactor();
 				}
 
 				auto meshColliderComponent = component["MeshColliderComponent"];

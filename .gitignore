@@ -7,35 +7,9 @@ Intermediates/
 
 OpenGLEngine/Scripts/
 
-OpenGLEngine/vendor/assimp/bin/
-OpenGLEngine/vendor/assimp/bin-int/
-
-OpenGLEngine/vendor/Glad/bin/
-OpenGLEngine/vendor/Glad/bin-int/
-
-OpenGLEngine/vendor/GLFW/bin/
-OpenGLEngine/vendor/GLFW/bin-int/
-
-OpenGLEngine/vendor/imgui/bin/
-OpenGLEngine/vendor/imgui/bin-int/
-
-OpenGLEngine/vendor/ImGuizmo/bin/
-OpenGLEngine/vendor/ImGuizmo/bin-int/
-
-OpenGLEngine/vendor/mbedtls/bin/
-OpenGLEngine/vendor/mbedtls/bin-int/
-
-OpenGLEngine/vendor/rp3d/bin/
-OpenGLEngine/vendor/rp3d/bin-int/
-
-OpenGLEngine/vendor/tinyfiledialogs/bin/
-OpenGLEngine/vendor/tinyfiledialogs/bin-int/
-
-OpenGLEngine/vendor/yaml_cpp/bin/
-OpenGLEngine/vendor/yaml_cpp/bin-int/
-
-OpenGLEngine/vendor/zlib/bin/
-OpenGLEngine/vendor/zlib/bin-int/
+#Vérifier
+OpenGLEngine/vendor/**/bin/
+OpenGLEngine/vendor/**/bin-int/
 
 **.user
 **.vcxproj
@@ -45,6 +19,6 @@ OpenGLEngine/vendor/zlib/bin-int/
 **.sln
 **.ini
 **.exe
+**.ultconf
 
 **/Makefile
-/OpenGLEditor/config.yaml

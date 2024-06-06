@@ -14,11 +14,11 @@ namespace OpenGLEngine
 		OpenGLEditor(const ApplicationSpecification& spec) : Application(spec)
 		{
 
-			//Check if config.yaml exists if it does then load the editor with the project name and path
+			//Check if config.ultconf exists if it does then load the editor with the project name and path
 			//If it doesn't exist then load the launcher
-			if (std::filesystem::exists("config.yaml"))
+			if (std::filesystem::exists("config.ultconf"))
 			{
-				YAML::Node config = YAML::LoadFile("config.yaml");
+				YAML::Node config = YAML::LoadFile("config.ultconf");
 				if (config["projectName"] && config["projectPath"])
 				{
 					if (config["projectName"].as<std::string>() == "" || config["projectPath"].as<std::string>() == "")
@@ -49,7 +49,7 @@ namespace OpenGLEngine
 				YAML::Node config;
 				config["projectName"] = "";
 				config["projectPath"] = "";
-				std::ofstream fout("config.yaml");
+				std::ofstream fout("config.ultconf");
 				fout << config;
 				fout.close();
 

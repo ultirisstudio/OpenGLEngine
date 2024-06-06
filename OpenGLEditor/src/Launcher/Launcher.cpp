@@ -7,7 +7,7 @@ namespace OpenGLEngine
 {	
 	Launcher::Launcher()
 	{
-		config = YAML::LoadFile("config.yaml");
+		config = YAML::LoadFile("config.ultconf");
 		m_ProjectManager = std::make_unique<ProjectManager>();
 	}
 
@@ -101,7 +101,6 @@ namespace OpenGLEngine
 		{
 			for (auto project : config["recentProjects"])
 			{
-				//Styling button to look like a label
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 1));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.1f, 0.1f, 1));

@@ -85,7 +85,7 @@ namespace OpenGLEngine
 					std::ofstream fout(m_Properties->m_ProjectPath + std::string("\\" + m_Properties->m_ProjectName + std::string(".ultprj")));
 					fout << out.c_str();
 					
-					YAML::Node config = YAML::LoadFile("config.yaml");
+					YAML::Node config = YAML::LoadFile("config.ultconf");
 					if (config["recentProjects"])
 					{
 						YAML::Node recentProjects = config["recentProjects"];
@@ -100,7 +100,7 @@ namespace OpenGLEngine
 					}
 					config["projectName"] = m_Properties->m_ProjectName;
 					config["projectPath"] = m_Properties->m_ProjectPath;
-					std::ofstream foutConfig("config.yaml");
+					std::ofstream foutConfig("config.ultconf");
 					foutConfig << config;
 					foutConfig.close();
 

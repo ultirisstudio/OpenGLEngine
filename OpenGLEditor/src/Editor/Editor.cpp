@@ -179,6 +179,30 @@ namespace OpenGLEngine
 		{
 			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+			bool imgui_ini_exist = std::filesystem::exists(std::filesystem::current_path().generic_string() + "/imgui.ini");
+			if (!imgui_ini_exist)
+			{
+				ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
+
+				ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking windows into it.
+				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.20f, nullptr, &dock_main_id);
+				ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.20f, nullptr, &dock_main_id);
+				ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, nullptr, &dock_main_id);
+				ImGuiID dock_id_inspector = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Down, 0.20f, nullptr, &dock_id_right);
+
+
+				ImGui::DockBuilderDockWindow("Viewport", dock_main_id);
+				ImGui::DockBuilderDockWindow("Editor", dock_main_id);
+				ImGui::DockBuilderDockWindow("Content Browser", dock_id_right);
+				ImGui::DockBuilderDockWindow("Scene", dock_id_left);
+				ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+				ImGui::DockBuilderDockWindow("Editor infos", dock_id_inspector);
+
+				ImGui::DockBuilderFinish(dockspace_id);
+			}
 		}
 
 		bool hasProject = true;

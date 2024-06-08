@@ -7,15 +7,16 @@
 #include <filesystem>
 #include <sstream>
 
+#include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
@@ -29,13 +30,13 @@ namespace OpenGLEngine
 	EntityPropertiePanel::EntityPropertiePanel()
 	{
 		m_TransformComponentPanel = std::make_unique<TransformComponentPanel>();
-		m_ModelComponentPanel = std::make_unique<ModelComponentPanel>();
 		m_CameraComponentPanel = std::make_unique<CameraComponentPanel>();
 		m_MeshComponentPanel = std::make_unique<MeshComponentPanel>();
 		m_TerrainComponentPanel = std::make_unique<TerrainComponentPanel>();
 		m_MaterialComponentPanel = std::make_unique<MaterialComponentPanel>();
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
 		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
+		m_MeshRendererComponentPanel = std::make_unique<MeshRendererComponentPanel>();
 		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
 		m_BoxColliderComponentPanel = std::make_unique<BoxColliderComponentPanel>();
 		m_MeshColliderComponentPanel = std::make_unique<MeshColliderComponentPanel>();
@@ -75,8 +76,8 @@ namespace OpenGLEngine
 			ImGui::Separator();
 
 			m_TransformComponentPanel->Render(entity);
-			m_ModelComponentPanel->Render(entity);
 			m_CameraComponentPanel->Render(entity, sceneManager);
+			m_MeshRendererComponentPanel->Render(entity);
 			m_MeshComponentPanel->Render(entity);
 			m_ScriptComponentPanel->Render(entity);
 			m_TerrainComponentPanel->Render(entity);
@@ -100,14 +101,21 @@ namespace OpenGLEngine
 					}
 				}
 
-				if (!entity->HasComponent<ModelComponent>()) {
-					if (ImGui::MenuItem("Model Component")) {
-						entity->AddComponent<ModelComponent>();
+				if (!entity->HasComponent<MeshRendererComponent>()) {
+					if (ImGui::MenuItem("Mesh Renderer Component")) {
+						entity->AddComponent<MeshRendererComponent>();
+
+						//Renderer::m_SceneData.m_Scene->RegisterRenderedEntity(entity);
 					}
 				}
 
 				if (!entity->HasComponent<MeshComponent>()) {
 					if (ImGui::MenuItem("Mesh Component")) {
+						if (!entity->HasComponent<MeshRendererComponent>()) {
+							entity->AddComponent<MeshRendererComponent>();
+
+							//Renderer::m_SceneData.m_Scene->RegisterRenderedEntity(entity);
+						}
 						entity->AddComponent<MeshComponent>();
 					}
 				}

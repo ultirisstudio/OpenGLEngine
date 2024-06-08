@@ -8,6 +8,8 @@
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Scene/BaseCamera.h>
 
+#include <filesystem>
+
 namespace OpenGLEngine
 {
 	class Renderer
@@ -36,6 +38,8 @@ namespace OpenGLEngine
 		static void Render(BaseCamera& camera);
 		static void RenderSkybox(BaseCamera& camera);
 		static void EndScene();
+
+		static void LoadModel(const std::string& path);
 
 		static void Clear();
 		static void ClearColor(const glm::vec4& color);

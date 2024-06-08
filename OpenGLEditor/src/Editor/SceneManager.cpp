@@ -7,7 +7,6 @@
 #include "SceneSerializer.h"
 
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
@@ -29,29 +28,17 @@ namespace OpenGLEngine
 
 	void SceneManager::AddGameObject(const std::string& file)
 	{
-		const size_t slash = file.find_last_of("/\\");
-		const std::string m_SelectedFile = file.substr(slash + 1);
-
-		size_t lastindex = m_SelectedFile.find_last_of(".");
-		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
-
-		Entity* temp = m_Scene->CreateEntity(m_FileName);
-		temp->AddComponent<ModelComponent>();
-		temp->GetComponent<ModelComponent>().SetModel(file);
+		Renderer::LoadModel(file);
 	}
 
 	void SceneManager::AddCube()
 	{
-		Entity* temp = m_Scene->CreateEntity("Cube");
-		temp->AddComponent<ModelComponent>();
-		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/cube.obj");
+		Renderer::LoadModel("Assets/Models/cube.obj");
 	}
 
 	void SceneManager::AddSphere()
 	{
-		Entity* temp = m_Scene->CreateEntity("Sphere");
-		temp->AddComponent<ModelComponent>();
-		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/sphere.obj");
+		Renderer::LoadModel("Assets/Models/sphere.obj");
 	}
 
 	void SceneManager::AddUVSphere()
@@ -79,12 +66,6 @@ namespace OpenGLEngine
 				float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 
 				vertices.push_back({ glm::vec3(xPos, yPos, zPos), glm::vec3(xPos, yPos, zPos), glm::vec2(xSegment, ySegment) });
-
-				/*Vertex vertice;
-				vertice.position = glm::vec3(xPos, yPos, zPos);
-				vertice.normal = glm::vec3(xPos, yPos, zPos);
-				vertice.texCoord = glm::vec2(xSegment, ySegment);
-				vertices.push_back(vertice);*/
 			}
 		}
 
@@ -115,10 +96,7 @@ namespace OpenGLEngine
 
 	void SceneManager::AddPlane()
 	{
-		Entity* temp = m_Scene->CreateEntity("Plane");
-		temp->AddComponent<TransformComponent>();
-		temp->AddComponent<ModelComponent>();
-		temp->GetComponent<ModelComponent>().SetModel("Assets/Models/plane.obj");
+		Renderer::LoadModel("Assets/Models/plane.obj");
 	}
 
 	void SceneManager::SaveScene()

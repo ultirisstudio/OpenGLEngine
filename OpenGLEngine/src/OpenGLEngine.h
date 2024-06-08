@@ -11,7 +11,6 @@
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
 
 #include "OpenGLEngine/Entity/Components/TransformComponent.h"
-#include "OpenGLEngine/Entity/Components/ModelComponent.h"
 #include "OpenGLEngine/Entity/Components/MaterialComponent.h"
 
 #include "OpenGLEngine/Tools/Math.h"

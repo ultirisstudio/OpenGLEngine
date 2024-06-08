@@ -3,7 +3,6 @@
 #include "imgui.h"
 
 #include <OpenGLEngine/Core/UUID.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
 
 namespace OpenGLEngine
 {

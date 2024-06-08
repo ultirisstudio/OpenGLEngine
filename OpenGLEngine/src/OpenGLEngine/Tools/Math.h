@@ -4,8 +4,41 @@
 #include <glm/glm.hpp>
 
 namespace OpenGLEngine::Math {
-	bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::vec3& rotation, glm::vec3& scale);
+	enum Direction
+	{
+		DIRECTION_LEFT,
+		DIRECTION_RIGHT,
+		DIRECTION_UP,
+		DIRECTION_DOWN,
+		DIRECTION_FORWARD,
+		DIRECTION_BACKWARD,
+
+		DIRECTION_COUNT
+	};
+
+	const glm::vec3 directionVectors[DIRECTION_COUNT]
+	{
+		{ 1, 0, 0 },
+		{ -1, 0, 0 },
+		{ 0, 1, 0 },
+		{ 0, -1, 0 },
+		{ 0, 0, 1 },
+		{ 0, 0, -1 },
+	};
+
+	struct Plane
+	{
+		float a, b, c, d;
+	};
+
+	struct Frustum
+	{
+		Plane planes[Math::DIRECTION_COUNT];
+	};
+
 	float MapRange(float value, float fromMin, float fromMax, float toMin, float toMax);
+
+	Frustum CalculateFrustum(const glm::mat4& camera);
 }
 
 namespace OpenGLEngine::Interpolator {

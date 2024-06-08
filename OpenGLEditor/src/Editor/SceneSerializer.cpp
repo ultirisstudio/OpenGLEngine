@@ -7,10 +7,10 @@
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
@@ -129,6 +129,20 @@ namespace OpenGLEngine
 			{
 				out << YAML::Key << "aoMap" << YAML::Value << mc.GetMaterial().GetSpecification().AOTexture.value();
 			}
+
+			out << YAML::EndMap;
+			out << YAML::EndMap;
+		}
+
+		if (entity->HasComponent<MeshRendererComponent>())
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "MeshRendererComponent";
+			out << YAML::Value << YAML::BeginMap;
+
+			auto& mrc = entity->GetComponent<MeshRendererComponent>();
+
+			out << YAML::Key << "Rendered" << YAML::Value << mrc.m_Rendered;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
@@ -360,6 +374,15 @@ namespace OpenGLEngine
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
 				}
 
+				auto meshRendererComponent = component["MeshRendererComponent"];
+				if (meshRendererComponent)
+				{
+					auto& mrc = deserializedEntity->AddComponent<MeshRendererComponent>();
+					auto rendered = meshRendererComponent["Rendered"];
+					if (rendered)
+						mrc.m_Rendered = rendered.as<bool>();
+				}
+
 				auto meshComponent = component["MeshComponent"];
 				if (meshComponent)
 				{
@@ -378,6 +401,13 @@ namespace OpenGLEngine
 					}
 
 					auto& mc = deserializedEntity->AddComponent<MeshComponent>(name, mesh, path);
+				}
+
+				// TODO : Remove this
+				if (!meshRendererComponent && meshComponent)
+				{
+					auto& mrc = deserializedEntity->AddComponent<MeshRendererComponent>();
+					mrc.m_Rendered = true;
 				}
 
 				auto materialComponent = component["MaterialComponent"];

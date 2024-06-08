@@ -4,7 +4,6 @@
 #include <glad/glad.h>
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
 #include <OpenGLEngine/Resources/Model.h>
 
 #include <stb_image.h>

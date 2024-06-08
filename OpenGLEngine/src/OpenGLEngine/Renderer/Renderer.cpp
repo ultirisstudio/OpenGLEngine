@@ -14,8 +14,12 @@
 
 #include <OpenGLEngine/Scene/Skybox.h>
 
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Resources/Model.h>
+#include <OpenGLEngine/Resources/Mesh.h>
+
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/ModelComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
@@ -131,13 +135,16 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
 
-		glm::vec3 position, rotation, scale;
-		Math::DecomposeTransform(camera.GetTransform(), position, rotation, scale);
-
+		glm::vec3 position;
+		glm::decompose(camera.GetTransform(), glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
+		
 		m_SceneData.m_Shader.setUniform("uCameraPosition", position);
 
 		int dirLightCount = 0;
 		int pointLightCount = 0;
+
+		//int totalEntity = 0;
+		//int entityDraw = 0;
 
 		for (auto& entity : *m_SceneData.m_Scene->getEntities())
 		{
@@ -169,8 +176,21 @@ namespace OpenGLEngine {
 				}
 			}
 
-			if (entity.second.HasComponent<MeshComponent>() && entity.second.GetComponent<MeshComponent>().HasMesh())
+			if (entity.second.HasComponent<MeshRendererComponent>() && entity.second.HasComponent<MeshComponent>() && entity.second.GetComponent<MeshComponent>().HasMesh())
 			{
+				//totalEntity++;
+
+				if (!entity.second.GetComponent<MeshRendererComponent>().m_Rendered)
+					continue;
+
+				// Calculate if object is on the frustum
+				Math::Frustum frustum = Math::CalculateFrustum(camera.getProjectionMatrix() * camera.getViewMatrix());
+
+				if (!entity.second.GetComponent<MeshComponent>().GetMesh().IsVisible(frustum, transform))
+					continue;
+
+				//entityDraw++;
+
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 				Material& material = entity.second.GetComponent<MaterialComponent>().GetMaterial();
@@ -287,6 +307,8 @@ namespace OpenGLEngine {
 
 		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
+
+		//std::cout << entityDraw << "/" << totalEntity << std::endl;
 	}
 
 	void Renderer::RenderSkybox(BaseCamera& camera)
@@ -310,6 +332,37 @@ namespace OpenGLEngine {
 	void Renderer::EndScene()
 	{
 
+	}
+
+	void Renderer::LoadModel(const std::string& path)
+	{
+		std::shared_ptr<Model> model;
+		if (Renderer::m_SceneData.m_ResourceManager.GetModel(path))
+		{
+			model = Renderer::m_SceneData.m_ResourceManager.GetModel(path);
+		}
+		else
+		{
+			model = Renderer::m_SceneData.m_ResourceManager.CreateModel(path);
+		}
+
+		const size_t slash = path.find_last_of("/\\");
+		const std::string m_SelectedFile = path.substr(slash + 1);
+
+		size_t lastindex = m_SelectedFile.find_last_of(".");
+		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
+
+		Entity* entity = Renderer::GetScene()->CreateEntity(m_FileName);
+
+		for (auto& [name, mesh] : model->GetMeshes())
+		{
+			Entity* child = Renderer::GetScene()->CreateEntity(name);
+			child->AddComponent<MeshRendererComponent>();
+			auto& mc = child->AddComponent<MeshComponent>(name, mesh, path);
+			child->AddComponent<MaterialComponent>(mc.GetMesh().GetMaterial());
+
+			entity->AddChild(child->GetUUID());
+		}
 	}
 
 	void Renderer::Clear() {

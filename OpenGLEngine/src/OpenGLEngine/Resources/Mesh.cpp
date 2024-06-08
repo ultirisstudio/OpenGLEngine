@@ -3,6 +3,8 @@
 
 #include <glad/glad.h>
 
+#include <glm/gtx/matrix_decompose.hpp>
+
 namespace OpenGLEngine
 {
 	namespace Utils
@@ -23,7 +25,38 @@ namespace OpenGLEngine
 		}
 	}
 
-	Mesh::Mesh(std::vector<Vertex>&vertices, std::vector<unsigned int>&indices, DrawMode drawMode) :
+	void Mesh::CalculateBoundingBoxSize(std::vector<Vertex> vertices)
+	{
+		float minX = std::numeric_limits<float>::max();
+		float minY = std::numeric_limits<float>::max();
+		float minZ = std::numeric_limits<float>::max();
+
+		float maxX = std::numeric_limits<float>::min();
+		float maxY = std::numeric_limits<float>::min();
+		float maxZ = std::numeric_limits<float>::min();
+
+		for (const auto& vertex : vertices)
+		{
+			if (vertex.position.x < minX)
+				minX = vertex.position.x;
+			if (vertex.position.y < minY)
+				minY = vertex.position.y;
+			if (vertex.position.z < minZ)
+				minZ = vertex.position.z;
+
+			if (vertex.position.x > maxX)
+				maxX = vertex.position.x;
+			if (vertex.position.y > maxY)
+				maxY = vertex.position.y;
+			if (vertex.position.z > maxZ)
+				maxZ = vertex.position.z;
+		}
+
+		m_boundingBoxSize = glm::vec3(maxX - minX, maxY - minY, maxZ - minZ);
+		m_boundingBoxPosition = glm::vec3(minX, minY, minZ);
+	}
+
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode) :
 		m_vao(0),
 		m_vbo(0),
 		m_ebo(0),
@@ -31,10 +64,10 @@ namespace OpenGLEngine
 		m_vertices(std::move(vertices)),
 		m_indices(std::move(indices))
 	{
-		GenerateMesh(vertices, indices);
+		GenerateMesh(m_vertices, m_indices);
 	}
 
-	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, const MaterialSpecification& material, DrawMode drawMode) :
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode) :
 		m_vao(0),
 		m_vbo(0),
 		m_ebo(0),
@@ -43,7 +76,7 @@ namespace OpenGLEngine
 		m_indices(std::move(indices)),
 		m_material(material)
 	{
-		GenerateMesh(vertices, indices);
+		GenerateMesh(m_vertices, m_indices);
 	}
 
 	Mesh::~Mesh()
@@ -64,8 +97,10 @@ namespace OpenGLEngine
 			glDrawElements(Utils::DrawModeToGLenum(m_drawMode), static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void Mesh::GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+	void Mesh::GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 	{
+		CalculateBoundingBoxSize(vertices);
+
 		glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
 		glGenBuffers(1, &m_ebo);
@@ -86,5 +121,26 @@ namespace OpenGLEngine
 
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
+	}
+
+	bool Mesh::IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const
+	{
+		glm::vec3 position;
+		glm::decompose(modelMatrix, glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
+		for (unsigned i = 0; i < std::size(frustum.planes); i++)
+		{
+			glm::vec3 positive = position + m_boundingBoxPosition;
+			if (frustum.planes[i].a >= 0)
+				positive.x += m_boundingBoxSize.x;
+			if (frustum.planes[i].b >= 0)
+				positive.y += m_boundingBoxSize.y;
+			if (frustum.planes[i].c >= 0)
+				positive.z += m_boundingBoxSize.z;
+
+			if (positive.x * frustum.planes[i].a + positive.y * frustum.planes[i].b + positive.z * frustum.planes[i].c + frustum.planes[i].d < 0)
+				return false;
+		}
+
+		return true;
 	}
 }

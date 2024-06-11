@@ -54,6 +54,9 @@ namespace OpenGLEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern static void TransformComponent_GetRight(ulong entityID, out Vector3 right);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void TransformComponent_GetTarget(ulong entityID, out Vector3 target);
+
         // Mesh Component
 
         [MethodImpl(MethodImplOptions.InternalCall)]

@@ -16,7 +16,7 @@
 
 namespace OpenGLEngine
 {
-	SceneManager::SceneManager()
+	SceneManager::SceneManager(std::filesystem::path assetPath) : m_AssetPath(assetPath)
 	{
 		m_Scene = std::make_unique<Scene>();
 	}
@@ -103,7 +103,7 @@ namespace OpenGLEngine
 	{
 		if (m_Scene->getPath() != "")
 		{
-			SceneSerializer serializer(*m_Scene);
+			SceneSerializer serializer(*m_Scene, m_AssetPath);
 			serializer.Serialize(m_Scene->getPath());
 		}
 		else
@@ -114,7 +114,7 @@ namespace OpenGLEngine
 			m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
 			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
 			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
-			SceneSerializer serializer(*m_Scene);
+			SceneSerializer serializer(*m_Scene, m_AssetPath);
 			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
 		}
 	}
@@ -127,7 +127,7 @@ namespace OpenGLEngine
 		PhysicEngine::Reload();
 
 		m_Scene = std::make_unique<Scene>();
-		SceneSerializer serializer(*m_Scene);
+		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
 
 		for (Entity* entity : m_Scene->View<CameraComponent>())
@@ -144,7 +144,7 @@ namespace OpenGLEngine
 
 		Renderer::BeginScene(*m_Scene);
 
-		SceneSerializer serializer(*m_Scene);
+		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.Deserialize(filePath);
 
 		for (Entity* entity : m_Scene->View<CameraComponent>())
@@ -159,7 +159,7 @@ namespace OpenGLEngine
 
 		m_Scene->ClearEntities();
 
-		SceneSerializer serializer(*m_Scene);
+		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.DeserializeRuntime(filePath);
 
 		for (Entity* entity : m_Scene->View<CameraComponent>())

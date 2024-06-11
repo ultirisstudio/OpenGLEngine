@@ -54,6 +54,15 @@ namespace YAML
 
 namespace OpenGLEngine
 {
+	namespace Utils
+	{
+		static std::string GetFileName(const std::string& path)
+		{
+			size_t assetsPos = path.find_last_of("\\Assets\\");
+			return path.substr(assetsPos - 12);
+		}
+	}
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 	{
 		out << YAML::Flow;
@@ -107,27 +116,27 @@ namespace OpenGLEngine
 
 			if (hasAlbedo)
 			{
-				out << YAML::Key << "albedoMap" << YAML::Value << mc.GetMaterial().GetSpecification().AlbedoTexture.value();
+				out << YAML::Key << "albedoMap" << YAML::Value << Utils::GetFileName(mc.GetMaterial().GetSpecification().AlbedoTexture.value());
 			}
 
 			if (hasNormal)
 			{
-				out << YAML::Key << "normalMap" << YAML::Value << mc.GetMaterial().GetSpecification().NormalTexture.value();
+				out << YAML::Key << "normalMap" << YAML::Value << Utils::GetFileName(mc.GetMaterial().GetSpecification().NormalTexture.value());
 			}
 
 			if (hasMetallic)
 			{
-				out << YAML::Key << "metallicMap" << YAML::Value << mc.GetMaterial().GetSpecification().MetallicTexture.value();
+				out << YAML::Key << "metallicMap" << YAML::Value << Utils::GetFileName(mc.GetMaterial().GetSpecification().MetallicTexture.value());
 			}
 
 			if (hasRoughness)
 			{
-				out << YAML::Key << "roughnessMap" << YAML::Value << mc.GetMaterial().GetSpecification().RoughnessTexture.value();
+				out << YAML::Key << "roughnessMap" << YAML::Value << Utils::GetFileName(mc.GetMaterial().GetSpecification().RoughnessTexture.value());
 			}
 
 			if (hasAO)
 			{
-				out << YAML::Key << "aoMap" << YAML::Value << mc.GetMaterial().GetSpecification().AOTexture.value();
+				out << YAML::Key << "aoMap" << YAML::Value << Utils::GetFileName(mc.GetMaterial().GetSpecification().AOTexture.value());
 			}
 
 			out << YAML::EndMap;
@@ -156,7 +165,7 @@ namespace OpenGLEngine
 
 			auto& mc = entity->GetComponent<MeshComponent>();
 
-			out << YAML::Key << "Path" << YAML::Value << mc.GetModelPath();
+			out << YAML::Key << "Path" << YAML::Value << Utils::GetFileName(mc.GetModelPath());
 			out << YAML::Key << "Name" << YAML::Value << mc.GetName();
 
 			out << YAML::EndMap;
@@ -319,6 +328,10 @@ namespace OpenGLEngine
 		}
 	}
 
+	SceneSerializer::SceneSerializer(Scene& scene, std::filesystem::path assetPath) : m_Scene(&scene), m_AssetPath(assetPath)
+	{
+	}
+
 	void SceneSerializer::Serialize(const std::string& filepath)
 	{
 		YAML::Emitter out;
@@ -345,7 +358,7 @@ namespace OpenGLEngine
 	{
 	}
 
-	static void DeserializeEntity(YAML::Node entity, Scene* scene)
+	static void DeserializeEntity(YAML::Node entity, Scene* scene, const std::string& assetPath)
 	{
 		std::string name = entity["Entity"].as<std::string>();
 		UUID uuid = entity["ID"].as<uint64_t>();
@@ -386,7 +399,7 @@ namespace OpenGLEngine
 				auto meshComponent = component["MeshComponent"];
 				if (meshComponent)
 				{
-					std::string path = meshComponent["Path"].as<std::string>();
+					std::string path = assetPath + "\\" + meshComponent["Path"].as<std::string>();
 					std::string name = meshComponent["Name"].as<std::string>();
 
 					Mesh* mesh;
@@ -423,7 +436,7 @@ namespace OpenGLEngine
 					auto hasAlbedo = materialComponent["albedoMap"];
 					if (hasAlbedo)
 					{
-						std::string albedoPath = hasAlbedo.as<std::string>();
+						std::string albedoPath = assetPath + "\\" + hasAlbedo.as<std::string>();
 						spec.AlbedoTexture = albedoPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(albedoPath))
 						{
@@ -434,7 +447,7 @@ namespace OpenGLEngine
 					auto hasNormal = materialComponent["normalMap"];
 					if (hasNormal)
 					{
-						std::string normalPath = hasNormal.as<std::string>();
+						std::string normalPath = assetPath + "\\" + hasNormal.as<std::string>();
 						spec.NormalTexture = normalPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(normalPath))
 						{
@@ -445,7 +458,7 @@ namespace OpenGLEngine
 					auto hasMetallic = materialComponent["metallicMap"];
 					if (hasMetallic)
 					{
-						std::string metallicPath = hasMetallic.as<std::string>();
+						std::string metallicPath = assetPath + "\\" + hasMetallic.as<std::string>();
 						spec.MetallicTexture = metallicPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(metallicPath))
 						{
@@ -456,7 +469,7 @@ namespace OpenGLEngine
 					auto hasRoughness = materialComponent["roughnessMap"];
 					if (hasRoughness)
 					{
-						std::string roughnessPath = hasRoughness.as<std::string>();
+						std::string roughnessPath = assetPath + "\\" + hasRoughness.as<std::string>();
 						spec.RoughnessTexture = roughnessPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(roughnessPath))
 						{
@@ -467,7 +480,7 @@ namespace OpenGLEngine
 					auto hasAO = materialComponent["aoMap"];
 					if (hasAO)
 					{
-						std::string aoPath = hasAO.as<std::string>();
+						std::string aoPath = assetPath + "\\" + hasAO.as<std::string>();
 						spec.AOTexture = aoPath;
 						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(aoPath))
 						{
@@ -679,7 +692,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene);
+					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
 			}
 		}
 
@@ -704,7 +717,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene);
+					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
 			}
 		}
 

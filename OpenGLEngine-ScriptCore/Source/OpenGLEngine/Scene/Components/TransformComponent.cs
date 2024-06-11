@@ -58,5 +58,11 @@ namespace OpenGLEngine
             InternalCalls.TransformComponent_GetRight(Entity.ID, out Vector3 right);
             return right;
         }
+
+        public Vector3 GetTarget()
+        {
+            InternalCalls.TransformComponent_GetTarget(Entity.ID, out Vector3 target);
+            return target;
+        }
     }
 }

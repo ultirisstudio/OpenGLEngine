@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <filesystem>
 
 #include <OpenGLEngine/Scene/Scene.h>
 
@@ -12,7 +13,7 @@ namespace OpenGLEngine
 	class SceneManager
 	{
 	public:
-		SceneManager();
+		SceneManager(std::filesystem::path assetPath);
 
 		void update(double dt);
 
@@ -37,6 +38,7 @@ namespace OpenGLEngine
 	private:
 		std::unique_ptr<Scene> m_Scene;
 		FileBrowser m_FileBrowser;
+		std::filesystem::path m_AssetPath;
 	};
 }
 

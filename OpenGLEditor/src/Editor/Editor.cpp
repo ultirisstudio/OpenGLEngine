@@ -53,7 +53,7 @@ namespace OpenGLEngine
 		PerlinManager::Init();
 		Renderer::Init();
 
-		m_SceneManager = std::make_unique<SceneManager>();
+		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
 
 		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");

@@ -174,13 +174,22 @@ namespace OpenGLEngine
 
 		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
 
-		glm::vec3 front;
+		/*glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
 		front.y = sin(rotation.x);
 		front.z = sin(rotation.y) * cos(rotation.x);
 		front = glm::normalize(front);
 		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
 		glm::vec3 up = glm::normalize(glm::cross(right, front));
+		glm::vec3 forward = glm::normalize(glm::cross(right, up));*/
+
+		glm::vec3 front;
+		front.x = cos(rotation.y) * cos(rotation.x);
+		front.y = sin(rotation.x);
+		front.z = sin(rotation.y) * cos(rotation.x);
+		glm::vec3 target = glm::normalize(front);
+		glm::vec3 right = glm::normalize(glm::cross(target, glm::vec3(0.0f, 1.0f, 0.0f)));
+		glm::vec3 up = glm::normalize(glm::cross(right, target));
 		glm::vec3 forward = glm::normalize(glm::cross(right, up));
 
 		*outForward = forward;
@@ -191,13 +200,38 @@ namespace OpenGLEngine
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity* entity = scene->GetEntityByUUID(entityID);
 		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
-		glm::vec3 front;
+
+		/*glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
 		front.y = sin(rotation.x);
 		front.z = sin(rotation.y) * cos(rotation.x);
 		front = glm::normalize(front);
-		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));*/
+
+		glm::vec3 front;
+		front.x = cos(rotation.y) * cos(rotation.x);
+		front.y = sin(rotation.x);
+		front.z = sin(rotation.y) * cos(rotation.x);
+		glm::vec3 target = glm::normalize(front);
+		glm::vec3 right = glm::normalize(glm::cross(target, glm::vec3(0.0f, 1.0f, 0.0f)));
+
 		*outRight = right;
+	}
+
+	static void TransformComponent_GetTarget(UUID entityID, glm::vec3* outTarget)
+	{
+		Scene* scene = ScriptEngine::GetSceneContext();
+		Entity* entity = scene->GetEntityByUUID(entityID);
+
+		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+
+		glm::vec3 front;
+		front.x = cos(rotation.y) * cos(rotation.x);
+		front.y = sin(rotation.x);
+		front.z = sin(rotation.y) * cos(rotation.x);
+		glm::vec3 target = glm::normalize(front);
+
+		*outTarget = target;
 	}
 
 	static void MeshComponent_GenerateMesh(UUID entityID, MonoArray* vertices, MonoArray* indices)
@@ -376,6 +410,7 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(TransformComponent_SetScale);
 		ADD_INTERNAL_CALL(TransformComponent_GetForward);
 		ADD_INTERNAL_CALL(TransformComponent_GetRight);
+		ADD_INTERNAL_CALL(TransformComponent_GetTarget);
 
 		ADD_INTERNAL_CALL(MeshComponent_GenerateMesh);
 

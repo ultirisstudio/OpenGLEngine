@@ -1,5 +1,5 @@
 <p align=center>
-  <img src="logo.webp" height="237px" width="344"/>
+  <img src="logo.webp" height="344" width="344"/>
 </p>
 <h1 align=center>OpenGLEngine</h1>
 <p align=center>

@@ -80,7 +80,7 @@ namespace OpenGLEngine
 			aiString str;
 			material->GetTexture(aiTextureType_DIFFUSE, i, &str);
 			std::filesystem::path diffusePath = str.C_Str();
-			mat.AlbedoTexture = std::string(("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\3d\\halo_map\\") + std::string(diffusePath.filename().string()));
+			mat.AlbedoTexture = diffusePath.filename().string();
 		}
 
 		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_NORMALS); i++)
@@ -88,7 +88,7 @@ namespace OpenGLEngine
 			aiString str;
 			material->GetTexture(aiTextureType_NORMALS, i, &str);
 			std::filesystem::path normalPath = str.C_Str();
-			mat.NormalTexture = std::string(("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\3d\\halo_map\\") + std::string(normalPath.filename().string()));
+			mat.NormalTexture = normalPath.filename().string();
 		}
 
 		return new Mesh(vertices, indices, mat);

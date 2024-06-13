@@ -156,7 +156,7 @@ namespace OpenGLEngine
 		luaFile << "	kind \"SharedLib\"\n";
 		luaFile << "	language \"C#\"\n";
 		luaFile << "	dotnetframework \"4.8\"\n";
-		luaFile << "	csversion (\"10.0)\"\n";
+		luaFile << "	csversion (\"10.0\")\n";
 		luaFile << "\n";
 		luaFile << "	targetdir(\"%{wks.location}/Build\")\n";
 		luaFile << "	objdir(\"%{wks.location}/Build/Intermediates\")\n";

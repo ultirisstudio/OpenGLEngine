@@ -1,5 +1,7 @@
 #include "depch.h"
 
+#include <fstream>
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -352,6 +354,8 @@ namespace OpenGLEngine {
 		size_t lastindex = m_SelectedFile.find_last_of(".");
 		const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
 
+		const std::string m_FolderPath = path.substr(0, slash);
+
 		Entity* entity = Renderer::GetScene()->CreateEntity(m_FileName);
 
 		for (auto& [name, mesh] : model->GetMeshes())
@@ -359,7 +363,38 @@ namespace OpenGLEngine {
 			Entity* child = Renderer::GetScene()->CreateEntity(name);
 			child->AddComponent<MeshRendererComponent>();
 			auto& mc = child->AddComponent<MeshComponent>(name, mesh, path);
-			child->AddComponent<MaterialComponent>(mc.GetMesh().GetMaterial());
+
+			MaterialSpecification material = mc.GetMesh().GetMaterial();
+
+			if (material.AlbedoTexture.has_value())
+			{
+				std::ifstream file(m_FolderPath + "\\" + material.AlbedoTexture.value());
+				if (!file.is_open())
+				{
+					material.AlbedoTexture = std::nullopt;
+				}
+				else
+				{
+					material.AlbedoTexture = m_FolderPath + "\\" + material.AlbedoTexture.value();
+				}
+				file.close();
+			}
+			
+			if (material.NormalTexture.has_value())
+			{
+				std::ifstream file(m_FolderPath + "\\" + material.NormalTexture.value());
+				if (!file.is_open())
+				{
+					material.AlbedoTexture = std::nullopt;
+				}
+				else
+				{
+					material.NormalTexture = m_FolderPath + "\\" + material.NormalTexture.value();
+				}
+				file.close();
+			}			
+
+			child->AddComponent<MaterialComponent>(material);
 
 			entity->AddChild(child->GetUUID());
 		}

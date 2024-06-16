@@ -11,6 +11,7 @@
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
 
 #include <OpenGLEngine/Physic/PhysicEngine.h>
 
@@ -91,6 +92,7 @@ namespace OpenGLEngine
 		}
 
 		temp->AddComponent<MaterialComponent>();
+		temp->AddComponent<MeshRendererComponent>();
 		temp->AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
 	}
 

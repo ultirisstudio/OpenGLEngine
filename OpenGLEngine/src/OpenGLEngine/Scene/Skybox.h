@@ -17,16 +17,29 @@ namespace OpenGLEngine
 		Shader m_EquirectangularToCubemapShader;
 		Shader m_IrradianceShader;
 		Shader m_BackgroundShader;
+		Shader m_PrefilterShader;
+		Shader m_BrdfShader;
 
 		unsigned int hdrTexture;
 		unsigned int envCubemap;
 		unsigned int irradianceMap;
+		unsigned int brdfLUTTexture;
+		unsigned int prefilterMap;
+
+		unsigned int quadVAO = 0;
+		unsigned int quadVBO;
+
+		void RenderQuad();
 	public:
 		Skybox();
 
 		void BindCubeMap();
 
 		void BindIrradianceMap();
+
+		void BindPrefilterMap();
+
+		void BindBrdfLUT();
 
 		Shader* GetShader()
 		{

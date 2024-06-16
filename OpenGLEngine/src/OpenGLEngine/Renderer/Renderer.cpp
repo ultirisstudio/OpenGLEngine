@@ -137,6 +137,14 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
 
+		glActiveTexture(GL_TEXTURE1);
+		m_SceneData.m_Scene->getSkybox().BindPrefilterMap();
+		m_SceneData.m_Shader.setUniform("uPrefilterMap", 1);
+
+		glActiveTexture(GL_TEXTURE2);
+		m_SceneData.m_Scene->getSkybox().BindBrdfLUT();
+		m_SceneData.m_Shader.setUniform("uBrdfLUT", 2);
+
 		glm::vec3 position;
 		glm::decompose(camera.GetTransform(), glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
 		
@@ -152,7 +160,7 @@ namespace OpenGLEngine {
 		{
 			m_SceneData.m_Shader.setUniform("uEntity", entity.second.GetUUID());
 
-			int nat = 1;
+			int nat = 3;
 
 			glm::mat4 transform = entity.second.GetComponent<TransformComponent>().GetGlobalTransform();
 
@@ -315,6 +323,8 @@ namespace OpenGLEngine {
 
 	void Renderer::RenderSkybox(BaseCamera& camera)
 	{
+		//glDisable(GL_CULL_FACE);
+
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
 
@@ -326,9 +336,11 @@ namespace OpenGLEngine {
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
 
 		glActiveTexture(GL_TEXTURE0);
-		//m_SceneData.m_Scene->getSkybox().BindCubeMap();
-		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
+		m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
+
+		//glEnable(GL_CULL_FACE);
 	}
 
 	void Renderer::EndScene()

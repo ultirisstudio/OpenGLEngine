@@ -1,7 +1,7 @@
 <p align=center>
-  <img src="./logo.webp" height="237px" width="344"/>
+  <img src="logo.webp" height="344" width="344"/>
 </p>
-<h1 align=center>OpenGLEngine</h1>
+<h1 align=center>Quasar Engine</h1>
 <p align=center>
   <img src="https://img.shields.io/badge/Made%20with-C++-%23f7df1e?style=for-the-badge" alt="fully in c++"/>
   <a href="https://choosealicense.com/licenses/mit/">
@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/discord/265104803531587584.svg?logo=discord&style=for-the-badge" alt="Chat"/>
   </a>
 </p>
-<h3 align=center>OpenGL Engine est un moteur de jeu</h3>
+<h3 align=center>Quasar Engine est un moteur de jeu</h3>
 
 - [Un _peu_ d'histoire](#un-peu-d-histoire)
 - [Le `Projet`](#le-projet)

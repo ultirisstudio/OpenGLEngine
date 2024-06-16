@@ -1,4 +1,4 @@
-#version 410 core
+#version 440 core
 
 in float fHeight;
 in vec3 fNormal;

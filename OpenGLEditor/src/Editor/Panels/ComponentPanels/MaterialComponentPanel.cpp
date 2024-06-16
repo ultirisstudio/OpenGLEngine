@@ -68,7 +68,21 @@ namespace OpenGLEngine
 					{
 						mc.GetMaterial().ResetTexture(TextureType::Albedo);
 					}
+
+					if (mc.GetMaterial().GetSpecification().AlbedoTexture.has_value())
+					{
+						const std::string path = mc.GetMaterial().GetSpecification().AlbedoTexture.value();
+						const size_t slash = path.find_last_of("/\\");
+						const std::string m_SelectedFile = path.substr(slash + 1);
+
+						size_t lastindex = m_SelectedFile.find_last_of(".");
+						const std::string m_FileName = m_SelectedFile.substr(0, lastindex);
+
+						ImGui::Text(m_FileName.c_str());
+					}
 				}
+
+				
 
 				ImGui::Text("Albedo Color: ");
 				ImGui::ColorEdit3("##AlbedoColor", glm::value_ptr(mc.GetMaterial().GetAlbedo()));

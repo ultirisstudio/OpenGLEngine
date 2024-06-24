@@ -5,6 +5,8 @@
 #include "OpenGLEngine/Events/MouseEvent.h"
 #include "OpenGLEngine/Events/KeyEvent.h"
 
+#include "Log.h"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -36,10 +38,7 @@ namespace OpenGLEngine {
 			return;
 		}
 
-		std::cout << "OpenGL Info:" << std::endl;
-		std::cout << "  Vendor: " << glGetString(GL_VENDOR) << std::endl;
-		std::cout << "  Renderer: " << glGetString(GL_RENDERER) << std::endl;
-		std::cout << "  Version: " << glGetString(GL_VERSION) << std::endl;
+		Log::LogOpenGLInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);

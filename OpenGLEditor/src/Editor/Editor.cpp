@@ -42,6 +42,14 @@ namespace OpenGLEngine
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
 		Application::Get().MaximizeWindow(true);
+
+		std::cout << "  ___                               _____             _" << std::endl;
+		std::cout << " / _ \\ _   _  __ _ ___  __ _ _ __  | ____|_ __   __ _(_)_ __   ___" << std::endl;
+		std::cout << "| | | | | | |/ _` / __|/ _` | '__| |  _| | '_ \\ / _` | | '_ \\ / _ \\" << std::endl;
+		std::cout << "| |_| | |_| | (_| \\__ \\ (_| | |    | |___| | | | (_| | | | | |  __/" << std::endl;
+		std::cout << " \\__\\_\\\\__,_|\\__,_|___/\\__,_|_|    |_____|_| |_|\\__, |_|_| |_|\\___|" << std::endl;
+		std::cout << "                                                |___ /" << std::endl;
+
 	}
 
 	void Editor::OnAttach()

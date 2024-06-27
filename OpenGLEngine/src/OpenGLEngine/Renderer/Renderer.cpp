@@ -12,7 +12,6 @@
 
 #include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Tools/Log.h>
 
 #include <OpenGLEngine/Scene/Skybox.h>
 

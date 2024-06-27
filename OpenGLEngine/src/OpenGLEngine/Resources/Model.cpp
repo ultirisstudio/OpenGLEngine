@@ -5,8 +5,6 @@
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Materials/Material.h>
 
-#include <OpenGLEngine/Tools/Log.h>
-
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -112,7 +110,7 @@ namespace OpenGLEngine
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			Log::error("Failed to load model at", path, ":", importer.GetErrorString());
+			std::cout << "Failed to load model at " << path << " : " << importer.GetErrorString() << std::endl;
 			return;
 		}
 

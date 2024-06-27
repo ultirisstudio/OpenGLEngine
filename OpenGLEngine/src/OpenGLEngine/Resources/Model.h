@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include <OpenGLEngine/Resources/Mesh.h>
-#include <OpenGLEngine/Tools/Log.h>
 #include <OpenGLEngine/Asset/Asset.h>
 
 struct aiScene;

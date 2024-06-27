@@ -1,6 +1,5 @@
 #include "depch.h"
 #include <OpenGLEngine/Shader/Shader.h>
-#include <OpenGLEngine/Tools/Log.h>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
@@ -42,7 +41,7 @@ namespace OpenGLEngine
 			}
 
 			std::string errorMessage("Failed to compile " + shaderType + " shader : ");
-			Log::error(errorMessage + error);
+			std::cout << errorMessage << error << std::endl;
 
 			return 0;
 		}

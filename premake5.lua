@@ -28,6 +28,7 @@ group "Dependance"
 	include "OpenGLEngine/vendor/rp3d"
 	include "OpenGLEngine/vendor/mbedtls"
 	include "OpenGLEngine/vendor/zlib"
+	include "OpenGLEngine/vendor/entt"
 
 group ""
 

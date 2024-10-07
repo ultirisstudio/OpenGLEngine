@@ -4,78 +4,89 @@
 
 #include <string>
 #include <vector>
-#include <array>
-#include <bitset>
-#include <memory>
-#include <unordered_map>
+#include <entt/entt.hpp>
 
-#include <OpenGLEngine/Core/UUID.h>
+#include <OpenGLEngine/Scene/Scene.h>
 
-#include <OpenGLEngine/Entity/Components/IDComponent.h>
+#include "Components/IDComponent.h"
+#include "Components/TagComponent.h"
 
-class Entity
+namespace OpenGLEngine
 {
-public:
-	Entity() = default;
-	Entity(std::string name);
-
-	char* GetName() { return m_Name.data(); }
-
-	void SetName(std::string name) { m_Name = name; }
-
-	void Destroy();
-
-	template<typename T>
-	bool HasComponent() const {
-		return m_ComponentsBitset[GetComponentTypeID<T>()];
-	}
-
-	template<typename T, typename... TArgs>
-	T& AddComponent(TArgs&&... mArgs) {
-		T* component(new T(std::forward <TArgs>(mArgs)...));
-		component->entity = this;
-
-		m_ComponentsArray[GetComponentTypeID<T>()] = component;
-		m_ComponentsBitset[GetComponentTypeID<T>()] = true;
-
-		return *component;
-	}
-
-	template<typename T>
-	void RemoveComponent() {
-		delete m_ComponentsArray[GetComponentTypeID<T>()];
-		m_ComponentsArray[GetComponentTypeID<T>()] = nullptr;
-		m_ComponentsBitset[GetComponentTypeID<T>()] = false;
-	}
-
-	template<typename T>
-	T& GetComponent() const {
-		auto pointer(m_ComponentsArray[GetComponentTypeID<T>()]);
-		return *static_cast<T*>(pointer);
-	}
-
-	const OpenGLEngine::UUID GetUUID() const { return GetComponent<OpenGLEngine::IDComponent>().ID; }
-
-	void AddChild(const OpenGLEngine::UUID& id);
-public:
-	std::string m_Name;
-
-	std::vector<OpenGLEngine::UUID> m_Children;
-	OpenGLEngine::UUID m_Parent = OpenGLEngine::UUID::Null();
-private:
-	std::bitset<MAX_COMPONENTS> m_ComponentsBitset;
-	std::array<Component*, MAX_COMPONENTS> m_ComponentsArray;
-};
-
-struct EntityMapping
-{
-	size_t operator()(const Entity& k)const
+	class Entity
 	{
-		return std::hash<int>()(k.GetUUID());
-	}
+	public:
+		Entity() = default;
+		Entity(entt::entity handle, Scene* scene);
+		Entity(const Entity& other) = default;
 
-	bool operator()(const Entity& a, const Entity& b)const
+		template<typename T, typename... Args>
+		T& AddComponent(Args&&... args)
+		{
+			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			component.e = m_EntityHandle;
+			component.s = m_Scene;
+			return component;
+		}
+
+		template<typename T, typename... Args>
+		T& AddOrReplaceComponent(Args&&... args)
+		{
+			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			component.e = m_EntityHandle;
+			component.s = m_Scene;
+			return component;
+		}
+
+		template<typename T>
+		T& GetComponent()
+		{
+			return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		}
+
+		template<typename T>
+		bool HasComponent()
+		{
+			return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
+		}
+
+		template<typename T>
+		void RemoveComponent()
+		{
+			m_Scene->m_Registry.remove<T>(m_EntityHandle);
+		}
+
+		operator bool() const { return m_EntityHandle != entt::null; }
+		operator entt::entity() const { return m_EntityHandle; }
+		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+
+		bool operator==(const Entity& other) const
+		{
+			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
+		}
+
+		bool operator!=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
+	private:
+		entt::entity m_EntityHandle{ entt::null };
+		Scene* m_Scene = nullptr;
+	};
+
+	/*struct EntityMapping
 	{
-		return a.GetUUID() == b.GetUUID();
-	}
-};
+		size_t operator()(const Entity& k)const
+		{
+			return std::hash<int>()(k.GetUUID());
+		}
+
+		bool operator()(const Entity& a, const Entity& b)const
+		{
+			return a.GetUUID() == b.GetUUID();
+		}
+	};*/
+}

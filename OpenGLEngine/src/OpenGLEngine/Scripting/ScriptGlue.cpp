@@ -16,11 +16,10 @@
 #include <OpenGLEngine/Entity/Components/IDComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
-//#include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
+#include <OpenGLEngine/Entity/Components/TagComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-//#include <OpenGLEngine/Entity/Components/ModelComponent.h>
-//#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
@@ -57,7 +56,7 @@ namespace OpenGLEngine
 	//using AllComponents = ComponentGroup<TransformComponent, ScriptComponent, CameraComponent, LightComponent, MeshComponent, MaterialComponent, ModelComponent, TerrainComponent, RigidBodyComponent>;
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntityHasComponentFuncs;
-	static std::unordered_map<MonoType*, std::function<Component(Entity*)>> m_EntityAddComponentFuncs;
+	static std::unordered_map<MonoType*, std::function<Component(Entity)>> m_EntityAddComponentFuncs;
 
 #define ADD_INTERNAL_CALL(Name) mono_add_internal_call("OpenGLEngine.InternalCalls::" #Name, Name)
 
@@ -70,29 +69,29 @@ namespace OpenGLEngine
 	static uint32_t Scene_CreateEntity(MonoString* name)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->CreateEntity(Utils::MonoStringToString(name));
-		return entity->GetUUID();
+		Entity entity = scene->CreateEntity(Utils::MonoStringToString(name));
+		return entity.GetUUID();
 	}
 
 	static void Scene_RemoveEntity(UUID entityID)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		scene->DestroyEntityByUUID(entityID);
+		scene->DestroyEntity(scene->GetEntityByUUID(entityID));
 	}
 
 	static bool Entity_HasComponent(UUID entityID, MonoReflectionType* componentType)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
+		Entity entity = scene->GetEntityByUUID(entityID);
 
 		MonoType* managedType = mono_reflection_type_get_type(componentType);
-		return m_EntityHasComponentFuncs.at(managedType)(*entity);
+		return m_EntityHasComponentFuncs.at(managedType)(entity);
 	}
 
 	static void Entity_AddComponent(UUID entityID, MonoReflectionType* componentType)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
+		Entity entity = scene->GetEntityByUUID(entityID);
 
 		MonoType* managedType = mono_reflection_type_get_type(componentType);
 		auto& c = m_EntityAddComponentFuncs.at(managedType)(entity);
@@ -101,19 +100,19 @@ namespace OpenGLEngine
 	static uint32_t Entity_GetChildByName(UUID entityID, MonoString* name)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		Entity* child = nullptr;
-		for (auto& e : entity->m_Children)
+		Entity entity = scene->GetEntityByUUID(entityID);
+		Entity child = {};
+		for (auto e : entity.GetComponent<HierarchyComponent>().m_Childrens)
 		{
-			Entity* c = scene->GetEntityByUUID(e);
-			if (c->GetName() == Utils::MonoStringToString(name))
+			Entity c = scene->GetEntityByUUID(e);
+			if (c.GetComponent<TagComponent>().Tag == Utils::MonoStringToString(name))
 			{
 				child = c;
 				break;
 			}
 		}
 
-		return (child != nullptr) ? child->GetUUID() : UUID::Null();
+		return child.GetUUID();
 	}
 
 	static void Physics_RaycastAll(glm::vec3 origin, glm::vec3 direction, float distance, RaycastInfo* raycastInfo)
@@ -128,51 +127,51 @@ namespace OpenGLEngine
 	static void TransformComponent_GetTranslation(UUID entityID, glm::vec3* outTranslation)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		*outTranslation = entity->GetComponent<TransformComponent>().Position;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		*outTranslation = entity.GetComponent<TransformComponent>().Position;
 	}
 
 	static void TransformComponent_SetTranslation(UUID entityID, glm::vec3* translation)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<TransformComponent>().Position = *translation;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<TransformComponent>().Position = *translation;
 	}
 
 	static void TransformComponent_GetRotation(UUID entityID, glm::vec3* outRotation)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		*outRotation = entity->GetComponent<TransformComponent>().Rotation;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		*outRotation = entity.GetComponent<TransformComponent>().Rotation;
 	}
 
 	static void TransformComponent_SetRotation(UUID entityID, glm::vec3* rotation)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<TransformComponent>().Rotation = *rotation;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<TransformComponent>().Rotation = *rotation;
 	}
 
 	static void TransformComponent_GetScale(UUID entityID, glm::vec3* outScale)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		*outScale = entity->GetComponent<TransformComponent>().Scale;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		*outScale = entity.GetComponent<TransformComponent>().Scale;
 	}
 
 	static void TransformComponent_SetScale(UUID entityID, glm::vec3* scale)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<TransformComponent>().Scale = *scale;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<TransformComponent>().Scale = *scale;
 	}
 
 	static void TransformComponent_GetForward(UUID entityID, glm::vec3* outForward)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
+		Entity entity = scene->GetEntityByUUID(entityID);
 
-		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+		glm::vec3 rotation = entity.GetComponent<TransformComponent>().Rotation;
 
 		/*glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
@@ -198,8 +197,8 @@ namespace OpenGLEngine
 	static void TransformComponent_GetRight(UUID entityID, glm::vec3* outRight)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+		Entity entity = scene->GetEntityByUUID(entityID);
+		glm::vec3 rotation = entity.GetComponent<TransformComponent>().Rotation;
 
 		/*glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
@@ -221,9 +220,9 @@ namespace OpenGLEngine
 	static void TransformComponent_GetTarget(UUID entityID, glm::vec3* outTarget)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
+		Entity entity = scene->GetEntityByUUID(entityID);
 
-		glm::vec3 rotation = entity->GetComponent<TransformComponent>().Rotation;
+		glm::vec3 rotation = entity.GetComponent<TransformComponent>().Rotation;
 
 		glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
@@ -271,8 +270,8 @@ namespace OpenGLEngine
 		}
 
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<MeshComponent>().GenerateMesh(vertexData, indexData);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<MeshComponent>().GenerateMesh(vertexData, indexData);
 	}
 
 	static uint64_t Perlin_Initialize()
@@ -296,32 +295,32 @@ namespace OpenGLEngine
 	static void ScriptComponent_SetScriptName(UUID entityID, MonoString* scriptName)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<ScriptComponent>().m_Name = Utils::MonoStringToString(scriptName);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<ScriptComponent>().m_Name = Utils::MonoStringToString(scriptName);
 
-		ScriptEngine::OnCreateEntity(*entity);
+		ScriptEngine::OnCreateEntity(entity);
 	}
 
 	static void RigidBody_ApplyLocalForceAtCenterOfMass(UUID entityID, glm::vec3 force)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
 		//entity->GetComponent<RigidBodyComponent>().GetRigidBody()->applyLocalTorque(reactphysics3d::Vector3(0.0f, 10.0f, 0.0f));
 	}
 
 	static void CharacterController_Move(UUID entityID, glm::vec3 force)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<CharacterControllerComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<CharacterControllerComponent>().GetRigidBody()->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(force.x, force.y, force.z));
 	}
 
 	static void CameraComponent_SetFOV(UUID entityID, float fov)
 	{
 		Scene* scene = ScriptEngine::GetSceneContext();
-		Entity* entity = scene->GetEntityByUUID(entityID);
-		entity->GetComponent<CameraComponent>().GetCamera().SetFov(fov);
+		Entity entity = scene->GetEntityByUUID(entityID);
+		entity.GetComponent<CameraComponent>().GetCamera().SetFov(fov);
 	}
 
 	static bool Input_IsKeyDown(KeyCode keycode)
@@ -358,7 +357,7 @@ namespace OpenGLEngine
 			if (!managedType)
 				std::cout << "Failed to find managed type: " << managedTypename << std::endl;
 			m_EntityHasComponentFuncs[managedType] = [](Entity entity) { return entity.HasComponent<Component>(); };
-			m_EntityAddComponentFuncs[managedType] = [](Entity* entity) { return entity->AddComponent<Component>(); };
+			m_EntityAddComponentFuncs[managedType] = [](Entity entity) { return entity.AddComponent<Component>(); };
 		}(), ...);
 	}
 

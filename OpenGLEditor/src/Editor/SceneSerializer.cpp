@@ -4,6 +4,8 @@
 #include <yaml-cpp/yaml.h>
 
 #include <OpenGLEngine/Renderer/Renderer.h>
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
@@ -73,23 +75,23 @@ namespace OpenGLEngine
 		return out;
 	}
 
-	static void SerializeEntity(YAML::Emitter& out, Entity* entity, const std::string& assetPath)
+	static void SerializeEntity(YAML::Emitter& out, Entity entity, const std::string& assetPath)
 	{
 		out << YAML::BeginMap;
-		out << YAML::Key << "Entity" << YAML::Value << entity->GetName();
-		out << YAML::Key << "ID" << YAML::Value << entity->GetUUID();
-		uint64_t parentID = ((entity->m_Parent != UUID::Null()) ? entity->m_Parent : UUID::Null());
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetName();
+		out << YAML::Key << "ID" << YAML::Value << entity.GetUUID();
+		uint64_t parentID = ((entity.GetComponent<HierarchyComponent>().m_Parent != UUID::Null()) ? entity.GetComponent<HierarchyComponent>().m_Parent : UUID::Null());
 		out << YAML::Key << "ParentID" << YAML::Value << parentID;
 
 		out << YAML::Key << "Components" << YAML::Value << YAML::BeginSeq;
 
-		if (entity->HasComponent<TransformComponent>())
+		if (entity.HasComponent<TransformComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "TransformComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& tc = entity->GetComponent<TransformComponent>();
+			auto& tc = entity.GetComponent<TransformComponent>();
 			out << YAML::Key << "Position" << YAML::Value << tc.Position;
 			out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
 			out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
@@ -98,13 +100,13 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<MaterialComponent>())
+		if (entity.HasComponent<MaterialComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MaterialComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& mc = entity->GetComponent<MaterialComponent>();
+			auto& mc = entity.GetComponent<MaterialComponent>();
 
 			bool hasAlbedo = mc.GetMaterial().HasTexture(TextureType::Albedo);
 			bool hasNormal = mc.GetMaterial().HasTexture(TextureType::Normal);
@@ -151,13 +153,13 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<MeshRendererComponent>())
+		if (entity.HasComponent<MeshRendererComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MeshRendererComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& mrc = entity->GetComponent<MeshRendererComponent>();
+			auto& mrc = entity.GetComponent<MeshRendererComponent>();
 
 			out << YAML::Key << "Rendered" << YAML::Value << mrc.m_Rendered;
 
@@ -165,13 +167,13 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<MeshComponent>())
+		if (entity.HasComponent<MeshComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MeshComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& mc = entity->GetComponent<MeshComponent>();
+			auto& mc = entity.GetComponent<MeshComponent>();
 
 			std::optional<std::string> relativePath = Utils::getRelativePath(mc.GetModelPath(), assetPath);
 			out << YAML::Key << "Path" << YAML::Value << (relativePath.has_value() ? relativePath.value() : "");
@@ -181,13 +183,13 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<LightComponent>())
+		if (entity.HasComponent<LightComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "LightComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& lc = entity->GetComponent<LightComponent>();
+			auto& lc = entity.GetComponent<LightComponent>();
 
 			if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 			{
@@ -209,39 +211,39 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<CameraComponent>())
+		if (entity.HasComponent<CameraComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "CameraComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& cc = entity->GetComponent<CameraComponent>();
+			auto& cc = entity.GetComponent<CameraComponent>();
 			out << YAML::Key << "fov" << YAML::Value << cc.GetCamera().GetFov();
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<ScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& sc = entity->GetComponent<ScriptComponent>();
+			auto& sc = entity.GetComponent<ScriptComponent>();
 			out << YAML::Key << "scriptName" << YAML::Value << sc.m_Name;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<RigidBodyComponent>())
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "RigidBodyComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& rbc = entity->GetComponent<RigidBodyComponent>();
+			auto& rbc = entity.GetComponent<RigidBodyComponent>();
 			out << YAML::Key << "enableGravity" << YAML::Value << rbc.enableGravity;
 			out << YAML::Key << "bodyType" << YAML::Value << rbc.bodyTypeString;
 			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << rbc.m_LinearAxisFactorX;
@@ -255,13 +257,13 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent< CharacterControllerComponent>())
+		if (entity.HasComponent< CharacterControllerComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "CharacterControllerComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& ccc = entity->GetComponent<CharacterControllerComponent>();
+			auto& ccc = entity.GetComponent<CharacterControllerComponent>();
 
 			out << YAML::Key << "linearAxisFactor_X" << YAML::Value << ccc.m_LinearAxisFactorX;
 			out << YAML::Key << "linearAxisFactor_Y" << YAML::Value << ccc.m_LinearAxisFactorY;
@@ -282,25 +284,25 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<MeshColliderComponent>())
+		if (entity.HasComponent<MeshColliderComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "MeshColliderComponent";
 			out << YAML::Value << YAML::BeginMap;
 
-			auto& mcc = entity->GetComponent<MeshColliderComponent>();
+			auto& mcc = entity.GetComponent<MeshColliderComponent>();
 			out << YAML::Key << "IsConvex" << YAML::Value << mcc.m_IsConvex;
 
 			out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<BoxColliderComponent>())
+		if (entity.HasComponent<BoxColliderComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "BoxColliderComponent";
 			out << YAML::Value << YAML::BeginMap;
-			auto& bcc = entity->GetComponent<BoxColliderComponent>();
+			auto& bcc = entity.GetComponent<BoxColliderComponent>();
 			out << YAML::Key << "mass" << YAML::Value << bcc.mass;
 			out << YAML::Key << "friction" << YAML::Value << bcc.friction;
 			out << YAML::Key << "bounciness" << YAML::Value << bcc.bounciness;
@@ -310,12 +312,12 @@ namespace OpenGLEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity->HasComponent<CapsuleColliderComponent>())
+		if (entity.HasComponent<CapsuleColliderComponent>())
 		{
 			out << YAML::BeginMap;
 			out << YAML::Key << "CapsuleColliderComponent";
 			out << YAML::Value << YAML::BeginMap;
-			auto& ccc = entity->GetComponent<CapsuleColliderComponent>();
+			auto& ccc = entity.GetComponent<CapsuleColliderComponent>();
 			out << YAML::Key << "mass" << YAML::Value << ccc.mass;
 			out << YAML::Key << "friction" << YAML::Value << ccc.friction;
 			out << YAML::Key << "bounciness" << YAML::Value << ccc.bounciness;
@@ -328,11 +330,11 @@ namespace OpenGLEngine
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		std::vector<UUID> childrens = entity->m_Children;
+		std::vector<UUID> childrens = entity.GetComponent<HierarchyComponent>().m_Childrens;
 
 		for (auto& child : childrens)
 		{
-			Entity* childEntity = Renderer::m_SceneData.m_Scene->GetEntityByUUID(child);
+			Entity childEntity = Renderer::m_SceneData.m_Scene->GetEntityByUUID(child);
 			SerializeEntity(out, childEntity, assetPath);
 		}
 	}
@@ -348,9 +350,10 @@ namespace OpenGLEngine
 		out << YAML::Key << "Scene" << YAML::Value << m_Scene->getName();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 
-		for (auto& entity : m_Scene->GetEntityVector())
+		for (auto e : m_Scene->GetAllEntitiesWith<IDComponent>())
 		{
-			if (!entity->m_Parent)
+			Entity entity(e, m_Scene);
+			if (entity.GetComponent<HierarchyComponent>().m_Parent == UUID::Null())
 				SerializeEntity(out, entity, m_AssetPath.string());
 		};
 
@@ -373,13 +376,13 @@ namespace OpenGLEngine
 		UUID uuid = entity["ID"].as<uint64_t>();
 		UUID parent_uuid = entity["ParentID"].as<uint64_t>();
 
-		Entity* deserializedEntity = scene->CreateEntityWithUUID(uuid, name);
-		Entity* deserializedEntityParent = scene->GetEntityByUUID(parent_uuid);
+		Entity deserializedEntity = scene->CreateEntityWithUUID(uuid, name);
+		Entity deserializedEntityParent = scene->GetEntityByUUID(parent_uuid);
 
 		if (deserializedEntityParent)
 		{
-			deserializedEntity->m_Parent = deserializedEntityParent->GetUUID();
-			deserializedEntityParent->AddChild(deserializedEntity->GetUUID());
+			deserializedEntity.GetComponent<HierarchyComponent>().m_Parent = deserializedEntityParent.GetUUID();
+			deserializedEntityParent.GetComponent<HierarchyComponent>().AddChild(deserializedEntityParent.GetUUID(), deserializedEntity.GetUUID());
 		}
 
 		auto components = entity["Components"];
@@ -390,7 +393,7 @@ namespace OpenGLEngine
 				auto transformComponent = component["TransformComponent"];
 				if (transformComponent)
 				{
-					auto& tc = deserializedEntity->AddComponent<TransformComponent>();
+					auto& tc = deserializedEntity.AddComponent<TransformComponent>();
 					tc.Position = transformComponent["Position"].as<glm::vec3>();
 					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
@@ -399,7 +402,7 @@ namespace OpenGLEngine
 				auto meshRendererComponent = component["MeshRendererComponent"];
 				if (meshRendererComponent)
 				{
-					auto& mrc = deserializedEntity->AddComponent<MeshRendererComponent>();
+					auto& mrc = deserializedEntity.AddComponent<MeshRendererComponent>();
 					auto rendered = meshRendererComponent["Rendered"];
 					if (rendered)
 						mrc.m_Rendered = rendered.as<bool>();
@@ -422,13 +425,13 @@ namespace OpenGLEngine
 						mesh = Renderer::m_SceneData.m_ResourceManager.CreateModel(path)->GetMesh(name);
 					}
 
-					auto& mc = deserializedEntity->AddComponent<MeshComponent>(name, mesh, path);
+					auto& mc = deserializedEntity.AddComponent<MeshComponent>(name, mesh, path);
 				}
 
 				// TODO : Remove this
 				if (!meshRendererComponent && meshComponent)
 				{
-					auto& mrc = deserializedEntity->AddComponent<MeshRendererComponent>();
+					auto& mrc = deserializedEntity.AddComponent<MeshRendererComponent>();
 					mrc.m_Rendered = true;
 				}
 
@@ -497,7 +500,7 @@ namespace OpenGLEngine
 						}
 					}
 
-					auto& mc = deserializedEntity->AddComponent<MaterialComponent>(spec);
+					auto& mc = deserializedEntity.AddComponent<MaterialComponent>(spec);
 				}
 
 				auto lightComponent = component["LightComponent"];
@@ -505,7 +508,7 @@ namespace OpenGLEngine
 				{
 					if (lightComponent["lightType"].as<std::string>() == "Directional")
 					{
-						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+						auto& lc = deserializedEntity.AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
 						lc.dir_color = lightComponent["color"].as<glm::vec3>();
 
 						if (lightComponent["power"])
@@ -514,7 +517,7 @@ namespace OpenGLEngine
 
 					if (lightComponent["lightType"].as<std::string>() == "Point")
 					{
-						auto& lc = deserializedEntity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
+						auto& lc = deserializedEntity.AddComponent<LightComponent>(LightComponent::LightType::POINT);
 						lc.point_color = lightComponent["color"].as<glm::vec3>();
 
 						if (lightComponent["attenuation"])
@@ -528,22 +531,22 @@ namespace OpenGLEngine
 				auto cameraComponent = component["CameraComponent"];
 				if (cameraComponent)
 				{
-					auto& cc = deserializedEntity->AddComponent<CameraComponent>();
-					cc.GetCamera().Init(&deserializedEntity->GetComponent<TransformComponent>());
+					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+					cc.GetCamera().Init(&deserializedEntity.GetComponent<TransformComponent>());
 					cc.GetCamera().SetFov(cameraComponent["fov"].as<float>());
 				}
 
 				auto scriptComponent = component["ScriptComponent"];
 				if (scriptComponent)
 				{
-					auto& sc = deserializedEntity->AddComponent<ScriptComponent>();
+					auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
 					sc.m_Name = scriptComponent["scriptName"].as<std::string>();
 				}
 
 				auto rigidBodyComponent = component["RigidBodyComponent"];
 				if (rigidBodyComponent)
 				{
-					auto& rbc = deserializedEntity->AddComponent<RigidBodyComponent>();
+					auto& rbc = deserializedEntity.AddComponent<RigidBodyComponent>();
 					rbc.Init();
 
 					rbc.enableGravity = rigidBodyComponent["enableGravity"].as<bool>();
@@ -576,7 +579,7 @@ namespace OpenGLEngine
 				auto characterControllerComponent = component["CharacterControllerComponent"];
 				if (characterControllerComponent)
 				{
-					auto& ccc = deserializedEntity->AddComponent<CharacterControllerComponent>();
+					auto& ccc = deserializedEntity.AddComponent<CharacterControllerComponent>();
 					ccc.Init();
 
 					if (characterControllerComponent["linearAxisFactor_X"])
@@ -621,7 +624,7 @@ namespace OpenGLEngine
 				auto meshColliderComponent = component["MeshColliderComponent"];
 				if (meshColliderComponent)
 				{
-					auto& mcc = deserializedEntity->AddComponent<MeshColliderComponent>();
+					auto& mcc = deserializedEntity.AddComponent<MeshColliderComponent>();
 					mcc.m_IsConvex = meshColliderComponent["IsConvex"].as<bool>();
 					mcc.Generate();
 				}
@@ -629,7 +632,7 @@ namespace OpenGLEngine
 				auto boxColliderComponent = component["BoxColliderComponent"];
 				if (boxColliderComponent)
 				{
-					auto& bcc = deserializedEntity->AddComponent<BoxColliderComponent>();
+					auto& bcc = deserializedEntity.AddComponent<BoxColliderComponent>();
 					bcc.Init();
 
 					if (boxColliderComponent["mass"])
@@ -654,7 +657,7 @@ namespace OpenGLEngine
 				auto capsuleColliderComponent = component["CapsuleColliderComponent"];
 				if (capsuleColliderComponent)
 				{
-					auto& ccc = deserializedEntity->AddComponent<CapsuleColliderComponent>();
+					auto& ccc = deserializedEntity.AddComponent<CapsuleColliderComponent>();
 					ccc.Init();
 
 					if (capsuleColliderComponent["mass"])

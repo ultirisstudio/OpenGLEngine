@@ -19,10 +19,10 @@ extern "C"
 	typedef struct _MonoClassField MonoClassField;
 }
 
-class Entity;
-
 namespace OpenGLEngine
 {
+	class Entity;
+
 	enum class ScriptFieldType
 	{
 		Unknown = 0,

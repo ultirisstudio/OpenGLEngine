@@ -1,20 +1,18 @@
 project "entt"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
+	cppdialect "C++14"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	defines { "_CRT_SECURE_NO_WARNINGS" }
-
 	files
 	{
-		"include/**.h",
-		"include/**.hpp",
-		"include/**.c",
-		"include/**.cpp"
+		"src/**.h",
+		"src/**.hpp",
+		"src/**.c",
+		"src/**.cpp"
 	}
 
 	filter "system:windows"

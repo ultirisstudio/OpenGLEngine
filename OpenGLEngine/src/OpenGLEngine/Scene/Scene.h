@@ -2,16 +2,17 @@
 
 #include <unordered_map>
 
-#include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Scene/Camera.h>
 #include <OpenGLEngine/Tools/Chronometer.h>
 #include <OpenGLEngine/Scene/Skybox.h>
 
-class PointLight;
+#include <entt/entt.hpp>
 
 namespace OpenGLEngine
 {
-	using EntityMap = std::unordered_map<UUID, Entity>;
+	class Entity;
+
+	using EntityMap = std::unordered_map<UUID, entt::entity>;
 
 	class Scene
 	{
@@ -22,15 +23,13 @@ namespace OpenGLEngine
 
 		void Init();
 
-		Entity* CreateEntity(const std::string& name = std::string());
-		Entity* CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 
-		void DestroyEntityByUUID(UUID uuid);
+		void DestroyEntity(Entity entity);
 
-		Entity* FindEntityByName(std::string name);
-		Entity* GetEntityByUUID(UUID uuid);
-
-		std::vector<Entity*> GetEntityVector();
+		Entity FindEntityByName(std::string_view name);
+		Entity GetEntityByUUID(UUID uuid);
 
 		void Update(double deltaTime);
 		void UpdateRuntime(double deltaTime);
@@ -59,6 +58,12 @@ namespace OpenGLEngine
 
 		void setName(const std::string& name) { m_Name = name; }
 		void setPath(const std::string& path) { m_Path = path; }
+
+		template<typename... Components>
+		auto GetAllEntitiesWith()
+		{
+			return m_Registry.view<Components...>();
+		}
 	private:
 		EntityMap m_EntityMap;
 
@@ -70,21 +75,10 @@ namespace OpenGLEngine
 
 		bool m_OnRuntime;
 
+		entt::registry m_Registry;
+
+		friend class Entity;
 		friend class SceneSerializer;
 	public:
-		template<typename Component>
-		std::vector<Entity*> View()
-		{
-			std::vector<Entity*> entities;
-			for (auto it = m_EntityMap.begin(); it != m_EntityMap.end(); it++)
-			{
-				if (it->second.HasComponent<Component>())
-				{
-					entities.push_back(&it->second);
-				}
-			}
-
-			return entities;
-		}
 	};
 }

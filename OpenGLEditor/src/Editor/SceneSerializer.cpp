@@ -399,7 +399,7 @@ namespace OpenGLEngine
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
 				}
 
-				auto meshRendererComponent = component["MeshRendererComponent"];
+				/*auto meshRendererComponent = component["MeshRendererComponent"];
 				if (meshRendererComponent)
 				{
 					auto& mrc = deserializedEntity.AddComponent<MeshRendererComponent>();
@@ -677,7 +677,7 @@ namespace OpenGLEngine
 
 					ccc.UpdateColliderMaterial();
 					ccc.UpdateColliderSize();
-				}
+				}*/
 			}
 		}
 	}

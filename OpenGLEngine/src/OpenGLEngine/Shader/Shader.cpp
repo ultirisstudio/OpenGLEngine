@@ -7,7 +7,7 @@
 
 namespace OpenGLEngine
 {
-	unsigned int Shader::createShader(const std::string& source, unsigned int type)
+	/*unsigned int Shader::createShader(const std::string& source, unsigned int type)
 	{
 		const char* src = source.c_str();
 
@@ -47,7 +47,7 @@ namespace OpenGLEngine
 		}
 
 		return shader;
-	}
+	}*/
 
 	unsigned int Shader::ReadShader(const std::string& path, unsigned int type)
 	{
@@ -108,6 +108,32 @@ namespace OpenGLEngine
 		glDeleteProgram(m_id);
 	}
 
+	void Shader::bakeUniformLocations()
+	{
+		constexpr unsigned int MAX_UNIFORM_NAME_LENGTH = 64;
+
+		if (m_id == 0)
+			return;
+
+		int activeUniforms = 0;
+		glGetProgramiv(m_id, GL_ACTIVE_UNIFORMS, &activeUniforms);
+
+		for (int i = 0; i < activeUniforms; ++i)
+		{
+			std::string name(MAX_UNIFORM_NAME_LENGTH, '\0');
+			unsigned int type = 0;
+			int size = 0;
+			int length = 0;
+
+			glGetActiveUniform(m_id, static_cast<unsigned int>(i), MAX_UNIFORM_NAME_LENGTH, &length, &size, &type, name.data());
+
+			std::string uniformName = name.substr(0, name.find('\0'));
+			unsigned int uniformLocation = glGetUniformLocation(m_id, uniformName.c_str());
+
+			m_uniformLocations.insert({ uniformName, uniformLocation });
+		}
+	}
+
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs)
 	{
 		unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
@@ -131,6 +157,8 @@ namespace OpenGLEngine
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+
+		bakeUniformLocations();
 	}
 
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs, const std::string& path_tcs, const std::string& path_tes)
@@ -162,51 +190,53 @@ namespace OpenGLEngine
 		glDeleteShader(fragmentShader);
 		glDeleteShader(tessControlShader);
 		glDeleteShader(tessEvaluationShader);
+
+		bakeUniformLocations();
 	}
 
 	void Shader::setUniform(const std::string& name, bool value) const
 	{
-		glUniform1i(glGetUniformLocation(m_id, name.c_str()), (bool)value);
+		glUniform1i(m_uniformLocations.at(name), (bool)value);
 	}
 
 	void Shader::setUniform(const std::string& name, uint32_t value) const
 	{
-		glUniform1ui(glGetUniformLocation(m_id, name.c_str()), value);
+		glUniform1ui(m_uniformLocations.at(name), value);
 	}
 
 	/*void Shader::setUniform(const std::string& name, unsigned int value) const
 	{
-		glUniform1ui(glGetUniformLocation(m_id, name.c_str()), value);
+		glUniform1ui(m_uniformLocations.at(name), value);
 	}*/
 
 	void Shader::setUniform(const std::string& name, int value) const
 	{
-		glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
+		glUniform1i(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, float value) const
 	{
-		glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
+		glUniform1f(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, double value) const
 	{
-		glUniform1d(glGetUniformLocation(m_id, name.c_str()), value);
+		glUniform1d(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::vec3& value) const
 	{
-		glUniform3f(glGetUniformLocation(m_id, name.c_str()), value.x, value.y, value.z);
+		glUniform3f(m_uniformLocations.at(name), value.x, value.y, value.z);
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::mat3& value) const
 	{
-		glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		glUniformMatrix3fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::mat4& value) const
 	{
-		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		glUniformMatrix4fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<bool>& value) const
@@ -215,37 +245,37 @@ namespace OpenGLEngine
 		for (bool val : value)
 			v.push_back((int)val);
 
-		glUniform1iv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)v.size(), v.data());
+		glUniform1iv(m_uniformLocations.at(name), (GLsizei)v.size(), v.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<unsigned int>& value) const
 	{
-		glUniform1uiv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), value.data());
+		glUniform1uiv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<int>& value) const
 	{
-		glUniform1iv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), value.data());
+		glUniform1iv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<float>& value) const
 	{
-		glUniform1fv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), value.data());
+		glUniform1fv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<double>& value) const
 	{
-		glUniform1dv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), value.data());
+		glUniform1dv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<glm::vec3>& value) const
 	{
-		glUniform3fv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), glm::value_ptr(value[0]));
+		glUniform3fv(m_uniformLocations.at(name), (GLsizei)value.size(), glm::value_ptr(value[0]));
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<glm::mat4>& value) const
 	{
-		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), (GLsizei)value.size(), GL_FALSE, glm::value_ptr(value[0]));
+		glUniformMatrix4fv(m_uniformLocations.at(name), (GLsizei)value.size(), GL_FALSE, glm::value_ptr(value[0]));
 	}
 
 	void Shader::use() const

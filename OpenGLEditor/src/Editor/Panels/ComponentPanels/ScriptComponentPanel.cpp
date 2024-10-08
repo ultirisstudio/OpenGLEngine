@@ -9,11 +9,11 @@
 
 namespace OpenGLEngine
 {
-    void ScriptComponentPanel::Render(Entity* entity)
+    void ScriptComponentPanel::Render(Entity entity)
     {
-		if (entity->HasComponent<ScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
-			auto& sc = entity->GetComponent<ScriptComponent>();
+			auto& sc = entity.GetComponent<ScriptComponent>();
 
 			if (ImGui::TreeNodeEx("Script", ImGuiTreeNodeFlags_DefaultOpen, "Script"))
 			{
@@ -21,12 +21,12 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<ScriptComponent>();
+						entity.RemoveComponent<ScriptComponent>();
 					}
 					ImGui::EndPopup();
 				}
 
-				const auto& entityClasses = ScriptEngine::GetEntityClasses();
+				/*const auto& entityClasses = ScriptEngine::GetEntityClasses();
 				std::vector<std::string> keys;
 				keys.reserve(entityClasses.size());
 
@@ -62,7 +62,7 @@ namespace OpenGLEngine
 							}
 						}
 					}
-				}
+				}*/
 
 				ImGui::TreePop();
 			}

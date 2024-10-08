@@ -56,9 +56,9 @@ namespace OpenGLEngine
 				//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			}
 
-			Entity* entity = sceneHierarchy.m_SelectedEntity;
+			Entity entity = sceneHierarchy.m_SelectedEntity;
 
-			UUID uuid = entity->GetUUID();
+			UUID uuid = entity.GetUUID();
 
 			std::string result;
 
@@ -71,7 +71,7 @@ namespace OpenGLEngine
 			std::stringstream sstm2;
 			sstm2 << "##" << uuid;
 			result = sstm2.str();
-			ImGui::InputText(result.c_str(), entity->GetName(), 20);
+			ImGui::InputText(result.c_str(), entity.GetName().data(), 20);
 
 			ImGui::Separator();
 
@@ -93,97 +93,93 @@ namespace OpenGLEngine
 				ImGui::OpenPopup("AddComponent");
 			}
 
-			if (ImGui::BeginPopup("AddComponent")) {
-
-				if (!entity->HasComponent<TransformComponent>()) {
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				if (!entity.HasComponent<TransformComponent>()) {
 					if (ImGui::MenuItem("Transform Component")) {
-						entity->AddComponent<TransformComponent>();
+						entity.AddComponent<TransformComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<MeshRendererComponent>()) {
+				if (!entity.HasComponent<MeshRendererComponent>()) {
 					if (ImGui::MenuItem("Mesh Renderer Component")) {
-						entity->AddComponent<MeshRendererComponent>();
-
-						//Renderer::m_SceneData.m_Scene->RegisterRenderedEntity(entity);
+						entity.AddComponent<MeshRendererComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<MeshComponent>()) {
+				if (!entity.HasComponent<MeshComponent>()) {
 					if (ImGui::MenuItem("Mesh Component")) {
-						if (!entity->HasComponent<MeshRendererComponent>()) {
-							entity->AddComponent<MeshRendererComponent>();
-
-							//Renderer::m_SceneData.m_Scene->RegisterRenderedEntity(entity);
+						if (!entity.HasComponent<MeshRendererComponent>()) {
+							entity.AddComponent<MeshRendererComponent>();
 						}
-						entity->AddComponent<MeshComponent>();
+						entity.AddComponent<MeshComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<TerrainComponent>()) {
+				if (!entity.HasComponent<TerrainComponent>()) {
 					if (ImGui::MenuItem("Terrain Component")) {
-						entity->AddComponent<TerrainComponent>();
+						entity.AddComponent<TerrainComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<MaterialComponent>()) {
+				if (!entity.HasComponent<MaterialComponent>()) {
 					if (ImGui::MenuItem("Material Component")) {
-						entity->AddComponent<MaterialComponent>();
-						entity->GetComponent<MaterialComponent>();
+						entity.AddComponent<MaterialComponent>();
+						entity.GetComponent<MaterialComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<ScriptComponent>()) {
+				if (!entity.HasComponent<ScriptComponent>()) {
 					if (ImGui::MenuItem("Script Component")) {
-						entity->AddComponent<ScriptComponent>();
+						entity.AddComponent<ScriptComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<CameraComponent>()) {
+				if (!entity.HasComponent<CameraComponent>()) {
 					if (ImGui::MenuItem("Camera Component")) {
-						entity->AddComponent<CameraComponent>().GetCamera().Init(&entity->GetComponent<TransformComponent>());
+						entity.AddComponent<CameraComponent>().GetCamera().Init(&entity.GetComponent<TransformComponent>());
 					}
 				}
 
-				if (!entity->HasComponent<LightComponent>()) {
+				if (!entity.HasComponent<LightComponent>()) {
 					if (ImGui::MenuItem("Directional Light")) {
-						entity->AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
+						entity.AddComponent<LightComponent>(LightComponent::LightType::DIRECTIONAL);
 					}
 				}
 
-				if (!entity->HasComponent<LightComponent>()) {
+				if (!entity.HasComponent<LightComponent>()) {
 					if (ImGui::MenuItem("Point Light Component")) {
-						entity->AddComponent<LightComponent>(LightComponent::LightType::POINT);
+						entity.AddComponent<LightComponent>(LightComponent::LightType::POINT);
 					}
 				}
 
-				if (!entity->HasComponent<RigidBodyComponent>()) {
+				if (!entity.HasComponent<RigidBodyComponent>()) {
 					if (ImGui::MenuItem("RigidBody Component")) {
-						entity->AddComponent<RigidBodyComponent>().Init();
+						entity.AddComponent<RigidBodyComponent>().Init();
 					}
 				}
 
-				if (!entity->HasComponent<BoxColliderComponent>()) {
+				if (!entity.HasComponent<BoxColliderComponent>()) {
 					if (ImGui::MenuItem("Box Collider Component")) {
-						entity->AddComponent<BoxColliderComponent>().Init();
+						entity.AddComponent<BoxColliderComponent>().Init();
 					}
 				}
 
-				if (!entity->HasComponent<MeshColliderComponent>()) {
+				if (!entity.HasComponent<MeshColliderComponent>()) {
 					if (ImGui::MenuItem("Mesh Collider Component")) {
-						entity->AddComponent<MeshColliderComponent>();
+						entity.AddComponent<MeshColliderComponent>();
 					}
 				}
 
-				if (!entity->HasComponent<CapsuleColliderComponent>()) {
+				if (!entity.HasComponent<CapsuleColliderComponent>()) {
 					if (ImGui::MenuItem("Capsule Collider Component")) {
-						entity->AddComponent<CapsuleColliderComponent>().Init();
+						entity.AddComponent<CapsuleColliderComponent>().Init();
 					}
 				}
 
-				if (!entity->HasComponent<CharacterControllerComponent>()) {
+				if (!entity.HasComponent<CharacterControllerComponent>()) {
 					if (ImGui::MenuItem("Character Controller Component")) {
-						entity->AddComponent<CharacterControllerComponent>().Init();
+						entity.AddComponent<CharacterControllerComponent>().Init();
 					}
 				}
 

@@ -54,9 +54,9 @@ namespace OpenGLEngine
 
 	void Editor::OnAttach()
 	{
-		InitImGuiStyle();
+		//InitImGuiStyle();
 
-		ScriptEngine::Init();
+		//ScriptEngine::Init();
 		PhysicEngine::Init();
 		PerlinManager::Init();
 		Renderer::Init();
@@ -64,10 +64,10 @@ namespace OpenGLEngine
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
 
-		ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
-		ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\" + m_Specification.ProjectName + ".dll");
+		//ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\OpenGLEngine-ScriptCore.dll");
+		//ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\" + m_Specification.ProjectName + ".dll");
 
-		ScriptEngine::ReloadAssembly();
+		//ScriptEngine::ReloadAssembly();
 
 		//////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ namespace OpenGLEngine
 
 	void Editor::OnDetach()
 	{
-		ScriptEngine::Shutdown();
+		//ScriptEngine::Shutdown();
 		PhysicEngine::Shutdown();
 	}
 
@@ -201,7 +201,6 @@ namespace OpenGLEngine
 				ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, nullptr, &dock_main_id);
 				ImGuiID dock_id_inspector = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Down, 0.20f, nullptr, &dock_id_right);
 
-
 				ImGui::DockBuilderDockWindow("Viewport", dock_main_id);
 				ImGui::DockBuilderDockWindow("Editor", dock_main_id);
 				ImGui::DockBuilderDockWindow("Content Browser", dock_id_right);
@@ -248,7 +247,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Build"))
 				{
-					ScriptEngine::ReloadAssembly();
+					//ScriptEngine::ReloadAssembly();
 				}
 				ImGui::EndMenu();
 			}
@@ -257,13 +256,13 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Start scene"))
 				{
-					m_SceneHierarchy.m_SelectedEntity = nullptr;
+					//m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->SaveScene();
 					m_SceneManager->getActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
-					m_SceneHierarchy.m_SelectedEntity = nullptr;
+					//m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->getActiveScene().OnRuntimeStop();
 					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
 
@@ -275,7 +274,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					Entity* temp = m_SceneManager->getActiveScene().CreateEntity("GameObject");
+					Entity temp = m_SceneManager->getActiveScene().CreateEntity("GameObject");
 				}
 
 				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddCube();
@@ -305,18 +304,12 @@ namespace OpenGLEngine
 		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
 		m_ContentBrowserPanel.OnImGuiRender();
 
-		/*ImGui::Begin("World infos:");
-		{
-			
-		}
-		ImGui::End();*/
-
-		/*ImGui::Begin("Test");
-		{
-			if (m_TextureTest)
-				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
-		}
-		ImGui::End();*/
+		//ImGui::Begin("Test");
+		//{
+		//	if (m_TextureTest)
+		//		ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
+		//}
+		//ImGui::End();
 
 		if (m_optionMenu)
 		{
@@ -344,7 +337,7 @@ namespace OpenGLEngine
 
 		if (e.GetMouseButton() == Mouse::Button0)
 		{
-			m_SceneHierarchy.m_SelectedEntity = m_EditorViewport.GetHoveredEntity();
+			//m_SceneHierarchy.m_SelectedEntity = m_EditorViewport.GetHoveredEntity();
 			return true;
 		}
 

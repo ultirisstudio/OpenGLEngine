@@ -6,7 +6,7 @@
 #include <OpenGLEngine/Tools/Chronometer.h>
 #include <OpenGLEngine/Scene/Skybox.h>
 
-#include <entt/entt.hpp>
+#include <entt.hpp>
 
 namespace OpenGLEngine
 {
@@ -43,7 +43,7 @@ namespace OpenGLEngine
 
 		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
 
-		EntityMap* getEntities();
+		//EntityMap* getEntities();
 
 		int m_LightsCount;
 
@@ -79,6 +79,5 @@ namespace OpenGLEngine
 
 		friend class Entity;
 		friend class SceneSerializer;
-	public:
 	};
 }

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Component.h"
-
 #include <string>
 #include <vector>
-#include <entt/entt.hpp>
+#include <entt.hpp>
 
 #include <OpenGLEngine/Scene/Scene.h>
 
@@ -24,8 +22,8 @@ namespace OpenGLEngine
 		T& AddComponent(Args&&... args)
 		{
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			component.e = m_EntityHandle;
-			component.s = m_Scene;
+			component.entt_entity = m_EntityHandle;
+			component.scene = m_Scene;
 			return component;
 		}
 
@@ -61,7 +59,7 @@ namespace OpenGLEngine
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
 		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
-		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+		std::string GetName() { return GetComponent<TagComponent>().Tag; }
 
 		bool operator==(const Entity& other) const
 		{

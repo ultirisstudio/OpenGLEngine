@@ -30,7 +30,7 @@ namespace OpenGLEngine
 
     void MeshColliderComponent::GenerateConvexMesh()
     {
-        Entity entity{ e, s };
+        Entity entity{entt_entity, scene};
         auto& mc = entity.GetComponent<MeshComponent>();
 
         const int nbVertices = mc.GetMesh().GetVerticesCount();
@@ -61,13 +61,6 @@ namespace OpenGLEngine
         reactphysics3d::PolygonVertexArray polygonVertexArray(nbVertices, vertices, 3 * sizeof(float), indices, 3 * sizeof(int), nbFaces, faces,
             reactphysics3d::PolygonVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
             reactphysics3d::PolygonVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-
-        /*
-        PolygonVertexArray(uint32 nbVertices, const void* verticesStart, uint32 verticesStride,
-                           const void* indexesStart, uint32 indexesStride,
-                           uint32 nbFaces, PolygonFace* facesStart,
-                           VertexDataType vertexDataType, IndexDataType indexDataType);
-                           */
 
         // Compute the convex mesh from the array of vertices
         std::vector<rp3d::Message> messages;
@@ -112,7 +105,7 @@ namespace OpenGLEngine
 
     void MeshColliderComponent::GenerateConcaveMesh()
     {
-        Entity entity{ e, s };
+        Entity entity{entt_entity, scene};
         auto& mc = entity.GetComponent<MeshComponent>();
 
         const int nbVertices = mc.GetMesh().GetVerticesCount();
@@ -154,7 +147,7 @@ namespace OpenGLEngine
                 reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);*/
         
 
-        std::vector<rp3d::Message> messages;
+        /*std::vector<rp3d::Message> messages;
         reactphysics3d::TriangleMesh* triangleMesh = PhysicEngine::GetPhysicsCommon()->createTriangleMesh(*triangleVertexArray, messages);
 
         if (messages.size() > 0) {
@@ -189,6 +182,6 @@ namespace OpenGLEngine
         {
             auto& rb = entity.GetComponent<RigidBodyComponent>();
             rb.GetRigidBody()->addCollider(m_concaveMeshShape, reactphysics3d::Transform::identity());
-        }
+        }*/
     }
 }

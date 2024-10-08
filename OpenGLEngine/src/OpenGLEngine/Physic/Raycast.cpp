@@ -14,7 +14,7 @@ namespace OpenGLEngine
 	RaycastInfo Raycast::RaycastAll(Scene* scene, const glm::vec3& origin, const glm::vec3& direction, float maxDistance)
 	{
 		RaycastInfo result;
-		result.Distance = maxDistance;
+		/*result.Distance = maxDistance;
 
 		Entity hitEntity = entt::null;
 		float distance = maxDistance;
@@ -74,7 +74,7 @@ namespace OpenGLEngine
 			result.HitPoint = glm::vec3(0.0f);
 			result.Normal = glm::vec3(0.0f);
 		}
-
+		*/
 		return result;
 	}
 }

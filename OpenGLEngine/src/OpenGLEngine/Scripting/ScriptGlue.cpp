@@ -1,7 +1,7 @@
 #include "depch.h"
 #include "ScriptGlue.h"
 
-#include <mono/metadata/object.h>
+/*#include <mono/metadata/object.h>
 
 #include <glm/glm.hpp>
 
@@ -31,11 +31,11 @@
 #include <OpenGLEngine/Core/KeyCodes.h>
 #include <OpenGLEngine/Core/Input.h>
 #include <mono/metadata/reflection.h>
-#include <mono/metadata/appdomain.h>
+#include <mono/metadata/appdomain.h>*/
 
 namespace OpenGLEngine
 {
-	namespace Utils {
+	/*namespace Utils {
 
 		std::string MonoStringToString(MonoString* string)
 		{
@@ -173,15 +173,6 @@ namespace OpenGLEngine
 
 		glm::vec3 rotation = entity.GetComponent<TransformComponent>().Rotation;
 
-		/*glm::vec3 front;
-		front.x = cos(rotation.y) * cos(rotation.x);
-		front.y = sin(rotation.x);
-		front.z = sin(rotation.y) * cos(rotation.x);
-		front = glm::normalize(front);
-		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
-		glm::vec3 up = glm::normalize(glm::cross(right, front));
-		glm::vec3 forward = glm::normalize(glm::cross(right, up));*/
-
 		glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
 		front.y = sin(rotation.x);
@@ -199,13 +190,6 @@ namespace OpenGLEngine
 		Scene* scene = ScriptEngine::GetSceneContext();
 		Entity entity = scene->GetEntityByUUID(entityID);
 		glm::vec3 rotation = entity.GetComponent<TransformComponent>().Rotation;
-
-		/*glm::vec3 front;
-		front.x = cos(rotation.y) * cos(rotation.x);
-		front.y = sin(rotation.x);
-		front.z = sin(rotation.y) * cos(rotation.x);
-		front = glm::normalize(front);
-		glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));*/
 
 		glm::vec3 front;
 		front.x = cos(rotation.y) * cos(rotation.x);
@@ -431,5 +415,5 @@ namespace OpenGLEngine
 		ADD_INTERNAL_CALL(Input_GetMouseY);
 
 		ADD_INTERNAL_CALL(Physics_RaycastAll);
-	}
+	}*/
 }

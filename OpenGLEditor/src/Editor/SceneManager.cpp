@@ -6,6 +6,8 @@
 
 #include "SceneSerializer.h"
 
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
 #include <OpenGLEngine/Entity/Components/MaterialComponent.h>
@@ -44,7 +46,7 @@ namespace OpenGLEngine
 
 	void SceneManager::AddUVSphere()
 	{
-		Entity* temp = m_Scene->CreateEntity("UV Sphere");
+		Entity temp = m_Scene->CreateEntity("UV Sphere");
 
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
@@ -91,9 +93,9 @@ namespace OpenGLEngine
 			oddRow = !oddRow;
 		}
 
-		temp->AddComponent<MaterialComponent>();
-		temp->AddComponent<MeshRendererComponent>();
-		temp->AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
+		temp.AddComponent<MaterialComponent>();
+		temp.AddComponent<MeshRendererComponent>();
+		temp.AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
 	}
 
 	void SceneManager::AddPlane()
@@ -132,9 +134,10 @@ namespace OpenGLEngine
 		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
 
-		for (Entity* entity : m_Scene->View<CameraComponent>())
+		for (auto e : m_Scene->GetAllEntitiesWith<CameraComponent>())
 		{
-			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
+			Entity entity{ e, m_Scene.get()};
+			m_Scene->setActiveCamera(&entity.GetComponent<CameraComponent>().GetCamera());
 		}
 	}
 
@@ -149,10 +152,10 @@ namespace OpenGLEngine
 		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.Deserialize(filePath);
 
-		for (Entity* entity : m_Scene->View<CameraComponent>())
+		/*for (Entity* entity : m_Scene->View<CameraComponent>())
 		{
 			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}
+		}*/
 	}
 
 	void SceneManager::ReloadScene(std::string filePath)
@@ -164,10 +167,10 @@ namespace OpenGLEngine
 		SceneSerializer serializer(*m_Scene, m_AssetPath);
 		serializer.DeserializeRuntime(filePath);
 
-		for (Entity* entity : m_Scene->View<CameraComponent>())
+		/*for (Entity* entity : m_Scene->View<CameraComponent>())
 		{
 			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}
+		}*/
 	}
 
 	void SceneManager::createNewScene()

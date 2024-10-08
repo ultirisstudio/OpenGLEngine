@@ -2,11 +2,10 @@
 
 namespace OpenGLEngine
 {
-	class ScriptGlue
+	/*class ScriptGlue
 	{
 	public:
 		static void RegisterComponents();
 		static void RegisterFunctions();
-	};
-
+	};*/
 }

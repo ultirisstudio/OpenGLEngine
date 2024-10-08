@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void RigidBodyComponentPanel::Render(Entity* entity)
+	void RigidBodyComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<RigidBodyComponent>())
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
-			auto& rbc = entity->GetComponent<RigidBodyComponent>();
+			auto& rbc = entity.GetComponent<RigidBodyComponent>();
 
 			if (ImGui::TreeNodeEx("RigidBody", ImGuiTreeNodeFlags_DefaultOpen, "RigidBody"))
 			{
@@ -19,7 +19,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<RigidBodyComponent>();
+						entity.RemoveComponent<RigidBodyComponent>();
 					}
 					ImGui::EndPopup();
 				}

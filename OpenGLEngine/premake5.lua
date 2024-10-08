@@ -38,6 +38,7 @@ project "OpenGLEngine"
 	
 	defines
 	{
+		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE"
 	}
 
@@ -50,13 +51,10 @@ project "OpenGLEngine"
 		"ImGuizmo",
 		"reactphysics3d",
 		"mbedtls",
-		"entt",
 		"opengl32.lib",
 
 		"%{Library.mono}"
 	}
-	
-	optimize "Speed"
 
 	filter "system:windows"
 		systemversion "latest"

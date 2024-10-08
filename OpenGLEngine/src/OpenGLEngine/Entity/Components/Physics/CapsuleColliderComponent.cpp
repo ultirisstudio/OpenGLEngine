@@ -16,7 +16,7 @@ namespace OpenGLEngine
 
 	CapsuleColliderComponent::~CapsuleColliderComponent()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			auto& rb = entity.GetComponent<RigidBodyComponent>();
@@ -26,7 +26,7 @@ namespace OpenGLEngine
 
 	void CapsuleColliderComponent::Init()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		auto& tc = entity.GetComponent<TransformComponent>();
 		glm::vec3 entityScale = tc.Scale;
 
@@ -48,7 +48,7 @@ namespace OpenGLEngine
 
 	void CapsuleColliderComponent::UpdateColliderSize()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			auto& rb = entity.GetComponent<RigidBodyComponent>();

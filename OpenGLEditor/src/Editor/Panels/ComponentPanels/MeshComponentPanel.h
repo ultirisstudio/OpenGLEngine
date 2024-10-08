@@ -1,14 +1,14 @@
 #pragma once
 
-class Entity;
-
 namespace OpenGLEngine
 {
+	class Entity;
+
 	class MeshComponentPanel
 	{
 	public:
 		MeshComponentPanel() = default;
 		~MeshComponentPanel() = default;
-		void Render(Entity* entity);
+		void Render(Entity entity);
 	};
 }

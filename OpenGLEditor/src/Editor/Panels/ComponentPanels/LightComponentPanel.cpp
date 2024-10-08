@@ -8,11 +8,11 @@
 
 namespace OpenGLEngine
 {
-	void LightComponentPanel::Render(Entity* entity)
+	void LightComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<LightComponent>())
+		if (entity.HasComponent<LightComponent>())
 		{
-			auto& lc = entity->GetComponent<LightComponent>();
+			auto& lc = entity.GetComponent<LightComponent>();
 
 			if (ImGui::TreeNodeEx("Light", ImGuiTreeNodeFlags_DefaultOpen, "Light"))
 			{
@@ -20,7 +20,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<LightComponent>();
+						entity.RemoveComponent<LightComponent>();
 					}
 					ImGui::EndPopup();
 				}

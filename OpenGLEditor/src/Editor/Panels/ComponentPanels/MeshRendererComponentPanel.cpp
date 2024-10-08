@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void MeshRendererComponentPanel::Render(Entity* entity)
+	void MeshRendererComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<MeshRendererComponent>())
+		if (entity.HasComponent<MeshRendererComponent>())
 		{
-			auto& mrc = entity->GetComponent<MeshRendererComponent>();
+			auto& mrc = entity.GetComponent<MeshRendererComponent>();
 
 			if (ImGui::TreeNodeEx("Mesh Renderer", ImGuiTreeNodeFlags_DefaultOpen, "Mesh Renderer"))
 			{

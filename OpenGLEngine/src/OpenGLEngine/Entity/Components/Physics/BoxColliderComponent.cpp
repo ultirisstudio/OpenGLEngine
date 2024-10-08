@@ -16,7 +16,7 @@ namespace OpenGLEngine
 
 	BoxColliderComponent::~BoxColliderComponent()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			auto& rb = entity.GetComponent<RigidBodyComponent>();
@@ -26,7 +26,7 @@ namespace OpenGLEngine
 
 	void BoxColliderComponent::Init()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		auto& tc = entity.GetComponent<TransformComponent>();
 		glm::vec3 entityScale = tc.Scale;
 
@@ -49,7 +49,7 @@ namespace OpenGLEngine
 
 	void BoxColliderComponent::UpdateColliderSize()
 	{
-		Entity entity{ e, s };
+		Entity entity{entt_entity, scene};
 		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			auto& rb = entity.GetComponent<RigidBodyComponent>();

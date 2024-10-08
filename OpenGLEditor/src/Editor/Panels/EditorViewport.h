@@ -22,7 +22,7 @@ namespace OpenGLEngine
 
 		void OnImGuiRender(EditorCamera& camera, SceneManager& sceneManager, SceneHierarchy& sceneHierarchy);
 
-		Entity* GetHoveredEntity() { return m_HoveredEntity; }
+		Entity GetHoveredEntity() { return m_HoveredEntity; }
 
 		inline bool const IsViewportFocused() const { return m_ViewportFocused; }
 		inline bool const IsViewportHovered() const { return m_ViewportHovered; }
@@ -35,7 +35,7 @@ namespace OpenGLEngine
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
 
-		Entity* m_HoveredEntity = nullptr;
+		Entity m_HoveredEntity = {};
 
 		int m_GizmoType = -1;
 	};

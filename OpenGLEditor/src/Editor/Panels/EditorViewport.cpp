@@ -7,6 +7,7 @@
 
 #include <OpenGLEngine/Core/Application.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
 #include <OpenGLEngine/Tools/Math.h>
 #include <OpenGLEngine/Core/Input.h>
 
@@ -128,7 +129,7 @@ namespace OpenGLEngine
 			glm::mat4 cameraProjection = camera.getProjectionMatrix();
 			glm::mat4 cameraView = camera.getViewMatrix();
 
-			auto& tc = sceneHierarchy.m_SelectedEntity->GetComponent<TransformComponent>();
+			auto& tc = sceneHierarchy.m_SelectedEntity.GetComponent<TransformComponent>();
 
 			glm::mat4 transform = tc.GetGlobalTransform();
 
@@ -147,17 +148,17 @@ namespace OpenGLEngine
 
 				glm::mat4 finalTransform = transform;
 
-				UUID parentID = sceneHierarchy.m_SelectedEntity->m_Parent;
+				UUID parentID = sceneHierarchy.m_SelectedEntity.GetComponent<HierarchyComponent>().m_Parent;
 				while (parentID != UUID::Null())
 				{
-					Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+					Entity parent = Renderer::m_SceneData.m_Scene->GetEntityByUUID(parentID);
 					if (parent)
 					{
-						glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetLocalTransform();
+						glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetLocalTransform();
 
 						finalTransform *= glm::inverse(parentTransform);
 
-						parentID = parent->m_Parent;
+						parentID = parent.GetComponent<HierarchyComponent>().m_Parent;
 					}
 				}
 
@@ -196,7 +197,7 @@ namespace OpenGLEngine
 
 				if (fileExtension == "scene")
 				{
-					sceneHierarchy.m_SelectedEntity = nullptr;
+					//sceneHierarchy.m_SelectedEntity = entt::null;
 					sceneManager.LoadScene(filePath);
 				}
 			}
@@ -207,7 +208,7 @@ namespace OpenGLEngine
 		ImGui::PopStyleVar();
 
 		ImGui::Begin("Editor infos");
-		//ImGui::Text(std::string(std::string("Hovered entity: ") + std::string(m_HoveredEntity ? m_HoveredEntity->GetName() : "none")).c_str());
+		ImGui::Text(std::string(std::string("Hovered entity: ") + std::string(m_HoveredEntity ? m_HoveredEntity.GetName() : "none")).c_str());
 		ImGui::End();
 
 		m_EditorFrameBuffer->Unbind();

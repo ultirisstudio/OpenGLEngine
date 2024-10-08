@@ -26,7 +26,7 @@ namespace OpenGLEngine
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 
 		std::vector<glm::mat4> transforms;
-		Entity entity{ e, s };
+		Entity entity{ entt_entity, scene };
 		UUID parentID = entity.GetComponent<HierarchyComponent>().m_Parent;
 
 		if (parentID == UUID::Null())
@@ -60,7 +60,7 @@ namespace OpenGLEngine
 
 			finalTransform *= transform;
 		}
-
+		
 		return finalTransform;
 	}
 

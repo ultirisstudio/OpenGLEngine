@@ -25,11 +25,11 @@ namespace OpenGLEngine
 		}
 	}
 
-	void TerrainComponentPanel::Render(Entity* entity)
+	void TerrainComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<TerrainComponent>())
+		if (entity.HasComponent<TerrainComponent>())
 		{
-			auto& tc = entity->GetComponent<TerrainComponent>();
+			auto& tc = entity.GetComponent<TerrainComponent>();
 
 			if (ImGui::TreeNodeEx("Terrain", ImGuiTreeNodeFlags_DefaultOpen, "Terrain"))
 			{
@@ -37,7 +37,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<TerrainComponent>();
+						entity.RemoveComponent<TerrainComponent>();
 					}
 					ImGui::EndPopup();
 				}

@@ -16,7 +16,7 @@
 
 #include <OpenGLEngine/Core/Input.h>
 
-#include <OpenGLEngine/Scripting/ScriptEngine.h>
+//#include <OpenGLEngine/Scripting/ScriptEngine.h>
 #include <OpenGLEngine/Physic/PhysicEngine.h>
 
 namespace OpenGLEngine
@@ -104,15 +104,15 @@ namespace OpenGLEngine
 
 	void Scene::UpdateRuntime(double deltaTime)
 	{
-		for (auto e : m_Registry.view<ScriptComponent>())
+		/*for (auto e : m_Registry.view<ScriptComponent>())
 		{
 			Entity entity = { e, this };
 			ScriptEngine::OnUpdateEntity(entity, deltaTime);
-		}
+		}*/
 
 		PhysicEngine::Update(deltaTime);
 
-		for (auto e : m_Registry.view<RigidBodyComponent>())
+		/*for (auto e : m_Registry.view<RigidBodyComponent>())
 		{
 			Entity entity = { e, this };
 			entity.GetComponent<RigidBodyComponent>().Update();
@@ -122,7 +122,7 @@ namespace OpenGLEngine
 		{
 			Entity entity = { e, this };
 			entity.GetComponent<CharacterControllerComponent>().Update();
-		}
+		}*/
 	}
 
 	void Scene::OnRuntimeStart()
@@ -135,20 +135,20 @@ namespace OpenGLEngine
 
 		m_OnRuntime = true;
 
-		ScriptEngine::OnRuntimeStart(this);
+		/*ScriptEngine::OnRuntimeStart(this);
 
 		for (auto e : m_Registry.view<ScriptComponent>())
 		{
 			Entity entity = { e, this };
 			ScriptEngine::OnCreateEntity(entity);
-		}
+		}*/
 	}
 
 	void Scene::OnRuntimeStop()
 	{
 		m_OnRuntime = false;
 
-		ScriptEngine::OnRuntimeStop();
+		//ScriptEngine::OnRuntimeStop();
 	}
 
 	void Scene::ResizeActiveCamera(float width, float height)
@@ -160,13 +160,13 @@ namespace OpenGLEngine
 		Renderer::SetViewport(0, 0, width, height);
 	}
 
-	EntityMap* Scene::getEntities()
+	/*EntityMap* Scene::getEntities()
 	{
 		return &m_EntityMap;
-	}
+	}*/
 
 	void Scene::ClearEntities()
 	{
-		m_EntityMap.clear();
+		//m_EntityMap.clear();
 	}
 }

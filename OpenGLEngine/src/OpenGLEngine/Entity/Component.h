@@ -1,6 +1,6 @@
 #pragma once
 
-#include <entt/entt.hpp>
+#include <entt.hpp>
 
 namespace OpenGLEngine
 {
@@ -9,8 +9,8 @@ namespace OpenGLEngine
 	class Component
 	{
 	public:
-		entt::entity e{ entt::null };
-		Scene* s;
+		entt::entity entt_entity{ entt::null };
+		Scene* scene;
 
 		Component() {}
 		virtual ~Component() {}

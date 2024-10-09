@@ -76,8 +76,6 @@ namespace OpenGLEngine
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			//Application::Get().GetWindow().SetTitle("OpenGLEditor - FPS: " + std::to_string(deltaTime));
-
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerManager)

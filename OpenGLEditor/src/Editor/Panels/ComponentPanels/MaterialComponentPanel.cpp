@@ -26,11 +26,11 @@ namespace OpenGLEngine
 		}
 	}
 
-	void MaterialComponentPanel::Render(Entity* entity)
+	void MaterialComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<MaterialComponent>())
+		if (entity.HasComponent<MaterialComponent>())
 		{
-			auto& mc = entity->GetComponent<MaterialComponent>();
+			auto& mc = entity.GetComponent<MaterialComponent>();
 
 			if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen, "Material"))
 			{
@@ -38,7 +38,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<MaterialComponent>();
+						entity.RemoveComponent<MaterialComponent>();
 					}
 					ImGui::EndPopup();
 				}

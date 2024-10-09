@@ -1,7 +1,7 @@
 #include "depch.h"
 #include "ScriptEngine.h"
 
-#include "ScriptGlue.h"
+/*#include "ScriptGlue.h"
 
 #include <fstream>
 
@@ -498,4 +498,4 @@ namespace OpenGLEngine
 		const ScriptField& field = it->second;
 		mono_field_set_value(m_Instance, field.ClassField, (void*)value);
 	}
-}
+}*/

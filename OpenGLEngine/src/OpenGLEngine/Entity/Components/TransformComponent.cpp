@@ -1,5 +1,6 @@
 #include "depch.h"
 #include "TransformComponent.h"
+#include "HierarchyComponent.h"
 
 #include <OpenGLEngine/Entity/Entity.h>
 #include <OpenGLEngine/Renderer/Renderer.h>
@@ -25,7 +26,8 @@ namespace OpenGLEngine
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 
 		std::vector<glm::mat4> transforms;
-		UUID parentID = entity->m_Parent;
+		Entity entity{ entt_entity, scene };
+		UUID parentID = entity.GetComponent<HierarchyComponent>().m_Parent;
 
 		if (parentID == UUID::Null())
 		{
@@ -35,14 +37,14 @@ namespace OpenGLEngine
 		{
 			while (parentID != UUID::Null())
 			{
-				Entity* parent = &Renderer::m_SceneData.m_Scene->getEntities()->find(parentID)->second;
+				Entity parent = Renderer::m_SceneData.m_Scene->GetEntityByUUID(parentID);
 				if (parent)
 				{
-					glm::mat4 parentTransform = parent->GetComponent<TransformComponent>().GetLocalTransform();
+					glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetLocalTransform();
 
 					transforms.push_back(parentTransform);
 
-					parentID = parent->m_Parent;
+					parentID = parent.GetComponent<HierarchyComponent>().m_Parent;
 				}
 			}
 
@@ -58,7 +60,7 @@ namespace OpenGLEngine
 
 			finalTransform *= transform;
 		}
-
+		
 		return finalTransform;
 	}
 

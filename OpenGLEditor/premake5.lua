@@ -25,7 +25,8 @@ project "OpenGLEditor"
 		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
-		"%{IncludeDir.zlib}"
+		"%{IncludeDir.zlib}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

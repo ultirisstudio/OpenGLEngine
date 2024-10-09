@@ -2,6 +2,10 @@
 #include "Raycast.h"
 
 #include <reactphysics3d/reactphysics3d.h>
+
+#include <OpenGLEngine/Renderer/Renderer.h>
+#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/Entity/Components/IDComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
@@ -10,25 +14,26 @@ namespace OpenGLEngine
 	RaycastInfo Raycast::RaycastAll(Scene* scene, const glm::vec3& origin, const glm::vec3& direction, float maxDistance)
 	{
 		RaycastInfo result;
-		result.Distance = maxDistance;
+		/*result.Distance = maxDistance;
 
-		Entity* hitEntity = nullptr;
+		Entity hitEntity = entt::null;
 		float distance = maxDistance;
 
 		reactphysics3d::RaycastInfo raycastInfo;
 
 		bool hit = false;
 
-		for (auto& entity : scene->GetEntityVector())
+		for (auto e : scene->GetAllEntitiesWith<IDComponent>())
 		{
 			reactphysics3d::RigidBody* rigidBody = nullptr;
-			if (entity->HasComponent<RigidBodyComponent>())
+			Entity entity{ e, Renderer::m_SceneData.m_Scene };
+			if (entity.HasComponent<RigidBodyComponent>())
 			{
-				rigidBody = entity->GetComponent<RigidBodyComponent>().GetRigidBody();
+				rigidBody = entity.GetComponent<RigidBodyComponent>().GetRigidBody();
 			}
-			if (entity->HasComponent<CharacterControllerComponent>())
+			if (entity.HasComponent<CharacterControllerComponent>())
 			{
-				rigidBody = entity->GetComponent<CharacterControllerComponent>().GetRigidBody();
+				rigidBody = entity.GetComponent<CharacterControllerComponent>().GetRigidBody();
 			}
 
 			if (rigidBody == nullptr)
@@ -57,7 +62,7 @@ namespace OpenGLEngine
 		{
 			result.Hit = true;
 			result.Distance = distance;
-			result.Entity = hitEntity->GetUUID();
+			result.Entity = hitEntity.GetUUID();
 			result.HitPoint = glm::vec3(raycastInfo.worldPoint.x, raycastInfo.worldPoint.y, raycastInfo.worldPoint.z);
 			result.Normal = glm::vec3(raycastInfo.worldNormal.x, raycastInfo.worldNormal.y, raycastInfo.worldNormal.z);
 		}
@@ -69,7 +74,7 @@ namespace OpenGLEngine
 			result.HitPoint = glm::vec3(0.0f);
 			result.Normal = glm::vec3(0.0f);
 		}
-
+		*/
 		return result;
 	}
 }

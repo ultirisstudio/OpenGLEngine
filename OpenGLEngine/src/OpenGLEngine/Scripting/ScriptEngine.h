@@ -1,6 +1,6 @@
 #pragma once
 
-#include <filesystem>
+/*#include <filesystem>
 #include <string>
 #include <memory>
 #include <map>
@@ -17,12 +17,12 @@ extern "C"
 	typedef struct _MonoImage MonoImage;
 	typedef struct _MonoDomain MonoDomain;
 	typedef struct _MonoClassField MonoClassField;
-}
-
-class Entity;
+}*/
 
 namespace OpenGLEngine
 {
+	/*class Entity;
+
 	enum class ScriptFieldType
 	{
 		Unknown = 0,
@@ -154,5 +154,5 @@ namespace OpenGLEngine
 
 		friend class ScriptClass;
 		friend class ScriptGlue;
-	};
+	};*/
 }

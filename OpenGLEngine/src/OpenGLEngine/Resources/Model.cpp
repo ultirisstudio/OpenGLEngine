@@ -40,9 +40,16 @@ namespace OpenGLEngine
 			vertex.position.y = mesh->mVertices[i].y;
 			vertex.position.z = mesh->mVertices[i].z;
 
-			vertex.normal.x = mesh->mNormals[i].x;
-			vertex.normal.y = mesh->mNormals[i].y;
-			vertex.normal.z = mesh->mNormals[i].z;
+			if (mesh->HasNormals())
+			{
+				vertex.normal.x = mesh->mNormals[i].x;
+				vertex.normal.y = mesh->mNormals[i].y;
+				vertex.normal.z = mesh->mNormals[i].z;
+			}
+			else
+			{
+				vertex.normal = glm::vec3(0.0f);
+			}
 
 			if (mesh->mTextureCoords[0])
 			{
@@ -71,9 +78,9 @@ namespace OpenGLEngine
 
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		unsigned int nbTexture = material->GetTextureCount(aiTextureType_DIFFUSE);
-
-		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+		unsigned int nbDiffuseTexture = material->GetTextureCount(aiTextureType_DIFFUSE);
+		//std::cout << "Diffuse Texture: " << nbDiffuseTexture << std::endl;
+		for (unsigned int i = 0; i < nbDiffuseTexture; i++)
 		{
 			aiString str;
 			material->GetTexture(aiTextureType_DIFFUSE, i, &str);
@@ -81,7 +88,9 @@ namespace OpenGLEngine
 			mat.AlbedoTexture = diffusePath.filename().string();
 		}
 
-		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_NORMALS); i++)
+		unsigned int nbNormalTexture = material->GetTextureCount(aiTextureType_NORMALS);
+		//std::cout << "Normal Texture: " << nbNormalTexture << std::endl;
+		for (unsigned int i = 0; i < nbNormalTexture; i++)
 		{
 			aiString str;
 			material->GetTexture(aiTextureType_NORMALS, i, &str);

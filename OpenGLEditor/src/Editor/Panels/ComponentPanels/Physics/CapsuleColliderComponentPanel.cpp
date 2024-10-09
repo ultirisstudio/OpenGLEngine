@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void CapsuleColliderComponentPanel::Render(Entity* entity)
+	void CapsuleColliderComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<CapsuleColliderComponent>())
+		if (entity.HasComponent<CapsuleColliderComponent>())
 		{
-			auto& cc = entity->GetComponent<CapsuleColliderComponent>();
+			auto& cc = entity.GetComponent<CapsuleColliderComponent>();
 
 			if (ImGui::TreeNodeEx("Capsule Collider", ImGuiTreeNodeFlags_DefaultOpen, "Capsule Collider"))
 			{
@@ -19,7 +19,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<CapsuleColliderComponent>();
+						entity.RemoveComponent<CapsuleColliderComponent>();
 					}
 					ImGui::EndPopup();
 				}

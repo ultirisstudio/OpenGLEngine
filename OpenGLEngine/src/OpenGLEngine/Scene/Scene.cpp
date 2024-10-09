@@ -1,5 +1,6 @@
 #include "depch.h"
 #include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/Entity/Entity.h>
 
 #include "OpenGLEngine/Core/Application.h"
 #include <GLFW/glfw3.h>
@@ -9,12 +10,13 @@
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/CameraComponent.h>
 #include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
 #include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 
-#include <OpenGLEngine/Scripting/ScriptEngine.h>
+//#include <OpenGLEngine/Scripting/ScriptEngine.h>
 #include <OpenGLEngine/Physic/PhysicEngine.h>
 
 namespace OpenGLEngine
@@ -49,71 +51,49 @@ namespace OpenGLEngine
 		m_Skybox = std::make_unique<Skybox>();
 	}
 
-	Entity* Scene::CreateEntity(const std::string& name)
+	Entity Scene::CreateEntity(const std::string& name)
 	{
 		return CreateEntityWithUUID(UUID(), name);
 	}
 
-	Entity* Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
-		m_EntityMap[uuid] = Entity(name);
-		Entity* entity = &m_EntityMap[uuid];
-		entity->AddComponent<IDComponent>(uuid);
-		entity->AddComponent<TransformComponent>();
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
+		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<HierarchyComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
+
+		m_EntityMap[uuid] = entity;
 
 		return entity;
 	}
 
-	void Scene::DestroyEntityByUUID(UUID uuid)
+	void Scene::DestroyEntity(Entity entity)
 	{
-		auto it = m_EntityMap.find(uuid);
-		if (it == m_EntityMap.end()) {
-			std::cerr << "WARNING: Entity with UUID " << uuid << " not found in scene." << std::endl;
-			return;
-		}
-		
-		Entity* entity = &it->second;
-
-		Entity* parent = GetEntityByUUID(entity->m_Parent);
-		if (parent != nullptr) {
-			auto childIt = std::find(parent->m_Children.begin(), parent->m_Children.end(), uuid);
-			if (childIt != parent->m_Children.end()) {
-				parent->m_Children.erase(childIt);
-			}
-		}
-
-		entity->Destroy();
-		m_EntityMap.erase(uuid);
+		m_EntityMap.erase(entity.GetUUID());
+		m_Registry.destroy(entity);
 	}
 
-	Entity* Scene::FindEntityByName(std::string name)
+	Entity Scene::FindEntityByName(std::string_view name)
 	{
-		for (auto it = m_EntityMap.begin(); it != m_EntityMap.end(); it++)
+		auto view = m_Registry.view<TagComponent>();
+		for (auto entity : view)
 		{
-			if (it->second.GetName() == name)
-				return &it->second;
+			const TagComponent& tc = view.get<TagComponent>(entity);
+			if (tc.Tag == name)
+				return Entity{ entity, this };
 		}
-
-		return nullptr;
+		return {};
 	}
 
-	Entity* Scene::GetEntityByUUID(UUID uuid)
+	Entity Scene::GetEntityByUUID(UUID uuid)
 	{
 		if (m_EntityMap.find(uuid) != m_EntityMap.end())
-			return &m_EntityMap.at(uuid);
+			return { m_EntityMap.at(uuid), this };
 
-		return nullptr;
-	}
-
-	std::vector<Entity*> Scene::GetEntityVector()
-	{
-		std::vector<Entity*> entities;
-		for (auto it = m_EntityMap.begin(); it != m_EntityMap.end(); it++)
-		{
-			entities.push_back(&it->second);
-		}
-
-		return entities;
+		return {};
 	}
 
 	void Scene::Update(double deltaTime)
@@ -124,22 +104,25 @@ namespace OpenGLEngine
 
 	void Scene::UpdateRuntime(double deltaTime)
 	{
-		for (auto entity : View<ScriptComponent>())
+		/*for (auto e : m_Registry.view<ScriptComponent>())
 		{
-			ScriptEngine::OnUpdateEntity(*entity, deltaTime);
-		}
+			Entity entity = { e, this };
+			ScriptEngine::OnUpdateEntity(entity, deltaTime);
+		}*/
 
 		PhysicEngine::Update(deltaTime);
 
-		for (Entity* entity : View<RigidBodyComponent>())
+		/*for (auto e : m_Registry.view<RigidBodyComponent>())
 		{
-			entity->GetComponent<RigidBodyComponent>().Update();
+			Entity entity = { e, this };
+			entity.GetComponent<RigidBodyComponent>().Update();
 		}
 
-		for (Entity* entity : View<CharacterControllerComponent>())
+		for (auto e : m_Registry.view<CharacterControllerComponent>())
 		{
-			entity->GetComponent<CharacterControllerComponent>().Update();
-		}
+			Entity entity = { e, this };
+			entity.GetComponent<CharacterControllerComponent>().Update();
+		}*/
 	}
 
 	void Scene::OnRuntimeStart()
@@ -152,19 +135,20 @@ namespace OpenGLEngine
 
 		m_OnRuntime = true;
 
-		ScriptEngine::OnRuntimeStart(this);
+		/*ScriptEngine::OnRuntimeStart(this);
 
-		for (auto entity : View<ScriptComponent>())
+		for (auto e : m_Registry.view<ScriptComponent>())
 		{
-			ScriptEngine::OnCreateEntity(*entity);
-		}
+			Entity entity = { e, this };
+			ScriptEngine::OnCreateEntity(entity);
+		}*/
 	}
 
 	void Scene::OnRuntimeStop()
 	{
 		m_OnRuntime = false;
 
-		ScriptEngine::OnRuntimeStop();
+		//ScriptEngine::OnRuntimeStop();
 	}
 
 	void Scene::ResizeActiveCamera(float width, float height)
@@ -176,13 +160,13 @@ namespace OpenGLEngine
 		Renderer::SetViewport(0, 0, width, height);
 	}
 
-	EntityMap* Scene::getEntities()
+	/*EntityMap* Scene::getEntities()
 	{
 		return &m_EntityMap;
-	}
+	}*/
 
 	void Scene::ClearEntities()
 	{
-		m_EntityMap.clear();
+		//m_EntityMap.clear();
 	}
 }

@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <unordered_map>
 
 namespace OpenGLEngine
 {
@@ -10,12 +11,15 @@ namespace OpenGLEngine
 	private:
 		unsigned int m_id;
 
-		unsigned int createShader(const std::string& source, unsigned int type);
+		//unsigned int createShader(const std::string& source, unsigned int type);
 		unsigned int ReadShader(const std::string& path, unsigned int type);
 
+		std::unordered_map<std::string, int> m_uniformLocations;
 	public:
 		Shader();
 		~Shader();
+
+		void bakeUniformLocations();
 
 		void LoadFromFile(const std::string& path_vs, const std::string& path_fs);
 		void LoadFromFile(const std::string& path_vs, const std::string& path_fs, const std::string& path_tcs, const std::string& path_tes);

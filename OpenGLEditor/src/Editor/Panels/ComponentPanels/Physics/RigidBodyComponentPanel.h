@@ -1,15 +1,15 @@
 #pragma once
 
-class Entity;
-
 namespace OpenGLEngine
 {
+	class Entity;
+
 	class RigidBodyComponentPanel
 	{
 	public:
 		RigidBodyComponentPanel() = default;
 		~RigidBodyComponentPanel() = default;
 
-		void Render(Entity* entity);
+		void Render(Entity entity);
 	};
 }

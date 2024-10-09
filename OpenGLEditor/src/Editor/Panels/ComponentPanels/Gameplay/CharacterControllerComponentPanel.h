@@ -1,15 +1,16 @@
 #pragma once
 
-class Entity;
 
 namespace OpenGLEngine
 {
+	class Entity;
+
 	class CharacterControllerComponentPanel
 	{
 	public:
 		CharacterControllerComponentPanel() = default;
 		~CharacterControllerComponentPanel() = default;
 
-		void Render(Entity* entity);
+		void Render(Entity entity);
 	};
 }

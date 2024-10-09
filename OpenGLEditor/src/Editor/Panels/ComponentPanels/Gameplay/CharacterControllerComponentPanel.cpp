@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void CharacterControllerComponentPanel::Render(Entity* entity)
+	void CharacterControllerComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<CharacterControllerComponent>())
+		if (entity.HasComponent<CharacterControllerComponent>())
 		{
-			auto& cc = entity->GetComponent<CharacterControllerComponent>();
+			auto& cc = entity.GetComponent<CharacterControllerComponent>();
 
 			if (ImGui::TreeNodeEx("Character controller", ImGuiTreeNodeFlags_DefaultOpen, "Character controller"))
 			{
@@ -19,7 +19,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<CharacterControllerComponent>();
+						entity.RemoveComponent<CharacterControllerComponent>();
 					}
 					ImGui::EndPopup();
 				}

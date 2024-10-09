@@ -1,15 +1,15 @@
 #pragma once
 
-class Entity;
-
 namespace OpenGLEngine
 {
+	class Entity;
+
 	class MeshColliderComponentPanel
 	{
 	public:
 		MeshColliderComponentPanel() = default;
 		~MeshColliderComponentPanel() = default;
 
-		void Render(Entity* entity);
+		void Render(Entity entity);
 	};
 }

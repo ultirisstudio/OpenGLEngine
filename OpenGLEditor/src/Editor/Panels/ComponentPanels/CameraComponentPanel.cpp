@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void CameraComponentPanel::Render(Entity* entity, SceneManager& sceneManager)
+	void CameraComponentPanel::Render(Entity entity, SceneManager& sceneManager)
 	{
-		if (entity->HasComponent<CameraComponent>())
+		if (entity.HasComponent<CameraComponent>())
 		{
-			auto& cc = entity->GetComponent<CameraComponent>();
+			auto& cc = entity.GetComponent<CameraComponent>();
 
 			if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
 			{
@@ -38,7 +38,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<CameraComponent>();
+						entity.RemoveComponent<CameraComponent>();
 					}
 					ImGui::EndPopup();
 				}

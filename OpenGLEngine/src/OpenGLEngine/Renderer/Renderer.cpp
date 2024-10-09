@@ -19,6 +19,8 @@
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Mesh.h>
 
+#include <OpenGLEngine/Entity/Components/IDComponent.h>
+#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
 #include <OpenGLEngine/Entity/Components/TransformComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
 #include <OpenGLEngine/Entity/Components/MeshComponent.h>
@@ -155,20 +157,21 @@ namespace OpenGLEngine {
 		//int totalEntity = 0;
 		//int entityDraw = 0;
 
-		for (auto& entity : *m_SceneData.m_Scene->getEntities())
+		for (auto e : m_SceneData.m_Scene->GetAllEntitiesWith<IDComponent>())
 		{
-			m_SceneData.m_Shader.setUniform("uEntity", entity.second.GetUUID());
+			Entity entity{ e, m_SceneData.m_Scene };
+			m_SceneData.m_Shader.setUniform("uEntity", entity.GetUUID());
 
 			int nat = 3;
 
-			glm::mat4 transform = entity.second.GetComponent<TransformComponent>().GetGlobalTransform();
+			glm::mat4 transform = entity.GetComponent<TransformComponent>().GetGlobalTransform();
 
-			if (entity.second.HasComponent<LightComponent>())
+			if (entity.HasComponent<LightComponent>())
 			{
-				auto& lc = entity.second.GetComponent<LightComponent>();
+				auto& lc = entity.GetComponent<LightComponent>();
 				if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 				{
-					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].direction", entity.second.GetComponent<TransformComponent>().Rotation);
+					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].direction", entity.GetComponent<TransformComponent>().Rotation);
 					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].color", lc.dir_color);
 					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].power", lc.dir_power);
 
@@ -176,7 +179,7 @@ namespace OpenGLEngine {
 				}
 				else if (lc.lightType == LightComponent::LightType::POINT)
 				{
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity.second.GetComponent<TransformComponent>().Position);
+					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity.GetComponent<TransformComponent>().Position);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].attenuation", lc.point_attenuation);
 					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].power", lc.point_power);
@@ -185,24 +188,24 @@ namespace OpenGLEngine {
 				}
 			}
 
-			if (entity.second.HasComponent<MeshRendererComponent>() && entity.second.HasComponent<MeshComponent>() && entity.second.GetComponent<MeshComponent>().HasMesh())
+			if (entity.HasComponent<MeshRendererComponent>() && entity.HasComponent<MeshComponent>() && entity.GetComponent<MeshComponent>().HasMesh())
 			{
 				//totalEntity++;
 
-				if (!entity.second.GetComponent<MeshRendererComponent>().m_Rendered)
+				if (!entity.GetComponent<MeshRendererComponent>().m_Rendered)
 					continue;
 
 				// Calculate if object is on the frustum
 				Math::Frustum frustum = Math::CalculateFrustum(camera.getProjectionMatrix() * camera.getViewMatrix());
 
-				if (!entity.second.GetComponent<MeshComponent>().GetMesh().IsVisible(frustum, transform))
+				if (!entity.GetComponent<MeshComponent>().GetMesh().IsVisible(frustum, transform))
 					continue;
 
 				//entityDraw++;
 
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-				Material& material = entity.second.GetComponent<MaterialComponent>().GetMaterial();
+				Material& material = entity.GetComponent<MaterialComponent>().GetMaterial();
 
 				m_SceneData.m_Shader.setUniform("uModel", transform);
 				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
@@ -276,37 +279,37 @@ namespace OpenGLEngine {
 				m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
 				nat++;
 
-				entity.second.GetComponent<MeshComponent>().GetMesh().draw();
+				entity.GetComponent<MeshComponent>().GetMesh().draw();
 
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			if (entity.second.HasComponent<TerrainComponent>() && entity.second.GetComponent<TerrainComponent>().IsGenerated())
+			if (entity.HasComponent<TerrainComponent>() && entity.GetComponent<TerrainComponent>().IsGenerated())
 			{
-				if (entity.second.GetComponent<TerrainComponent>().m_PolygonMode)
+				if (entity.GetComponent<TerrainComponent>().m_PolygonMode)
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-				entity.second.GetComponent<TerrainComponent>().GetShader().use();
+				entity.GetComponent<TerrainComponent>().GetShader().use();
 
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("projection", projectionMatrix);
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
 
 				glActiveTexture(GL_TEXTURE0 + nat);
-				entity.second.GetComponent<TerrainComponent>().GetHeightMapTexture().Bind();
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
+				entity.GetComponent<TerrainComponent>().GetHeightMapTexture().Bind();
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
 				nat++;
 
 				glActiveTexture(GL_TEXTURE0 + nat);
-				if (entity.second.GetComponent<MaterialComponent>().GetMaterial().HasTexture(TextureType::Albedo))
-					entity.second.GetComponent<MaterialComponent>().GetMaterial().GetTexture(TextureType::Albedo)->Bind();
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
+				if (entity.GetComponent<MaterialComponent>().GetMaterial().HasTexture(TextureType::Albedo))
+					entity.GetComponent<MaterialComponent>().GetMaterial().GetTexture(TextureType::Albedo)->Bind();
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
 				nat++;
 
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("uTextureScale", entity.second.GetComponent<TerrainComponent>().textureScale);
-				entity.second.GetComponent<TerrainComponent>().GetShader().setUniform("heightMult", entity.second.GetComponent<TerrainComponent>().heightMult);
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("uTextureScale", entity.GetComponent<TerrainComponent>().textureScale);
+				entity.GetComponent<TerrainComponent>().GetShader().setUniform("heightMult", entity.GetComponent<TerrainComponent>().heightMult);
 
-				entity.second.GetComponent<TerrainComponent>().Draw();
+				entity.GetComponent<TerrainComponent>().Draw();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -367,13 +370,13 @@ namespace OpenGLEngine {
 
 		const std::string m_FolderPath = path.substr(0, slash);
 
-		Entity* entity = Renderer::GetScene()->CreateEntity(m_FileName);
+		Entity entity = Renderer::GetScene()->CreateEntity(m_FileName);
 
 		for (auto& [name, mesh] : model->GetMeshes())
 		{
-			Entity* child = Renderer::GetScene()->CreateEntity(name);
-			child->AddComponent<MeshRendererComponent>();
-			auto& mc = child->AddComponent<MeshComponent>(name, mesh, path);
+			Entity child = Renderer::GetScene()->CreateEntity(name);
+			child.AddComponent<MeshRendererComponent>();
+			auto& mc = child.AddComponent<MeshComponent>(name, mesh, path);
 
 			MaterialSpecification material = mc.GetMesh().GetMaterial();
 
@@ -405,9 +408,9 @@ namespace OpenGLEngine {
 				file.close();
 			}			
 
-			child->AddComponent<MaterialComponent>(material);
+			child.AddComponent<MaterialComponent>(material);
 
-			entity->AddChild(child->GetUUID());
+			entity.GetComponent<HierarchyComponent>().AddChild(entity.GetUUID(), child.GetUUID());
 		}
 	}
 

@@ -32,7 +32,8 @@ namespace OpenGLEngine
 
 	void RigidBodyComponent::Init()
 	{
-		auto& tc = Component::entity->GetComponent<TransformComponent>();
+		Entity entity{ entt_entity, scene};
+		auto& tc = entity.GetComponent<TransformComponent>();
 		glm::vec3 entityPosition = tc.Position;
 		glm::vec3 entityRotation = tc.Rotation;
 		glm::vec3 entityScale = tc.Scale;
@@ -52,7 +53,8 @@ namespace OpenGLEngine
 
 	void RigidBodyComponent::Update()
 	{
-		auto& tc = Component::entity->GetComponent<TransformComponent>();
+		Entity entity{ entt_entity, scene };
+		auto& tc = entity.GetComponent<TransformComponent>();
 
 		const reactphysics3d::Transform& transform = rigidbody->getTransform();
 

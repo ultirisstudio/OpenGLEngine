@@ -1,15 +1,15 @@
 #pragma once
 
-class Entity;
-
 namespace OpenGLEngine
 {
+	class Entity;
+
 	class ScriptComponentPanel
 	{
 	public:
 		ScriptComponentPanel() = default;
 		~ScriptComponentPanel() = default;
 
-		void Render(Entity* entity);
+		void Render(Entity entity);
 	};
 }

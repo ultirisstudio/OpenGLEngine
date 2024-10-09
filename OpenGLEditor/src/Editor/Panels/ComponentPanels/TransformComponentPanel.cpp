@@ -8,11 +8,11 @@
 
 namespace OpenGLEngine
 {
-	void TransformComponentPanel::Render(Entity* entity)
+	void TransformComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<TransformComponent>())
+		if (entity.HasComponent<TransformComponent>())
 		{
-			auto& tc = entity->GetComponent<TransformComponent>();
+			auto& tc = entity.GetComponent<TransformComponent>();
 
 			if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
 			{

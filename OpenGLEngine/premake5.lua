@@ -32,11 +32,13 @@ project "OpenGLEngine"
 		"%{IncludeDir.mono}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.reactphysics3d}",
-		"%{IncludeDir.mbedtls}"
+		"%{IncludeDir.mbedtls}",
+		"%{IncludeDir.entt}"
 	}
 	
 	defines
 	{
+		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE"
 	}
 
@@ -53,8 +55,6 @@ project "OpenGLEngine"
 
 		"%{Library.mono}"
 	}
-	
-	optimize "Speed"
 
 	filter "system:windows"
 		systemversion "latest"

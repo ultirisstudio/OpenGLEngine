@@ -7,11 +7,11 @@
 
 namespace OpenGLEngine
 {
-	void MeshColliderComponentPanel::Render(Entity* entity)
+	void MeshColliderComponentPanel::Render(Entity entity)
 	{
-		if (entity->HasComponent<MeshColliderComponent>())
+		if (entity.HasComponent<MeshColliderComponent>())
 		{
-			auto& cc = entity->GetComponent<MeshColliderComponent>();
+			auto& cc = entity.GetComponent<MeshColliderComponent>();
 
 			if (ImGui::TreeNodeEx("Mesh Collider", ImGuiTreeNodeFlags_DefaultOpen, "Mesh Collider"))
 			{
@@ -19,7 +19,7 @@ namespace OpenGLEngine
 				{
 					if (ImGui::MenuItem("Delete Component"))
 					{
-						entity->RemoveComponent<MeshColliderComponent>();
+						entity.RemoveComponent<MeshColliderComponent>();
 					}
 					ImGui::EndPopup();
 				}

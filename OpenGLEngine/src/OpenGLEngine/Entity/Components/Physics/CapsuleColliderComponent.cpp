@@ -16,23 +16,25 @@ namespace OpenGLEngine
 
 	CapsuleColliderComponent::~CapsuleColliderComponent()
 	{
-		if (entity->HasComponent<RigidBodyComponent>())
+		Entity entity{entt_entity, scene};
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
-			auto& rb = entity->GetComponent<RigidBodyComponent>();
+			auto& rb = entity.GetComponent<RigidBodyComponent>();
 			rb.GetRigidBody()->removeCollider(m_Collider);
 		}
 	}
 
 	void CapsuleColliderComponent::Init()
 	{
-		auto& tc = Component::entity->GetComponent<TransformComponent>();
+		Entity entity{entt_entity, scene};
+		auto& tc = entity.GetComponent<TransformComponent>();
 		glm::vec3 entityScale = tc.Scale;
 
 		reactphysics3d::CapsuleShape* capsuleShape = PhysicEngine::GetPhysicsCommon()->createCapsuleShape(m_Radius, m_Height);
-
-		if (entity->HasComponent<RigidBodyComponent>())
+		
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
-			auto& rb = entity->GetComponent<RigidBodyComponent>();
+			auto& rb = entity.GetComponent<RigidBodyComponent>();
 			m_Collider = rb.GetRigidBody()->addCollider(capsuleShape, reactphysics3d::Transform::identity());
 		}
 	}
@@ -46,9 +48,10 @@ namespace OpenGLEngine
 
 	void CapsuleColliderComponent::UpdateColliderSize()
 	{
-		if (entity->HasComponent<RigidBodyComponent>())
+		Entity entity{entt_entity, scene};
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
-			auto& rb = entity->GetComponent<RigidBodyComponent>();
+			auto& rb = entity.GetComponent<RigidBodyComponent>();
 			rb.GetRigidBody()->removeCollider(m_Collider);
 
 			reactphysics3d::CapsuleShape* capsuleShape = PhysicEngine::GetPhysicsCommon()->createCapsuleShape(m_Radius, m_Height);

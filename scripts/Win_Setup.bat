@@ -12,8 +12,8 @@ tar -xf premake-5.0.0-beta2-windows.zip
 
 cd ../
 
-xcopy /s temp\premake5.exe ..\vendor\bin\premake
-xcopy /s temp\premake5.exe ..\OpenGLEditor\premake
+xcopy /s temp\premake5.exe ..\vendor\bin\premake\
+xcopy /s temp\premake5.exe ..\OpenGLEditor\premake\
 
 rmdir /s /q temp\
 

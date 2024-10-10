@@ -33,7 +33,9 @@ project "OpenGLEngine"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.lua}",
+		"%{IncludeDir.sol}"
 	}
 	
 	defines
@@ -51,6 +53,8 @@ project "OpenGLEngine"
 		"ImGuizmo",
 		"reactphysics3d",
 		"mbedtls",
+		"lua",
+		"sol",
 		"opengl32.lib",
 
 		"%{Library.mono}"

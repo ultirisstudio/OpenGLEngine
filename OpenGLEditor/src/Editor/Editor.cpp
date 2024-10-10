@@ -12,6 +12,7 @@
 
 #include "OpenGLEngine/Core/MouseCodes.h"
 #include "OpenGLEngine/Scripting/ScriptEngine.h"
+#include "OpenGLEngine/Scripting/LuaScriptEngine.h"
 #include "OpenGLEngine/Physic/PhysicEngine.h"
 
 #include "OpenGLEngine/Perlin/PerlinManager.h"
@@ -68,6 +69,36 @@ namespace OpenGLEngine
 		//ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\" + m_Specification.ProjectName + ".dll");
 
 		//ScriptEngine::ReloadAssembly();
+
+		auto lua = std::make_shared<sol::state>();
+
+		if (!lua)
+		{
+			std::cerr << "Failed to create the lua state !" << std::endl;
+		}
+
+		lua->open_libraries(sol::lib::base, sol::lib::math, sol::lib::os, sol::lib::table, sol::lib::io, sol::lib::string);
+
+		if (!m_SceneManager->getActiveScene().AddToContext<std::shared_ptr<sol::state>>(lua))
+		{
+			std::cerr << "Failed to add the sol::state to the registry context !" << std::endl;
+		}
+
+		auto scriptSystem = std::make_shared<LuaScriptEngine>(&m_SceneManager->getActiveScene());
+		if (!scriptSystem)
+		{
+			std::cerr << "Failed to create script system !" << std::endl;
+		}
+
+		if (!scriptSystem->loadMainScript(*lua))
+		{
+			std::cerr << "Failed to load the main script lua !" << std::endl;	
+		}
+
+		if (!m_SceneManager->getActiveScene().AddToContext<std::shared_ptr<LuaScriptEngine>>(scriptSystem))
+		{
+			std::cerr << "Failed to add LuaScriptEngine to the registry context !" << std::endl;
+		}
 
 		//////////////////////////////////////////////
 
@@ -144,6 +175,10 @@ namespace OpenGLEngine
 				m_SceneManager->SaveScene();
 			}
 		}
+
+		auto& scriptSystem = m_SceneManager->getActiveScene().GetContext<std::shared_ptr<LuaScriptEngine>>();
+		scriptSystem->Update();
+		scriptSystem->Render();
 	}
 
 	void Editor::OnImGuiRender()

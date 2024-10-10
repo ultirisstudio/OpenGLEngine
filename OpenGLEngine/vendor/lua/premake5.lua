@@ -8,8 +8,8 @@ project "lua"
 
 	files
 	{
-		"include/lua/**.h",
-		"include/lua/**.c",
+		"include/**.h",
+		"include/**.c",
 	}
 	
 	includedirs

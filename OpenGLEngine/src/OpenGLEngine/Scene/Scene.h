@@ -64,6 +64,18 @@ namespace OpenGLEngine
 		{
 			return m_Registry.view<Components...>();
 		}
+
+		template <typename TContext>
+		inline TContext AddToContext(TContext context)
+		{
+			return m_Registry.ctx().emplace<TContext>(context);
+		}
+
+		template <typename TContext>
+		inline TContext& GetContext()
+		{
+			return m_Registry.ctx().get<TContext>();
+		}
 	private:
 		EntityMap m_EntityMap;
 

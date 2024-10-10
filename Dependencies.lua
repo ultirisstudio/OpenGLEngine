@@ -14,8 +14,8 @@ IncludeDir["reactphysics3d"] = "%{wks.location}/OpenGLEngine/vendor/rp3d/include
 IncludeDir["mbedtls"] = "%{wks.location}/OpenGLEngine/vendor/mbedtls/include"
 IncludeDir["zlib"] = "%{wks.location}/OpenGLEngine/vendor/zlib/include"
 IncludeDir["entt"] = "%{wks.location}/OpenGLEngine/vendor/entt"
-IncludeDir["lua"] = "%{wks.location}/OpenGLEngine/vendor/lua"
-IncludeDir["sol"] = "%{wks.location}/OpenGLEngine/vendor/sol"
+IncludeDir["lua"] = "%{wks.location}/OpenGLEngine/vendor/lua/include"
+IncludeDir["sol"] = "%{wks.location}/OpenGLEngine/vendor/sol/include"
 
 LibraryDir = {}
 LibraryDir["Mono"] = "%{wks.location}/OpenGLEngine/vendor/mono/lib/%{cfg.buildcfg}"

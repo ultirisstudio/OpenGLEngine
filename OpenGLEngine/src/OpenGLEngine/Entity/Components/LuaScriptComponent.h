@@ -2,7 +2,7 @@
 
 #include <OpenGLEngine/Entity/Component.h>
 
-#include <include/sol/sol.hpp>
+#include <sol/sol.hpp>
 
 namespace OpenGLEngine
 {
@@ -13,6 +13,5 @@ namespace OpenGLEngine
 
 		LuaScriptComponent() = default;
 		LuaScriptComponent(const LuaScriptComponent&) = default;
-		LuaScriptComponent(UUID id) : ID(id) {}
 	};
 }

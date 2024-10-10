@@ -54,7 +54,6 @@ project "OpenGLEngine"
 		"reactphysics3d",
 		"mbedtls",
 		"lua",
-		"sol",
 		"opengl32.lib",
 
 		"%{Library.mono}"

@@ -26,7 +26,9 @@ project "OpenGLEditor"
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.zlib}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.lua}",
+		"%{IncludeDir.sol}"
 	}
 
 	links
@@ -36,6 +38,7 @@ project "OpenGLEditor"
 		"yaml-cpp",
 		"mbedtls",
 		"zlib",
+		"lua",
 		"reactphysics3d"
 	}
 	

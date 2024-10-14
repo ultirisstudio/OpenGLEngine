@@ -1,8 +1,8 @@
 include "Dependencies.lua"
 
-workspace "OpenGLEngine"
+workspace "QuasarEngine"
 	architecture "x86_64"
-    startproject "OpenGLEditor"
+    startproject "QuasarEngine-Editor"
 
 	configurations
 	{
@@ -18,29 +18,28 @@ workspace "OpenGLEngine"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependance"
-	include "OpenGLEngine/vendor/GLFW"
-	include "OpenGLEngine/vendor/Glad"
-	include "OpenGLEngine/vendor/assimp"
-	include "OpenGLEngine/vendor/imgui"
-	include "OpenGLEngine/vendor/ImGuizmo"
-	include "OpenGLEngine/vendor/yaml_cpp"
-	include "OpenGLEngine/vendor/tinyfiledialogs"
-	include "OpenGLEngine/vendor/rp3d"
-	include "OpenGLEngine/vendor/mbedtls"
-	include "OpenGLEngine/vendor/zlib"
-	include "OpenGLEngine/vendor/lua"
+	include "vendor/GLFW"
+	include "vendor/Glad"
+	include "vendor/assimp"
+	include "vendor/ImGui"
+	include "vendor/ImGuizmo"
+	include "vendor/yaml_cpp"
+	include "vendor/tinyfiledialogs"
+	include "vendor/rp3d"
+	include "vendor/mbedtls"
+	include "vendor/zlib"
+	include "vendor/lua"
 
 group ""
 
 group "Core"
-	include "OpenGLEngine"
-	include "OpenGLEngine-ScriptCore"
+	include "QuasarEngine-Core"
+group ""
+
+group "Scripting"
+	include "QuasarEngine-ScriptCore"
 group ""
 
 group "Editor"
-	include "OpenGLEditor"
-group ""
-
-group "Runtime"
-	include "OpenGLRuntime"
+	include "QuasarEngine-Editor"
 group ""

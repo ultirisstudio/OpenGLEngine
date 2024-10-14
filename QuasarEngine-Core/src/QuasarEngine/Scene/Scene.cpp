@@ -22,34 +22,16 @@
 namespace QuasarEngine
 {
 	Scene::Scene() :
-		m_Name("Untitled"),
-		m_Path(""),
-		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0)
 	{
-		Init();
-	}
-
-	Scene::Scene(const std::string& name) : 
-		m_Name(name),
-		m_Path(""),
-		m_ActiveCamera(nullptr),
-		m_OnRuntime(false),
-		m_LightsCount(0)
-	{
-		Init();
+		m_Skybox = std::make_unique<Skybox>();
+		m_Registry = std::make_unique<Registry>();
 	}
 
 	Scene::~Scene()
 	{
 		
-	}
-
-	void Scene::Init()
-	{
-		m_Skybox = std::make_unique<Skybox>();
-		m_Registry = std::make_unique<Registry>();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -128,12 +110,6 @@ namespace QuasarEngine
 
 	void Scene::OnRuntimeStart()
 	{
-		if (!m_ActiveCamera)
-		{
-			std::cout << "No active camera set!" << std::endl;
-			return;
-		}
-
 		m_OnRuntime = true;
 
 		/*ScriptEngine::OnRuntimeStart(this);
@@ -152,22 +128,8 @@ namespace QuasarEngine
 		//ScriptEngine::OnRuntimeStop();
 	}
 
-	void Scene::ResizeActiveCamera(float width, float height)
-	{
-		if (!m_ActiveCamera)
-			return;
-
-		m_ActiveCamera->OnResize(width, height);
-		Renderer::SetViewport(0, 0, width, height);
-	}
-
-	/*EntityMap* Scene::getEntities()
-	{
-		return &m_EntityMap;
-	}*/
-
 	void Scene::ClearEntities()
 	{
-		//m_EntityMap.clear();
+		m_EntityMap.clear();
 	}
 }

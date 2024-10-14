@@ -157,16 +157,16 @@ namespace QuasarEngine
 	void Editor::OnUpdate(double dt)
 	{
 		CalculateLatency();
-		Application::Get().GetWindow().SetTitle("OpenGLEditor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
+		Application::Get().GetWindow().SetTitle("Quasar Editor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
 
 		m_EditorCamera->Update();
 
 		m_SceneManager->update(dt);
 
-		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
+		m_EditorViewport.Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
 		m_EditorViewport.Update(*m_EditorCamera);
 
-		m_Viewport.Render(m_SceneManager->getActiveScene());
+		m_Viewport.Render(m_SceneManager->GetSceneObject());
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -293,13 +293,13 @@ namespace QuasarEngine
 				{
 					//m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->SaveScene();
-					m_SceneManager->getActiveScene().OnRuntimeStart();
+					m_SceneManager->GetActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
 					//m_SceneHierarchy.m_SelectedEntity = nullptr;
-					m_SceneManager->getActiveScene().OnRuntimeStop();
-					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
+					m_SceneManager->GetActiveScene().OnRuntimeStop();
+					m_SceneManager->ReloadScene(m_SceneManager->GetSceneObject().GetPath());
 
 				}
 				ImGui::EndMenu();
@@ -309,7 +309,7 @@ namespace QuasarEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					Entity temp = m_SceneManager->getActiveScene().CreateEntity("GameObject");
+					Entity temp = m_SceneManager->GetActiveScene().CreateEntity("GameObject");
 				}
 
 				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddCube();
@@ -333,10 +333,10 @@ namespace QuasarEngine
 			ImGui::EndMenuBar();
 		}
 
-		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
+		m_Viewport.OnImGuiRender(m_SceneManager->GetSceneObject());
 		m_EditorViewport.OnImGuiRender(*m_EditorCamera, *m_SceneManager, m_SceneHierarchy);
 		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SceneHierarchy);
-		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
+		m_SceneHierarchy.OnImGuiRender(m_SceneManager->GetActiveScene());
 		m_ContentBrowserPanel.OnImGuiRender();
 
 		//ImGui::Begin("Test");

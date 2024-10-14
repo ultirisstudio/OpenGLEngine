@@ -50,7 +50,7 @@ namespace QuasarEngine
 
 		if (sceneHierarchy.m_SelectedEntity)
 		{
-			if (sceneManager.getActiveScene().isOnRuntime())
+			if (sceneManager.GetActiveScene().isOnRuntime())
 			{
 				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 				//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
@@ -186,7 +186,7 @@ namespace QuasarEngine
 				ImGui::EndPopup();
 			}
 
-			if (sceneManager.getActiveScene().isOnRuntime())
+			if (sceneManager.GetActiveScene().isOnRuntime())
 			{
 				//ImGui::PopItemFlag();
 				//ImGui::PopStyleVar();

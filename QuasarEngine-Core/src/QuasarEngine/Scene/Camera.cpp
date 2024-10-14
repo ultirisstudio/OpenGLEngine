@@ -44,6 +44,5 @@ namespace QuasarEngine
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
 		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
-		//glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 	}
 }

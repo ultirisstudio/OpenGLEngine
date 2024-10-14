@@ -19,10 +19,21 @@ namespace QuasarEngine
 
 				ImGui::Separator();
 
-				bool isActive = sceneManager.getActiveScene().getActiveCamera() == &cc.GetCamera();
-				if (ImGui::Checkbox("Active camera", &isActive))
+				if (cc.Primary) ImGui::Text("Is Primary");
+				if (ImGui::Button("Set to primary"))
 				{
-					sceneManager.getActiveScene().setActiveCamera(&cc.GetCamera());
+					for (auto e : sceneManager.GetActiveScene().GetAllEntitiesWith<CameraComponent>())
+					{
+						Entity primaryCameraEntity = sceneManager.GetSceneObject().GetPrimaryCameraEntity();
+						if (&primaryCameraEntity.GetComponent<CameraComponent>().GetCamera() != &cc.GetCamera())
+						{
+							if (primaryCameraEntity.GetComponent<CameraComponent>().Primary == true)
+							{
+								primaryCameraEntity.GetComponent<CameraComponent>().Primary = false;
+								cc.Primary = true;
+							}
+						}
+					}
 				}
 
 				ImGui::Separator();

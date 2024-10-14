@@ -4,7 +4,7 @@
 #include <vector>
 #include <entt.hpp>
 
-#include <QuasarEngine/Scene/Scene.h>
+#include <QuasarEngine/ECS/Registry.h>
 #include <QuasarEngine/Entity/Components/IDComponent.h>
 #include <QuasarEngine/Entity/Components/TagComponent.h>
 
@@ -16,6 +16,8 @@ namespace QuasarEngine
 		Entity() = default;
 		Entity(entt::entity handle, Registry* registry);
 		Entity(const Entity& other) = default;
+
+		static Entity Null() { return {entt::null, nullptr}; }
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)

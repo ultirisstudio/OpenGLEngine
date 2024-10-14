@@ -7,7 +7,6 @@
 #include "SceneSerializer.h"
 
 #include <QuasarEngine/Entity/Entity.h>
-#include <QuasarEngine/Scene/Scene.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
 #include <QuasarEngine/Entity/Components/MeshComponent.h>
 #include <QuasarEngine/Entity/Components/MaterialComponent.h>
@@ -21,12 +20,12 @@ namespace QuasarEngine
 {
 	SceneManager::SceneManager(std::filesystem::path assetPath) : m_AssetPath(assetPath)
 	{
-		m_Scene = std::make_unique<Scene>();
+		m_SceneObject = std::make_unique<SceneObject>();
 	}
 
 	void SceneManager::update(double dt)
 	{
-		m_Scene->Update(dt);
+		
 	}
 
 	void SceneManager::AddGameObject(const std::string& file)
@@ -46,7 +45,7 @@ namespace QuasarEngine
 
 	void SceneManager::AddUVSphere()
 	{
-		Entity temp = m_Scene->CreateEntity("UV Sphere");
+		Entity temp = m_SceneObject->GetScene().CreateEntity("UV Sphere");
 
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
@@ -105,20 +104,20 @@ namespace QuasarEngine
 
 	void SceneManager::SaveScene()
 	{
-		if (m_Scene->getPath() != "")
+		if (m_SceneObject->GetPath() != "")
 		{
-			SceneSerializer serializer(*m_Scene, m_AssetPath);
-			serializer.Serialize(m_Scene->getPath());
+			SceneSerializer serializer(*m_SceneObject, m_AssetPath);
+			serializer.Serialize(m_SceneObject->GetPath());
 		}
 		else
 		{
 			if (!m_FileBrowser.SaveFile())
 				return;
 
-			m_Scene->setName(m_FileBrowser.GetInfos().m_FileName);
+			m_SceneObject->SetName(m_FileBrowser.GetInfos().m_FileName);
 			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
 			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
-			SceneSerializer serializer(*m_Scene, m_AssetPath);
+			SceneSerializer serializer(*m_SceneObject, m_AssetPath);
 			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
 		}
 	}
@@ -130,52 +129,36 @@ namespace QuasarEngine
 
 		PhysicEngine::Reload();
 
-		m_Scene = std::make_unique<Scene>();
-		SceneSerializer serializer(*m_Scene, m_AssetPath);
+		m_SceneObject->CreateScene();
+		SceneSerializer serializer(*m_SceneObject, m_AssetPath);
 		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
-
-		for (auto e : m_Scene->GetAllEntitiesWith<CameraComponent>())
-		{
-			Entity entity{ e, m_Scene->GetRegistry()};
-			m_Scene->setActiveCamera(&entity.GetComponent<CameraComponent>().GetCamera());
-		}
 	}
 
 	void SceneManager::LoadScene(std::string filePath)
 	{
 		PhysicEngine::Reload();
 
-		m_Scene = std::make_unique<Scene>();
+		m_SceneObject->CreateScene();
 
-		Renderer::BeginScene(*m_Scene);
+		Renderer::BeginScene(m_SceneObject->GetScene());
 
-		SceneSerializer serializer(*m_Scene, m_AssetPath);
+		SceneSerializer serializer(*m_SceneObject, m_AssetPath);
 		serializer.Deserialize(filePath);
-
-		/*for (Entity* entity : m_Scene->View<CameraComponent>())
-		{
-			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}*/
 	}
 
 	void SceneManager::ReloadScene(std::string filePath)
 	{
 		PhysicEngine::Reload();
 
-		m_Scene->ClearEntities();
+		m_SceneObject->GetScene().ClearEntities();
 
-		SceneSerializer serializer(*m_Scene, m_AssetPath);
+		SceneSerializer serializer(*m_SceneObject, m_AssetPath);
 		serializer.DeserializeRuntime(filePath);
-
-		/*for (Entity* entity : m_Scene->View<CameraComponent>())
-		{
-			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}*/
 	}
 
 	void SceneManager::createNewScene()
 	{
-		m_Scene = std::make_unique<Scene>();
+		m_SceneObject->CreateScene();
 	}
 
 	void SceneManager::OpenExternalFile()

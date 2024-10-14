@@ -5,6 +5,7 @@
 #include <reactphysics3d/decimal.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Physic/PhysicEngine.h>

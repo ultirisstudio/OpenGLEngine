@@ -14,9 +14,9 @@ QuasarEngine::Viewport::Viewport() : m_ViewportSize({ 0.0f, 0.0f})
 	m_ViewportFrameBuffer = Framebuffer::Create(spec);
 }
 
-void QuasarEngine::Viewport::Render(Scene& scene)
+void QuasarEngine::Viewport::Render(SceneObject& sceneObject)
 {
-	if (!scene.getActiveCamera())
+	if (!sceneObject.HasPrimaryCamera())
 		return;
 
 	m_ViewportFrameBuffer->Bind();
@@ -26,22 +26,22 @@ void QuasarEngine::Viewport::Render(Scene& scene)
 	Renderer::Clear();
 	Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
-	Renderer::BeginScene(scene);
-	Renderer::Render(*scene.getActiveCamera());
-	Renderer::RenderSkybox(*scene.getActiveCamera());
+	Renderer::BeginScene(sceneObject.GetScene());
+	Renderer::Render(sceneObject.GetPrimaryCamera());
+	Renderer::RenderSkybox(sceneObject.GetPrimaryCamera());
 	Renderer::EndScene();
 
 	m_ViewportFrameBuffer->Unbind();
 }
 
-void QuasarEngine::Viewport::OnImGuiRender(Scene& scene)
+void QuasarEngine::Viewport::OnImGuiRender(SceneObject& sceneObject)
 {
 	m_ViewportFrameBuffer->Bind();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 	ImGui::Begin("Viewport");
 
-	if (scene.getActiveCamera())
+	if (sceneObject.HasPrimaryCamera())
 	{
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
@@ -49,7 +49,7 @@ void QuasarEngine::Viewport::OnImGuiRender(Scene& scene)
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
-		scene.getActiveCamera()->OnResize(viewportPanelSize.x, viewportPanelSize.y);
+		sceneObject.GetPrimaryCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 		Renderer::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))

@@ -13,5 +13,7 @@ namespace QuasarEngine
 		CameraComponent();
 
 		Camera& GetCamera() { return *m_Camera; }
+
+		bool Primary = false;
 	};
 }

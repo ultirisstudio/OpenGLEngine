@@ -339,7 +339,7 @@ namespace QuasarEngine
 		}
 	}
 
-	SceneSerializer::SceneSerializer(Scene& scene, std::filesystem::path assetPath) : m_Scene(&scene), m_AssetPath(assetPath)
+	SceneSerializer::SceneSerializer(SceneObject& sceneObject, std::filesystem::path assetPath) : m_SceneObject(&sceneObject), m_AssetPath(assetPath)
 	{
 	}
 
@@ -347,12 +347,12 @@ namespace QuasarEngine
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << m_Scene->getName();
+		out << YAML::Key << "Scene" << YAML::Value << m_SceneObject->GetName();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 
-		for (auto e : m_Scene->GetAllEntitiesWith<IDComponent>())
+		for (auto e : m_SceneObject->GetScene().GetAllEntitiesWith<IDComponent>())
 		{
-			Entity entity(e, m_Scene->GetRegistry());
+			Entity entity(e, m_SceneObject->GetScene().GetRegistry());
 			if (entity.GetComponent<HierarchyComponent>().m_Parent == UUID::Null())
 				SerializeEntity(out, entity, m_AssetPath.string());
 		};
@@ -363,7 +363,7 @@ namespace QuasarEngine
 		std::ofstream fout(filepath);
 		fout << out.c_str();
 
-		m_Scene->setPath(filepath);
+		m_SceneObject->SetPath(filepath);
 	}
 
 	void SceneSerializer::SerializeRuntime(const std::string& filepath)
@@ -695,8 +695,8 @@ namespace QuasarEngine
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		m_Scene->setName(sceneName);
-		m_Scene->setPath(filepath);
+		m_SceneObject->SetName(sceneName);
+		m_SceneObject->SetPath(filepath);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -704,7 +704,7 @@ namespace QuasarEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
+					DeserializeEntity(entity, &m_SceneObject->GetScene(), m_AssetPath.string());
 			}
 		}
 
@@ -729,7 +729,7 @@ namespace QuasarEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
+					DeserializeEntity(entity, &m_SceneObject->GetScene(), m_AssetPath.string());
 			}
 		}
 

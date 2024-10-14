@@ -30,7 +30,7 @@ namespace QuasarEngine
 
 	struct ApplicationSpecification
 	{
-		std::string Name = "Duck Application";
+		std::string Name = "Quasar Application";
 		std::string WorkingDirectory;
 		ApplicationCommandLineArgs CommandLineArgs;
 	};

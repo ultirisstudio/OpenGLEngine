@@ -4,8 +4,8 @@ project "QuasarEngine-ScriptCore"
 	dotnetframework "4.8"
 	csversion ("10.0")
 	
-	targetdir ("%{wks.location}/OpenGLEditor/Scripts")
-	objdir ("%{wks.location}/OpenGLEditor/Scripts/Intermediates")
+	targetdir ("%{wks.location}/QuasarEngine-Editor/Assets/Scripts")
+	objdir ("%{wks.location}/QuasarEngine-Editor/Assets/Scripts/Intermediates")
 	
 	files 
 	{

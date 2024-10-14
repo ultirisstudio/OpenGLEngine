@@ -2,8 +2,8 @@
 
 #include "imgui.h"
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/Physics/MeshColliderComponent.h>
 
 namespace OpenGLEngine
 {

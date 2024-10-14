@@ -1,0 +1,137 @@
+#include "depch.h"
+#include "MeshColliderComponent.h"
+
+#include <reactphysics3d/reactphysics3d.h>
+
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/Physic/PhysicEngine.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
+
+namespace OpenGLEngine
+{
+	MeshColliderComponent::MeshColliderComponent() : m_concaveMeshShape(nullptr), m_convexMeshShape(nullptr)
+	{
+        
+	}
+
+    void MeshColliderComponent::Generate()
+    {
+        if (m_IsConvex)
+        {
+			GenerateConvexMesh();
+		}
+        else
+        {
+			GenerateConcaveMesh();
+		}
+    }
+
+    void MeshColliderComponent::GenerateConvexMesh()
+    {
+        /*Entity entity{entt_entity, registry};
+        auto& mc = entity.GetComponent<MeshComponent>();
+
+        const int nbVertices = mc.GetMesh().GetVerticesCount();
+        const int nbIndices = mc.GetMesh().GetIndicesCount();
+        const int nbFaces = mc.GetMesh().GetIndicesCount() / 3;
+
+        float* vertices = new float[nbVertices * 3];
+        for (int v = 0; v < nbVertices; v++)
+        {
+            vertices[v * 3] = mc.GetMesh().GetVertices()[v].position.x;
+            vertices[v * 3 + 1] = mc.GetMesh().GetVertices()[v].position.y;
+            vertices[v * 3 + 2] = mc.GetMesh().GetVertices()[v].position.z;
+        }
+
+        int* indices = new int[nbIndices];
+        for (int i = 0; i < nbIndices; i++)
+        {
+            indices[i] = mc.GetMesh().GetIndices()[i];
+        }
+
+        reactphysics3d::PolygonVertexArray::PolygonFace* faces = new reactphysics3d::PolygonVertexArray::PolygonFace[nbFaces];
+        for (int f = 0; f < nbFaces; f++)
+        {
+			faces[f].indexBase = f * 3;
+			faces[f].nbVertices = 3;
+		}
+
+        reactphysics3d::PolygonVertexArray polygonVertexArray(nbVertices, vertices, 3 * sizeof(float), indices, 3 * sizeof(int), nbFaces, faces,
+            reactphysics3d::PolygonVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+            reactphysics3d::PolygonVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+
+        // Compute the convex mesh from the array of vertices
+        std::vector<rp3d::Message> messages;
+        reactphysics3d::ConvexMesh* convexMesh = PhysicEngine::GetPhysicsCommon()->createConvexMesh(polygonVertexArray, messages);
+
+        // Display the messages (info, warning and errors)
+        if (messages.size() > 0) {
+
+            for (const rp3d::Message& message : messages) {
+
+                std::string messageType;
+
+                switch (message.type) {
+
+                case rp3d::Message::Type::Information:
+                    messageType = "info";
+                    break;
+                case rp3d::Message::Type::Warning:
+                    messageType = "warning";
+                    break;
+                case rp3d::Message::Type::Error:
+                    messageType = "error";
+                    break;
+                }
+
+                std::cout << "Message (" << messageType << "): " << message.text << std::endl;
+            }
+        }
+
+        assert(convexMesh != nullptr);
+
+        const reactphysics3d::Vector3 scaling(1, 1, 1);
+
+        m_convexMeshShape = PhysicEngine::GetPhysicsCommon()->createConvexMeshShape(convexMesh, scaling);
+
+        if (entity.HasComponent<RigidBodyComponent>())
+        {
+            auto& rb = entity.GetComponent<RigidBodyComponent>();
+            rb.GetRigidBody()->addCollider(m_convexMeshShape, reactphysics3d::Transform::identity());
+        }*/
+    }
+
+    void MeshColliderComponent::GenerateConcaveMesh()
+    {
+        /*Entity entity{entt_entity, registry};
+        auto& mc = entity.GetComponent<MeshComponent>();
+
+        const int nbVertices = mc.GetMesh().GetVerticesCount();
+        const int nbIndices = mc.GetMesh().GetIndicesCount();
+        const int nbTriangles = mc.GetMesh().GetIndicesCount() / 3;
+
+        float* vertices = new float[nbVertices * 3];
+        for (int i = 0; i < nbVertices; i++)
+        {
+			vertices[i * 3] = mc.GetMesh().GetVertices()[i].position.x;
+			vertices[i * 3 + 1] = mc.GetMesh().GetVertices()[i].position.y;
+			vertices[i * 3 + 2] = mc.GetMesh().GetVertices()[i].position.z;
+		}
+
+        int* indices = new int[nbIndices];
+        for (int i = 0; i < nbIndices; i++)
+        {
+			indices[i] = mc.GetMesh().GetIndices()[i];
+		}
+
+        reactphysics3d::TriangleVertexArray* triangleVertexArray =
+            new reactphysics3d::TriangleVertexArray(nbVertices, vertices, 3 * sizeof(float), nbTriangles, indices, 3 * sizeof(int),
+                reactphysics3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+                reactphysics3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+        
+
+        */
+    }
+}

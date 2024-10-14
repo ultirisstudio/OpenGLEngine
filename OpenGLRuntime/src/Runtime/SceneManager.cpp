@@ -6,11 +6,11 @@
 
 #include "SceneSerializer.h"
 
-#include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Components/CameraComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshComponent.h>
+#include <OpenGLEngine/ECS/Components/MaterialComponent.h>
+#include <OpenGLEngine/ECS/Components/MaterialComponent.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
 
 #include <OpenGLEngine/Physic/PhysicEngine.h>
 
@@ -18,12 +18,12 @@ namespace OpenGLEngine
 {
 	SceneManager::SceneManager()
 	{
-		m_Scene = std::make_unique<Scene>();
+		//m_Scene = std::make_unique<Scene>();
 	}
 
 	void SceneManager::update(double dt)
 	{
-		m_Scene->Update(dt);
+		//m_Scene->Update(dt);
 	}
 
 	void SceneManager::AddGameObject(const std::string& file)
@@ -43,7 +43,7 @@ namespace OpenGLEngine
 
 	void SceneManager::AddUVSphere()
 	{
-		Entity* temp = m_Scene->CreateEntity("UV Sphere");
+		/*Entity* temp = m_Scene->CreateEntity("UV Sphere");
 
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
@@ -91,7 +91,7 @@ namespace OpenGLEngine
 		}
 
 		temp->AddComponent<MaterialComponent>();
-		temp->AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
+		temp->AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);*/
 	}
 
 	void SceneManager::AddPlane()
@@ -101,7 +101,7 @@ namespace OpenGLEngine
 
 	void SceneManager::SaveScene()
 	{
-		if (m_Scene->getPath() != "")
+		/*if (m_Scene->getPath() != "")
 		{
 			SceneSerializer serializer(*m_Scene);
 			serializer.Serialize(m_Scene->getPath());
@@ -116,12 +116,12 @@ namespace OpenGLEngine
 			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
 			SceneSerializer serializer(*m_Scene);
 			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
-		}
+		}*/
 	}
 
 	void SceneManager::LoadScene()
 	{
-		if (!m_FileBrowser.OpenFile())
+		/*if (!m_FileBrowser.OpenFile())
 			return;
 
 		PhysicEngine::Reload();
@@ -133,7 +133,7 @@ namespace OpenGLEngine
 		for (Entity* entity : m_Scene->View<CameraComponent>())
 		{
 			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}
+		}*/
 	}
 
 	void SceneManager::LoadScene(std::string filePath)
@@ -147,10 +147,10 @@ namespace OpenGLEngine
 		SceneSerializer serializer(*m_Scene);
 		serializer.Deserialize(filePath);
 
-		for (Entity* entity : m_Scene->View<CameraComponent>())
+		/*for (Entity* entity : m_Scene->View<CameraComponent>())
 		{
 			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}
+		}*/
 	}
 
 	void SceneManager::ReloadScene(std::string filePath)
@@ -162,10 +162,10 @@ namespace OpenGLEngine
 		SceneSerializer serializer(*m_Scene);
 		serializer.DeserializeRuntime(filePath);
 
-		for (Entity* entity : m_Scene->View<CameraComponent>())
+		/*for (Entity* entity : m_Scene->View<CameraComponent>())
 		{
 			m_Scene->setActiveCamera(&entity->GetComponent<CameraComponent>().GetCamera());
-		}
+		}*/
 	}
 
 	void SceneManager::createNewScene()

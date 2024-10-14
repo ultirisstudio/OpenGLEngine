@@ -1,8 +1,9 @@
 #include "CameraComponentPanel.h"
 
 #include <imgui.h>
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/CameraComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/ECS/Components/CameraComponent.h>
 #include <OpenGLEngine/Scene/Camera.h>
 
 namespace OpenGLEngine
@@ -19,10 +20,21 @@ namespace OpenGLEngine
 
 				ImGui::Separator();
 
-				bool isActive = sceneManager.getActiveScene().getActiveCamera() == &cc.GetCamera();
-				if (ImGui::Checkbox("Active camera", &isActive))
+				if (cc.Primary) ImGui::Text("Is Primary");
+				if (ImGui::Button("Set to primary"))
 				{
-					sceneManager.getActiveScene().setActiveCamera(&cc.GetCamera());
+					/*for (auto e : sceneManager.GetActiveScene().GetAllEntitiesWith<CameraComponent>())
+					{
+						Entity primaryCameraEntity = sceneManager.GetSceneObject().GetPrimaryCameraEntity();
+						if (&primaryCameraEntity.GetComponent<CameraComponent>().GetCamera() != &cc.GetCamera())
+						{
+							if (primaryCameraEntity.GetComponent<CameraComponent>().Primary == true)
+							{
+								primaryCameraEntity.GetComponent<CameraComponent>().Primary = false;
+								cc.Primary = true;
+							}
+						}
+					}*/
 				}
 
 				ImGui::Separator();

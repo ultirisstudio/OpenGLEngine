@@ -4,10 +4,10 @@
 #include <reactphysics3d/reactphysics3d.h>
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/IDComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/IDComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/ECS/Components/Gameplay/CharacterControllerComponent.h>
 
 namespace OpenGLEngine
 {

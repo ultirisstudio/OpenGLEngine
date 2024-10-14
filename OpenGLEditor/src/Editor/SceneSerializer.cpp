@@ -4,25 +4,27 @@
 #include <yaml-cpp/yaml.h>
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
-#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
+#include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/HierarchyComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/MaterialComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshComponent.h>
+#include <OpenGLEngine/ECS/Components/CameraComponent.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Components/ScriptComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshRendererComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/BoxColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/CapsuleColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 #include <OpenGLEngine/Core/KeyCodes.h>
 
 #include "Importer/TextureConfigImporter.h"
+#include "SceneObject.h"
 
 #include <fstream>
 
@@ -339,7 +341,7 @@ namespace OpenGLEngine
 		}
 	}
 
-	SceneSerializer::SceneSerializer(Scene& scene, std::filesystem::path assetPath) : m_Scene(&scene), m_AssetPath(assetPath)
+	SceneSerializer::SceneSerializer(SceneObject* sceneObject, std::filesystem::path assetPath) : m_SceneObject(sceneObject), m_AssetPath(assetPath)
 	{
 	}
 
@@ -347,15 +349,15 @@ namespace OpenGLEngine
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << m_Scene->getName();
+		out << YAML::Key << "Scene" << YAML::Value << m_SceneObject->GetName();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 
-		for (auto e : m_Scene->GetAllEntitiesWith<IDComponent>())
-		{
-			Entity entity(e, m_Scene);
-			if (entity.GetComponent<HierarchyComponent>().m_Parent == UUID::Null())
-				SerializeEntity(out, entity, m_AssetPath.string());
-		};
+		//for (auto e : m_SceneObject->GetScene().GetAllEntitiesWith<IDComponent>())
+		//{
+			//Entity entity(e, m_SceneObject->GetScene().GetRegistry());
+			//if (entity.GetComponent<HierarchyComponent>().m_Parent == UUID::Null())
+				//SerializeEntity(out, entity, m_AssetPath.string());
+		//};
 
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
@@ -363,7 +365,7 @@ namespace OpenGLEngine
 		std::ofstream fout(filepath);
 		fout << out.c_str();
 
-		m_Scene->setPath(filepath);
+		//m_SceneObject->SetPath(filepath);
 	}
 
 	void SceneSerializer::SerializeRuntime(const std::string& filepath)
@@ -695,8 +697,8 @@ namespace OpenGLEngine
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		m_Scene->setName(sceneName);
-		m_Scene->setPath(filepath);
+		m_SceneObject->SetName(sceneName);
+		m_SceneObject->SetPath(filepath);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -704,7 +706,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
+					//DeserializeEntity(entity, &m_SceneObject->GetScene(), m_AssetPath.string());
 			}
 		}
 
@@ -729,7 +731,7 @@ namespace OpenGLEngine
 			for (auto entity : entities)
 			{
 				//if (entity["ParentID"].as<uint64_t>() != 0)
-					DeserializeEntity(entity, m_Scene, m_AssetPath.string());
+					//DeserializeEntity(entity, &m_SceneObject->GetScene(), m_AssetPath.string());
 			}
 		}
 

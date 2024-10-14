@@ -4,8 +4,8 @@
 #include <filesystem>
 
 #include <OpenGLEngine/Renderer/Renderer.h>
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/TerrainComponent.h>
 
 namespace OpenGLEngine
 {

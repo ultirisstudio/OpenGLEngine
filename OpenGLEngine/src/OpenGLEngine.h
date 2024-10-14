@@ -10,8 +10,8 @@
 
 #include "OpenGLEngine/ImGui/ImGuiLayer.h"
 
-#include "OpenGLEngine/Entity/Components/TransformComponent.h"
-#include "OpenGLEngine/Entity/Components/MaterialComponent.h"
+#include "OpenGLEngine/ECS/Components/TransformComponent.h"
+#include "OpenGLEngine/ECS/Components/MaterialComponent.h"
 
 #include "OpenGLEngine/Tools/Math.h"
 

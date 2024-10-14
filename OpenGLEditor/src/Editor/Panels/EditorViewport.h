@@ -7,7 +7,7 @@
 
 #include "SceneHierarchy.h"
 
-#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/ECS/Entity.h>
 #include <OpenGLEngine/Renderer/Framebuffer.h>
 
 namespace OpenGLEngine

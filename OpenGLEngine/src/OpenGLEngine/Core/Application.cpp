@@ -26,7 +26,8 @@ namespace OpenGLEngine
 		m_Window->SetVSync(false);
 
 		m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);
+		m_ImGuiLayer->OnAttach();
+		//PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()

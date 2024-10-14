@@ -1,7 +1,8 @@
 #pragma once
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Scene/Scene.h>
+#include "../SceneObject.h"
+
+#include <OpenGLEngine/ECS/Entity.h>
 
 namespace OpenGLEngine
 {
@@ -10,10 +11,10 @@ namespace OpenGLEngine
 	public:
 		SceneHierarchy();
 
-		void OnImGuiRender(Scene& scene);
+		void OnImGuiRender(SceneObject& sceneObject);
 
 		Entity m_SelectedEntity;
 	private:
-		void OnDrawEntityNode(Scene& scene, Entity entity);
+		void OnDrawEntityNode(SceneObject& sceneObject, Entity entity);
 	};
 }

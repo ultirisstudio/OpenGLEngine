@@ -3,8 +3,8 @@
 #include "imgui.h"
 
 #include <OpenGLEngine/Core/UUID.h>
-#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
-//#include <entt.hpp>
+//#include <OpenGLEngine/Scene/Scene.h>
+#include <OpenGLEngine/ECS/Components/HierarchyComponent.h>
 
 namespace OpenGLEngine
 {
@@ -13,19 +13,19 @@ namespace OpenGLEngine
 		m_SelectedEntity = {};
 	}
 
-	void SceneHierarchy::OnImGuiRender(Scene& scene)
+	void SceneHierarchy::OnImGuiRender(SceneObject& sceneObject)
 	{
-		ImGui::Begin("Scene");
+		/*ImGui::Begin("Scene");
 
 		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
 
-		for (auto e : scene.GetAllEntitiesWith<IDComponent>())
+		for (auto e : sceneObject.GetScene().GetAllEntitiesWith<IDComponent>())
 		{
-			Entity entity{ e, &scene };
+			Entity entity{ e, sceneObject.GetScene().GetRegistry()};
 			if (entity.GetComponent<HierarchyComponent>().m_Parent != UUID::Null())
 				continue;
 
-			OnDrawEntityNode(scene, entity);
+			OnDrawEntityNode(sceneObject, entity);
 		}
 
 		ImGui::PopStyleVar();
@@ -41,12 +41,12 @@ namespace OpenGLEngine
 			ImGui::EndDragDropTarget();
 		}
 
-		ImGui::End();
+		ImGui::End();*/
 	}
 
-	void SceneHierarchy::OnDrawEntityNode(Scene& scene, Entity entity)
+	void SceneHierarchy::OnDrawEntityNode(SceneObject& sceneObject, Entity entity)
 	{
-		UUID id;
+		/*UUID id;
 		if (m_SelectedEntity)
 			id = m_SelectedEntity.GetUUID();
 		else
@@ -61,7 +61,7 @@ namespace OpenGLEngine
 		{
 			if (ImGui::MenuItem("Delete Object")) {
 				m_SelectedEntity = {};
-				scene.DestroyEntity(entity);
+				sceneObject.GetScene().DestroyEntity(entity);
 			}
 			ImGui::EndPopup();
 		}
@@ -87,17 +87,17 @@ namespace OpenGLEngine
 
 				UUID entityID = std::stoull(entityID_str);
 				
-				Entity sourceEntity = scene.GetEntityByUUID(entityID);
+				Entity sourceEntity = sceneObject.GetScene().GetEntityByUUID(entityID);
 				if (sourceEntity)
 				{
 					if (sourceEntity.GetComponent<HierarchyComponent>().m_Parent != UUID::Null())
 					{
-						for (UUID child : scene.GetEntityByUUID(sourceEntity.GetComponent<HierarchyComponent>().m_Parent).GetComponent<HierarchyComponent>().m_Childrens)
+						for (UUID child : sceneObject.GetScene().GetEntityByUUID(sourceEntity.GetComponent<HierarchyComponent>().m_Parent).GetComponent<HierarchyComponent>().m_Childrens)
 						{
 							if (child == sourceEntity.GetUUID())
 							{
 								UUID parent_id = sourceEntity.GetComponent<HierarchyComponent>().m_Parent;
-								Entity parent = scene.GetEntityByUUID(parent_id);
+								Entity parent = sceneObject.GetScene().GetEntityByUUID(parent_id);
 								std::vector<UUID> childrens = parent.GetComponent<HierarchyComponent>().m_Childrens;
 								childrens.erase(std::remove(childrens.begin(), childrens.end(), sourceEntity.GetUUID()), childrens.end());
 								break;
@@ -118,12 +118,12 @@ namespace OpenGLEngine
 			{
 				for (UUID child : childrens)
 				{
-					Entity childEntity = scene.GetEntityByUUID(child);
-					OnDrawEntityNode(scene, childEntity);
+					Entity childEntity = sceneObject.GetScene().GetEntityByUUID(child);
+					OnDrawEntityNode(sceneObject, childEntity);
 				}
 			}
 
 			ImGui::TreePop();
-		}
+		}*/
 	}
 }

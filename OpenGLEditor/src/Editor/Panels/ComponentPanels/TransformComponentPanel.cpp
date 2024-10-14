@@ -3,8 +3,8 @@
 #include "imgui.h"
 #include <imgui/imgui_internal.h>
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
 
 namespace OpenGLEngine
 {

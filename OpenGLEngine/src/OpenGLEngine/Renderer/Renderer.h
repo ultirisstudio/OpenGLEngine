@@ -7,6 +7,7 @@
 #include <OpenGLEngine/Resources/ResourceManager.h>
 #include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Scene/BaseCamera.h>
+#include <OpenGLEngine/Scene/Skybox.h>
 
 #include <filesystem>
 
@@ -18,6 +19,7 @@ namespace OpenGLEngine
 		struct SceneData
 		{
 			Scene* m_Scene;
+			Skybox* m_Skybox;
 			ResourceManager m_ResourceManager;
 			Shader m_Shader;
 		};

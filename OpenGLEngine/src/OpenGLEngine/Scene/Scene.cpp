@@ -1,18 +1,18 @@
 #include "depch.h"
 #include <OpenGLEngine/Scene/Scene.h>
-#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/ECS/Entity.h>
 
 #include "OpenGLEngine/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 #include <OpenGLEngine/Core/UUID.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/CameraComponent.h>
+#include <OpenGLEngine/ECS/Components/ScriptComponent.h>
+#include <OpenGLEngine/ECS/Components/HierarchyComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/ECS/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/Input.h>
 
@@ -22,33 +22,15 @@
 namespace OpenGLEngine
 {
 	Scene::Scene() :
-		m_Name("Untitled"),
-		m_Path(""),
-		m_ActiveCamera(nullptr),
 		m_OnRuntime(false),
 		m_LightsCount(0)
 	{
-		Init();
-	}
-
-	Scene::Scene(const std::string& name) : 
-		m_Name(name),
-		m_Path(""),
-		m_ActiveCamera(nullptr),
-		m_OnRuntime(false),
-		m_LightsCount(0)
-	{
-		Init();
+		m_Registry = std::make_unique<Registry>();
 	}
 
 	Scene::~Scene()
 	{
 		
-	}
-
-	void Scene::Init()
-	{
-		m_Skybox = std::make_unique<Skybox>();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -58,7 +40,7 @@ namespace OpenGLEngine
 
 	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
-		Entity entity = { m_Registry.create(), this };
+		Entity entity = {m_Registry->CreateEntity(), m_Registry.get()};
 		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		entity.AddComponent<HierarchyComponent>();
@@ -73,17 +55,17 @@ namespace OpenGLEngine
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_EntityMap.erase(entity.GetUUID());
-		m_Registry.destroy(entity);
+		m_Registry->DestroyEntity(entity);
 	}
 
 	Entity Scene::FindEntityByName(std::string_view name)
 	{
-		auto view = m_Registry.view<TagComponent>();
+		auto view = GetAllEntitiesWith<TagComponent>();
 		for (auto entity : view)
 		{
 			const TagComponent& tc = view.get<TagComponent>(entity);
 			if (tc.Tag == name)
-				return Entity{ entity, this };
+				return Entity{ entity, m_Registry.get() };
 		}
 		return {};
 	}
@@ -91,7 +73,7 @@ namespace OpenGLEngine
 	Entity Scene::GetEntityByUUID(UUID uuid)
 	{
 		if (m_EntityMap.find(uuid) != m_EntityMap.end())
-			return { m_EntityMap.at(uuid), this };
+			return { m_EntityMap.at(uuid), m_Registry.get() };
 
 		return {};
 	}
@@ -110,8 +92,6 @@ namespace OpenGLEngine
 			ScriptEngine::OnUpdateEntity(entity, deltaTime);
 		}*/
 
-		PhysicEngine::Update(deltaTime);
-
 		/*for (auto e : m_Registry.view<RigidBodyComponent>())
 		{
 			Entity entity = { e, this };
@@ -127,11 +107,11 @@ namespace OpenGLEngine
 
 	void Scene::OnRuntimeStart()
 	{
-		if (!m_ActiveCamera)
+		/*if (!m_ActiveCamera)
 		{
 			std::cout << "No active camera set!" << std::endl;
 			return;
-		}
+		}*/
 
 		m_OnRuntime = true;
 
@@ -151,22 +131,10 @@ namespace OpenGLEngine
 		//ScriptEngine::OnRuntimeStop();
 	}
 
-	void Scene::ResizeActiveCamera(float width, float height)
-	{
-		if (!m_ActiveCamera)
-			return;
-
-		m_ActiveCamera->OnResize(width, height);
-		Renderer::SetViewport(0, 0, width, height);
-	}
-
-	/*EntityMap* Scene::getEntities()
-	{
-		return &m_EntityMap;
-	}*/
-
 	void Scene::ClearEntities()
 	{
-		//m_EntityMap.clear();
+		m_EntityMap.clear();
+
+		m_Registry->ClearRegistry();
 	}
 }

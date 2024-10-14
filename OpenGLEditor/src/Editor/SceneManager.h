@@ -4,9 +4,9 @@
 #include <memory>
 #include <filesystem>
 
-#include <OpenGLEngine/Scene/Scene.h>
-
 #include "../Utils/FileBrowser.h"
+
+//#include "SceneObject.h"
 
 namespace OpenGLEngine
 {
@@ -17,7 +17,8 @@ namespace OpenGLEngine
 
 		void update(double dt);
 
-		Scene& getActiveScene() { return *m_Scene; }
+		//Scene& GetActiveScene() { return m_SceneObject->GetScene(); }
+		//SceneObject& GetSceneObject() { return *m_SceneObject; }
 
 		void AddGameObject(const std::string& file);
 
@@ -36,7 +37,7 @@ namespace OpenGLEngine
 
 		void OpenExternalFile();
 	private:
-		std::unique_ptr<Scene> m_Scene;
+		//std::unique_ptr<SceneObject> m_SceneObject;
 		FileBrowser m_FileBrowser;
 		std::filesystem::path m_AssetPath;
 	};

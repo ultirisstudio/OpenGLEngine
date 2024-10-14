@@ -2,15 +2,13 @@
 
 #include <unordered_map>
 
-#include <OpenGLEngine/Scene/Camera.h>
-#include <OpenGLEngine/Tools/Chronometer.h>
-#include <OpenGLEngine/Scene/Skybox.h>
-
-#include <entt.hpp>
+#include <OpenGLEngine/Core/UUID.h>
+#include <OpenGLEngine/ECS/Registry.h>
 
 namespace OpenGLEngine
 {
 	class Entity;
+	class Registry;
 
 	using EntityMap = std::unordered_map<UUID, entt::entity>;
 
@@ -18,10 +16,7 @@ namespace OpenGLEngine
 	{
 	public:
 		Scene();
-		Scene(const std::string& name);
 		~Scene();
-
-		void Init();
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -36,60 +31,23 @@ namespace OpenGLEngine
 
 		void OnRuntimeStart();
 		void OnRuntimeStop();
-
-		void ResizeActiveCamera(float width, float height);
-
-		Camera* getActiveCamera() { return m_ActiveCamera; }
-
-		void setActiveCamera(Camera* camera) { m_ActiveCamera = camera; }
-
-		//EntityMap* getEntities();
+		bool isOnRuntime() { return m_OnRuntime; }
 
 		int m_LightsCount;
 
-		bool isOnRuntime() { return m_OnRuntime; }
-
 		void ClearEntities();
 
-		const std::string& getName() { return m_Name; }
-		const std::string& getPath() { return m_Path; }
-
-		Skybox& getSkybox() { return *m_Skybox; }
-
-		void setName(const std::string& name) { m_Name = name; }
-		void setPath(const std::string& path) { m_Path = path; }
+		Registry* GetRegistry() { return m_Registry.get(); }
 
 		template<typename... Components>
 		auto GetAllEntitiesWith()
 		{
-			return m_Registry.view<Components...>();
-		}
-
-		template <typename TContext>
-		inline TContext AddToContext(TContext context)
-		{
-			return m_Registry.ctx().emplace<TContext>(context);
-		}
-
-		template <typename TContext>
-		inline TContext& GetContext()
-		{
-			return m_Registry.ctx().get<TContext>();
+			return m_Registry->GetRegistry().view<Components...>();
 		}
 	private:
 		EntityMap m_EntityMap;
-
-		std::unique_ptr<Skybox> m_Skybox;
-		Camera* m_ActiveCamera;
-
-		std::string m_Name;
-		std::string m_Path;
+		std::unique_ptr<Registry> m_Registry;
 
 		bool m_OnRuntime;
-
-		entt::registry m_Registry;
-
-		friend class Entity;
-		friend class SceneSerializer;
 	};
 }

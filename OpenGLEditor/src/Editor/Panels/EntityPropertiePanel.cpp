@@ -9,19 +9,19 @@
 
 #include <OpenGLEngine/Renderer/Renderer.h>
 #include <OpenGLEngine/Scene/Scene.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/CameraComponent.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
-#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
-#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/BoxColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/MeshColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Physics/CapsuleColliderComponent.h>
-#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshComponent.h>
+#include <OpenGLEngine/ECS/Components/MaterialComponent.h>
+#include <OpenGLEngine/ECS/Components/CameraComponent.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Components/TerrainComponent.h>
+#include <OpenGLEngine/ECS/Components/ScriptComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshRendererComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/BoxColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/MeshColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Physics/CapsuleColliderComponent.h>
+#include <OpenGLEngine/ECS/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <OpenGLEngine/Core/UUID.h>
 
@@ -50,11 +50,11 @@ namespace OpenGLEngine
 
 		if (sceneHierarchy.m_SelectedEntity)
 		{
-			if (sceneManager.getActiveScene().isOnRuntime())
-			{
+			//if (sceneManager.GetActiveScene().isOnRuntime())
+			//{
 				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 				//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			}
+			//}
 
 			Entity entity = sceneHierarchy.m_SelectedEntity;
 
@@ -186,11 +186,11 @@ namespace OpenGLEngine
 				ImGui::EndPopup();
 			}
 
-			if (sceneManager.getActiveScene().isOnRuntime())
-			{
+			//if (sceneManager.GetActiveScene().isOnRuntime())
+			//{
 				//ImGui::PopItemFlag();
 				//ImGui::PopStyleVar();
-			}
+			//}
 		}
 
 		ImGui::End();

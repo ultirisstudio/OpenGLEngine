@@ -2,8 +2,9 @@
 
 #include <memory>
 
-#include <OpenGLEngine/Scene/Scene.h>
 #include <OpenGLEngine/Renderer/Framebuffer.h>
+
+#include "../SceneObject.h"
 
 namespace OpenGLEngine
 {
@@ -12,9 +13,9 @@ namespace OpenGLEngine
 	public:
 		Viewport();
 
-		void Render(Scene& scene);
+		void Render(SceneObject& sceneObject);
 
-		void OnImGuiRender(Scene& scene);
+		void OnImGuiRender(SceneObject& sceneObject);
 	private:
 		std::shared_ptr<Framebuffer> m_ViewportFrameBuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

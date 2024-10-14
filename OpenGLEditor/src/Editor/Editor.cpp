@@ -70,7 +70,7 @@ namespace OpenGLEngine
 
 		//ScriptEngine::ReloadAssembly();
 
-		auto lua = std::make_shared<sol::state>();
+		/*auto lua = std::make_shared<sol::state>();
 
 		if (!lua)
 		{
@@ -79,12 +79,12 @@ namespace OpenGLEngine
 
 		lua->open_libraries(sol::lib::base, sol::lib::math, sol::lib::os, sol::lib::table, sol::lib::io, sol::lib::string);
 
-		if (!m_SceneManager->getActiveScene().AddToContext<std::shared_ptr<sol::state>>(lua))
+		if (!m_SceneManager->GetActiveScene().GetRegistry()->AddToContext<std::shared_ptr<sol::state>>(lua))
 		{
 			std::cerr << "Failed to add the sol::state to the registry context !" << std::endl;
 		}
 
-		auto scriptSystem = std::make_shared<LuaScriptEngine>(&m_SceneManager->getActiveScene());
+		auto scriptSystem = std::make_shared<LuaScriptEngine>(&m_SceneManager->GetActiveScene());
 		if (!scriptSystem)
 		{
 			std::cerr << "Failed to create script system !" << std::endl;
@@ -95,10 +95,10 @@ namespace OpenGLEngine
 			std::cerr << "Failed to load the main script lua !" << std::endl;	
 		}
 
-		if (!m_SceneManager->getActiveScene().AddToContext<std::shared_ptr<LuaScriptEngine>>(scriptSystem))
+		if (!m_SceneManager->GetActiveScene().GetRegistry()->AddToContext<std::shared_ptr<LuaScriptEngine>>(scriptSystem))
 		{
 			std::cerr << "Failed to add LuaScriptEngine to the registry context !" << std::endl;
-		}
+		}*/
 
 		//////////////////////////////////////////////
 
@@ -159,14 +159,16 @@ namespace OpenGLEngine
 		CalculateLatency();
 		Application::Get().GetWindow().SetTitle("OpenGLEditor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
 
+		PhysicEngine::Update(dt);
+
 		m_EditorCamera->Update();
 
 		m_SceneManager->update(dt);
 
-		m_EditorViewport.Render(m_SceneManager->getActiveScene(), *m_EditorCamera);
+		//m_EditorViewport.Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
 		m_EditorViewport.Update(*m_EditorCamera);
 
-		m_Viewport.Render(m_SceneManager->getActiveScene());
+		//m_Viewport.Render(m_SceneManager->GetSceneObject());
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -176,9 +178,9 @@ namespace OpenGLEngine
 			}
 		}
 
-		auto& scriptSystem = m_SceneManager->getActiveScene().GetContext<std::shared_ptr<LuaScriptEngine>>();
-		scriptSystem->Update();
-		scriptSystem->Render();
+		//auto& scriptSystem = m_SceneManager->getActiveScene().GetContext<std::shared_ptr<LuaScriptEngine>>();
+		//scriptSystem->Update();
+		//scriptSystem->Render();
 	}
 
 	void Editor::OnImGuiRender()
@@ -293,13 +295,13 @@ namespace OpenGLEngine
 				{
 					//m_SceneHierarchy.m_SelectedEntity = nullptr;
 					m_SceneManager->SaveScene();
-					m_SceneManager->getActiveScene().OnRuntimeStart();
+					//m_SceneManager->GetActiveScene().OnRuntimeStart();
 				}
 				if (ImGui::MenuItem("Stop scene"))
 				{
 					//m_SceneHierarchy.m_SelectedEntity = nullptr;
-					m_SceneManager->getActiveScene().OnRuntimeStop();
-					m_SceneManager->ReloadScene(m_SceneManager->getActiveScene().getPath());
+					//m_SceneManager->GetActiveScene().OnRuntimeStop();
+					//m_SceneManager->ReloadScene(m_SceneManager->GetSceneObject().GetPath());
 
 				}
 				ImGui::EndMenu();
@@ -309,7 +311,7 @@ namespace OpenGLEngine
 			{
 				if (ImGui::MenuItem("Create new GameObject"))
 				{
-					Entity temp = m_SceneManager->getActiveScene().CreateEntity("GameObject");
+					//Entity temp = m_SceneManager->GetActiveScene().CreateEntity("GameObject");
 				}
 
 				if (ImGui::MenuItem("Create new Cube")) m_SceneManager->AddCube();
@@ -333,10 +335,10 @@ namespace OpenGLEngine
 			ImGui::EndMenuBar();
 		}
 
-		m_Viewport.OnImGuiRender(m_SceneManager->getActiveScene());
+		//m_Viewport.OnImGuiRender(m_SceneManager->GetSceneObject());
 		m_EditorViewport.OnImGuiRender(*m_EditorCamera, *m_SceneManager, m_SceneHierarchy);
 		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SceneHierarchy);
-		m_SceneHierarchy.OnImGuiRender(m_SceneManager->getActiveScene());
+		//m_SceneHierarchy.OnImGuiRender(m_SceneManager->GetSceneObject());
 		m_ContentBrowserPanel.OnImGuiRender();
 
 		//ImGui::Begin("Test");

@@ -3,8 +3,8 @@
 #include <imgui.h>
 #include "glm/gtc/type_ptr.hpp"
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
 
 namespace OpenGLEngine
 {

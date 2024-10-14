@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/ECS/Entity.h>
 #include <OpenGLEngine/Scene/Scene.h>
-#include <OpenGLEngine/Entity/Components/LuaScriptComponent.h>
+#include <OpenGLEngine/ECS/Components/LuaScriptComponent.h>
 
 namespace OpenGLEngine
 {
@@ -57,7 +57,7 @@ namespace OpenGLEngine
 
 	void LuaScriptEngine::Update()
 	{
-		if (!bMainLoaded)
+		/*if (!bMainLoaded)
 		{
 			std::cerr << "Lua main script is not loaded !" << std::endl;
 		}
@@ -65,7 +65,7 @@ namespace OpenGLEngine
 		auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 		for (const auto& e : view)
 		{
-			Entity entity{ e, m_Scene };
+			Entity entity{ e, m_Scene->GetRegistry()};
 			if (entity.GetName() != "main_script")
 				continue;
 
@@ -76,12 +76,12 @@ namespace OpenGLEngine
 				sol::error err = error;
 				std::cerr << "Error when running the update script: " << err.what() << std::endl;
 			}
-		}
+		}*/
 	}
 
 	void LuaScriptEngine::Render()
 	{
-		if (!bMainLoaded)
+		/*if (!bMainLoaded)
 		{
 			std::cerr << "Lua main script is not loaded !" << std::endl;
 		}
@@ -89,7 +89,7 @@ namespace OpenGLEngine
 		auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 		for (const auto& e : view)
 		{
-			Entity entity{ e, m_Scene };
+			Entity entity{ e, m_Scene->GetRegistry() };
 			if (entity.GetName() != "main_script")
 				continue;
 
@@ -100,6 +100,6 @@ namespace OpenGLEngine
 				sol::error err = error;
 				std::cerr << "Error when running the render script: " << err.what() << std::endl;
 			}
-		}
+		}*/
 	}
 }

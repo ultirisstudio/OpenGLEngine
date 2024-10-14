@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/ECS/Entity.h>
 #include <OpenGLEngine/Scene/Scene.h>
 
 namespace OpenGLEngine

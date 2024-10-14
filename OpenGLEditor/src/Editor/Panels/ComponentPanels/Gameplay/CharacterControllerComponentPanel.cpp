@@ -2,8 +2,8 @@
 
 #include "imgui.h"
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/Gameplay/CharacterControllerComponent.h>
 
 namespace OpenGLEngine
 {

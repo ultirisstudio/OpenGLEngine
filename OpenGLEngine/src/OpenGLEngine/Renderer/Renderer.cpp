@@ -15,18 +15,18 @@
 
 #include <OpenGLEngine/Scene/Skybox.h>
 
-#include <OpenGLEngine/Entity/Entity.h>
+#include <OpenGLEngine/ECS/Entity.h>
 #include <OpenGLEngine/Resources/Model.h>
 #include <OpenGLEngine/Resources/Mesh.h>
 
-#include <OpenGLEngine/Entity/Components/IDComponent.h>
-#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshRendererComponent.h>
-#include <OpenGLEngine/Entity/Components/MeshComponent.h>
-#include <OpenGLEngine/Entity/Components/MaterialComponent.h>
-#include <OpenGLEngine/Entity/Components/LightComponent.h>
-#include <OpenGLEngine/Entity/Components/TerrainComponent.h>
+#include <OpenGLEngine/ECS/Components/IDComponent.h>
+#include <OpenGLEngine/ECS/Components/HierarchyComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshRendererComponent.h>
+#include <OpenGLEngine/ECS/Components/MeshComponent.h>
+#include <OpenGLEngine/ECS/Components/MaterialComponent.h>
+#include <OpenGLEngine/ECS/Components/LightComponent.h>
+#include <OpenGLEngine/ECS/Components/TerrainComponent.h>
 
 #include <OpenGLEngine/Tools/Math.h>
 
@@ -50,6 +50,8 @@ namespace OpenGLEngine {
 
 		m_DebugRenderData.m_DebugLineShader = Shader();
 		m_DebugRenderData.m_DebugLineShader.LoadFromFile("Shaders/debug_line.vert", "Shaders/debug_line.frag");
+
+		m_SceneData.m_Skybox = new Skybox();
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -135,15 +137,15 @@ namespace OpenGLEngine {
 		m_SceneData.m_Shader.use();
 
 		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
+		m_SceneData.m_Skybox->BindIrradianceMap();
 		m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
 
 		glActiveTexture(GL_TEXTURE1);
-		m_SceneData.m_Scene->getSkybox().BindPrefilterMap();
+		m_SceneData.m_Skybox->BindPrefilterMap();
 		m_SceneData.m_Shader.setUniform("uPrefilterMap", 1);
 
 		glActiveTexture(GL_TEXTURE2);
-		m_SceneData.m_Scene->getSkybox().BindBrdfLUT();
+		m_SceneData.m_Skybox->BindBrdfLUT();
 		m_SceneData.m_Shader.setUniform("uBrdfLUT", 2);
 
 		glm::vec3 position;
@@ -156,10 +158,10 @@ namespace OpenGLEngine {
 
 		//int totalEntity = 0;
 		//int entityDraw = 0;
-
+		/*
 		for (auto e : m_SceneData.m_Scene->GetAllEntitiesWith<IDComponent>())
 		{
-			Entity entity{ e, m_SceneData.m_Scene };
+			Entity entity{ e, m_SceneData.m_Scene->GetRegistry()};
 			m_SceneData.m_Shader.setUniform("uEntity", entity.GetUUID());
 
 			int nat = 3;
@@ -316,7 +318,7 @@ namespace OpenGLEngine {
 				m_SceneData.m_Shader.use();
 			}
 		}
-
+		*/
 		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
 		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
 
@@ -333,14 +335,14 @@ namespace OpenGLEngine {
 		viewMatrix = camera.getViewMatrix();
 		projectionMatrix = camera.getProjectionMatrix();
 
-		m_SceneData.m_Scene->getSkybox().GetShader()->use();
-		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);
-		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
+		m_SceneData.m_Skybox->GetShader()->use();
+		m_SceneData.m_Skybox->GetShader()->setUniform("projection", projectionMatrix);
+		m_SceneData.m_Skybox->GetShader()->setUniform("view", viewMatrix);
 
 		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindCubeMap();
+		m_SceneData.m_Skybox->BindCubeMap();
 		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
+		m_SceneData.m_Skybox->GetModel()->draw();
 
 		//glEnable(GL_CULL_FACE);
 	}

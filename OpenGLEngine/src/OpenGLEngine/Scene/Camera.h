@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
 
 namespace OpenGLEngine
 {

@@ -2,8 +2,8 @@
 
 #include "imgui.h"
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/Physics/RigidBodyComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/Physics/RigidBodyComponent.h>
 
 namespace OpenGLEngine
 {

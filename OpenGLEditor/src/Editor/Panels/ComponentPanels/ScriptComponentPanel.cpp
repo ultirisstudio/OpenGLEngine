@@ -4,8 +4,8 @@
 
 #include <OpenGLEngine/Scripting/ScriptEngine.h>
 
-#include <OpenGLEngine/Entity/Entity.h>
-#include <OpenGLEngine/Entity/Components/ScriptComponent.h>
+#include <OpenGLEngine/ECS/Entity.h>
+#include <OpenGLEngine/ECS/Components/ScriptComponent.h>
 
 namespace OpenGLEngine
 {

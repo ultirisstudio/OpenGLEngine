@@ -6,8 +6,8 @@
 #include "../Editor.h"
 
 #include <OpenGLEngine/Core/Application.h>
-#include <OpenGLEngine/Entity/Components/TransformComponent.h>
-#include <OpenGLEngine/Entity/Components/HierarchyComponent.h>
+#include <OpenGLEngine/ECS/Components/TransformComponent.h>
+#include <OpenGLEngine/ECS/Components/HierarchyComponent.h>
 #include <OpenGLEngine/Tools/Math.h>
 #include <OpenGLEngine/Core/Input.h>
 

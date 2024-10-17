@@ -11,9 +11,9 @@ namespace QuasarEngine
 {
 	TerrainComponentPanel::TerrainComponentPanel()
 	{
-		if (Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png"))
+		if (Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png"))
 		{
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png");
 		}
 		else
 		{
@@ -21,7 +21,7 @@ namespace QuasarEngine
 			spec.flip = true;
 			spec.alpha = true;
 
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.CreateTexture("Assets/Icons/no_texture.png", spec);
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->CreateTexture("Assets/Icons/no_texture.png", spec);
 		}
 	}
 
@@ -46,14 +46,14 @@ namespace QuasarEngine
 
 				unsigned int id;
 
-				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(tc.GetHeightMapPath()))
+				if (Renderer::m_SceneData.m_ResourceManager->GetTexture(tc.GetHeightMapPath()))
 				{
-					id = Renderer::m_SceneData.m_ResourceManager.GetTexture(tc.GetHeightMapPath())->GetID();
+					id = Renderer::m_SceneData.m_ResourceManager->GetTexture(tc.GetHeightMapPath())->GetID();
 				}
 				else
 				{
 					TextureSpecification spec;
-					id = Renderer::m_SceneData.m_ResourceManager.CreateTexture(tc.GetHeightMapPath(), spec)->GetID();
+					id = Renderer::m_SceneData.m_ResourceManager->CreateTexture(tc.GetHeightMapPath(), spec)->GetID();
 				}
 
 				ImGui::ImageButton((ImTextureID)id, {64.0f, 64.0f}, {0, 1}, {1, 0});

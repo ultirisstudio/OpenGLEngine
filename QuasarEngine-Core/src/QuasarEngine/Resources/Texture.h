@@ -70,6 +70,8 @@ namespace QuasarEngine
 		Texture(unsigned char* image_data, const TextureSpecification& specification);
 		~Texture();
 
+		static std::vector<unsigned char> LoadDataFromPath(const std::string& path, const TextureSpecification& specification);
+
 		static std::shared_ptr<Texture> CreateTexture(const std::string& path, const TextureSpecification& specification);
 		static std::shared_ptr<Texture> CreateTexture(unsigned char* image_data, const TextureSpecification& specification);
 
@@ -108,6 +110,19 @@ namespace QuasarEngine
 			case TextureFilter::LINEAR_MIPMAP_NEAREST: return "Linear Mipmap Nearest";
 			case TextureFilter::NEAREST_MIPMAP_LINEAR: return "Nearest Mipmap Linear";
 			case TextureFilter::LINEAR_MIPMAP_LINEAR: return "Linear Mipmap Linear";
+			}
+			return "Unknown";
+		}
+
+		static const char* TextureFormatToChar(TextureFormat format)
+		{
+			switch (format)
+			{
+			case TextureFormat::RED: return "RED";
+			case TextureFormat::RGB: return "RGB";
+			case TextureFormat::RGBA: return "RGBA";
+			case TextureFormat::SRGB: return "SRGB";
+			case TextureFormat::SRGBA: return "SRGBA";
 			}
 			return "Unknown";
 		}

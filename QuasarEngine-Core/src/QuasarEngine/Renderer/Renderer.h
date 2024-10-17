@@ -2,9 +2,9 @@
 
 #include <QuasarEngine/Resources/Texture.h>
 #include <QuasarEngine/Resources/Model.h>
+#include <QuasarEngine/Resources/ResourceManager.h>
 #include <QuasarEngine/Resources/Materials/Material.h>
 #include <QuasarEngine/Shader/Shader.h>
-#include <QuasarEngine/Resources/ResourceManager.h>
 #include <QuasarEngine/Scene/Scene.h>
 #include <QuasarEngine/Scene/BaseCamera.h>
 
@@ -18,7 +18,7 @@ namespace QuasarEngine
 		struct SceneData
 		{
 			Scene* m_Scene;
-			ResourceManager m_ResourceManager;
+			std::unique_ptr<ResourceManager> m_ResourceManager;
 			Shader m_Shader;
 		};
 		static SceneData m_SceneData;

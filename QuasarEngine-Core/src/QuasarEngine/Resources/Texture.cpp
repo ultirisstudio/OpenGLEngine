@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "stb_image.h"
 #include <glad/glad.h>
+#include <fstream>
 
 namespace QuasarEngine
 {
@@ -64,6 +65,31 @@ namespace QuasarEngine
 		}
 	}
 
+	std::vector<unsigned char> readFile(const std::string& filename) {
+		std::ifstream file(filename, std::ios::binary);
+		if (!file.is_open()) {
+			std::cerr << "Error opening file: " << filename << std::endl;
+			return
+			{};
+		}
+
+		std::vector<unsigned char> data;
+		file.seekg(0, std::ios::end);
+		data.resize(file.tellg());
+		file.seekg(0, std::ios::beg);
+		file.read(reinterpret_cast<char*>(data.data()), data.size());
+
+
+		return data;
+	}
+
+	std::vector<unsigned char> convert_to_unsigned_char(const std::vector<char>& original) {
+		std::vector<unsigned char> converted(original.size());
+		std::transform(original.begin(), original.end(), converted.begin(),
+			[](char c) { return static_cast<unsigned char>(c); });
+		return converted;
+	}
+
 	Texture::Texture(const std::string& path, const TextureSpecification& specification) : m_Specification(specification)
 	{
 		if (m_Specification.flip)
@@ -88,7 +114,7 @@ namespace QuasarEngine
 
 		int width, height, nbChannels;
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nbChannels, Utils::DesiredChannelFromTextureFormat(m_Specification.format));
-
+		
 		m_Specification.width = width;
 		m_Specification.height = height;
 		m_Specification.channels = nbChannels;
@@ -142,7 +168,7 @@ namespace QuasarEngine
 		m_Specification.height = height;
 		m_Specification.channels = nbChannels;
 
-		if (!data)
+		if (!image_data)
 			std::cout << "Failed to load texture from memory " << " : " << stbi_failure_reason() << std::endl;
 
 		bool multisample = m_Specification.Samples > 1;
@@ -156,15 +182,21 @@ namespace QuasarEngine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Utils::TextureFilterToGL(m_Specification.min_filter_param));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Utils::TextureFilterToGL(m_Specification.mag_filter_param));
 
-		glTexImage2D(GL_TEXTURE_2D, 0, Utils::TextureFormatToGL(m_Specification.internal_format), m_Specification.width, m_Specification.height, 0, Utils::TextureFormatToGL(m_Specification.format), GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, Utils::TextureFormatToGL(m_Specification.internal_format), m_Specification.width, m_Specification.height, 0, Utils::TextureFormatToGL(m_Specification.format), GL_UNSIGNED_BYTE, image_data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		stbi_image_free(data);
+		stbi_image_free(image_data);
 	}
 
 	Texture::~Texture()
 	{
 		glDeleteTextures(1, &m_ID);
+	}
+
+	std::vector<unsigned char> Texture::LoadDataFromPath(const std::string& path, const TextureSpecification& specification)
+	{
+		std::vector<unsigned char> result = readFile(path);
+		return result;
 	}
 
 	void Texture::Bind() const

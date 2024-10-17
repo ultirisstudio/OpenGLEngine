@@ -48,11 +48,11 @@ namespace QuasarEngine
 	private:
 		EditorSpecification m_Specification;
 
-		ContentBrowserPanel m_ContentBrowserPanel;
-		EntityPropertiePanel m_EntityPropertiePanel;
-		SceneHierarchy m_SceneHierarchy;
-		EditorViewport m_EditorViewport;
-		Viewport m_Viewport;
+		std::unique_ptr<ContentBrowserPanel> m_ContentBrowserPanel;
+		std::unique_ptr<EntityPropertiePanel> m_EntityPropertiePanel;
+		std::unique_ptr<SceneHierarchy> m_SceneHierarchy;
+		std::unique_ptr<EditorViewport> m_EditorViewport;
+		std::unique_ptr<Viewport> m_Viewport;
 
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<EditorCamera> m_EditorCamera;
@@ -74,5 +74,14 @@ namespace QuasarEngine
 		int nb_frame = 0;
 		int fps = 0;
 		int latency = 0;
+
+	private:
+		double latence_last_time = Renderer::GetTime();
+
+		double viewportElapsedTime = 0;
+		double editorViewportElapsedTime = 0;
+		double entityPropertieElapsedTime = 0;
+		double sceneHierarchyElapsedTime = 0;
+		double contentBrowserElapsedTime = 0;
 	};
 }

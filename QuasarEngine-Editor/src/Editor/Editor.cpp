@@ -15,6 +15,8 @@
 #include "QuasarEngine/Scripting/LuaScriptEngine.h"
 #include "QuasarEngine/Physic/PhysicEngine.h"
 
+#include "QuasarEngine/Resources/ResourceManager.h"
+
 #include "QuasarEngine/Perlin/PerlinManager.h"
 
 #include "mbedtls/aes.h"
@@ -34,11 +36,6 @@ namespace QuasarEngine
 
 	Editor::Editor(const EditorSpecification& spec)
 		: Layer("Editor"), m_Specification(spec),
-		m_EntityPropertiePanel(),
-		m_SceneHierarchy(),
-		m_ContentBrowserPanel(spec.ProjectPath),
-		m_Viewport(),
-		m_EditorViewport(),
 		m_Chronometer(false),
 		m_EditorCamera(std::make_unique<EditorCamera>(glm::vec3(0.0f, 0.0f, 6.0f)))
 	{
@@ -61,6 +58,12 @@ namespace QuasarEngine
 		PhysicEngine::Init();
 		PerlinManager::Init();
 		Renderer::Init();
+
+		m_EntityPropertiePanel = std::make_unique<EntityPropertiePanel>();
+		m_SceneHierarchy = std::make_unique<SceneHierarchy>();
+		m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>(m_Specification.ProjectPath);
+		m_Viewport = std::make_unique<Viewport>();
+		m_EditorViewport = std::make_unique<EditorViewport>();
 
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
@@ -163,10 +166,12 @@ namespace QuasarEngine
 
 		m_SceneManager->update(dt);
 
-		m_EditorViewport.Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
-		m_EditorViewport.Update(*m_EditorCamera);
+		m_EditorViewport->Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
+		m_EditorViewport->Update(*m_EditorCamera);
 
-		m_Viewport.Render(m_SceneManager->GetSceneObject());
+		m_Viewport->Render(m_SceneManager->GetSceneObject());
+
+		Renderer::m_SceneData.m_ResourceManager->Update();
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -333,11 +338,55 @@ namespace QuasarEngine
 			ImGui::EndMenuBar();
 		}
 
-		m_Viewport.OnImGuiRender(m_SceneManager->GetSceneObject());
-		m_EditorViewport.OnImGuiRender(*m_EditorCamera, *m_SceneManager, m_SceneHierarchy);
-		m_EntityPropertiePanel.OnImGuiRender(*m_SceneManager, m_SceneHierarchy);
-		m_SceneHierarchy.OnImGuiRender(m_SceneManager->GetActiveScene());
-		m_ContentBrowserPanel.OnImGuiRender();
+		bool can_calcul_latency = false;
+		double latence_current_time = Renderer::GetTime();
+		if (latence_current_time - latence_last_time >= 1.0) {
+			can_calcul_latency = true;
+			latence_last_time += 1.0;
+		}
+
+		Chronometer chrono = Chronometer(true);
+
+		m_Viewport->OnImGuiRender(m_SceneManager->GetSceneObject());
+		if (can_calcul_latency) { viewportElapsedTime = chrono.getElapsedTime().milliseconds; }
+		chrono.restart();
+
+		m_EditorViewport->OnImGuiRender(*m_EditorCamera, *m_SceneManager, *m_SceneHierarchy);
+		if (can_calcul_latency) { editorViewportElapsedTime = chrono.getElapsedTime().milliseconds; }
+		chrono.restart();
+
+		m_EntityPropertiePanel->OnImGuiRender(*m_SceneManager, *m_SceneHierarchy);
+		if (can_calcul_latency) { entityPropertieElapsedTime = chrono.getElapsedTime().milliseconds; }
+		chrono.restart();
+
+		m_SceneHierarchy->OnImGuiRender(m_SceneManager->GetActiveScene());
+		if (can_calcul_latency) { sceneHierarchyElapsedTime = chrono.getElapsedTime().milliseconds; }
+		chrono.restart();
+
+		m_ContentBrowserPanel->OnImGuiRender();
+		if (can_calcul_latency) { contentBrowserElapsedTime = chrono.getElapsedTime().milliseconds; }
+		chrono.stop();
+
+		if (can_calcul_latency) { can_calcul_latency = false; }
+
+		ImGui::Begin("Statistiques");
+		{
+			std::string str = "Viewport: " + std::to_string(viewportElapsedTime) + " ms";
+			ImGui::Text(str.c_str());
+
+			str = "Editor Viewport: " + std::to_string(editorViewportElapsedTime) + " ms";
+			ImGui::Text(str.c_str());
+
+			str = "Entity Properties: " + std::to_string(entityPropertieElapsedTime) + " ms";
+			ImGui::Text(str.c_str());
+
+			str = "Scene Hierarchy: " + std::to_string(sceneHierarchyElapsedTime) + " ms";
+			ImGui::Text(str.c_str());
+
+			str = "Content Browser: " + std::to_string(contentBrowserElapsedTime) + " ms";
+			ImGui::Text(str.c_str());
+		}
+		ImGui::End();
 
 		//ImGui::Begin("Test");
 		//{
@@ -367,12 +416,12 @@ namespace QuasarEngine
 		if (ImGuizmo::IsOver())
 			return false;
 
-		if (!m_EditorViewport.IsViewportHovered())
+		if (!m_EditorViewport->IsViewportHovered())
 			return false;
 
 		if (e.GetMouseButton() == Mouse::Button0)
 		{
-			//m_SceneHierarchy.m_SelectedEntity = m_EditorViewport.GetHoveredEntity();
+			m_SceneHierarchy->m_SelectedEntity = m_EditorViewport->GetHoveredEntity();
 			return true;
 		}
 

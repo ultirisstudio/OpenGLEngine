@@ -53,6 +53,8 @@ namespace QuasarEngine
 
 		ImGui::Columns(columnCount, 0, false);
 
+		int loaded_resources = 0;
+
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = directoryEntry.path();
@@ -79,16 +81,19 @@ namespace QuasarEngine
 			{
 				icon = m_FileOBJIcon;
 			}
-			else if (extension == "png" || extension == "jpg")
+			else if ((extension == "png" || extension == "jpg") && loaded_resources == 0)
 			{
-				if (Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath))
+				if (Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath))
 				{
-					icon = Renderer::m_SceneData.m_ResourceManager.GetTexture(itemPath);
+					icon = Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath);
 				}
 				else
 				{
 					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
-					icon = Renderer::m_SceneData.m_ResourceManager.CreateTexture(itemPath, spec);
+					//icon = Renderer::m_SceneData.m_ResourceManager->CreateTexture(itemPath, spec);
+					Renderer::m_SceneData.m_ResourceManager->mt_CreateTexture(itemPath, spec);
+					//loaded_resources++;
+					icon = m_FilePNGIcon;
 				}
 			}
 			else

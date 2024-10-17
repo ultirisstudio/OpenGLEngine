@@ -12,9 +12,9 @@ namespace QuasarEngine
 {
 	MaterialComponentPanel::MaterialComponentPanel()
 	{
-		if (Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png"))
+		if (Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png"))
 		{
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.GetTexture("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png");
 		}
 		else
 		{
@@ -22,7 +22,7 @@ namespace QuasarEngine
 			spec.flip = true;
 			spec.alpha = true;
 
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager.CreateTexture("Assets/Icons/no_texture.png", spec);
+			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->CreateTexture("Assets/Icons/no_texture.png", spec);
 		}
 	}
 

@@ -16,3 +16,5 @@
 #include "QuasarEngine/Tools/Math.h"
 
 #include "QuasarEngine/Tools/Tree.h"
+
+#include "QuasarEngine/Tools/Chronometer.h"

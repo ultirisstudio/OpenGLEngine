@@ -45,6 +45,8 @@ namespace QuasarEngine {
 		m_SceneData.m_Shader = Shader();
 		m_SceneData.m_Shader.LoadFromFile("Assets/Shaders/pbr_shader.vert", "Assets/Shaders/pbr_shader.frag");
 
+		m_SceneData.m_ResourceManager = std::make_unique<ResourceManager>();
+
 		m_DebugRenderData.m_DebugTriangleShader = Shader();
 		m_DebugRenderData.m_DebugTriangleShader.LoadFromFile("Assets/Shaders/debug_triangle.vert", "Assets/Shaders/debug_triangle.frag");
 
@@ -353,13 +355,13 @@ namespace QuasarEngine {
 	void Renderer::LoadModel(const std::string& path)
 	{
 		std::shared_ptr<Model> model;
-		if (Renderer::m_SceneData.m_ResourceManager.GetModel(path))
+		if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
 		{
-			model = Renderer::m_SceneData.m_ResourceManager.GetModel(path);
+			model = Renderer::m_SceneData.m_ResourceManager->GetModel(path);
 		}
 		else
 		{
-			model = Renderer::m_SceneData.m_ResourceManager.CreateModel(path);
+			model = Renderer::m_SceneData.m_ResourceManager->CreateModel(path);
 		}
 
 		const size_t slash = path.find_last_of("/\\");

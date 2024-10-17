@@ -22,7 +22,7 @@ namespace QuasarEngine {
 
 			EventCallbackFn EventCallback;
 
-			WindowData(const std::string& title = "Duck Engine", uint32_t width = 1280, uint32_t height = 720, bool vsync = false)
+			WindowData(const std::string& title = "Quasar Engine", uint32_t width = 1280, uint32_t height = 720, bool vsync = false)
 				: Title(title), Width(width), Height(height), VSync(vsync), MousePos(glm::uvec2(0.0f, 0.0f))
 			{}
 		};

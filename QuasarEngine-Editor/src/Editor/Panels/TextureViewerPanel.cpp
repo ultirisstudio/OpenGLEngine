@@ -11,7 +11,7 @@ namespace QuasarEngine
 {
 	TextureViewerPanel::TextureViewerPanel(std::filesystem::path path) : m_TexturePath(path)
 	{
-		m_Texture = Renderer::m_SceneData.m_ResourceManager.GetTexture(m_TexturePath.string());
+		m_Texture = Renderer::m_SceneData.m_ResourceManager->GetTexture(m_TexturePath.string());
 		m_Specification = m_Texture->GetSpecification();
 	}
 
@@ -130,7 +130,7 @@ namespace QuasarEngine
 
 			if (ImGui::Button("Apply"))
 			{
-				m_Texture = Renderer::m_SceneData.m_ResourceManager.UpdateTexture(m_TexturePath.string(), m_Specification);
+				m_Texture = Renderer::m_SceneData.m_ResourceManager->UpdateTexture(m_TexturePath.string(), m_Specification);
 
 				TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 			}

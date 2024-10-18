@@ -67,13 +67,13 @@ namespace QuasarEngine
 		TextureSpecification m_Specification;
 	public:
 		Texture(const std::string& path, const TextureSpecification& specification);
-		Texture(unsigned char* image_data, const TextureSpecification& specification);
+		Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification);
 		~Texture();
 
-		static std::vector<unsigned char> LoadDataFromPath(const std::string& path, const TextureSpecification& specification);
+		static unsigned char* LoadDataFromPath(const std::string& path, size_t* file_size);
 
 		static std::shared_ptr<Texture> CreateTexture(const std::string& path, const TextureSpecification& specification);
-		static std::shared_ptr<Texture> CreateTexture(unsigned char* image_data, const TextureSpecification& specification);
+		static std::shared_ptr<Texture> CreateTexture(unsigned char* image_data, size_t size, const TextureSpecification& specification);
 
 		unsigned int GetID() const { return m_ID; }
 

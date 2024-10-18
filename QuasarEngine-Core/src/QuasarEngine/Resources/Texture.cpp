@@ -65,29 +65,23 @@ namespace QuasarEngine
 		}
 	}
 
-	std::vector<unsigned char> readFile(const std::string& filename) {
+	unsigned char* readFile(const std::string& filename, size_t* file_size) {
 		std::ifstream file(filename, std::ios::binary);
 		if (!file.is_open()) {
-			std::cerr << "Error opening file: " << filename << std::endl;
-			return
-			{};
+			return nullptr;
 		}
 
-		std::vector<unsigned char> data;
 		file.seekg(0, std::ios::end);
-		data.resize(file.tellg());
+		std::streampos size = file.tellg();
 		file.seekg(0, std::ios::beg);
-		file.read(reinterpret_cast<char*>(data.data()), data.size());
 
+		*file_size = size;
 
+		unsigned char* data = new unsigned char[size];
+
+		file.read((char*)data, size);
+		file.close();
 		return data;
-	}
-
-	std::vector<unsigned char> convert_to_unsigned_char(const std::vector<char>& original) {
-		std::vector<unsigned char> converted(original.size());
-		std::transform(original.begin(), original.end(), converted.begin(),
-			[](char c) { return static_cast<unsigned char>(c); });
-		return converted;
 	}
 
 	Texture::Texture(const std::string& path, const TextureSpecification& specification) : m_Specification(specification)
@@ -139,7 +133,7 @@ namespace QuasarEngine
 		stbi_image_free(data);
 	}
 
-	Texture::Texture(unsigned char* image_data, const TextureSpecification& specification) : m_Specification(specification)
+	Texture::Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification) : m_Specification(specification)
 	{
 		if (m_Specification.flip)
 		{
@@ -162,30 +156,34 @@ namespace QuasarEngine
 		}
 
 		int width, height, nbChannels;
-		unsigned char* data = stbi_load_from_memory(image_data, sizeof(image_data), &width, &height, &nbChannels, Utils::DesiredChannelFromTextureFormat(m_Specification.format));
+		unsigned char* data = stbi_load_from_memory(image_data, size, &width, &height, &nbChannels, Utils::DesiredChannelFromTextureFormat(m_Specification.format));
 
 		m_Specification.width = width;
 		m_Specification.height = height;
 		m_Specification.channels = nbChannels;
 
-		if (!image_data)
+		if (!data)
+		{
 			std::cout << "Failed to load texture from memory " << " : " << stbi_failure_reason() << std::endl;
+		}
+		else
+		{
+			bool multisample = m_Specification.Samples > 1;
 
-		bool multisample = m_Specification.Samples > 1;
+			glCreateTextures(Utils::TextureTarget(multisample), 1, &m_ID);
+			glBindTexture(Utils::TextureTarget(multisample), m_ID);
 
-		glCreateTextures(Utils::TextureTarget(multisample), 1, &m_ID);
-		glBindTexture(Utils::TextureTarget(multisample), m_ID);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, Utils::TextureWrapToGL(m_Specification.wrap_r));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::TextureWrapToGL(m_Specification.wrap_s));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::TextureWrapToGL(m_Specification.wrap_t));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Utils::TextureFilterToGL(m_Specification.min_filter_param));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Utils::TextureFilterToGL(m_Specification.mag_filter_param));
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, Utils::TextureWrapToGL(m_Specification.wrap_r));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::TextureWrapToGL(m_Specification.wrap_s));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::TextureWrapToGL(m_Specification.wrap_t));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Utils::TextureFilterToGL(m_Specification.min_filter_param));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Utils::TextureFilterToGL(m_Specification.mag_filter_param));
+			glTexImage2D(GL_TEXTURE_2D, 0, Utils::TextureFormatToGL(m_Specification.internal_format), m_Specification.width, m_Specification.height, 0, Utils::TextureFormatToGL(m_Specification.format), GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, Utils::TextureFormatToGL(m_Specification.internal_format), m_Specification.width, m_Specification.height, 0, Utils::TextureFormatToGL(m_Specification.format), GL_UNSIGNED_BYTE, image_data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		stbi_image_free(image_data);
+			stbi_image_free(image_data);
+		}
 	}
 
 	Texture::~Texture()
@@ -193,10 +191,9 @@ namespace QuasarEngine
 		glDeleteTextures(1, &m_ID);
 	}
 
-	std::vector<unsigned char> Texture::LoadDataFromPath(const std::string& path, const TextureSpecification& specification)
+	unsigned char* Texture::LoadDataFromPath(const std::string& path, size_t* file_size)
 	{
-		std::vector<unsigned char> result = readFile(path);
-		return result;
+		return readFile(path, file_size);
 	}
 
 	void Texture::Bind() const
@@ -214,8 +211,8 @@ namespace QuasarEngine
 		return std::make_shared<Texture>(path, specification);
 	}
 
-	std::shared_ptr<Texture> Texture::CreateTexture(unsigned char* image_data, const TextureSpecification& specification)
+	std::shared_ptr<Texture> Texture::CreateTexture(unsigned char* image_data, size_t size, const TextureSpecification& specification)
 	{
-		return std::make_shared<Texture>(image_data, specification);
+		return std::make_shared<Texture>(image_data, size, specification);
 	}
 }

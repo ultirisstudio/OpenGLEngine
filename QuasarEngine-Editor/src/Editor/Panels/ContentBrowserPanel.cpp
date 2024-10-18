@@ -90,9 +90,9 @@ namespace QuasarEngine
 				else
 				{
 					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
-					//icon = Renderer::m_SceneData.m_ResourceManager->CreateTexture(itemPath, spec);
+					
 					Renderer::m_SceneData.m_ResourceManager->mt_CreateTexture(itemPath, spec);
-					//loaded_resources++;
+
 					icon = m_FilePNGIcon;
 				}
 			}

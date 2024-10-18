@@ -24,7 +24,8 @@ namespace QuasarEngine
 		{
 			std::string path;
 			TextureSpecification specifications;
-			std::vector<unsigned char> data;
+			unsigned char* data;
+			size_t size;
 		};
 
 		std::queue<TextureInfos> m_LoadingTexturesQueue;

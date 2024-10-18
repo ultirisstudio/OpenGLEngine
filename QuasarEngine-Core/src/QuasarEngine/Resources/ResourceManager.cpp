@@ -28,7 +28,7 @@ namespace QuasarEngine
 
 				lock_texture.unlock();
 
-				m_Textures[infos.path] = std::make_shared<Texture>(infos.data.data(), infos.specifications);
+				m_Textures[infos.path] = std::make_shared<Texture>(infos.data, infos.size, infos.specifications);
 			}
 		}
 	}
@@ -39,7 +39,7 @@ namespace QuasarEngine
 		{
 			std::unique_lock<std::mutex> lock(m_LoadingData);
 
-			std::cout << "Ressource Manager Thread wait texture" << std::endl;
+			//std::cout << "Ressource Manager Thread wait texture" << std::endl;
 
 			m_Condition.wait(lock, [this]() {
 				return !m_LoadingDataQueue.empty();
@@ -54,9 +54,9 @@ namespace QuasarEngine
 			//m_LoadingDataQueue.pop();
 			lock.unlock();
 
-			std::cout << infos.path << " loading..." << std::endl;
+			//std::cout << infos.path << " loading..." << std::endl;
 
-			infos.data = Texture::LoadDataFromPath(infos.path, infos.specifications);
+			infos.data = Texture::LoadDataFromPath(infos.path, &infos.size);
 
 			//std::unique_lock<std::mutex> lock_texture(m_LoadingTexture);
 
@@ -142,7 +142,7 @@ namespace QuasarEngine
 			m_LoadingDataQueue.push(infos);
 			lock.unlock();
 
-			std::cout << "Texture added to loading queue" << std::endl;
+			//std::cout << "Texture added to loading queue" << std::endl;
 			
 			m_Condition.notify_one();
 		}

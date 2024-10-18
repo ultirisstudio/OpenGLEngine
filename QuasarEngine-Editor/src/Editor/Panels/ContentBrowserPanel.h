@@ -25,7 +25,6 @@ namespace QuasarEngine
 		std::shared_ptr<Texture> m_FileJPGIcon;
 		std::shared_ptr<Texture> m_FileOBJIcon;
 		std::shared_ptr<Texture> m_FileOtherIcon;
-		std::shared_ptr<Texture> m_Temp;
 
 		std::shared_ptr<TextureViewerPanel> m_TextureViewerPanel;
 	};

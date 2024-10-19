@@ -19,16 +19,16 @@ namespace QuasarEngine
 
 	void ResourceManager::Update()
 	{
-		std::unique_lock<std::mutex> lock_texture(m_LoadingTexture, std::try_to_lock);
-		if (lock_texture.owns_lock()) {
-			if (!m_LoadingTexturesQueue.empty())
-			{
-				TextureInfos infos = m_LoadingTexturesQueue.front();
-				m_LoadingTexturesQueue.pop();
+		if (!m_LoadingTexturesQueue.empty())
+		{
+			TextureInfos infos = m_LoadingTexturesQueue.front();
+			m_LoadingTexturesQueue.pop();
 
-				lock_texture.unlock();
+			m_Textures[infos.path] = std::make_shared<Texture>(infos.data, infos.size, infos.specifications);
 
-				m_Textures[infos.path] = std::make_shared<Texture>(infos.data, infos.size, infos.specifications);
+			auto it = std::find(m_WaitingTextures.begin(), m_WaitingTextures.end(), infos.path);
+			if (it != m_WaitingTextures.end()) {
+				m_WaitingTextures.erase(it);
 			}
 		}
 	}
@@ -37,42 +37,14 @@ namespace QuasarEngine
 	{
 		while (true)
 		{
-			std::unique_lock<std::mutex> lock(m_LoadingData);
-
-			//std::cout << "Ressource Manager Thread wait texture" << std::endl;
-
-			m_Condition.wait(lock, [this]() {
-				return !m_LoadingDataQueue.empty();
-			});
-
-			/*if (m_LoadingDataQueue.empty()) {
-				lock.unlock();
-				continue;
-			}*/
+			if (m_LoadingDataQueue.empty()) continue;
 
 			TextureInfos infos = m_LoadingDataQueue.front();
-			//m_LoadingDataQueue.pop();
-			lock.unlock();
-
-			//std::cout << infos.path << " loading..." << std::endl;
+			m_LoadingDataQueue.pop();
 
 			infos.data = Texture::LoadDataFromPath(infos.path, &infos.size);
 
-			//std::unique_lock<std::mutex> lock_texture(m_LoadingTexture);
-
-			//m_ConditionTexture.wait(lock_texture);
-			//m_LoadingTexturesQueue.push(infos);
-
-			//lock_texture.unlock();
-
-			std::unique_lock<std::mutex> lock_texture(m_LoadingTexture, std::try_to_lock);
-			if (lock_texture.owns_lock()) {
-				m_LoadingTexturesQueue.push(infos);
-				m_LoadingDataQueue.pop();
-				lock_texture.unlock();
-			}
-
-			//lock_texture.unlock();
+			m_LoadingTexturesQueue.push(infos);
 		}
 	}
 
@@ -128,23 +100,15 @@ namespace QuasarEngine
 
 	void ResourceManager::mt_CreateTexture(const std::string& id, const TextureSpecification& specification)
 	{
-		//std::cout << "Editor want load: " << id << std::endl;
 		std::vector<std::string>::iterator it = std::find(m_WaitingTextures.begin(), m_WaitingTextures.end(), id);
 		if ((m_Textures.find(id) == m_Textures.cend()) && it == m_WaitingTextures.end())
 		{
 			m_WaitingTextures.push_back(id);
 
-			std::unique_lock<std::mutex> lock(m_LoadingData);
-
 			TextureInfos infos;
 			infos.path = id;
 			infos.specifications = specification;
 			m_LoadingDataQueue.push(infos);
-			lock.unlock();
-
-			//std::cout << "Texture added to loading queue" << std::endl;
-			
-			m_Condition.notify_one();
 		}
 	}
 

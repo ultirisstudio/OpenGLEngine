@@ -9,6 +9,8 @@
 #include <QuasarEngine/Resources/Texture.h>
 #include <QuasarEngine/Resources/Model.h>
 
+#include <QuasarEngine/Threading/TSQueue.h>
+
 namespace QuasarEngine
 {
 	class ResourceManager
@@ -16,8 +18,6 @@ namespace QuasarEngine
 	private:
 		std::map<std::string, std::shared_ptr<Texture>> m_Textures;
 		std::map<std::string, std::shared_ptr<Model>> m_Models;
-
-		std::vector<std::string> m_WaitingTextures;
 
 	private:
 		struct TextureInfos
@@ -28,14 +28,18 @@ namespace QuasarEngine
 			size_t size;
 		};
 
-		std::queue<TextureInfos> m_LoadingTexturesQueue;
-		std::queue<TextureInfos> m_LoadingDataQueue;
+		//std::queue<TextureInfos> m_LoadingTexturesQueue;
+		TSQueue<TextureInfos> m_LoadingTexturesQueue;
+		//std::queue<TextureInfos> m_LoadingDataQueue;
+		TSQueue<TextureInfos> m_LoadingDataQueue;
 
-		std::mutex m_LoadingTexture;
-		std::mutex m_LoadingData;
+		std::vector<std::string> m_WaitingTextures;
 
-		std::condition_variable m_Condition;
-		std::condition_variable m_ConditionTexture;
+		//std::mutex m_LoadingTexture;
+		//std::mutex m_LoadingData;
+
+		//std::condition_variable m_Condition;
+		//std::condition_variable m_ConditionTexture;
 
 	public:
 		ResourceManager();

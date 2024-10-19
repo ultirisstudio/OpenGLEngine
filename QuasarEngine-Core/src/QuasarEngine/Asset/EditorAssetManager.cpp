@@ -21,11 +21,12 @@ namespace QuasarEngine
 
 	void EditorAssetManager::UnloadAsset(std::string name)
 	{
+
 	}
 
 	std::shared_ptr<Asset> EditorAssetManager::GetAsset(std::string name) const
 	{
-		if (m_LoadedAssets.find(name) == m_LoadedAssets.end())
+		if (!IsAssetLoaded(name))
 			return nullptr;
 
 		return m_LoadedAssets.at(name);
@@ -33,6 +34,6 @@ namespace QuasarEngine
 
 	bool EditorAssetManager::IsAssetLoaded(std::string name) const
 	{
-		return (m_LoadedAssets.find(name) == m_LoadedAssets.end());
+		return (m_LoadedAssets.find(name) != m_LoadedAssets.end());
 	}
 }

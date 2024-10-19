@@ -28,18 +28,10 @@ namespace QuasarEngine
 			size_t size;
 		};
 
-		//std::queue<TextureInfos> m_LoadingTexturesQueue;
 		TSQueue<TextureInfos> m_LoadingTexturesQueue;
-		//std::queue<TextureInfos> m_LoadingDataQueue;
 		TSQueue<TextureInfos> m_LoadingDataQueue;
 
 		std::vector<std::string> m_WaitingTextures;
-
-		//std::mutex m_LoadingTexture;
-		//std::mutex m_LoadingData;
-
-		//std::condition_variable m_Condition;
-		//std::condition_variable m_ConditionTexture;
 
 	public:
 		ResourceManager();

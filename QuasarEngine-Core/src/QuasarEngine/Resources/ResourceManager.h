@@ -5,7 +5,6 @@
 
 #include <QuasarEngine/Resources/Model.h>
 #include <QuasarEngine/Resources/Texture.h>
-
 #include <QuasarEngine/Threading/TSQueue.h>
 
 namespace QuasarEngine
@@ -30,11 +29,13 @@ namespace QuasarEngine
 
 		std::vector<std::string> m_WaitingTextures;
 
+		double m_Time = 0;
+
 	public:
 		ResourceManager();
 		~ResourceManager();
 
-		void Update();
+		void Update(double dt);
 		void ResourceLoader();
 		void Reset();
 

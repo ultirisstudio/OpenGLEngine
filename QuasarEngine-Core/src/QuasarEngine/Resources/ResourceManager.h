@@ -2,12 +2,9 @@
 
 #include <map>
 #include <string>
-#include <queue>
-#include <mutex>
-#include <thread>
 
-#include <QuasarEngine/Resources/Texture.h>
 #include <QuasarEngine/Resources/Model.h>
+#include <QuasarEngine/Resources/Texture.h>
 
 #include <QuasarEngine/Threading/TSQueue.h>
 

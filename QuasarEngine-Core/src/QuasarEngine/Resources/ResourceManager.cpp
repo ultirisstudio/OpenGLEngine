@@ -1,8 +1,8 @@
 #include "qepch.h"
 
-#include <glad/glad.h>
+#include <thread>
+
 #include <QuasarEngine/Resources/ResourceManager.h>
-#include <QuasarEngine/Resources/Materials/Material.h>
 
 namespace QuasarEngine
 {

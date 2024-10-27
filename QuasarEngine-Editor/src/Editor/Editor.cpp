@@ -171,7 +171,7 @@ namespace QuasarEngine
 
 		m_Viewport->Render(m_SceneManager->GetSceneObject());
 
-		Renderer::m_SceneData.m_ResourceManager->Update();
+		Renderer::m_SceneData.m_ResourceManager->Update(dt);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{

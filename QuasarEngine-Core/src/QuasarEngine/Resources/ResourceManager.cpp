@@ -17,19 +17,24 @@ namespace QuasarEngine
 
 	}
 
-	void ResourceManager::Update()
+	void ResourceManager::Update(double dt)
 	{
-		if (!m_LoadingTexturesQueue.empty())
-		{
-			TextureInfos infos = m_LoadingTexturesQueue.front();
-			m_LoadingTexturesQueue.pop();
+		m_Time += dt;
+		if (m_Time >= 1.0) {
+			if (!m_LoadingTexturesQueue.empty())
+			{
+				TextureInfos infos = m_LoadingTexturesQueue.front();
+				m_LoadingTexturesQueue.pop();
 
-			m_Textures[infos.path] = std::make_shared<Texture>(infos.data, infos.size, infos.specifications);
+				m_Textures[infos.path] = std::make_shared<Texture>(infos.data, infos.size, infos.specifications);
 
-			auto it = std::find(m_WaitingTextures.begin(), m_WaitingTextures.end(), infos.path);
-			if (it != m_WaitingTextures.end()) {
-				m_WaitingTextures.erase(it);
+				auto it = std::find(m_WaitingTextures.begin(), m_WaitingTextures.end(), infos.path);
+				if (it != m_WaitingTextures.end()) {
+					m_WaitingTextures.erase(it);
+				}
 			}
+
+			m_Time = 0;
 		}
 	}
 

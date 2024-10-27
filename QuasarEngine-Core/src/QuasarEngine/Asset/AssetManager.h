@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 #include "Asset.h"
 
@@ -12,11 +11,15 @@ namespace QuasarEngine
 {
 	class AssetManager
 	{
+	private:
+		std::unordered_map<std::string, std::shared_ptr<Asset>> m_LoadedAssets;
 	public:
-		virtual void LoadAsset(std::string name) = 0;
-		virtual void UnloadAsset(std::string name) = 0;
+		void LoadAsset(std::string name);
+		void UnloadAsset(std::string name);
 
-		virtual std::shared_ptr<Asset> GetAsset(std::string name) const = 0;
+		std::shared_ptr<Asset> GetAsset(std::string name);
+
+		bool IsAssetLoaded(std::string name) const;
 
 		template<typename T>
 		static std::shared_ptr<T> GetAsset(std::string name)

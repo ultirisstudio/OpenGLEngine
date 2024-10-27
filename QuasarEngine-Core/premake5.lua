@@ -35,7 +35,13 @@ project "QuasarEngine-Core"
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.lua}",
-		"%{IncludeDir.sol}"
+		"%{IncludeDir.sol}",
+		"%{IncludeDir.VulkanSDK}"
+	}
+	
+	libdirs
+	{
+		"%{LibraryDir.VulkanSDK}"
 	}
 	
 	defines
@@ -56,7 +62,10 @@ project "QuasarEngine-Core"
 		"lua",
 		"opengl32.lib",
 
-		"%{Library.mono}"
+		"%{Library.mono}",
+		
+		"%{Library.Vulkan}",
+		"%{Library.VulkanUtils}"
 	}
 
 	filter "system:windows"

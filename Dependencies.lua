@@ -1,3 +1,5 @@
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
 IncludeDir = {}
 IncludeDir["QuasarEngineCore"] = "%{wks.location}/QuasarEngine-Core/src"
 IncludeDir["GLFW"] = "%{wks.location}/vendor/GLFW/include"
@@ -17,12 +19,18 @@ IncludeDir["zlib"] = "%{wks.location}/vendor/zlib/include"
 IncludeDir["entt"] = "%{wks.location}/vendor/entt"
 IncludeDir["lua"] = "%{wks.location}/vendor/lua/include"
 IncludeDir["sol"] = "%{wks.location}/vendor/sol/include"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}
 LibraryDir["Mono"] = "%{wks.location}/vendor/mono/lib/%{cfg.buildcfg}"
 
+LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
 Library = {}
 Library["mono"] = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
+
+Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+Library["VulkanUtils"] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"
 
 -- windows
 

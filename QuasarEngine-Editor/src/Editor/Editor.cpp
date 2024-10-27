@@ -11,8 +11,6 @@
 #include "ImGuizmo.h"
 
 #include "QuasarEngine/Core/MouseCodes.h"
-#include "QuasarEngine/Scripting/ScriptEngine.h"
-#include "QuasarEngine/Scripting/LuaScriptEngine.h"
 #include "QuasarEngine/Physic/PhysicEngine.h"
 
 #include "QuasarEngine/Resources/ResourceManager.h"

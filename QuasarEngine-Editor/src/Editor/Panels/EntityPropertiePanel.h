@@ -10,7 +10,6 @@
 #include "ComponentPanels/TerrainComponentPanel.h"
 #include "ComponentPanels/MaterialComponentPanel.h"
 #include "ComponentPanels/LightComponentPanel.h"
-#include "ComponentPanels/ScriptComponentPanel.h"
 #include "ComponentPanels/MeshRendererComponentPanel.h"
 #include "ComponentPanels/Physics/RigidBodyComponentPanel.h"
 #include "ComponentPanels/Physics/BoxColliderComponentPanel.h"
@@ -33,7 +32,6 @@ namespace QuasarEngine
 		std::unique_ptr<TerrainComponentPanel> m_TerrainComponentPanel;
 		std::unique_ptr<MaterialComponentPanel> m_MaterialComponentPanel;
 		std::unique_ptr<LightComponentPanel> m_LightComponentPanel;
-		std::unique_ptr<ScriptComponentPanel> m_ScriptComponentPanel;
 		std::unique_ptr<MeshRendererComponentPanel> m_MeshRendererComponentPanel;
 		std::unique_ptr<RigidBodyComponentPanel> m_RigidBodyComponentPanel;
 		std::unique_ptr<BoxColliderComponentPanel> m_BoxColliderComponentPanel;

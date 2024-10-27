@@ -28,16 +28,11 @@ group "Dependance"
 	include "vendor/rp3d"
 	include "vendor/mbedtls"
 	include "vendor/zlib"
-	include "vendor/lua"
 
 group ""
 
 group "Core"
 	include "QuasarEngine-Core"
-group ""
-
-group "Scripting"
-	include "QuasarEngine-ScriptCore"
 group ""
 
 group "Editor"

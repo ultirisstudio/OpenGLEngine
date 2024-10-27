@@ -12,29 +12,15 @@ IncludeDir["stb_image"] = "%{wks.location}/vendor/stb_image"
 IncludeDir["yaml_cpp"] = "%{wks.location}/vendor/yaml_cpp/include"
 IncludeDir["ImGuizmo"] = "%{wks.location}/vendor/ImGuizmo"
 IncludeDir["tinyfiledialogs"] = "%{wks.location}/vendor/tinyfiledialogs/include"
-IncludeDir["mono"] = "%{wks.location}/vendor/mono/include"
 IncludeDir["reactphysics3d"] = "%{wks.location}/vendor/rp3d/include"
 IncludeDir["mbedtls"] = "%{wks.location}/vendor/mbedtls/include"
 IncludeDir["zlib"] = "%{wks.location}/vendor/zlib/include"
 IncludeDir["entt"] = "%{wks.location}/vendor/entt"
-IncludeDir["lua"] = "%{wks.location}/vendor/lua/include"
-IncludeDir["sol"] = "%{wks.location}/vendor/sol/include"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}
-LibraryDir["Mono"] = "%{wks.location}/vendor/mono/lib/%{cfg.buildcfg}"
-
 LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
 
 Library = {}
-Library["mono"] = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
-
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
-Library["VulkanUtils"] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"
-
--- windows
-
-Library["WinSock"] = "Ws2_32.lib"
-Library["WinMM"] = "Winmm.lib"
-Library["WinVersion"] = "Version.lib"
-Library["BCrypt"] = "Bcrypt.lib"
+-- Library["VulkanUtils"] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"

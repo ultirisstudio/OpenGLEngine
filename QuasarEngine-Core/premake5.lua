@@ -29,13 +29,10 @@ project "QuasarEngine-Core"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.mono}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.lua}",
-		"%{IncludeDir.sol}",
 		"%{IncludeDir.VulkanSDK}"
 	}
 	
@@ -59,25 +56,14 @@ project "QuasarEngine-Core"
 		"ImGuizmo",
 		"reactphysics3d",
 		"mbedtls",
-		"lua",
 		"opengl32.lib",
-
-		"%{Library.mono}",
 		
-		"%{Library.Vulkan}",
-		"%{Library.VulkanUtils}"
+		"%{Library.Vulkan}" --,
+		-- "%{Library.VulkanUtils}"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
-		
-		links
-		{
-			"%{Library.WinSock}",
-			"%{Library.WinMM}",
-			"%{Library.WinVersion}",
-			"%{Library.BCrypt}",
-		}
 
 	filter "configurations:Debug"
 		defines "DEBUG"

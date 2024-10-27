@@ -15,7 +15,6 @@
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
 #include <QuasarEngine/Entity/Components/LightComponent.h>
 #include <QuasarEngine/Entity/Components/TerrainComponent.h>
-#include <QuasarEngine/Entity/Components/ScriptComponent.h>
 #include <QuasarEngine/Entity/Components/MeshRendererComponent.h>
 #include <QuasarEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <QuasarEngine/Entity/Components/Physics/BoxColliderComponent.h>
@@ -35,7 +34,6 @@ namespace QuasarEngine
 		m_TerrainComponentPanel = std::make_unique<TerrainComponentPanel>();
 		m_MaterialComponentPanel = std::make_unique<MaterialComponentPanel>();
 		m_LightComponentPanel = std::make_unique<LightComponentPanel>();
-		m_ScriptComponentPanel = std::make_unique<ScriptComponentPanel>();
 		m_MeshRendererComponentPanel = std::make_unique<MeshRendererComponentPanel>();
 		m_RigidBodyComponentPanel = std::make_unique<RigidBodyComponentPanel>();
 		m_BoxColliderComponentPanel = std::make_unique<BoxColliderComponentPanel>();
@@ -79,7 +77,6 @@ namespace QuasarEngine
 			m_CameraComponentPanel->Render(entity, sceneManager);
 			m_MeshRendererComponentPanel->Render(entity);
 			m_MeshComponentPanel->Render(entity);
-			m_ScriptComponentPanel->Render(entity);
 			m_TerrainComponentPanel->Render(entity);
 			m_MaterialComponentPanel->Render(entity);
 			m_LightComponentPanel->Render(entity);
@@ -126,12 +123,6 @@ namespace QuasarEngine
 					if (ImGui::MenuItem("Material Component")) {
 						entity.AddComponent<MaterialComponent>();
 						entity.GetComponent<MaterialComponent>();
-					}
-				}
-
-				if (!entity.HasComponent<ScriptComponent>()) {
-					if (ImGui::MenuItem("Script Component")) {
-						entity.AddComponent<ScriptComponent>();
 					}
 				}
 

@@ -11,7 +11,6 @@
 
 #include <QuasarEngine/Core/Application.h>
 #include <QuasarEngine/Renderer/Renderer.h>
-#include <QuasarEngine/Scripting/ScriptEngine.h>
 
 #include <Windows.h>
 

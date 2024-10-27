@@ -11,7 +11,6 @@
 #include <QuasarEngine/Entity/Components/MeshComponent.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
 #include <QuasarEngine/Entity/Components/LightComponent.h>
-#include <QuasarEngine/Entity/Components/ScriptComponent.h>
 #include <QuasarEngine/Entity/Components/MeshRendererComponent.h>
 #include <QuasarEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <QuasarEngine/Entity/Components/Physics/MeshColliderComponent.h>
@@ -224,19 +223,6 @@ namespace QuasarEngine
 			out << YAML::EndMap;
 		}
 
-		if (entity.HasComponent<ScriptComponent>())
-		{
-			out << YAML::BeginMap;
-			out << YAML::Key << "ScriptComponent";
-			out << YAML::Value << YAML::BeginMap;
-
-			auto& sc = entity.GetComponent<ScriptComponent>();
-			out << YAML::Key << "scriptName" << YAML::Value << sc.m_Name;
-
-			out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
-
 		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			out << YAML::BeginMap;
@@ -399,7 +385,7 @@ namespace QuasarEngine
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
 				}
 
-				/*auto meshRendererComponent = component["MeshRendererComponent"];
+				auto meshRendererComponent = component["MeshRendererComponent"];
 				if (meshRendererComponent)
 				{
 					auto& mrc = deserializedEntity.AddComponent<MeshRendererComponent>();
@@ -416,13 +402,13 @@ namespace QuasarEngine
 
 					Mesh* mesh;
 
-					if (Renderer::m_SceneData.m_ResourceManager.GetModel(path))
+					if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
 					{
-						mesh = Renderer::m_SceneData.m_ResourceManager.GetModel(path)->GetMesh(name);
+						mesh = Renderer::m_SceneData.m_ResourceManager->GetModel(path)->GetMesh(name);
 					}
 					else
 					{
-						mesh = Renderer::m_SceneData.m_ResourceManager.CreateModel(path)->GetMesh(name);
+						mesh = Renderer::m_SceneData.m_ResourceManager->CreateModel(path)->GetMesh(name);
 					}
 
 					auto& mc = deserializedEntity.AddComponent<MeshComponent>(name, mesh, path);
@@ -450,9 +436,9 @@ namespace QuasarEngine
 					{
 						std::string albedoPath = assetPath + "\\" + hasAlbedo.as<std::string>();
 						spec.AlbedoTexture = albedoPath;
-						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(albedoPath))
+						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(albedoPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager.CreateTexture(albedoPath, TextureConfigImporter::ImportTextureConfig(albedoPath));
+							Renderer::m_SceneData.m_ResourceManager->CreateTexture(albedoPath, TextureConfigImporter::ImportTextureConfig(albedoPath));
 						}
 					}
 
@@ -461,9 +447,9 @@ namespace QuasarEngine
 					{
 						std::string normalPath = assetPath + "\\" + hasNormal.as<std::string>();
 						spec.NormalTexture = normalPath;
-						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(normalPath))
+						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(normalPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager.CreateTexture(normalPath, TextureConfigImporter::ImportTextureConfig(normalPath));
+							Renderer::m_SceneData.m_ResourceManager->CreateTexture(normalPath, TextureConfigImporter::ImportTextureConfig(normalPath));
 						}
 					}
 
@@ -472,9 +458,9 @@ namespace QuasarEngine
 					{
 						std::string metallicPath = assetPath + "\\" + hasMetallic.as<std::string>();
 						spec.MetallicTexture = metallicPath;
-						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(metallicPath))
+						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(metallicPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager.CreateTexture(metallicPath, TextureConfigImporter::ImportTextureConfig(metallicPath));
+							Renderer::m_SceneData.m_ResourceManager->CreateTexture(metallicPath, TextureConfigImporter::ImportTextureConfig(metallicPath));
 						}
 					}
 
@@ -483,9 +469,9 @@ namespace QuasarEngine
 					{
 						std::string roughnessPath = assetPath + "\\" + hasRoughness.as<std::string>();
 						spec.RoughnessTexture = roughnessPath;
-						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(roughnessPath))
+						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(roughnessPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager.CreateTexture(roughnessPath, TextureConfigImporter::ImportTextureConfig(roughnessPath));
+							Renderer::m_SceneData.m_ResourceManager->CreateTexture(roughnessPath, TextureConfigImporter::ImportTextureConfig(roughnessPath));
 						}
 					}
 
@@ -494,9 +480,9 @@ namespace QuasarEngine
 					{
 						std::string aoPath = assetPath + "\\" + hasAO.as<std::string>();
 						spec.AOTexture = aoPath;
-						if (!Renderer::m_SceneData.m_ResourceManager.GetTexture(aoPath))
+						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(aoPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager.CreateTexture(aoPath, TextureConfigImporter::ImportTextureConfig(aoPath));
+							Renderer::m_SceneData.m_ResourceManager->CreateTexture(aoPath, TextureConfigImporter::ImportTextureConfig(aoPath));
 						}
 					}
 
@@ -534,13 +520,6 @@ namespace QuasarEngine
 					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
 					cc.GetCamera().Init(&deserializedEntity.GetComponent<TransformComponent>());
 					cc.GetCamera().SetFov(cameraComponent["fov"].as<float>());
-				}
-
-				auto scriptComponent = component["ScriptComponent"];
-				if (scriptComponent)
-				{
-					auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
-					sc.m_Name = scriptComponent["scriptName"].as<std::string>();
 				}
 
 				auto rigidBodyComponent = component["RigidBodyComponent"];
@@ -677,7 +656,7 @@ namespace QuasarEngine
 
 					ccc.UpdateColliderMaterial();
 					ccc.UpdateColliderSize();
-				}*/
+				}
 			}
 		}
 	}

@@ -9,14 +9,12 @@
 #include <QuasarEngine/Entity/Components/LightComponent.h>
 #include <QuasarEngine/Entity/Components/TransformComponent.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
-#include <QuasarEngine/Entity/Components/ScriptComponent.h>
 #include <QuasarEngine/Entity/Components/HierarchyComponent.h>
 #include <QuasarEngine/Entity/Components/Physics/RigidBodyComponent.h>
 #include <QuasarEngine/Entity/Components/Gameplay/CharacterControllerComponent.h>
 
 #include <QuasarEngine/Core/Input.h>
 
-//#include <QuasarEngine/Scripting/ScriptEngine.h>
 #include <QuasarEngine/Physic/PhysicEngine.h>
 
 namespace QuasarEngine

@@ -25,9 +25,7 @@ project "QuasarEngine-Editor"
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.zlib}",
-		"%{IncludeDir.entt}",
-		"%{IncludeDir.lua}",
-		"%{IncludeDir.sol}"
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -37,7 +35,6 @@ project "QuasarEngine-Editor"
 		"yaml-cpp",
 		"mbedtls",
 		"zlib",
-		"lua",
 		"reactphysics3d"
 	}
 	

@@ -1,12 +1,11 @@
 #include "qepch.h"
 #include "Framebuffer.h"
-#include <glad/glad.h>
 
 namespace QuasarEngine
 {
     namespace Utils
     {
-        static GLenum TextureTarget(bool multisampled)
+        /*static GLenum TextureTarget(bool multisampled)
         {
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
@@ -82,17 +81,17 @@ namespace QuasarEngine
 				case FramebufferTextureFormat::RED_INTEGER:		return GL_RED_INTEGER;
 				case FramebufferTextureFormat::DEPTH24STENCIL8:	return GL_DEPTH24_STENCIL8;
 			}
-        }
+        }*/
     }
 
     Framebuffer::Framebuffer(const FramebufferSpecification& spec) : m_Specification(spec)
     {
         for (auto format : spec.Attachments.Attachments)
         {
-            if (!Utils::isDepthFormat(format.TextureFormat))
-				m_ColorAttachmentSpecifications.emplace_back(format);
-            else
-                m_DepthAttachmentSpecification = format;
+            //if (!Utils::isDepthFormat(format.TextureFormat))
+			//	m_ColorAttachmentSpecifications.emplace_back(format);
+            //else
+            //    m_DepthAttachmentSpecification = format;
 		}
 
         Invalidate();
@@ -100,9 +99,9 @@ namespace QuasarEngine
 
     Framebuffer::~Framebuffer()
     {
-        glDeleteFramebuffers(1, &m_ID);
-        glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
-        glDeleteTextures(1, &m_DepthAttachment);
+        //glDeleteFramebuffers(1, &m_ID);
+        //glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
+        //glDeleteTextures(1, &m_DepthAttachment);
     }
 
     uint32_t Framebuffer::GetColorAttachment(uint32_t index) const
@@ -125,16 +124,16 @@ namespace QuasarEngine
         if (attachmentIndex >= m_ColorAttachments.size())
             return -1;
 
-        glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+        //glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
         int pixelData;
-        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        //glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
         return pixelData;
     }
 
     void Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
     {
         auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-        glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::FramebufferTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+        //glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::FramebufferTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
     }
 
     void Framebuffer::Resize(uint32_t width, uint32_t height)
@@ -155,16 +154,16 @@ namespace QuasarEngine
     {
         if (m_ID)
         {
-            glDeleteFramebuffers(1, &m_ID);
-            glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
-            glDeleteTextures(1, &m_DepthAttachment);
+            //glDeleteFramebuffers(1, &m_ID);
+            //glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
+            //glDeleteTextures(1, &m_DepthAttachment);
 
             m_ColorAttachments.clear();
             m_DepthAttachment = 0;
         }
 
-        glCreateFramebuffers(1, &m_ID);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+        //glCreateFramebuffers(1, &m_ID);
+        //glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
         bool multisample = m_Specification.Samples > 1;
 
@@ -172,18 +171,18 @@ namespace QuasarEngine
         {
             m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
 
-            Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
+            //Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
 
             for (size_t i = 0; i < m_ColorAttachmentSpecifications.size(); i++)
             {
-                Utils::BindTexture(multisample, m_ColorAttachments[i]);
+                //Utils::BindTexture(multisample, m_ColorAttachments[i]);
                 switch (m_ColorAttachmentSpecifications[i].TextureFormat)
                 {
                 case FramebufferTextureFormat::RGBA8:
-                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+                    //Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
                     break;
                 case FramebufferTextureFormat::RED_INTEGER:
-                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+                    //Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
                     break;
                 }
             }
@@ -191,12 +190,12 @@ namespace QuasarEngine
 
         if (m_DepthAttachmentSpecification.TextureFormat != FramebufferTextureFormat::None)
         {
-            Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
-            Utils::BindTexture(multisample, m_DepthAttachment);
+            //Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
+            //Utils::BindTexture(multisample, m_DepthAttachment);
             switch (m_DepthAttachmentSpecification.TextureFormat)
             {
             case FramebufferTextureFormat::DEPTH24STENCIL8:
-                Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
+                //Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
                 break;
             }
         }
@@ -206,18 +205,18 @@ namespace QuasarEngine
             if (m_ColorAttachments.size() > 4)
                 std::cout << "Framebuffer has more than 4 attachments!" << std::endl;
 
-            GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-            glDrawBuffers((GLsizei)m_ColorAttachments.size(), buffers);
+            //GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+            //glDrawBuffers((GLsizei)m_ColorAttachments.size(), buffers);
         }
         else if (m_ColorAttachments.empty())
         {
-			glDrawBuffer(GL_NONE);
+			//glDrawBuffer(GL_NONE);
 		}
 
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "framebuffer incomplete" << std::endl;
+        //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            //std::cout << "framebuffer incomplete" << std::endl;
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
@@ -227,17 +226,17 @@ namespace QuasarEngine
 
     void Framebuffer::Bind() const
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+        //glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
         //glViewport(0, 0, m_Specification.Width, m_Specification.Height);
     }
 
     void Framebuffer::Unbind() const
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void Framebuffer::BindColorAttachment(uint32_t index) const
     {
-        glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[index]);
+        //glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[index]);
     }
 }

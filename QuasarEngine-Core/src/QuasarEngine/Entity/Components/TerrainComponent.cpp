@@ -1,8 +1,6 @@
 #include "qepch.h"
 #include "TerrainComponent.h"
 
-#include <glad/glad.h>
-
 #include <QuasarEngine/Renderer/Renderer.h>
 #include <QuasarEngine/Resources/Model.h>
 
@@ -15,10 +13,7 @@ namespace QuasarEngine
 		m_Shader = std::make_shared<Shader>();
 		m_Shader->LoadFromFile("Shaders/gpuheight.vs", "Shaders/gpuheight.fs", "Shaders/gpuheight.tcs", "Shaders/gpuheight.tes");
 
-		glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &m_MaxTessLevel);
 		std::cout << "Max available tess level: " << m_MaxTessLevel << std::endl;
-
-		glPatchParameteri(GL_PATCH_VERTICES, 4);
 	}
 
 	Shader& TerrainComponent::GetShader()
@@ -71,27 +66,10 @@ namespace QuasarEngine
 		}
 		std::cout << "Loaded " << rez * rez << " patches of 4 control points each" << std::endl;
 		std::cout << "Processing " << rez * rez * 4 << " vertices in vertex shader" << std::endl;
-
-		unsigned int terrainVBO;
-		glGenVertexArrays(1, &terrainVAO);
-		glBindVertexArray(terrainVAO);
-
-		glGenBuffers(1, &terrainVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
-		glEnableVertexAttribArray(1);
 	}
 	void TerrainComponent::Draw()
 	{
 		if (!m_Generated)
 			return;
-
-		glBindVertexArray(terrainVAO);
-		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
 	}
 }

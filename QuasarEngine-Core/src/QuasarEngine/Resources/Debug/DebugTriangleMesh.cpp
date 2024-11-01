@@ -1,8 +1,6 @@
 #include "qepch.h"
 #include <QuasarEngine/Resources/Debug/DebugTriangleMesh.h>
 
-#include <glad/glad.h>
-
 namespace QuasarEngine
 {
 	DebugTriangleMesh::DebugTriangleMesh(std::vector<DebugTriangleVertex>& vertices) :
@@ -10,7 +8,7 @@ namespace QuasarEngine
 		m_vbo(0),
 		m_vertices(std::move(vertices))
 	{
-		glGenVertexArrays(1, &m_vao);
+		/*glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
 
 		glBindVertexArray(m_vao);
@@ -22,19 +20,18 @@ namespace QuasarEngine
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DebugTriangleVertex), (const void*)offsetof(DebugTriangleVertex, position));
 
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(DebugTriangleVertex), (const void*)offsetof(DebugTriangleVertex, color));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(DebugTriangleVertex), (const void*)offsetof(DebugTriangleVertex, color));*/
 	}
 
 	DebugTriangleMesh::~DebugTriangleMesh()
 	{
-		glDeleteVertexArrays(1, &m_vao);
-		glDeleteBuffers(1, &m_vbo);
+		//glDeleteVertexArrays(1, &m_vao);
+		//glDeleteBuffers(1, &m_vbo);
 	}
 
 	void DebugTriangleMesh::draw() const
 	{
-		glBindVertexArray(m_vao);
-
-		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
+		//glBindVertexArray(m_vao);
+		//glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
 	}
 }

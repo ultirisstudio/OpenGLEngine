@@ -1,14 +1,14 @@
 #include "qepch.h"
 #include "Texture.h"
 #include "stb_image.h"
-#include <glad/glad.h>
+
 #include <fstream>
 
 namespace QuasarEngine
 {
 	namespace Utils
 	{
-		static GLenum TextureTarget(bool multisampled)
+		/*static GLenum TextureTarget(bool multisampled)
 		{
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
@@ -62,7 +62,7 @@ namespace QuasarEngine
 			case TextureFormat::RED: return 1;
 			}
 			return 0;
-		}
+		}*/
 	}
 
 	unsigned char* readFile(const std::string& filename, size_t* file_size) {
@@ -105,7 +105,7 @@ namespace QuasarEngine
 			m_Specification.format = TextureFormat::RGB;
 			m_Specification.internal_format = m_Specification.gamma ? TextureFormat::SRGB : TextureFormat::RGB;
 		}
-
+		/*
 		int width, height, nbChannels;
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nbChannels, Utils::DesiredChannelFromTextureFormat(m_Specification.format));
 		
@@ -130,7 +130,7 @@ namespace QuasarEngine
 		glTexImage2D(GL_TEXTURE_2D, 0, Utils::TextureFormatToGL(m_Specification.internal_format), m_Specification.width, m_Specification.height, 0, Utils::TextureFormatToGL(m_Specification.format), GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		stbi_image_free(data);
+		stbi_image_free(data);*/
 	}
 
 	Texture::Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification) : m_Specification(specification)
@@ -154,7 +154,7 @@ namespace QuasarEngine
 			m_Specification.format = TextureFormat::RGB;
 			m_Specification.internal_format = m_Specification.gamma ? TextureFormat::SRGB : TextureFormat::RGB;
 		}
-
+		/*
 		int width, height, nbChannels;
 		unsigned char* data = stbi_load_from_memory(image_data, size, &width, &height, &nbChannels, Utils::DesiredChannelFromTextureFormat(m_Specification.format));
 
@@ -183,12 +183,12 @@ namespace QuasarEngine
 			glGenerateMipmap(GL_TEXTURE_2D);
 
 			stbi_image_free(image_data);
-		}
+		}*/
 	}
 
 	Texture::~Texture()
 	{
-		glDeleteTextures(1, &m_ID);
+		//glDeleteTextures(1, &m_ID);
 	}
 
 	unsigned char* Texture::LoadDataFromPath(const std::string& path, size_t* file_size)
@@ -198,12 +198,12 @@ namespace QuasarEngine
 
 	void Texture::Bind() const
 	{
-		glBindTexture(GL_TEXTURE_2D, m_ID);
+		//glBindTexture(GL_TEXTURE_2D, m_ID);
 	}
 
 	void Texture::Unbind() const
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	std::shared_ptr<Texture> Texture::CreateTexture(const std::string& path, const TextureSpecification& specification)

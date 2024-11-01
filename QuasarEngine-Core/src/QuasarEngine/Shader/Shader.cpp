@@ -1,7 +1,8 @@
 #include "qepch.h"
+
 #include <QuasarEngine/Shader/Shader.h>
-#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <fstream>
 #include <sstream>
 
@@ -51,7 +52,7 @@ namespace QuasarEngine
 
 	unsigned int Shader::ReadShader(const std::string& path, unsigned int type)
 	{
-		std::ifstream file(path);
+		/*std::ifstream file(path);
 		if (!file.is_open())
 			return 0;
 
@@ -62,8 +63,9 @@ namespace QuasarEngine
 		const char* source = str.c_str();
 
 		file.close();
-
+		*/
 		unsigned int shader;
+		/*
 		shader = glCreateShader(type);
 
 		glShaderSource(shader, 1, &source, NULL);
@@ -93,7 +95,7 @@ namespace QuasarEngine
 			}
 			std::cout << "Failed to compile " << shaderType << " shader : " << error << std::endl;
 			return 0;
-		}
+		}*/
 
 		return shader;
 	}
@@ -105,12 +107,12 @@ namespace QuasarEngine
 
 	Shader::~Shader()
 	{
-		glDeleteProgram(m_id);
+		//glDeleteProgram(m_id);
 	}
 
 	void Shader::bakeUniformLocations()
 	{
-		constexpr unsigned int MAX_UNIFORM_NAME_LENGTH = 64;
+		/*constexpr unsigned int MAX_UNIFORM_NAME_LENGTH = 64;
 
 		if (m_id == 0)
 			return;
@@ -131,12 +133,12 @@ namespace QuasarEngine
 			unsigned int uniformLocation = glGetUniformLocation(m_id, uniformName.c_str());
 
 			m_uniformLocations.insert({ uniformName, uniformLocation });
-		}
+		}*/
 	}
 
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs)
 	{
-		unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
+		/*unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
 		unsigned int fragmentShader = ReadShader(path_fs, GL_FRAGMENT_SHADER);
 
 		m_id = glCreateProgram();
@@ -158,12 +160,12 @@ namespace QuasarEngine
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
-		bakeUniformLocations();
+		bakeUniformLocations();*/
 	}
 
 	void Shader::LoadFromFile(const std::string& path_vs, const std::string& path_fs, const std::string& path_tcs, const std::string& path_tes)
 	{
-		unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
+		/*unsigned int vertexShader = ReadShader(path_vs, GL_VERTEX_SHADER);
 		unsigned int fragmentShader = ReadShader(path_fs, GL_FRAGMENT_SHADER);
 		unsigned int tessControlShader = ReadShader(path_tcs, GL_TESS_CONTROL_SHADER);
 		unsigned int tessEvaluationShader = ReadShader(path_tes, GL_TESS_EVALUATION_SHADER);
@@ -191,17 +193,17 @@ namespace QuasarEngine
 		glDeleteShader(tessControlShader);
 		glDeleteShader(tessEvaluationShader);
 
-		bakeUniformLocations();
+		bakeUniformLocations();*/
 	}
 
 	void Shader::setUniform(const std::string& name, bool value) const
 	{
-		glUniform1i(m_uniformLocations.at(name), (bool)value);
+		//glUniform1i(m_uniformLocations.at(name), (bool)value);
 	}
 
 	void Shader::setUniform(const std::string& name, uint32_t value) const
 	{
-		glUniform1ui(m_uniformLocations.at(name), value);
+		//glUniform1ui(m_uniformLocations.at(name), value);
 	}
 
 	/*void Shader::setUniform(const std::string& name, unsigned int value) const
@@ -211,32 +213,32 @@ namespace QuasarEngine
 
 	void Shader::setUniform(const std::string& name, int value) const
 	{
-		glUniform1i(m_uniformLocations.at(name), value);
+		//glUniform1i(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, float value) const
 	{
-		glUniform1f(m_uniformLocations.at(name), value);
+		//glUniform1f(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, double value) const
 	{
-		glUniform1d(m_uniformLocations.at(name), value);
+		//glUniform1d(m_uniformLocations.at(name), value);
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::vec3& value) const
 	{
-		glUniform3f(m_uniformLocations.at(name), value.x, value.y, value.z);
+		//glUniform3f(m_uniformLocations.at(name), value.x, value.y, value.z);
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::mat3& value) const
 	{
-		glUniformMatrix3fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
+		//glUniformMatrix3fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string& name, const glm::mat4& value) const
 	{
-		glUniformMatrix4fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
+		//glUniformMatrix4fv(m_uniformLocations.at(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<bool>& value) const
@@ -245,41 +247,41 @@ namespace QuasarEngine
 		for (bool val : value)
 			v.push_back((int)val);
 
-		glUniform1iv(m_uniformLocations.at(name), (GLsizei)v.size(), v.data());
+		//glUniform1iv(m_uniformLocations.at(name), (GLsizei)v.size(), v.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<unsigned int>& value) const
 	{
-		glUniform1uiv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
+		//glUniform1uiv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<int>& value) const
 	{
-		glUniform1iv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
+		//glUniform1iv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<float>& value) const
 	{
-		glUniform1fv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
+		//glUniform1fv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<double>& value) const
 	{
-		glUniform1dv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
+		//glUniform1dv(m_uniformLocations.at(name), (GLsizei)value.size(), value.data());
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<glm::vec3>& value) const
 	{
-		glUniform3fv(m_uniformLocations.at(name), (GLsizei)value.size(), glm::value_ptr(value[0]));
+		//glUniform3fv(m_uniformLocations.at(name), (GLsizei)value.size(), glm::value_ptr(value[0]));
 	}
 
 	void Shader::setUniform(const std::string& name, const std::vector<glm::mat4>& value) const
 	{
-		glUniformMatrix4fv(m_uniformLocations.at(name), (GLsizei)value.size(), GL_FALSE, glm::value_ptr(value[0]));
+		//glUniformMatrix4fv(m_uniformLocations.at(name), (GLsizei)value.size(), GL_FALSE, glm::value_ptr(value[0]));
 	}
 
 	void Shader::use() const
 	{
-		glUseProgram(m_id);
+		//glUseProgram(m_id);
 	}
 }

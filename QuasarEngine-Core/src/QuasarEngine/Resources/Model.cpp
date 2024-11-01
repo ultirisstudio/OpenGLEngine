@@ -143,8 +143,8 @@ namespace QuasarEngine
 
 	void Model::draw() const
 	{
-		for (auto& [name, mesh] : m_meshesMap)
-			mesh->draw();
+		//for (auto& [name, mesh] : m_meshesMap)
+			//mesh->draw();
 	}
 
 	std::shared_ptr<Model> Model::CreateModel(const std::string& path)

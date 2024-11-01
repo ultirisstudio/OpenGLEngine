@@ -82,10 +82,10 @@ namespace QuasarEngine
 					layer->OnUpdate(deltaTime);
 			}
 
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerManager)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+			//m_ImGuiLayer->Begin();
+			//for (Layer* layer : m_LayerManager)
+			//	layer->OnImGuiRender();
+			//m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}

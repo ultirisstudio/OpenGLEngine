@@ -23,7 +23,6 @@ project "QuasarEngine-Core"
 	{
 		"src",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.filewatch}",
 		"%{IncludeDir.ImGui}",
@@ -50,13 +49,11 @@ project "QuasarEngine-Core"
 	links
 	{
 		"GLFW",
-		"Glad",
 		"assimp",
 		"ImGui",
 		"ImGuizmo",
 		"reactphysics3d",
 		"mbedtls",
-		"opengl32.lib",
 		
 		"%{Library.Vulkan}" --,
 		-- "%{Library.VulkanUtils}"

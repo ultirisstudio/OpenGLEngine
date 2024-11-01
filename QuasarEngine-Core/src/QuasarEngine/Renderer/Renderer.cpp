@@ -3,7 +3,6 @@
 #include <fstream>
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -110,7 +109,7 @@ namespace QuasarEngine {
 		}
 
 		//Render lines and triangles
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		DebugLineMesh lineMesh(lines);
 
@@ -130,21 +129,21 @@ namespace QuasarEngine {
 
 		triangleMesh.draw();
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		// Renderer
 
 		m_SceneData.m_Shader.use();
 
-		glActiveTexture(GL_TEXTURE0);
+		//glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
 
-		glActiveTexture(GL_TEXTURE1);
+		//glActiveTexture(GL_TEXTURE1);
 		m_SceneData.m_Scene->getSkybox().BindPrefilterMap();
 		m_SceneData.m_Shader.setUniform("uPrefilterMap", 1);
 
-		glActiveTexture(GL_TEXTURE2);
+		//glActiveTexture(GL_TEXTURE2);
 		m_SceneData.m_Scene->getSkybox().BindBrdfLUT();
 		m_SceneData.m_Shader.setUniform("uBrdfLUT", 2);
 
@@ -233,7 +232,7 @@ namespace QuasarEngine {
 
 				if (hasAlbedo)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* albedo = material.GetTexture(TextureType::Albedo);
 					if (albedo)
 						albedo->Bind();
@@ -243,7 +242,7 @@ namespace QuasarEngine {
 
 				if (hasNormal)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* normal = material.GetTexture(TextureType::Normal);
 					if (normal)
 						normal->Bind();
@@ -253,7 +252,7 @@ namespace QuasarEngine {
 
 				if (hasMetallic)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* metallic = material.GetTexture(TextureType::Metallic);
 					if (metallic)
 						metallic->Bind();
@@ -263,7 +262,7 @@ namespace QuasarEngine {
 
 				if (hasRoughness)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* roughness = material.GetTexture(TextureType::Roughness);
 					if (roughness)
 						roughness->Bind();
@@ -273,7 +272,7 @@ namespace QuasarEngine {
 
 				if (hasAO)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* ao = material.GetTexture(TextureType::AO);
 					if (ao)
 						ao->Bind();
@@ -289,7 +288,7 @@ namespace QuasarEngine {
 			if (entity.HasComponent<TerrainComponent>() && entity.GetComponent<TerrainComponent>().IsGenerated())
 			{
 				if (entity.GetComponent<TerrainComponent>().m_PolygonMode)
-					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 				entity.GetComponent<TerrainComponent>().GetShader().use();
 
@@ -297,12 +296,12 @@ namespace QuasarEngine {
 				entity.GetComponent<TerrainComponent>().GetShader().setUniform("view", viewMatrix);
 				entity.GetComponent<TerrainComponent>().GetShader().setUniform("model", transform);
 
-				glActiveTexture(GL_TEXTURE0 + nat);
+				//glActiveTexture(GL_TEXTURE0 + nat);
 				entity.GetComponent<TerrainComponent>().GetHeightMapTexture().Bind();
 				entity.GetComponent<TerrainComponent>().GetShader().setUniform("heightMap", nat);
 				nat++;
 
-				glActiveTexture(GL_TEXTURE0 + nat);
+				//glActiveTexture(GL_TEXTURE0 + nat);
 				if (entity.GetComponent<MaterialComponent>().GetMaterial().HasTexture(TextureType::Albedo))
 					entity.GetComponent<MaterialComponent>().GetMaterial().GetTexture(TextureType::Albedo)->Bind();
 				entity.GetComponent<TerrainComponent>().GetShader().setUniform("uTexture", nat);
@@ -313,7 +312,7 @@ namespace QuasarEngine {
 
 				entity.GetComponent<TerrainComponent>().Draw();
 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 				m_SceneData.m_Shader.use();
 			}
@@ -339,7 +338,7 @@ namespace QuasarEngine {
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);
 		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
 
-		glActiveTexture(GL_TEXTURE0);
+		//glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindCubeMap();
 		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
@@ -417,16 +416,16 @@ namespace QuasarEngine {
 	}
 
 	void Renderer::Clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void Renderer::ClearColor(const glm::vec4& color) {
-		glClearColor(color.r, color.g, color.b, color.a);
+		//glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
-		glViewport(x, y, width, height);
+		//glViewport(x, y, width, height);
 	}
 
 	Scene* Renderer::GetScene()

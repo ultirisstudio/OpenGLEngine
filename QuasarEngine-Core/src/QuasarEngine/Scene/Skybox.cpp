@@ -1,14 +1,13 @@
 #include "qepch.h"
 #include "Skybox.h"
 
-#include <glad/glad.h>
 #include <stb_image.h>
 
 namespace QuasarEngine
 {
 	void Skybox::RenderQuad()
 	{
-		if (quadVAO == 0)
+		/*if (quadVAO == 0)
 		{
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -30,12 +29,12 @@ namespace QuasarEngine
 		}
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBindVertexArray(0);
+		glBindVertexArray(0);*/
 	}
 
 	Skybox::Skybox()
 	{
-		//glDisable(GL_CULL_FACE);
+		/*glDisable(GL_CULL_FACE);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 		m_EquirectangularToCubemapShader.LoadFromFile("Assets/Shaders/cubemap.vert", "Assets/Shaders/equirectangular_to_cubemap.frag");
@@ -234,27 +233,27 @@ namespace QuasarEngine
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		RenderQuad();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 
 		//glEnable(GL_CULL_FACE);
 	}
 	void Skybox::BindCubeMap()
 	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 	}
 
 	void Skybox::BindIrradianceMap()
 	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 	}
 
 	void Skybox::BindPrefilterMap()
 	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
 	}
 
 	void Skybox::BindBrdfLUT()
 	{
-		glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+		//glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 	}
 }

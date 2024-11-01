@@ -1,15 +1,13 @@
 #include "qepch.h"
 #include <QuasarEngine/Resources/Mesh.h>
 
-#include <glad/glad.h>
-
 #include <glm/gtx/matrix_decompose.hpp>
 
 namespace QuasarEngine
 {
 	namespace Utils
 	{
-		static GLenum DrawModeToGLenum(DrawMode drawMode)
+		/*static GLenum DrawModeToGLenum(DrawMode drawMode)
 		{
 			switch (drawMode)
 			{
@@ -22,7 +20,7 @@ namespace QuasarEngine
 			case DrawMode::POINTS: return GL_POINTS;
 			}
 			return GL_TRIANGLES;
-		}
+		}*/
 	}
 
 	void Mesh::CalculateBoundingBoxSize(std::vector<Vertex> vertices)
@@ -81,27 +79,27 @@ namespace QuasarEngine
 
 	Mesh::~Mesh()
 	{
-		glDeleteVertexArrays(1, &m_vao);
-		glDeleteBuffers(1, &m_vbo);
-		glDeleteBuffers(1, &m_ebo);
+		//glDeleteVertexArrays(1, &m_vao);
+		//glDeleteBuffers(1, &m_vbo);
+		//glDeleteBuffers(1, &m_ebo);
 	}
 
 	// TODO : put DrawMode variable on draw fonction
 	void Mesh::draw() const
 	{
-		glBindVertexArray(m_vao);
+		/*glBindVertexArray(m_vao);
 
 		if (m_indices.empty())
 			glDrawArrays(Utils::DrawModeToGLenum(m_drawMode), 0, static_cast<GLsizei>(m_vertices.size()));
 		else
-			glDrawElements(Utils::DrawModeToGLenum(m_drawMode), static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(Utils::DrawModeToGLenum(m_drawMode), static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);*/
 	}
 
 	void Mesh::GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 	{
 		CalculateBoundingBoxSize(vertices);
 
-		glGenVertexArrays(1, &m_vao);
+		/*glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
 		glGenBuffers(1, &m_ebo);
 
@@ -120,7 +118,7 @@ namespace QuasarEngine
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
 
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));*/
 	}
 
 	bool Mesh::IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const

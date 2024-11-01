@@ -8,7 +8,6 @@
 #include "Log.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
 namespace QuasarEngine {
 
@@ -28,23 +27,13 @@ namespace QuasarEngine {
 			s_GLFWInitialized = true;
 		}
 
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
 		glfwMakeContextCurrent(m_Window);
 
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			std::cout << "Failed to initialize GLAD" << std::endl;
-			return;
-		}
-
-		Log::LogOpenGLInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		//glEnable(GL_CULL_FACE);
-		//glCullFace(GL_BACK);
-		//glDepthMask(GL_TRUE);
+		//Log::LogOpenGLInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 
 		SetVSync(true);
 

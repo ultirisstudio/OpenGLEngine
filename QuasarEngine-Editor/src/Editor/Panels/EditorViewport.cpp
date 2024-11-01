@@ -40,20 +40,20 @@ namespace QuasarEngine
 		Renderer::BeginScene(scene);
 		Renderer::Render(camera);
 
-		auto [mx, my] = ImGui::GetMousePos();
-		mx -= m_EditorViewportBounds[0].x;
-		my -= m_EditorViewportBounds[0].y;
+		//auto [mx, my] = ImGui::GetMousePos();
+		//mx -= m_EditorViewportBounds[0].x;
+		//my -= m_EditorViewportBounds[0].y;
 		glm::vec2 editorViewportSize = m_EditorViewportBounds[1] - m_EditorViewportBounds[0];
-		my = editorViewportSize.y - my;
-		int mouseX = (int)mx;
-		int mouseY = (int)my - m_WindowTitleBarSize[1];
+		//my = editorViewportSize.y - my;
+		//int mouseX = (int)mx;
+		//int mouseY = (int)my - m_WindowTitleBarSize[1];
 
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < editorViewportSize.x && mouseY < editorViewportSize.y)
-		{
-			int pixelData = m_EditorFrameBuffer->ReadPixel(1, mouseX, mouseY);
-
-			m_HoveredEntity = scene.GetEntityByUUID(pixelData);
-		}
+		//if (mouseX >= 0 && mouseY >= 0 && mouseX < editorViewportSize.x && mouseY < editorViewportSize.y)
+		//{
+		//	int pixelData = m_EditorFrameBuffer->ReadPixel(1, mouseX, mouseY);
+//
+		//	m_HoveredEntity = scene.GetEntityByUUID(pixelData);
+		//}
 
 		Renderer::RenderSkybox(camera);
 		Renderer::EndScene();

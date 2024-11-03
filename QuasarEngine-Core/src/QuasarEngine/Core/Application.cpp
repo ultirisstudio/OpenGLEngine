@@ -106,7 +106,7 @@ namespace QuasarEngine
 		}
 
 		m_Minimized = false;
-		Renderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+		RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
 		return false;
 	}

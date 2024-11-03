@@ -92,7 +92,7 @@ namespace QuasarEngine
 	{
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
-		Renderer::SetViewport(0, 0, static_cast<int>(width), static_cast<int>(height));
+		RenderCommand::SetViewport(0, 0, static_cast<int>(width), static_cast<int>(height));
 	}
 
 	void EditorCamera::OnEvent(Event& e)

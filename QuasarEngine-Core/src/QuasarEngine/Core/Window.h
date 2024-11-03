@@ -2,6 +2,7 @@
 
 #include "qepch.h"
 #include "QuasarEngine/Events/Event.h"
+#include "QuasarEngine/Renderer/GraphicsContext.h"
 #include <glm/glm.hpp>
 
 struct GLFWwindow;
@@ -48,6 +49,8 @@ namespace QuasarEngine {
 	private:
 		GLFWwindow* m_Window;
 		WindowData m_Data;
+
+		std::unique_ptr<GraphicsContext> m_Context;
 	};
 
 }

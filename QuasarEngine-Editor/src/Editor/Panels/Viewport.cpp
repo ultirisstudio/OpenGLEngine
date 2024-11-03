@@ -21,10 +21,10 @@ void QuasarEngine::Viewport::Render(SceneObject& sceneObject)
 
 	m_ViewportFrameBuffer->Bind();
 
-	Renderer::SetViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+	RenderCommand::SetViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
-	Renderer::Clear();
-	Renderer::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
+	RenderCommand::Clear();
+	RenderCommand::ClearColor(glm::vec4(0.5f, 0.5f, .5f, 1.0f));
 
 	Renderer::BeginScene(sceneObject.GetScene());
 	Renderer::Render(sceneObject.GetPrimaryCamera());
@@ -50,7 +50,7 @@ void QuasarEngine::Viewport::OnImGuiRender(SceneObject& sceneObject)
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
 		sceneObject.GetPrimaryCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
-		Renderer::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
+		RenderCommand::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{

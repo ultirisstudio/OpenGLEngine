@@ -42,6 +42,8 @@ namespace QuasarEngine {
 
 	void Renderer::Init()
 	{
+		RenderCommand::Init();
+
 		m_SceneData.m_Shader = Shader();
 		m_SceneData.m_Shader.LoadFromFile("Assets/Shaders/pbr_shader.vert", "Assets/Shaders/pbr_shader.frag");
 
@@ -416,19 +418,6 @@ namespace QuasarEngine {
 		}
 	}
 
-	void Renderer::Clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-
-	void Renderer::ClearColor(const glm::vec4& color) {
-		glClearColor(color.r, color.g, color.b, color.a);
-	}
-
-	void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-	{
-		glViewport(x, y, width, height);
-	}
-
 	Scene* Renderer::GetScene()
 	{
 		return m_SceneData.m_Scene;
@@ -437,6 +426,11 @@ namespace QuasarEngine {
 	double Renderer::GetTime()
 	{
 		return glfwGetTime();
+	}
+
+	RendererAPI::API Renderer::GetAPI()
+	{
+		return RendererAPI::GetAPI();
 	}
 
 	const glm::vec3& Renderer::DebugRenderData::GetColorFromUint_32t(uint32_t color)

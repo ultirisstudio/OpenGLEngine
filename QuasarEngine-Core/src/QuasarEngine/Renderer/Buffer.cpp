@@ -1,7 +1,8 @@
 #include "qepch.h"
 #include "QuasarEngine/Renderer/Buffer.h"
-
 #include "QuasarEngine/Renderer/Renderer.h"
+
+#include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace QuasarEngine {
 
@@ -10,18 +11,18 @@ namespace QuasarEngine {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    return nullptr;
-		//case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
 		}
 
 		return nullptr;
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(Vertex* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    return nullptr;
-		//case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		return nullptr;
@@ -32,7 +33,7 @@ namespace QuasarEngine {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    return nullptr;
-		//case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
 		}
 
 		return nullptr;

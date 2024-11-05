@@ -8,25 +8,22 @@
 
 #include <QuasarEngine/Tools/Math.h>
 
+
+#include <QuasarEngine/Renderer/VertexArray.h>
+#include <QuasarEngine/Renderer/Buffer.h>
+#include <QuasarEngine/Renderer/DrawMode.h>
+
 namespace QuasarEngine
 {
-	enum class DrawMode
-	{
-		TRIANGLES = 0,
-		TRIANGLE_STRIP,
-		TRIANGLE_FAN,
-		LINES,
-		LINE_STRIP,
-		LINE_LOOP,
-		POINTS
-	};
-
 	class Mesh : public Asset
 	{
 	private:
 		unsigned int m_vao;
 		unsigned int m_vbo;
 		unsigned int m_ebo;
+
+		std::shared_ptr<VertexArray> m_vertexArray;
+		std::shared_ptr<VertexBuffer> m_vertexBuffer;
 
 		DrawMode m_drawMode;
 

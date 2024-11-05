@@ -26,6 +26,16 @@ namespace QuasarEngine {
 		{
 			s_RendererAPI->Clear();
 		}
+
+		static void DrawArrays(DrawMode drawMode, uint32_t size)
+		{
+			s_RendererAPI->DrawArrays(drawMode, size);
+		}
+
+		static void DrawElements(DrawMode drawMode, uint32_t count)
+		{
+			s_RendererAPI->DrawElements(drawMode, count);
+		}
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
 	};

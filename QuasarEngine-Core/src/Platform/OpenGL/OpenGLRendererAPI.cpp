@@ -5,7 +5,27 @@
 #include <string>
 #include <glad/glad.h>
 
+#include "QuasarEngine/Renderer/DrawMode.h"
+
 namespace QuasarEngine {
+
+	namespace Utils
+	{
+		static GLenum DrawModeToGLenum(DrawMode drawMode)
+		{
+			switch (drawMode)
+			{
+			case DrawMode::TRIANGLES: return GL_TRIANGLES;
+			case DrawMode::TRIANGLE_STRIP: return GL_TRIANGLE_STRIP;
+			case DrawMode::TRIANGLE_FAN: return GL_TRIANGLE_FAN;
+			case DrawMode::LINES: return GL_LINES;
+			case DrawMode::LINE_STRIP: return GL_LINE_STRIP;
+			case DrawMode::LINE_LOOP: return GL_LINE_LOOP;
+			case DrawMode::POINTS: return GL_POINTS;
+			}
+			return GL_TRIANGLES;
+		}
+	}
 
 	void OpenGLMessageCallback(
 		unsigned source,
@@ -56,5 +76,15 @@ namespace QuasarEngine {
 	void OpenGLRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void OpenGLRendererAPI::DrawArrays(DrawMode drawMode, uint32_t size)
+	{
+		glDrawArrays(Utils::DrawModeToGLenum(drawMode), 0, static_cast<GLsizei>(size));
+	}
+
+	void OpenGLRendererAPI::DrawElements(DrawMode drawMode, uint32_t count)
+	{
+		glDrawElements(Utils::DrawModeToGLenum(drawMode), static_cast<GLsizei>(count), GL_UNSIGNED_INT, nullptr);
 	}
 }

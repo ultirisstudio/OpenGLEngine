@@ -12,5 +12,8 @@ namespace QuasarEngine {
 
 		virtual void ClearColor(const glm::vec4& color) override;
 		virtual void Clear() override;
+
+		virtual void DrawArrays(DrawMode drawMode, uint32_t size) override;
+		virtual void DrawElements(DrawMode drawMode, uint32_t count) override;
 	};
 }

@@ -18,14 +18,14 @@ namespace QuasarEngine
 		{
 			Scene* m_Scene;
 			std::unique_ptr<ResourceManager> m_ResourceManager;
-			Shader m_Shader;
+			std::shared_ptr<Shader> m_Shader;
 		};
 		static SceneData m_SceneData;
 
 		struct DebugRenderData
 		{
-			Shader m_DebugLineShader;
-			Shader m_DebugTriangleShader;
+			std::shared_ptr<Shader> m_DebugLineShader;
+			std::shared_ptr<Shader> m_DebugTriangleShader;
 
 			const glm::vec3& GetColorFromUint_32t(uint32_t color);
 		};

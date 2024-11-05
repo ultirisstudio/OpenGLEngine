@@ -38,16 +38,37 @@ namespace QuasarEngine
 		//glDisable(GL_CULL_FACE);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-		m_EquirectangularToCubemapShader.LoadFromFile("Assets/Shaders/cubemap.vert", "Assets/Shaders/equirectangular_to_cubemap.frag");
-		m_IrradianceShader.LoadFromFile("Assets/Shaders/cubemap.vert", "Assets/Shaders/irradiance_convolution.frag");
-		m_BackgroundShader.LoadFromFile("Assets/Shaders/background.vert", "Assets/Shaders/background.frag");
-		m_PrefilterShader.LoadFromFile("Assets/Shaders/cubemap.vert", "Assets/Shaders/prefilter.frag");
-		m_BrdfShader.LoadFromFile("Assets/Shaders/brdf.vert", "Assets/Shaders/brdf.frag");
+		ShaderFile equirectangularShaderFiles;
+		equirectangularShaderFiles.vertexShaderFile = "Assets/Shaders/cubemap.vert";
+		equirectangularShaderFiles.fragmentShaderFile = "Assets/Shaders/equirectangular_to_cubemap.frag";
+
+		ShaderFile irradianceShaderFiles;
+		irradianceShaderFiles.vertexShaderFile = "Assets/Shaders/cubemap.vert";
+		irradianceShaderFiles.fragmentShaderFile = "Assets/Shaders/irradiance_convolution.frag";
+
+		ShaderFile backgroundShaderFiles;
+		backgroundShaderFiles.vertexShaderFile = "Assets/Shaders/background.vert";
+		backgroundShaderFiles.fragmentShaderFile = "Assets/Shaders/background.frag";
+		
+		ShaderFile prefilterShaderFiles;
+		prefilterShaderFiles.vertexShaderFile = "Assets/Shaders/cubemap.vert";
+		prefilterShaderFiles.fragmentShaderFile = "Assets/Shaders/prefilter.frag";
+
+		ShaderFile brdfShaderFiles;
+		brdfShaderFiles.vertexShaderFile = "Assets/Shaders/brdf.vert";
+		brdfShaderFiles.fragmentShaderFile = "Assets/Shaders/brdf.frag";
+
+
+		m_EquirectangularToCubemapShader = Shader::Create(equirectangularShaderFiles);
+		m_IrradianceShader = Shader::Create(irradianceShaderFiles);
+		m_BackgroundShader = Shader::Create(backgroundShaderFiles);
+		m_PrefilterShader = Shader::Create(prefilterShaderFiles);
+		m_BrdfShader = Shader::Create(brdfShaderFiles);
 
 		m_Model = Model::CreateModel("Assets\\Models\\cube.obj");
 
-		m_BackgroundShader.use();
-		m_BackgroundShader.setUniform("environmentMap", 0);
+		m_BackgroundShader->use();
+		m_BackgroundShader->setUniform("environmentMap", 0);
 
 		unsigned int res = 2048;
 
@@ -105,9 +126,9 @@ namespace QuasarEngine
 			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 		};
 
-		m_EquirectangularToCubemapShader.use();
-		m_EquirectangularToCubemapShader.setUniform("equirectangularMap", 0);
-		m_EquirectangularToCubemapShader.setUniform("projection", captureProjection);
+		m_EquirectangularToCubemapShader->use();
+		m_EquirectangularToCubemapShader->setUniform("equirectangularMap", 0);
+		m_EquirectangularToCubemapShader->setUniform("projection", captureProjection);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, hdrTexture);
 
@@ -115,7 +136,7 @@ namespace QuasarEngine
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			m_EquirectangularToCubemapShader.setUniform("view", captureViews[i]);
+			m_EquirectangularToCubemapShader->setUniform("view", captureViews[i]);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -143,9 +164,9 @@ namespace QuasarEngine
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
-		m_IrradianceShader.use();
-		m_IrradianceShader.setUniform("environmentMap", 0);
-		m_IrradianceShader.setUniform("projection", captureProjection);
+		m_IrradianceShader->use();
+		m_IrradianceShader->setUniform("environmentMap", 0);
+		m_IrradianceShader->setUniform("projection", captureProjection);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 
@@ -153,7 +174,7 @@ namespace QuasarEngine
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			m_IrradianceShader.setUniform("view", captureViews[i]);
+			m_IrradianceShader->setUniform("view", captureViews[i]);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -180,9 +201,9 @@ namespace QuasarEngine
 
 		// pbr: run a quasi monte-carlo simulation on the environment lighting to create a prefilter (cube)map.
 		// ----------------------------------------------------------------------------------------------------
-		m_PrefilterShader.use();
-		m_PrefilterShader.setUniform("environmentMap", 0);
-		m_PrefilterShader.setUniform("projection", captureProjection);
+		m_PrefilterShader->use();
+		m_PrefilterShader->setUniform("environmentMap", 0);
+		m_PrefilterShader->setUniform("projection", captureProjection);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
 
@@ -198,10 +219,10 @@ namespace QuasarEngine
 			glViewport(0, 0, mipWidth, mipHeight);
 
 			float roughness = (float)mip / (float)(maxMipLevels - 1);
-			m_PrefilterShader.setUniform("roughness", roughness);
+			m_PrefilterShader->setUniform("roughness", roughness);
 			for (unsigned int i = 0; i < 6; ++i)
 			{
-				m_PrefilterShader.setUniform("view", captureViews[i]);
+				m_PrefilterShader->setUniform("view", captureViews[i]);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -230,7 +251,7 @@ namespace QuasarEngine
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
 
 		glViewport(0, 0, res, res);
-		m_BrdfShader.use();
+		m_BrdfShader->use();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		RenderQuad();
 

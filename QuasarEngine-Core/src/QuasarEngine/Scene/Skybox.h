@@ -14,11 +14,11 @@ namespace QuasarEngine
 	private:
 		std::shared_ptr<Model> m_Model;
 
-		Shader m_EquirectangularToCubemapShader;
-		Shader m_IrradianceShader;
-		Shader m_BackgroundShader;
-		Shader m_PrefilterShader;
-		Shader m_BrdfShader;
+		std::shared_ptr<Shader> m_EquirectangularToCubemapShader;
+		std::shared_ptr<Shader> m_IrradianceShader;
+		std::shared_ptr<Shader> m_BackgroundShader;
+		std::shared_ptr<Shader> m_PrefilterShader;
+		std::shared_ptr<Shader> m_BrdfShader;
 
 		unsigned int hdrTexture;
 		unsigned int envCubemap;
@@ -41,9 +41,9 @@ namespace QuasarEngine
 
 		void BindBrdfLUT();
 
-		Shader* GetShader()
+		std::shared_ptr<Shader> GetShader()
 		{
-			return &m_BackgroundShader;
+			return m_BackgroundShader;
 		}
 
 		Model* GetModel()

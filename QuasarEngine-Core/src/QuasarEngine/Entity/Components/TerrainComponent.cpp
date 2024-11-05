@@ -12,8 +12,13 @@ namespace QuasarEngine
 {
 	TerrainComponent::TerrainComponent() : terrainVAO(0)
 	{
-		m_Shader = std::make_shared<Shader>();
-		m_Shader->LoadFromFile("Shaders/gpuheight.vs", "Shaders/gpuheight.fs", "Shaders/gpuheight.tcs", "Shaders/gpuheight.tes");
+		ShaderFile shaderFiles;
+		shaderFiles.vertexShaderFile = "Shaders/gpuheight.vs";
+		shaderFiles.fragmentShaderFile = "Shaders/gpuheight.fs";
+		shaderFiles.tessControlShaderFile = "Shaders/gpuheight.tcs";
+		shaderFiles.tessEvaluationShaderFile = "Shaders/gpuheight.tes";
+
+		m_Shader = Shader::Create(shaderFiles);
 
 		glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &m_MaxTessLevel);
 		std::cout << "Max available tess level: " << m_MaxTessLevel << std::endl;

@@ -44,16 +44,25 @@ namespace QuasarEngine {
 	{
 		RenderCommand::Init();
 
-		m_SceneData.m_Shader = Shader();
-		m_SceneData.m_Shader.LoadFromFile("Assets/Shaders/pbr_shader.vert", "Assets/Shaders/pbr_shader.frag");
+		ShaderFile shaderFiles;
+		shaderFiles.vertexShaderFile = "Assets/Shaders/pbr_shader.vert";
+		shaderFiles.fragmentShaderFile = "Assets/Shaders/pbr_shader.frag";
+
+		m_SceneData.m_Shader = Shader::Create(shaderFiles);
 
 		m_SceneData.m_ResourceManager = std::make_unique<ResourceManager>();
 
-		m_DebugRenderData.m_DebugTriangleShader = Shader();
-		m_DebugRenderData.m_DebugTriangleShader.LoadFromFile("Assets/Shaders/debug_triangle.vert", "Assets/Shaders/debug_triangle.frag");
+		ShaderFile debugTriangleShaderFiles;
+		debugTriangleShaderFiles.vertexShaderFile = "Assets/Shaders/debug_triangle.vert";
+		debugTriangleShaderFiles.fragmentShaderFile = "Assets/Shaders/debug_triangle.frag";
 
-		m_DebugRenderData.m_DebugLineShader = Shader();
-		m_DebugRenderData.m_DebugLineShader.LoadFromFile("Assets/Shaders/debug_line.vert", "Assets/Shaders/debug_line.frag");
+		m_DebugRenderData.m_DebugTriangleShader = Shader::Create(debugTriangleShaderFiles);
+
+		ShaderFile debugLineShaderFiles;
+		debugLineShaderFiles.vertexShaderFile = "Assets/Shaders/debug_line.vert";
+		debugLineShaderFiles.fragmentShaderFile = "Assets/Shaders/debug_line.frag";
+
+		m_DebugRenderData.m_DebugLineShader = Shader::Create(debugLineShaderFiles);
 	}
 
 	void Renderer::BeginScene(Scene& scene)
@@ -116,19 +125,19 @@ namespace QuasarEngine {
 
 		DebugLineMesh lineMesh(lines);
 
-		m_DebugRenderData.m_DebugLineShader.use();
+		m_DebugRenderData.m_DebugLineShader->use();
 
-		m_DebugRenderData.m_DebugLineShader.setUniform("view", viewMatrix);
-		m_DebugRenderData.m_DebugLineShader.setUniform("projection", projectionMatrix);
+		m_DebugRenderData.m_DebugLineShader->setUniform("view", viewMatrix);
+		m_DebugRenderData.m_DebugLineShader->setUniform("projection", projectionMatrix);
 
 		lineMesh.draw();
 
 		DebugTriangleMesh triangleMesh(triangles);
 
-		m_DebugRenderData.m_DebugTriangleShader.use();
+		m_DebugRenderData.m_DebugTriangleShader->use();
 
-		m_DebugRenderData.m_DebugTriangleShader.setUniform("view", viewMatrix);
-		m_DebugRenderData.m_DebugTriangleShader.setUniform("projection", projectionMatrix);
+		m_DebugRenderData.m_DebugTriangleShader->setUniform("view", viewMatrix);
+		m_DebugRenderData.m_DebugTriangleShader->setUniform("projection", projectionMatrix);
 
 		triangleMesh.draw();
 
@@ -136,24 +145,24 @@ namespace QuasarEngine {
 
 		// Renderer
 
-		m_SceneData.m_Shader.use();
+		m_SceneData.m_Shader->use();
 
 		glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-		m_SceneData.m_Shader.setUniform("uIrradianceMap", 0);
+		m_SceneData.m_Shader->setUniform("uIrradianceMap", 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		m_SceneData.m_Scene->getSkybox().BindPrefilterMap();
-		m_SceneData.m_Shader.setUniform("uPrefilterMap", 1);
+		m_SceneData.m_Shader->setUniform("uPrefilterMap", 1);
 
 		glActiveTexture(GL_TEXTURE2);
 		m_SceneData.m_Scene->getSkybox().BindBrdfLUT();
-		m_SceneData.m_Shader.setUniform("uBrdfLUT", 2);
+		m_SceneData.m_Shader->setUniform("uBrdfLUT", 2);
 
 		glm::vec3 position;
 		glm::decompose(camera.GetTransform(), glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
 		
-		m_SceneData.m_Shader.setUniform("uCameraPosition", position);
+		m_SceneData.m_Shader->setUniform("uCameraPosition", position);
 
 		int dirLightCount = 0;
 		int pointLightCount = 0;
@@ -164,7 +173,7 @@ namespace QuasarEngine {
 		for (auto e : m_SceneData.m_Scene->GetAllEntitiesWith<IDComponent>())
 		{
 			Entity entity{ e, m_SceneData.m_Scene->GetRegistry()};
-			m_SceneData.m_Shader.setUniform("uEntity", entity.GetUUID());
+			m_SceneData.m_Shader->setUniform("uEntity", entity.GetUUID());
 
 			int nat = 3;
 
@@ -175,18 +184,18 @@ namespace QuasarEngine {
 				auto& lc = entity.GetComponent<LightComponent>();
 				if (lc.lightType == LightComponent::LightType::DIRECTIONAL)
 				{
-					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].direction", entity.GetComponent<TransformComponent>().Rotation);
-					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].color", lc.dir_color);
-					m_SceneData.m_Shader.setUniform("uDirLights[" + std::to_string(dirLightCount) + "].power", lc.dir_power);
+					m_SceneData.m_Shader->setUniform("uDirLights[" + std::to_string(dirLightCount) + "].direction", entity.GetComponent<TransformComponent>().Rotation);
+					m_SceneData.m_Shader->setUniform("uDirLights[" + std::to_string(dirLightCount) + "].color", lc.dir_color);
+					m_SceneData.m_Shader->setUniform("uDirLights[" + std::to_string(dirLightCount) + "].power", lc.dir_power);
 
 					dirLightCount++;
 				}
 				else if (lc.lightType == LightComponent::LightType::POINT)
 				{
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity.GetComponent<TransformComponent>().Position);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].attenuation", lc.point_attenuation);
-					m_SceneData.m_Shader.setUniform("uPointLights[" + std::to_string(pointLightCount) + "].power", lc.point_power);
+					m_SceneData.m_Shader->setUniform("uPointLights[" + std::to_string(pointLightCount) + "].position", entity.GetComponent<TransformComponent>().Position);
+					m_SceneData.m_Shader->setUniform("uPointLights[" + std::to_string(pointLightCount) + "].color", lc.point_color);
+					m_SceneData.m_Shader->setUniform("uPointLights[" + std::to_string(pointLightCount) + "].attenuation", lc.point_attenuation);
+					m_SceneData.m_Shader->setUniform("uPointLights[" + std::to_string(pointLightCount) + "].power", lc.point_power);
 
 					pointLightCount++;
 				}
@@ -211,15 +220,15 @@ namespace QuasarEngine {
 
 				Material& material = entity.GetComponent<MaterialComponent>().GetMaterial();
 
-				m_SceneData.m_Shader.setUniform("uModel", transform);
-				m_SceneData.m_Shader.setUniform("uView", viewMatrix);
-				m_SceneData.m_Shader.setUniform("uProjection", projectionMatrix);
-				m_SceneData.m_Shader.setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
+				m_SceneData.m_Shader->setUniform("uModel", transform);
+				m_SceneData.m_Shader->setUniform("uView", viewMatrix);
+				m_SceneData.m_Shader->setUniform("uProjection", projectionMatrix);
+				m_SceneData.m_Shader->setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
 
-				m_SceneData.m_Shader.setUniform("uMaterial.albedoColor", material.GetAlbedo());
-				m_SceneData.m_Shader.setUniform("uMaterial.metallic", material.GetMetallic());
-				m_SceneData.m_Shader.setUniform("uMaterial.roughness", material.GetRoughness());
-				m_SceneData.m_Shader.setUniform("uMaterial.ao", material.GetAO());
+				m_SceneData.m_Shader->setUniform("uMaterial.albedoColor", material.GetAlbedo());
+				m_SceneData.m_Shader->setUniform("uMaterial.metallic", material.GetMetallic());
+				m_SceneData.m_Shader->setUniform("uMaterial.roughness", material.GetRoughness());
+				m_SceneData.m_Shader->setUniform("uMaterial.ao", material.GetAO());
 
 				bool hasAlbedo = material.HasTexture(TextureType::Albedo);
 				bool hasNormal = material.HasTexture(TextureType::Normal);
@@ -227,11 +236,11 @@ namespace QuasarEngine {
 				bool hasRoughness = material.HasTexture(TextureType::Roughness);
 				bool hasAO = material.HasTexture(TextureType::AO);
 
-				m_SceneData.m_Shader.setUniform("uMaterial.use_albedo_texture", hasAlbedo);
-				m_SceneData.m_Shader.setUniform("uMaterial.use_normal_texture", hasNormal);
-				m_SceneData.m_Shader.setUniform("uMaterial.use_metallic_texture", hasMetallic);
-				m_SceneData.m_Shader.setUniform("uMaterial.use_roughness_texture", hasRoughness);
-				m_SceneData.m_Shader.setUniform("uMaterial.use_ao_texture", hasAO);
+				m_SceneData.m_Shader->setUniform("uMaterial.use_albedo_texture", hasAlbedo);
+				m_SceneData.m_Shader->setUniform("uMaterial.use_normal_texture", hasNormal);
+				m_SceneData.m_Shader->setUniform("uMaterial.use_metallic_texture", hasMetallic);
+				m_SceneData.m_Shader->setUniform("uMaterial.use_roughness_texture", hasRoughness);
+				m_SceneData.m_Shader->setUniform("uMaterial.use_ao_texture", hasAO);
 
 				if (hasAlbedo)
 				{
@@ -240,7 +249,7 @@ namespace QuasarEngine {
 					if (albedo)
 						albedo->Bind();
 				}
-				m_SceneData.m_Shader.setUniform("uMaterial.albedoMap", nat);
+				m_SceneData.m_Shader->setUniform("uMaterial.albedoMap", nat);
 				nat++;
 
 				if (hasNormal)
@@ -250,7 +259,7 @@ namespace QuasarEngine {
 					if (normal)
 						normal->Bind();
 				}
-				m_SceneData.m_Shader.setUniform("uMaterial.normalMap", nat);
+				m_SceneData.m_Shader->setUniform("uMaterial.normalMap", nat);
 				nat++;
 
 				if (hasMetallic)
@@ -260,7 +269,7 @@ namespace QuasarEngine {
 					if (metallic)
 						metallic->Bind();
 				}
-				m_SceneData.m_Shader.setUniform("uMaterial.metallicMap", nat);
+				m_SceneData.m_Shader->setUniform("uMaterial.metallicMap", nat);
 				nat++;
 
 				if (hasRoughness)
@@ -270,7 +279,7 @@ namespace QuasarEngine {
 					if (roughness)
 						roughness->Bind();
 				}
-				m_SceneData.m_Shader.setUniform("uMaterial.roughnessMap", nat);
+				m_SceneData.m_Shader->setUniform("uMaterial.roughnessMap", nat);
 				nat++;
 
 				if (hasAO)
@@ -280,7 +289,7 @@ namespace QuasarEngine {
 					if (ao)
 						ao->Bind();
 				}
-				m_SceneData.m_Shader.setUniform("uMaterial.aoMap", nat);
+				m_SceneData.m_Shader->setUniform("uMaterial.aoMap", nat);
 				nat++;
 
 				entity.GetComponent<MeshComponent>().GetMesh().draw();
@@ -317,12 +326,12 @@ namespace QuasarEngine {
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-				m_SceneData.m_Shader.use();
+				m_SceneData.m_Shader->use();
 			}
 		}
 
-		m_SceneData.m_Shader.setUniform("uUseDirLight", dirLightCount);
-		m_SceneData.m_Shader.setUniform("uUsePointLight", pointLightCount);
+		m_SceneData.m_Shader->setUniform("uUseDirLight", dirLightCount);
+		m_SceneData.m_Shader->setUniform("uUsePointLight", pointLightCount);
 
 		//std::cout << entityDraw << "/" << totalEntity << std::endl;
 	}

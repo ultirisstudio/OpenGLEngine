@@ -33,7 +33,7 @@ namespace QuasarEngine
 		}
 
 		ImGui::Begin("Content Browser");
-
+		
 		if (m_CurrentDirectory != std::filesystem::path(m_BaseDirectory))
 		{
 			if (ImGui::Button("<-"))
@@ -76,7 +76,7 @@ namespace QuasarEngine
 			if (directoryEntry.is_directory())
 			{
 				icon = m_DirectoryIcon;
-			} 
+			}
 			else if (extension == "obj" || extension == "dae" || extension == "fbx" || extension == "glb" || extension == "gltf")
 			{
 				icon = m_FileOBJIcon;
@@ -90,7 +90,7 @@ namespace QuasarEngine
 				else
 				{
 					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
-					
+
 					Renderer::m_SceneData.m_ResourceManager->mt_CreateTexture(itemPath, spec);
 
 					icon = m_FilePNGIcon;
@@ -102,7 +102,7 @@ namespace QuasarEngine
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 
 			if (ImGui::BeginPopupContextItem())
 			{

@@ -66,41 +66,6 @@ namespace QuasarEngine
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
 
-		//ScriptEngine::SetAssemblyPath(std::filesystem::current_path().generic_string() + "\\Scripts\\QuasarEngine-ScriptCore.dll");
-		//ScriptEngine::SetAppAssemblyPath(m_Specification.ProjectPath + "\\Scripts\\Build\\" + m_Specification.ProjectName + ".dll");
-
-		//ScriptEngine::ReloadAssembly();
-
-		/*auto lua = std::make_shared<sol::state>();
-
-		if (!lua)
-		{
-			std::cerr << "Failed to create the lua state !" << std::endl;
-		}
-
-		lua->open_libraries(sol::lib::base, sol::lib::math, sol::lib::os, sol::lib::table, sol::lib::io, sol::lib::string);
-
-		if (!m_SceneManager->getActiveScene().GetRegistry().AddToContext<std::shared_ptr<sol::state>>(lua))
-		{
-			std::cerr << "Failed to add the sol::state to the registry context !" << std::endl;
-		}
-
-		auto scriptSystem = std::make_shared<LuaScriptEngine>(&m_SceneManager->getActiveScene());
-		if (!scriptSystem)
-		{
-			std::cerr << "Failed to create script system !" << std::endl;
-		}
-
-		if (!scriptSystem->loadMainScript(*lua))
-		{
-			std::cerr << "Failed to load the main script lua !" << std::endl;	
-		}
-
-		if (!m_SceneManager->getActiveScene().GetRegistry().AddToContext<std::shared_ptr<LuaScriptEngine>>(scriptSystem))
-		{
-			std::cerr << "Failed to add LuaScriptEngine to the registry context !" << std::endl;
-		}*/
-
 		//////////////////////////////////////////////
 
 		/*mbedtls_aes_context aes;
@@ -151,37 +116,37 @@ namespace QuasarEngine
 
 	void Editor::OnDetach()
 	{
-		//ScriptEngine::Shutdown();
 		PhysicEngine::Shutdown();
 	}
 
 	void Editor::OnUpdate(double dt)
 	{
 		CalculateLatency();
-		Application::Get().GetWindow().SetTitle("Quasar Editor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
 
-		m_EditorCamera->Update();
-
-		m_SceneManager->update(dt);
-
-		m_EditorViewport->Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
-		m_EditorViewport->Update(*m_EditorCamera);
-
-		m_Viewport->Render(m_SceneManager->GetSceneObject());
-
-		Renderer::m_SceneData.m_ResourceManager->Update(dt);
-
-		if (Input::IsKeyPressed(Key::LeftControl))
+		double currentTime = Renderer::GetTime();
+		if (currentTime - update_last_time >= (1.0 / 120.0))
 		{
-			if (Input::IsKeyPressed(Key::S))
-			{
-				m_SceneManager->SaveScene();
-			}
-		}
+			m_EditorCamera->Update();
 
-		//auto& scriptSystem = m_SceneManager->getActiveScene().GetRegistry().GetContext<std::shared_ptr<LuaScriptEngine>>();
-		//scriptSystem->Update();
-		//scriptSystem->Render();
+			m_SceneManager->update(dt);
+
+			m_EditorViewport->Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
+			m_EditorViewport->Update(*m_EditorCamera);
+
+			m_Viewport->Render(m_SceneManager->GetSceneObject());
+
+			Renderer::m_SceneData.m_ResourceManager->Update(dt);
+
+			if (Input::IsKeyPressed(Key::LeftControl))
+			{
+				if (Input::IsKeyPressed(Key::S))
+				{
+					m_SceneManager->SaveScene();
+				}
+			}
+
+			update_last_time += (1.0 / 120.0);
+		}
 	}
 
 	void Editor::OnImGuiRender()
@@ -567,6 +532,8 @@ namespace QuasarEngine
 			fps = nb_frame;
 			nb_frame = 0;
 			last_time += 1.0;
+
+			Application::Get().GetWindow().SetTitle("Quasar Editor [" + std::to_string(fps) + ":" + std::to_string(latency) + "]");
 		}
 	}
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <QuasarEngine/Resources/Texture.h>
-
 #include <filesystem>
 
 #include "TextureViewerPanel.h"
+
+#include <QuasarEngine/Resources/Texture.h>
 
 namespace QuasarEngine
 {

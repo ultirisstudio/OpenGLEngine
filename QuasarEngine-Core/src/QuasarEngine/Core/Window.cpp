@@ -130,16 +130,26 @@ namespace QuasarEngine {
 		Shutdown();
 	}
 
+	void Window::PollEvents()
+	{
+		glfwPollEvents();
+	}
+
+	void Window::SwapBuffers()
+	{
+		glfwSwapBuffers(m_Window);
+	}
+
 	void Window::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
 	}
 
-	void Window::OnUpdate()
+	/*void Window::OnUpdate()
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
-	}
+	}*/
 
 	void Window::SetVSync(bool enabled)
 	{

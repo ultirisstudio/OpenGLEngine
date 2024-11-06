@@ -5,6 +5,8 @@
 
 #include "../Editor.h"
 
+#include "../SceneManager.h"
+
 #include <QuasarEngine/Core/Application.h>
 #include <QuasarEngine/Entity/Components/TransformComponent.h>
 #include <QuasarEngine/Entity/Components/HierarchyComponent.h>
@@ -29,7 +31,7 @@ namespace QuasarEngine
 	}
 
 	void EditorViewport::Render(Scene& scene, EditorCamera& camera)
-	{
+	{		
 		m_EditorFrameBuffer->Bind();
 
 		RenderCommand::Clear();
@@ -87,6 +89,7 @@ namespace QuasarEngine
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Editor");
+
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 

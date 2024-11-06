@@ -82,12 +82,20 @@ namespace QuasarEngine
 					layer->OnUpdate(deltaTime);
 			}
 
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerManager)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+			double currentTime = Renderer::GetTime();
+			if (currentTime - last_time >= (1.0 / 120.0))
+			{
+				m_ImGuiLayer->Begin();
+				for (Layer* layer : m_LayerManager)
+					layer->OnImGuiRender();
+				m_ImGuiLayer->End();
 
-			m_Window->OnUpdate();
+				//m_Window->OnUpdate();
+				m_Window->SwapBuffers();
+				m_Window->PollEvents();
+
+				last_time += (1.0 / 120.0);
+			}
 		}
 	}
 

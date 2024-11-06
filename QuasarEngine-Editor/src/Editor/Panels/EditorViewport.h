@@ -9,6 +9,7 @@
 
 #include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Renderer/Framebuffer.h>
+#include <QuasarEngine/Renderer/Renderer.h>
 
 namespace QuasarEngine
 {
@@ -38,5 +39,7 @@ namespace QuasarEngine
 		Entity m_HoveredEntity = {};
 
 		int m_GizmoType = -1;
+
+		double last_time = Renderer::GetTime();
 	};
 }

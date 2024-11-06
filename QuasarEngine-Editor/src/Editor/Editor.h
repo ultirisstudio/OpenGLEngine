@@ -83,5 +83,8 @@ namespace QuasarEngine
 		double entityPropertieElapsedTime = 0;
 		double sceneHierarchyElapsedTime = 0;
 		double contentBrowserElapsedTime = 0;
+
+	private:
+		double update_last_time = Renderer::GetTime();
 	};
 }

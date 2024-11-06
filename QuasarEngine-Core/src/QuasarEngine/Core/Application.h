@@ -74,6 +74,8 @@ namespace QuasarEngine
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerManager m_LayerManager;
+
+		double last_time = Renderer::GetTime();
 	};
 
 	Application* CreateApplication(ApplicationCommandLineArgs args);

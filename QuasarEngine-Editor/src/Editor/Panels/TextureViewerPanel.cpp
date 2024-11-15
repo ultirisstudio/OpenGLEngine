@@ -46,12 +46,12 @@ namespace QuasarEngine
 			const char* wrap_items[] = { "Repeat", "Mirrored Repeat", "Clamp to Edge", "Clamp to Border" };
 			const char* filter_items[] = { "Nearest", "Linear", "Nearest Mipmap Nearest", "Linear Mipmap Nearest", "Nearest Mipmap Linear", "Linear Mipmap Linear" };
 
-			const char* wrap_r_current_item = Utils::TextureWrapToChar(m_Specification.wrap_r);
-			const char* wrap_s_current_item = Utils::TextureWrapToChar(m_Specification.wrap_s);
-			const char* wrap_t_current_item = Utils::TextureWrapToChar(m_Specification.wrap_t);
+			const char* wrap_r_current_item = TextureUtils::TextureWrapToChar(m_Specification.wrap_r);
+			const char* wrap_s_current_item = TextureUtils::TextureWrapToChar(m_Specification.wrap_s);
+			const char* wrap_t_current_item = TextureUtils::TextureWrapToChar(m_Specification.wrap_t);
 
-			const char* min_filter_current_item = Utils::TextureFilterToChar(m_Specification.min_filter_param);
-			const char* mag_filter_current_item = Utils::TextureFilterToChar(m_Specification.mag_filter_param);
+			const char* min_filter_current_item = TextureUtils::TextureFilterToChar(m_Specification.min_filter_param);
+			const char* mag_filter_current_item = TextureUtils::TextureFilterToChar(m_Specification.mag_filter_param);
 
 			if (ImGui::BeginCombo("Wrap R", wrap_r_current_item))
 			{
@@ -60,7 +60,7 @@ namespace QuasarEngine
 					bool is_selected = (wrap_r_current_item == wrap_items[n]);
 					if (ImGui::Selectable(wrap_items[n], is_selected))
 					{
-						m_Specification.wrap_r = Utils::CharToTextureWrap(wrap_items[n]);
+						m_Specification.wrap_r = TextureUtils::CharToTextureWrap(wrap_items[n]);
 					}
 					if (is_selected)
 						ImGui::SetItemDefaultFocus();
@@ -75,7 +75,7 @@ namespace QuasarEngine
 					bool is_selected = (wrap_s_current_item == wrap_items[n]);
 					if (ImGui::Selectable(wrap_items[n], is_selected))
 					{
-						m_Specification.wrap_s = Utils::CharToTextureWrap(wrap_items[n]);
+						m_Specification.wrap_s = TextureUtils::CharToTextureWrap(wrap_items[n]);
 					}
 					if (is_selected)
 						ImGui::SetItemDefaultFocus();
@@ -90,7 +90,7 @@ namespace QuasarEngine
 					bool is_selected = (wrap_t_current_item == wrap_items[n]);
 					if (ImGui::Selectable(wrap_items[n], is_selected))
 					{
-						m_Specification.wrap_t = Utils::CharToTextureWrap(wrap_items[n]);
+						m_Specification.wrap_t = TextureUtils::CharToTextureWrap(wrap_items[n]);
 					}
 					if (is_selected)
 						ImGui::SetItemDefaultFocus();
@@ -105,7 +105,7 @@ namespace QuasarEngine
 					bool is_selected = (min_filter_current_item == filter_items[n]);
 					if (ImGui::Selectable(filter_items[n], is_selected))
 					{
-						m_Specification.min_filter_param = Utils::CharToTextureFilter(filter_items[n]);
+						m_Specification.min_filter_param = TextureUtils::CharToTextureFilter(filter_items[n]);
 					}
 					if (is_selected)
 						ImGui::SetItemDefaultFocus();
@@ -120,7 +120,7 @@ namespace QuasarEngine
 					bool is_selected = (mag_filter_current_item == filter_items[n]);
 					if (ImGui::Selectable(filter_items[n], is_selected))
 					{
-						m_Specification.mag_filter_param = Utils::CharToTextureFilter(filter_items[n]);
+						m_Specification.mag_filter_param = TextureUtils::CharToTextureFilter(filter_items[n]);
 					}
 					if (is_selected)
 						ImGui::SetItemDefaultFocus();

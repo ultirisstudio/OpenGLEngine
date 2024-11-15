@@ -21,7 +21,7 @@ namespace QuasarEngine {
 		if (!status)
 			std::cout << "Failed to initialize GLAD" << std::endl;
 
-		Log::LogOpenGLInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
+		Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::SwapBuffers()

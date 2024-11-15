@@ -84,6 +84,7 @@ namespace QuasarEngine
 		{
 			aiString str;
 			material->GetTexture(aiTextureType_DIFFUSE, i, &str);
+			//std::cout << str.C_Str() << std::endl;
 			std::filesystem::path diffusePath = str.C_Str();
 			mat.AlbedoTexture = diffusePath.filename().string();
 		}
@@ -94,9 +95,13 @@ namespace QuasarEngine
 		{
 			aiString str;
 			material->GetTexture(aiTextureType_NORMALS, i, &str);
+			//std::cout << str.C_Str() << std::endl;
 			std::filesystem::path normalPath = str.C_Str();
 			mat.NormalTexture = normalPath.filename().string();
 		}
+
+		//unsigned int nbAOTexture = material->GetTextureCount(aiTextureType_LIGHTMAP);
+		//std::cout << "AO Texture: " << nbAOTexture << std::endl;
 
 		return new Mesh(vertices, indices, mat);
 	}

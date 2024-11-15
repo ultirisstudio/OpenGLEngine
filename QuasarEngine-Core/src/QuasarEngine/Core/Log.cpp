@@ -4,7 +4,12 @@
 #include "PlatformDetection.h"
 
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <sstream>
+#include <fstream>
 #include <algorithm>
+#include <iomanip>
 
 #define RESET		"\033[0m"
 #define BLACK		"\033[30m"
@@ -26,29 +31,41 @@
 
 namespace QuasarEngine
 {
-	void Log::LogOpenGLInfos(const char* vendor, const char* renderer, const char* version)
+	std::string Log::levelToString(LogLevel level)
 	{
-		const std::string title = "OpenGL Info";
+		switch (level)
+		{
+			case INFO: return "INFO";
+			case WARNING: return "WARNING";
+			case ERROR: return "ERROR";
+			case FATAL: return "FATAL";
+			default: return "UNKNOWN";
+		}
+	}
 
-		const std::string glVersionTitle = "Version: ";
-		const std::string glVendorTitle = "Vendor: ";
-		const std::string glRendererTitle = "Renderer: ";
+	void Log::LogAPIInfos(const char* vendor, const char* renderer, const char* version)
+	{
+		const std::string title = "API Infos";
 
-		const std::string glVersionInfo = static_cast<std::string>(version);
-		const std::string glVendorInfo = static_cast<std::string>(vendor);
-		const std::string glRendererInfo = static_cast<std::string>(renderer);
+		const std::string versionTitle = "Version: ";
+		const std::string vendorTitle = "Vendor: ";
+		const std::string rendererTitle = "Renderer: ";
+
+		const std::string versionInfo = static_cast<std::string>(version);
+		const std::string vendorInfo = static_cast<std::string>(vendor);
+		const std::string rendererInfo = static_cast<std::string>(renderer);
 
 		const size_t ts = title.size();
 
-		const size_t glvts = glVersionTitle.size();
-		const size_t glvdts = glVendorTitle.size();
-		const size_t glrdts = glRendererTitle.size();
+		const size_t vts = versionTitle.size();
+		const size_t vdts = vendorTitle.size();
+		const size_t rdts = rendererTitle.size();
 
-		const size_t glvis = glVersionInfo.size();
-		const size_t glvdis = glVendorInfo.size();
-		const size_t glrdis = glRendererInfo.size();
+		const size_t vis = versionInfo.size();
+		const size_t vdis = vendorInfo.size();
+		const size_t rdis = rendererInfo.size();
 
-		const size_t max = std::max((glvts + glvis), std::max((glvdts + glvdis), (glrdts + glrdis)));
+		const size_t max = std::max((vts + vis), std::max((vdts + vdis), (rdts + rdis)));
 		const size_t padding = (66 - max) / 2;
 
 		std::cout << RESET;
@@ -74,8 +91,8 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(glVendorTitle.c_str(), glVendorInfo.c_str());
-		for (size_t i = 0; i < (max - glvdts - glvdis) + padding; i++)
+		PrintInfos(vendorTitle.c_str(), vendorInfo.c_str());
+		for (size_t i = 0; i < (max - vdts - vdis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
 		// END VENDOR //
@@ -84,8 +101,8 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(glRendererTitle.c_str(), glRendererInfo.c_str());
-		for (size_t i = 0; i < (max - glrdts - glrdis) + padding; i++)
+		PrintInfos(rendererTitle.c_str(), rendererInfo.c_str());
+		for (size_t i = 0; i < (max - rdts - rdis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
 		// END RENDERER //
@@ -94,8 +111,8 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(glVersionTitle.c_str(), glVersionInfo.c_str());
-		for (size_t i = 0; i < (max - glvts - glvis) + padding; i++)
+		PrintInfos(versionTitle.c_str(), versionInfo.c_str());
+		for (size_t i = 0; i < (max - vts - vis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
 		// END VERSION //
@@ -106,6 +123,27 @@ namespace QuasarEngine
 			std::cout << "-";
 		std::cout << "'" << std::endl;
 		// END BOTTOM //
+	}
+
+	void Log::log(LogLevel level, const std::string& message)
+	{
+		std::time_t now = std::time(nullptr);
+		std::tm* time = std::localtime(&now);
+		std::stringstream ss;
+		ss << std::put_time(time, "[%Y-%m-%d %H:%M:%S]");
+		ss << " [" << levelToString(level) << "] ";
+		//ss << message << std::endl;
+
+		PrintInfos(ss.str().c_str(), std::string(message).c_str());
+
+		//std::cout << ss.str();
+	}
+
+	void Log::assert(bool condition, const char* file, int line, const std::string& message) {
+		if (!condition) {
+			log(FATAL, std::string(message + " on " + file + "\n"));
+			std::exit(1);
+		}
 	}
 
 	void Log::PrintInfos(const char* title, const char* info)

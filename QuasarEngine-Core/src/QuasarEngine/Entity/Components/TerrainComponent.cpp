@@ -13,10 +13,10 @@ namespace QuasarEngine
 	TerrainComponent::TerrainComponent() : terrainVAO(0)
 	{
 		ShaderFile shaderFiles;
-		shaderFiles.vertexShaderFile = "Shaders/gpuheight.vs";
-		shaderFiles.fragmentShaderFile = "Shaders/gpuheight.fs";
-		shaderFiles.tessControlShaderFile = "Shaders/gpuheight.tcs";
-		shaderFiles.tessEvaluationShaderFile = "Shaders/gpuheight.tes";
+		shaderFiles.vertexShaderFile = "Assets/Shaders/gpuheight.vs";
+		shaderFiles.fragmentShaderFile = "Assets/Shaders/gpuheight.fs";
+		shaderFiles.tessControlShaderFile = "Assets/Shaders/gpuheight.tcs";
+		shaderFiles.tessEvaluationShaderFile = "Assets/Shaders/gpuheight.tes";
 
 		m_Shader = Shader::Create(shaderFiles);
 

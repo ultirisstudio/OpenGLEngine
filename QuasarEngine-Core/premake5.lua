@@ -33,6 +33,7 @@ project "QuasarEngine-Core"
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.tinygltf}",
 		"%{IncludeDir.VulkanSDK}"
 	}
 	

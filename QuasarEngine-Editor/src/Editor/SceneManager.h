@@ -6,8 +6,6 @@
 
 #include "SceneObject.h"
 
-#include "../Utils/FileBrowser.h"
-
 namespace QuasarEngine
 {
 	class SceneManager
@@ -21,6 +19,7 @@ namespace QuasarEngine
 		SceneObject& GetSceneObject() { return *m_SceneObject; }
 
 		void AddGameObject(const std::string& file);
+		void AddGLTFGameObject(const std::string& file);
 
 		void AddCube();
 		void AddSphere();
@@ -39,7 +38,6 @@ namespace QuasarEngine
 	private:
 		std::unique_ptr<SceneObject> m_SceneObject;
 
-		FileBrowser m_FileBrowser;
 		std::filesystem::path m_AssetPath;
 	};
 }

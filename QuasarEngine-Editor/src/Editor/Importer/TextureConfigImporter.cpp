@@ -24,31 +24,31 @@ namespace QuasarEngine
 			auto wrap_s = data["WrapS"];
 			if (wrap_s)
 			{
-				spec.wrap_s = Utils::CharToTextureWrap(wrap_s.as<std::string>().c_str());
+				spec.wrap_s = TextureUtils::CharToTextureWrap(wrap_s.as<std::string>().c_str());
 			}
 
 			auto wrap_t = data["WrapT"];
 			if (wrap_t)
 			{
-				spec.wrap_t = Utils::CharToTextureWrap(wrap_t.as<std::string>().c_str());
+				spec.wrap_t = TextureUtils::CharToTextureWrap(wrap_t.as<std::string>().c_str());
 			}
 
 			auto wrap_r = data["WrapR"];
 			if (wrap_r)
 			{
-				spec.wrap_r = Utils::CharToTextureWrap(wrap_r.as<std::string>().c_str());
+				spec.wrap_r = TextureUtils::CharToTextureWrap(wrap_r.as<std::string>().c_str());
 			}
 
 			auto min_filter = data["MinFilter"];
 			if (min_filter)
 			{
-				spec.min_filter_param = Utils::CharToTextureFilter(min_filter.as<std::string>().c_str());
+				spec.min_filter_param = TextureUtils::CharToTextureFilter(min_filter.as<std::string>().c_str());
 			}
 
 			auto mag_filter = data["MagFilter"];
 			if (mag_filter)
 			{
-				spec.mag_filter_param = Utils::CharToTextureFilter(mag_filter.as<std::string>().c_str());
+				spec.mag_filter_param = TextureUtils::CharToTextureFilter(mag_filter.as<std::string>().c_str());
 			}
 
 			auto alpha = data["Alpha"];
@@ -83,11 +83,11 @@ namespace QuasarEngine
 
 			YAML::Emitter out;
 			out << YAML::BeginMap;
-			out << YAML::Key << "WrapS" << YAML::Value << Utils::TextureWrapToChar(spec.wrap_s);
-			out << YAML::Key << "WrapT" << YAML::Value << Utils::TextureWrapToChar(spec.wrap_t);
-			out << YAML::Key << "WrapR" << YAML::Value << Utils::TextureWrapToChar(spec.wrap_r);
-			out << YAML::Key << "MinFilter" << YAML::Value << Utils::TextureFilterToChar(spec.min_filter_param);
-			out << YAML::Key << "MagFilter" << YAML::Value << Utils::TextureFilterToChar(spec.mag_filter_param);
+			out << YAML::Key << "WrapS" << YAML::Value << TextureUtils::TextureWrapToChar(spec.wrap_s);
+			out << YAML::Key << "WrapT" << YAML::Value << TextureUtils::TextureWrapToChar(spec.wrap_t);
+			out << YAML::Key << "WrapR" << YAML::Value << TextureUtils::TextureWrapToChar(spec.wrap_r);
+			out << YAML::Key << "MinFilter" << YAML::Value << TextureUtils::TextureFilterToChar(spec.min_filter_param);
+			out << YAML::Key << "MagFilter" << YAML::Value << TextureUtils::TextureFilterToChar(spec.mag_filter_param);
 			out << YAML::Key << "Alpha" << YAML::Value << spec.alpha;
 			out << YAML::Key << "Gamma" << YAML::Value << spec.gamma;
 			out << YAML::Key << "Flip" << YAML::Value << spec.flip;
@@ -107,11 +107,11 @@ namespace QuasarEngine
 
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "WrapS" << YAML::Value << Utils::TextureWrapToChar(specification.wrap_s);
-		out << YAML::Key << "WrapT" << YAML::Value << Utils::TextureWrapToChar(specification.wrap_t);
-		out << YAML::Key << "WrapR" << YAML::Value << Utils::TextureWrapToChar(specification.wrap_r);
-		out << YAML::Key << "MinFilter" << YAML::Value << Utils::TextureFilterToChar(specification.min_filter_param);
-		out << YAML::Key << "MagFilter" << YAML::Value << Utils::TextureFilterToChar(specification.mag_filter_param);
+		out << YAML::Key << "WrapS" << YAML::Value << TextureUtils::TextureWrapToChar(specification.wrap_s);
+		out << YAML::Key << "WrapT" << YAML::Value << TextureUtils::TextureWrapToChar(specification.wrap_t);
+		out << YAML::Key << "WrapR" << YAML::Value << TextureUtils::TextureWrapToChar(specification.wrap_r);
+		out << YAML::Key << "MinFilter" << YAML::Value << TextureUtils::TextureFilterToChar(specification.min_filter_param);
+		out << YAML::Key << "MagFilter" << YAML::Value << TextureUtils::TextureFilterToChar(specification.mag_filter_param);
 		out << YAML::Key << "Alpha" << YAML::Value << specification.alpha;
 		out << YAML::Key << "Gamma" << YAML::Value << specification.gamma;
 		out << YAML::Key << "Flip" << YAML::Value << specification.flip;

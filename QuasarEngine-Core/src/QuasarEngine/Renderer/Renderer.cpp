@@ -36,6 +36,11 @@
 #include <QuasarEngine/Resources/Debug/DebugLineMesh.h>
 #include <QuasarEngine/Resources/Debug/DebugTriangleMesh.h>
 
+#define TINYGLTF_IMPLEMENTATION
+#define TINYGLTF_NO_STB_IMAGE_WRITE
+#define STB_IMAGE_IMPLEMENTATION
+#include <tiny_gltf.h>
+
 namespace QuasarEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
 	Renderer::DebugRenderData Renderer::m_DebugRenderData = Renderer::DebugRenderData();
@@ -391,9 +396,10 @@ namespace QuasarEngine {
 			child.AddComponent<MeshRendererComponent>();
 			auto& mc = child.AddComponent<MeshComponent>(name, mesh, path);
 
-			MaterialSpecification material = mc.GetMesh().GetMaterial();
+			//MaterialSpecification material = mc.GetMesh().GetMaterial();
+			MaterialSpecification material;
 
-			if (material.AlbedoTexture.has_value())
+			/*if (material.AlbedoTexture.has_value())
 			{
 				std::ifstream file(m_FolderPath + "\\" + material.AlbedoTexture.value());
 				if (!file.is_open())
@@ -419,11 +425,59 @@ namespace QuasarEngine {
 					material.NormalTexture = m_FolderPath + "\\" + material.NormalTexture.value();
 				}
 				file.close();
-			}			
+			}*/		
 
 			child.AddComponent<MaterialComponent>(material);
 
 			entity.GetComponent<HierarchyComponent>().AddChild(entity.GetUUID(), child.GetUUID());
+		}
+	}
+
+	void Renderer::LoadGLTFModel(const std::string& path)
+	{
+		tinygltf::Model model;
+		tinygltf::TinyGLTF loader;
+		std::string err;
+		std::string warn;
+
+		bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, path);
+
+		if (!warn.empty()) {
+			printf("Warn: %s\n", warn.c_str());
+		}
+
+		if (!err.empty()) {
+			printf("Err: %s\n", err.c_str());
+		}
+
+		if (!ret) {
+			printf("Failed to parse glTF\n");
+		}
+
+		std::cout << "Meshes: " << std::endl;
+		for (auto mesh : model.meshes)
+		{
+			std::cout << mesh.name << std::endl;
+		}
+		std::cout << "\n";
+
+		std::cout << "Materials: " << std::endl;
+		for (auto material : model.materials)
+		{
+			std::cout << material.name << std::endl;
+			
+			for (auto value : material.values)
+			{
+				std::cout << value.first << std::endl;
+				std::cout << value.second.string_value << std::endl;
+			}
+		}
+		std::cout << "\n";
+
+		std::cout << "Textures: " << std::endl;
+		for (auto texture : model.textures)
+		{
+			std::cout << texture.name << std::endl;
 		}
 	}
 

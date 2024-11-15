@@ -70,7 +70,8 @@ namespace QuasarEngine
 		m_BackgroundShader->use();
 		m_BackgroundShader->setUniform("environmentMap", 0);
 
-		unsigned int res = 2048;
+		//unsigned int res = 2048;
+		unsigned int res = 1024;
 
 		unsigned int captureFBO;
 		unsigned int captureRBO;
@@ -84,7 +85,7 @@ namespace QuasarEngine
 
 		stbi_set_flip_vertically_on_load(true);
 		int width, height, nrComponents;
-		float* data = stbi_loadf("Assets\\HDR\\NightEnvironmentHDRI008_4K-HDR.hdr", &width, &height, &nrComponents, 0);
+		float* data = stbi_loadf("Assets\\HDR\\kloofendal_43d_clear_puresky_4k.hdr", &width, &height, &nrComponents, 0);
 		if (data)
 		{
 			glGenTextures(1, &hdrTexture);

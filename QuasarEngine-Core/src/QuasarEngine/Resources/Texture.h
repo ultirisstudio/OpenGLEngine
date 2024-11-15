@@ -86,7 +86,7 @@ namespace QuasarEngine
 		virtual AssetType GetType() override { return GetStaticType(); }
 	};
 
-	namespace Utils
+	namespace TextureUtils
 	{
 		static const char* TextureWrapToChar(TextureWrap wrap)
 		{

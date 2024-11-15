@@ -1,5 +1,5 @@
-#include "qepch.h"
 #include "SceneSerializer.h"
+#include "Tools/Utils.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -55,18 +55,6 @@ namespace YAML
 
 namespace QuasarEngine
 {
-	namespace Utils
-	{
-		static std::optional<std::string> getRelativePath(const std::string& sourcePath, const std::string& basePath) {
-			if (sourcePath.find(basePath) != 0) {
-				return sourcePath;
-			}
-
-			size_t commonLength = basePath.length();
-			return sourcePath.substr(commonLength + 1);
-		}
-	}
-
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 	{
 		out << YAML::Flow;

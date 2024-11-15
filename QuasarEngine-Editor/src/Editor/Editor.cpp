@@ -22,6 +22,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "Export.h"
+#include "Importer/AssetImporter.h"
 
 namespace QuasarEngine
 {
@@ -65,6 +66,9 @@ namespace QuasarEngine
 
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
+
+		AssetImporter::Init();
+		AssetImporter::ImportAsset("test.obj");
 
 		//////////////////////////////////////////////
 

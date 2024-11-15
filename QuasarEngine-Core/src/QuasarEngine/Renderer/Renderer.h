@@ -39,6 +39,7 @@ namespace QuasarEngine
 		static void EndScene();
 
 		static void LoadModel(const std::string& path);
+		static void LoadGLTFModel(const std::string& path);
 
 		static Scene* GetScene();
 

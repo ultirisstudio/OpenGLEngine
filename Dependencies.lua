@@ -16,6 +16,7 @@ IncludeDir["reactphysics3d"] = "%{wks.location}/vendor/rp3d/include"
 IncludeDir["mbedtls"] = "%{wks.location}/vendor/mbedtls/include"
 IncludeDir["zlib"] = "%{wks.location}/vendor/zlib/include"
 IncludeDir["entt"] = "%{wks.location}/vendor/entt"
+IncludeDir["tinygltf"] = "%{wks.location}/vendor/TinyGLTF"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}

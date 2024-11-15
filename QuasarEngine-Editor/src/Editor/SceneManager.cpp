@@ -5,6 +5,7 @@
 #include <QuasarEngine.h>
 
 #include "SceneSerializer.h"
+#include "Tools/Utils.h"
 
 #include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
@@ -31,6 +32,11 @@ namespace QuasarEngine
 	void SceneManager::AddGameObject(const std::string& file)
 	{
 		Renderer::LoadModel(file);
+	}
+
+	void SceneManager::AddGLTFGameObject(const std::string& file)
+	{
+		Renderer::LoadGLTFModel(file);
 	}
 
 	void SceneManager::AddCube()
@@ -111,27 +117,29 @@ namespace QuasarEngine
 		}
 		else
 		{
-			if (!m_FileBrowser.SaveFile())
-				return;
-
-			m_SceneObject->SetName(m_FileBrowser.GetInfos().m_FileName);
-			std::cout << m_FileBrowser.GetInfos().m_FilePath << std::endl;
-			std::cout << m_FileBrowser.GetInfos().m_SelectedFile << std::endl;
-			SceneSerializer serializer(*m_SceneObject, m_AssetPath);
-			serializer.Serialize(m_FileBrowser.GetInfos().m_FilePath);
+			std::optional<Utils::FileInfo> fileInfos = Utils::saveFile();
+			if (fileInfos.has_value())
+			{
+				m_SceneObject->SetName(fileInfos.value().fileName);
+				std::cout << fileInfos.value().filePath << std::endl;
+				std::cout << fileInfos.value().selectedFile << std::endl;
+				SceneSerializer serializer(*m_SceneObject, m_AssetPath);
+				serializer.Serialize(fileInfos.value().filePath);
+			}
 		}
 	}
 
 	void SceneManager::LoadScene()
 	{
-		if (!m_FileBrowser.OpenFile())
-			return;
+		std::optional<Utils::FileInfo> fileInfos = Utils::openFile();
+		if (fileInfos.has_value())
+		{
+			PhysicEngine::Reload();
 
-		PhysicEngine::Reload();
-
-		m_SceneObject->CreateScene();
-		SceneSerializer serializer(*m_SceneObject, m_AssetPath);
-		serializer.Deserialize(m_FileBrowser.GetInfos().m_FilePath);
+			m_SceneObject->CreateScene();
+			SceneSerializer serializer(*m_SceneObject, m_AssetPath);
+			serializer.Deserialize(fileInfos.value().filePath);
+		}
 	}
 
 	void SceneManager::LoadScene(std::string filePath)
@@ -163,21 +171,22 @@ namespace QuasarEngine
 
 	void SceneManager::OpenExternalFile()
 	{
-		if (!m_FileBrowser.OpenFile())
-			return;
-
-		std::filesystem::path sourceFile = m_FileBrowser.GetInfos().m_FilePath;
-		std::filesystem::path targetParent = "Assets";
-		auto target = targetParent / sourceFile.filename();
-
-		try
+		std::optional<Utils::FileInfo> fileInfos = Utils::openFile();
+		if (fileInfos.has_value())
 		{
-			std::filesystem::create_directories(targetParent);
-			std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
-		}
-		catch (std::exception& e)
-		{
-			std::cout << e.what();
+			std::filesystem::path sourceFile = fileInfos.value().filePath;
+			std::filesystem::path targetParent = "Assets";
+			auto target = targetParent / sourceFile.filename();
+
+			try
+			{
+				std::filesystem::create_directories(targetParent);
+				std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
+			}
+			catch (std::exception& e)
+			{
+				std::cout << e.what();
+			}
 		}
 	}
 }

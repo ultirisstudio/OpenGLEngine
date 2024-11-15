@@ -6,7 +6,7 @@
 
 #include <intrin.h>
 
-#include "../Utils/MyZLib.h"
+#include "Tools/Utils.h"
 
 namespace QuasarEngine
 {
@@ -24,7 +24,7 @@ namespace QuasarEngine
         resource.read(data.data(), fileSize);
         
         if (isCompressed) {
-            std::vector<char> compressedData = MyZLib::compress(data);
+            std::vector<char> compressedData = Utils::compress(data);
             size_t compressedSize = compressedData.size();
             data = compressedData;
             fileSize = compressedSize;
@@ -102,7 +102,7 @@ namespace QuasarEngine
                     break;
                 }
 
-                std::vector<char> decompressedData = MyZLib::decompress(data);
+                std::vector<char> decompressedData = Utils::decompress(data);
                 size_t decompressedSize = decompressedData.size();
                 data = decompressedData;
                 entry.size = decompressedSize;

@@ -1,5 +1,7 @@
 #include "ProjectManager.h"
 
+#include "Tools/Utils.h"
+
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -49,7 +51,7 @@ namespace QuasarEngine
 			ImGui::SameLine();
 			if (ImGui::Button("...", ImVec2(30, 20)))
 			{
-				tempProjectPath = m_FileBrowser.OpenFolder();
+				tempProjectPath = Utils::openFolder();
 			}
 
 			ImVec4 color = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -115,7 +117,7 @@ namespace QuasarEngine
 			ImGui::SameLine();
 			if (ImGui::Button("..."))
 			{
-				tempProjectPath = m_FileBrowser.OpenFolder();
+				tempProjectPath = Utils::openFolder();
 			}
 			if (ImGui::Button("Open Project"))
 			{

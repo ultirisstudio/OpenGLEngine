@@ -15,6 +15,7 @@ project "QuasarEngine-Editor"
 
 	includedirs
 	{
+		"src",
 		"%{IncludeDir.QuasarEngineCore}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.zlib}",

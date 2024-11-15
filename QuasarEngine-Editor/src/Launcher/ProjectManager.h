@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "../Utils/FileBrowser.h"
-
 namespace QuasarEngine
 {
 	struct ProjectProperties
@@ -30,7 +28,6 @@ namespace QuasarEngine
 		void CreateProjectFiles(const std::string& projectName, const std::string& projectPath);
 	private:
 		ProjectProperties* m_Properties;
-		FileBrowser m_FileBrowser;
 
 		std::string tempProjectName = "";
 		std::string tempProjectPath = std::string(getenv("USERPROFILE")) + "\\Documents\\Ultiris Projects";

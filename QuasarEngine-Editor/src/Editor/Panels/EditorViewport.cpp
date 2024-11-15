@@ -195,7 +195,10 @@ namespace QuasarEngine
 				std::string selectedFile = filePath.substr(slash + 1);
 				std::string fileExtension = selectedFile.substr(selectedFile.find_last_of(".") + 1);
 
-				if (fileExtension == "obj" || fileExtension == "dae" || fileExtension == "fbx" || fileExtension == "glb" || fileExtension == "gltf")
+				if (fileExtension == "obj" || fileExtension == "dae" || fileExtension == "fbx")
+					sceneManager.AddGameObject(filePath);
+
+				if (fileExtension == "glb" || fileExtension == "gltf" || fileExtension == "bin")
 					sceneManager.AddGameObject(filePath);
 
 				if (fileExtension == "scene")

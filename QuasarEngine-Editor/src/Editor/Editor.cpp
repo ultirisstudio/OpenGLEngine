@@ -23,6 +23,7 @@
 
 #include "Export.h"
 #include "Importer/AssetImporter.h"
+#include "Importer/TextureImporter.h"
 
 namespace QuasarEngine
 {
@@ -68,7 +69,15 @@ namespace QuasarEngine
 		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
 
 		AssetImporter::Init();
-		AssetImporter::ImportAsset("test.obj");
+		//AssetImporter::ImportAsset("test.obj");
+
+		std::string path = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\mars.png";
+		TextureSpecification specification;
+		std::shared_ptr<Texture> texture = Texture::CreateTexture(path, specification);
+
+		TextureImporter::exportTest(*texture, path, "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
+
+		m_TextureTest = TextureImporter::importTest("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
 
 		//////////////////////////////////////////////
 
@@ -355,12 +364,12 @@ namespace QuasarEngine
 		}
 		ImGui::End();
 
-		//ImGui::Begin("Test");
-		//{
-		//	if (m_TextureTest)
-		//		ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
-		//}
-		//ImGui::End();
+		ImGui::Begin("Test");
+		{
+			if (m_TextureTest)
+				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
+		}
+		ImGui::End();
 
 		if (m_optionMenu)
 		{

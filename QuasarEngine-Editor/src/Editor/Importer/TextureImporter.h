@@ -1,0 +1,69 @@
+#pragma once
+
+#include <vector>
+#include <filesystem>
+#include <iostream>
+#include <fstream>
+
+#include "AssetHeader.h"
+
+#include <QuasarEngine/Resources/Texture.h>
+
+namespace QuasarEngine
+{
+	class TextureImporter
+	{
+	public:
+		static std::vector<char> Test(std::filesystem::path path)
+		{
+			std::cout << "texture importer" << std::endl;
+			std::vector<char> out;
+			out.push_back('a');
+			return out;
+		}
+
+		static void exportTest(const Texture& texture, const std::string& path, const std::string& out)
+		{
+			size_t size;
+			unsigned char* data = Texture::LoadDataFromPath(path, &size);
+			TextureSpecification spec = texture.GetSpecification();
+
+			std::ofstream file(out, std::ios::binary);
+
+			AssetHeader assetHeader = {
+				0xDEADBEEF,
+				sizeof(AssetHeader) + sizeof(TextureSpecification) + size
+			};
+			file.write(reinterpret_cast<const char*>(&assetHeader), sizeof(assetHeader));
+
+			file.write(reinterpret_cast<const char*>(&spec), sizeof(TextureSpecification));
+
+			file.write(reinterpret_cast<const char*>(data), size);
+
+			file.close();
+		}
+
+		static std::shared_ptr<Texture> importTest(const std::string& path) {
+			unsigned char* data;
+
+			std::ifstream file(path, std::ios::binary);
+
+			AssetHeader assetHeader;
+			file.read(reinterpret_cast<char*>(&assetHeader), sizeof(assetHeader));
+
+			TextureSpecification spec;
+			file.read(reinterpret_cast<char*>(&spec), sizeof(TextureSpecification));
+
+			size_t size = spec.width * spec.height * spec.channels;
+			data = new unsigned char[size];
+
+			file.read(reinterpret_cast<char*>(data), size);
+
+			file.close();
+
+			std::shared_ptr<Texture> texture = Texture::CreateTexture(data, size, spec);
+
+			return texture;
+		}
+	};
+}

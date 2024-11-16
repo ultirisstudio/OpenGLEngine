@@ -22,7 +22,9 @@ namespace QuasarEngine
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 
-		static void PrintInfos(const char* title, const char* info);
+		static void printLog(const char* info);
+		static void printLogHeader(LogLevel level);
+		static void printInfos(const char* title, const char* info);
 		static std::string levelToString(LogLevel level);
 	};
 

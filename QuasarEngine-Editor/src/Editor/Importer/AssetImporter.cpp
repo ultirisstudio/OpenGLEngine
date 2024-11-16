@@ -1,6 +1,6 @@
 #include "AssetImporter.h"
 
-#include "AssetImporter/TextureImporter.h"
+#include "TextureImporter.h"
 
 #include <QuasarEngine/Core/Log.h>
 
@@ -25,8 +25,8 @@ namespace QuasarEngine
 
 	void AssetImporter::ImportAsset(std::filesystem::path path)
 	{
-		Log::log(Log::INFO, path.extension().string());
-		Q_ASSERT(strcmp(path.extension().string().c_str(), ".png") == 0, "Not a obj file !");
+		//Log::log(Log::INFO, path.extension().string());
+		//Q_ASSERT(strcmp(path.extension().string().c_str(), ".obj") == 0, "Not a obj file !");
 		if (std::find(m_AssetData.m_ValidExtention.begin(), m_AssetData.m_ValidExtention.end(), path.extension().string()) != m_AssetData.m_ValidExtention.end())
 		{
 			Log::log(Log::INFO, "extention valid");

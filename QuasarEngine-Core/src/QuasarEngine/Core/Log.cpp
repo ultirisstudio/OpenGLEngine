@@ -10,6 +10,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iomanip>
+#include <filesystem>
 
 #define RESET		"\033[0m"
 #define BLACK		"\033[30m"
@@ -91,7 +92,7 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(vendorTitle.c_str(), vendorInfo.c_str());
+		printInfos(vendorTitle.c_str(), vendorInfo.c_str());
 		for (size_t i = 0; i < (max - vdts - vdis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
@@ -101,7 +102,7 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(rendererTitle.c_str(), rendererInfo.c_str());
+		printInfos(rendererTitle.c_str(), rendererInfo.c_str());
 		for (size_t i = 0; i < (max - rdts - rdis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
@@ -111,7 +112,7 @@ namespace QuasarEngine
 		std::cout << "|";
 		for (size_t i = 0; i < padding; i++)
 			std::cout << " ";
-		PrintInfos(versionTitle.c_str(), versionInfo.c_str());
+		printInfos(versionTitle.c_str(), versionInfo.c_str());
 		for (size_t i = 0; i < (max - vts - vis) + padding; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
@@ -127,26 +128,39 @@ namespace QuasarEngine
 
 	void Log::log(LogLevel level, const std::string& message)
 	{
+		printLogHeader(level);
+		printLog(std::string(message + "\n").c_str());
+	}
+
+	void Log::assert(bool condition, const char* file, int line, const std::string& message) {
+		if (!condition) {
+			printLogHeader(FATAL);
+			std::stringstream ss;
+			ss << message << " from: " << std::filesystem::path(file).filename().string() << " on line : " << line;
+			printLog(ss.str().c_str());
+			std::exit(1);
+		}
+	}
+
+	void Log::printLogHeader(LogLevel level)
+	{
 		std::time_t now = std::time(nullptr);
 		std::tm* time = std::localtime(&now);
 		std::stringstream ss;
 		ss << std::put_time(time, "[%Y-%m-%d %H:%M:%S]");
 		ss << " [" << levelToString(level) << "] ";
-		//ss << message << std::endl;
 
-		PrintInfos(ss.str().c_str(), std::string(message).c_str());
+		std::string str = ss.str();
 
-		//std::cout << ss.str();
-	}
-
-	void Log::assert(bool condition, const char* file, int line, const std::string& message) {
-		if (!condition) {
-			log(FATAL, std::string(message + " on " + file + "\n"));
-			std::exit(1);
+		int i = 0;
+		while (str.at(i) != '\0')
+		{
+			std::cout << YELLOW << str.at(i) << RESET;
+			i++;
 		}
 	}
 
-	void Log::PrintInfos(const char* title, const char* info)
+	void Log::printInfos(const char* title, const char* info)
 	{
 		int i = 0;
 		while (title[i] != '\0')
@@ -156,6 +170,51 @@ namespace QuasarEngine
 		}
 
 		i = 0;
+		while (info[i] != '\0')
+		{
+			switch (info[i])
+			{
+			case '0':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '1':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '2':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '3':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '4':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '5':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '6':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '7':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '8':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			case '9':
+				std::cout << BOLDGREEN << info[i] << RESET;
+				break;
+			default:
+				std::cout << BOLDWHITE << info[i] << RESET;
+				break;
+			}
+			i++;
+		}
+	}
+
+	void Log::printLog(const char* info)
+	{
+		int i = 0;
 		while (info[i] != '\0')
 		{
 			switch (info[i])

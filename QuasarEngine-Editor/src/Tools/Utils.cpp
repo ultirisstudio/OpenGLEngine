@@ -95,7 +95,7 @@ namespace QuasarEngine
         return getFileInfos(result);
     }
 
-    char* openFolder()
+    char* Utils::openFolder()
     {
         return tinyfd_selectFolderDialog("Open", "");
     }

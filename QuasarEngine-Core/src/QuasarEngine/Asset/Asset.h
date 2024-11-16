@@ -4,7 +4,7 @@
 
 namespace QuasarEngine
 {
-	enum class AssetType
+	enum AssetType : uint8_t
 	{
 		NONE = 0,
 		TEXTURE,

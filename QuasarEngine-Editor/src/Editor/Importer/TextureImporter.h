@@ -14,19 +14,11 @@ namespace QuasarEngine
 	class TextureImporter
 	{
 	public:
-		static std::vector<char> Test(std::filesystem::path path)
-		{
-			std::cout << "texture importer" << std::endl;
-			std::vector<char> out;
-			out.push_back('a');
-			return out;
-		}
-
-		static void exportTest(const Texture& texture, const std::string& path, const std::string& out)
+		static void exportTexture(const std::string& path, const std::string& out)
 		{
 			size_t size;
 			unsigned char* data = Texture::LoadDataFromPath(path, &size);
-			TextureSpecification spec = texture.GetSpecification();
+			TextureSpecification spec;
 
 			std::ofstream file(out, std::ios::binary);
 
@@ -43,7 +35,7 @@ namespace QuasarEngine
 			file.close();
 		}
 
-		static std::shared_ptr<Texture> importTest(const std::string& path) {
+		static std::shared_ptr<Texture> importTexture(const std::string& path) {
 			unsigned char* data;
 
 			std::ifstream file(path, std::ios::binary);

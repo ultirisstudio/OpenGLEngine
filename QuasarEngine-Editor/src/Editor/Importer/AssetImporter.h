@@ -7,18 +7,24 @@
 
 namespace QuasarEngine
 {
+	class Texture;
+
 	class AssetImporter
 	{
+	private:
+		typedef std::unordered_map<std::string, std::function<std::shared_ptr<Texture>(const std::string&)>> ImportFunction;
+		typedef std::unordered_map<std::string, std::function<void(const std::string&, const std::string&)>> ExportFunction;
+
+		ImportFunction m_ImportFunctions;
+		ExportFunction m_ExportFunctions;
+
+		std::vector<std::string> m_ValidExtention;
+
+		std::string m_ProjectPath;
 	public:
-		struct AssetData
-		{
-			std::vector<std::string> m_ValidExtention;
-			std::unordered_map<std::string, std::function<std::vector<char>(std::filesystem::path)>> m_ImportFunction;
-		};
-		static AssetData m_AssetData;
+		AssetImporter(const std::string& projectPath);
 
-		static void Init();
-
-		static void ImportAsset(std::filesystem::path path);
+		void ImportAsset();
+		void ImportAsset(std::filesystem::path path);
 	};
 }

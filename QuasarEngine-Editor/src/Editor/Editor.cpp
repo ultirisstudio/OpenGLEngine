@@ -22,7 +22,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include "Export.h"
-#include "Importer/AssetImporter.h"
 #include "Importer/TextureImporter.h"
 
 namespace QuasarEngine
@@ -52,9 +51,8 @@ namespace QuasarEngine
 
 	void Editor::OnAttach()
 	{
-		//InitImGuiStyle();
+		InitImGuiStyle();
 
-		//ScriptEngine::Init();
 		PhysicEngine::Init();
 		PerlinManager::Init();
 		Renderer::Init();
@@ -66,18 +64,16 @@ namespace QuasarEngine
 		m_EditorViewport = std::make_unique<EditorViewport>();
 
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
-		//m_SceneManager->LoadScene(m_Specification.ProjectPath + "\\Assets\\c.scene");
 
-		AssetImporter::Init();
-		//AssetImporter::ImportAsset("test.obj");
+		m_AssetImporter = std::make_unique<AssetImporter>(m_Specification.ProjectPath);
 
-		std::string path = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\mars.png";
-		TextureSpecification specification;
-		std::shared_ptr<Texture> texture = Texture::CreateTexture(path, specification);
+		//std::string path = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\mars.png";
+		//TextureSpecification specification;
+		//std::shared_ptr<Texture> texture = Texture::CreateTexture(path, specification);
 
-		TextureImporter::exportTest(*texture, path, "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
+		//TextureImporter::exportTest(*texture, path, "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
 
-		m_TextureTest = TextureImporter::importTest("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
+		//m_TextureTest = TextureImporter::importTest("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
 
 		//////////////////////////////////////////////
 
@@ -236,6 +232,16 @@ namespace QuasarEngine
 			{
 				if (ImGui::MenuItem("Quit"))
 					QuasarEngine::Application::Get().Close();
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Asset"))
+			{
+				if (ImGui::MenuItem("Import"))
+				{
+					m_AssetImporter->ImportAsset();
+				}
 
 				ImGui::EndMenu();
 			}

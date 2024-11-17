@@ -150,12 +150,12 @@ namespace QuasarEngine
 		ss << std::put_time(time, "[%Y-%m-%d %H:%M:%S]");
 		ss << " [" << levelToString(level) << "] ";
 
-		std::string str = ss.str();
+		const char* str = ss.str().c_str();
 
 		int i = 0;
-		while (str.at(i) != '\0')
+		while (str[i] != '\0')
 		{
-			std::cout << YELLOW << str.at(i) << RESET;
+			std::cout << YELLOW << str[i] << RESET;
 			i++;
 		}
 	}

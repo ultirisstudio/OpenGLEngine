@@ -15,6 +15,8 @@
 #include "Panels/EditorViewport.h"
 #include "Panels/Viewport.h"
 
+#include "Importer/AssetImporter.h"
+
 #include "SceneManager.h"
 
 #include <unordered_map>
@@ -56,6 +58,8 @@ namespace QuasarEngine
 
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<EditorCamera> m_EditorCamera;
+
+		std::unique_ptr<AssetImporter> m_AssetImporter;
 
 		std::shared_ptr<Texture> m_TextureTest;
 	private:

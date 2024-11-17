@@ -19,7 +19,8 @@ namespace QuasarEngine
 			//".gltf",
 			".png",
 			".jpg",
-			".jpeg"
+			".jpeg",
+			".qasset"
 		};
 
 		m_ImportFunctions[m_ValidExtention.at(0)] = &TextureImporter::importTexture;
@@ -40,6 +41,7 @@ namespace QuasarEngine
 					std::string out = std::string(m_ProjectPath + "\\Assets\\" + infos.value().fileName + ".qasset");
 					it->second(infos.value().filePath, out);
 					Log::log(Log::INFO, std::string(infos.value().selectedFile + " imported on " + out));
+					ImportAsset(out);
 				}
 			}
 		}
@@ -56,6 +58,10 @@ namespace QuasarEngine
 				Log::log(Log::INFO, "call function");
 				std::vector<char> data = it->second(path);
 			}*/
+			if (strcmp(path.extension().string().c_str(), ".qasset") == 0)
+			{
+				
+			}
 		}
 	}
 }

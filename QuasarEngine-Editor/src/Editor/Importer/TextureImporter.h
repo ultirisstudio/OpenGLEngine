@@ -24,7 +24,8 @@ namespace QuasarEngine
 
 			AssetHeader assetHeader = {
 				0xDEADBEEF,
-				sizeof(AssetHeader) + sizeof(TextureSpecification) + size
+				sizeof(AssetHeader) + sizeof(TextureSpecification) + size,
+				"Texture"
 			};
 			file.write(reinterpret_cast<const char*>(&assetHeader), sizeof(assetHeader));
 

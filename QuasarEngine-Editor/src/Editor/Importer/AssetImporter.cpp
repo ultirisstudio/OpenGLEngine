@@ -4,12 +4,24 @@
 
 #include "Tools/Utils.h"
 
+#include "AssetHeader.h"
+
 #include <QuasarEngine/Core/Log.h>
 #include <QuasarEngine/Resources/Texture.h>
 #include <QuasarEngine/Renderer/Renderer.h>
+#include <QuasarEngine/Asset/Asset.h>
 
 namespace QuasarEngine
 {
+	namespace ImporterUtils
+	{
+		static AssetType getAssetTypeFromString(const char* type)
+		{
+			if (strcmp(type, "Texture") == 0) return AssetType::TEXTURE;
+			return AssetType::NONE;
+		}
+	}
+
 	AssetImporter::AssetImporter(const std::string& projectPath) : m_ProjectPath(projectPath)
 	{
 		m_ValidExtention = {
@@ -57,5 +69,19 @@ namespace QuasarEngine
 				std::vector<char> data = it->second(path);
 			}*/
 		}
+	}
+
+	AssetType AssetImporter::getAssetType(std::filesystem::path path)
+	{
+		std::ifstream file(path, std::ios::binary);
+
+		AssetHeader assetHeader;
+		file.read(reinterpret_cast<char*>(&assetHeader), sizeof(assetHeader));
+
+		file.close();
+
+		std::string type = assetHeader.assetType;
+
+		return ImporterUtils::getAssetTypeFromString(type.c_str());
 	}
 }

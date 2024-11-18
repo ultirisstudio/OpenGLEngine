@@ -5,13 +5,14 @@
 #include "TextureViewerPanel.h"
 
 #include <QuasarEngine/Resources/Texture.h>
+#include "Editor/Importer/AssetImporter.h"
 
 namespace QuasarEngine
 {
 	class ContentBrowserPanel
 	{
 	public:
-		ContentBrowserPanel(const std::string& projectPath);
+		ContentBrowserPanel(const std::string& projectPath, AssetImporter* importer);
 
 		void OnImGuiRender();
 	private:
@@ -27,5 +28,7 @@ namespace QuasarEngine
 		std::shared_ptr<Texture> m_FileOtherIcon;
 
 		std::shared_ptr<TextureViewerPanel> m_TextureViewerPanel;
+
+		AssetImporter* m_AssetImporter;
 	};
 }

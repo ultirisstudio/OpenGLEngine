@@ -43,6 +43,7 @@ namespace QuasarEngine
 		std::shared_ptr<Model> GetModel(const std::string& id);
 
 		std::shared_ptr<Texture> CreateTexture(const std::string& id, const TextureSpecification& specification);
+		std::shared_ptr<Texture> CreateTexture(const std::string& id, std::shared_ptr<Texture> texture);
 		std::shared_ptr<Model> CreateModel(const std::string& id);
 
 		void mt_CreateTexture(const std::string& id, const TextureSpecification& specification);

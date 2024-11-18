@@ -59,7 +59,7 @@ namespace QuasarEngine
 
 		m_EntityPropertiePanel = std::make_unique<EntityPropertiePanel>();
 		m_SceneHierarchy = std::make_unique<SceneHierarchy>();
-		m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>(m_Specification.ProjectPath);
+		m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>(m_Specification.ProjectPath, m_AssetImporter.get());
 		m_Viewport = std::make_unique<Viewport>();
 		m_EditorViewport = std::make_unique<EditorViewport>();
 
@@ -73,7 +73,7 @@ namespace QuasarEngine
 
 		//TextureImporter::exportTest(*texture, path, "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
 
-		//m_TextureTest = TextureImporter::importTest("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
+		//m_TextureTest = TextureImporter::importTexture("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\3d-modeling.qasset");
 
 		//////////////////////////////////////////////
 

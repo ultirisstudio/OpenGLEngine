@@ -3,13 +3,15 @@
 #include <iostream>
 
 #include "imgui.h"
-#include "../Importer/TextureConfigImporter.h"
+#include "Editor/Importer/TextureConfigImporter.h"
+#include "Editor/Importer/TextureImporter.h"
 
 #include <QuasarEngine/Renderer/Renderer.h>
+#include <QuasarEngine/Asset/Asset.h>
 
 namespace QuasarEngine
 {
-	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory)
+	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath, AssetImporter* importer) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory), m_AssetImporter(importer)
 	{
 		TextureSpecification spec;
 		spec.flip = true;
@@ -94,6 +96,43 @@ namespace QuasarEngine
 					Renderer::m_SceneData.m_ResourceManager->mt_CreateTexture(itemPath, spec);
 
 					icon = m_FilePNGIcon;
+				}
+			}
+			else if (extension == "qasset")
+			{
+				if (Renderer::m_SceneData.m_AssetRegistry->isAssetRegistred(itemPath))
+				{
+					AssetType type = Renderer::m_SceneData.m_AssetRegistry->getAssetType(itemPath);
+					switch (type)
+					{
+					case AssetType::TEXTURE:
+						if (Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath))
+						{
+							icon = Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath);
+						}
+						else
+						{
+							std::shared_ptr<Texture> texture = TextureImporter::importTexture(itemPath);
+							if (texture)
+							{
+								icon = Renderer::m_SceneData.m_ResourceManager->CreateTexture(itemPath, texture);
+							}
+							else
+							{
+								icon = m_FileOtherIcon;
+							}
+						}
+						break;
+					default:
+						icon = m_FileOtherIcon;
+						break;
+					}
+				}
+				else
+				{
+					AssetType type = m_AssetImporter->getAssetType(itemPath);
+					Renderer::m_SceneData.m_AssetRegistry->registerAsset(itemPath, type);
+					icon = m_FileOtherIcon;
 				}
 			}
 			else

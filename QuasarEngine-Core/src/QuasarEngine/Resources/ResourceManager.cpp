@@ -94,6 +94,15 @@ namespace QuasarEngine
 		return m_Textures[id];
 	}
 
+	std::shared_ptr<Texture> ResourceManager::CreateTexture(const std::string& id, std::shared_ptr<Texture> texture)
+	{
+		if (m_Textures.find(id) != m_Textures.cend())
+			return m_Textures.at(id);
+
+		m_Textures[id] = std::move(texture);
+		return m_Textures[id];
+	}
+
 	std::shared_ptr<Model> ResourceManager::CreateModel(const std::string& id)
 	{
 		if (m_Models.find(id) != m_Models.cend())

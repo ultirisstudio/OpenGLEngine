@@ -68,6 +68,8 @@ namespace QuasarEngine {
 		debugLineShaderFiles.fragmentShaderFile = "Assets/Shaders/debug_line.frag";
 
 		m_DebugRenderData.m_DebugLineShader = Shader::Create(debugLineShaderFiles);
+
+		m_SceneData.m_AssetRegistry = std::make_unique<AssetRegistry>();
 	}
 
 	void Renderer::BeginScene(Scene& scene)

@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <functional>
 
+#include <QuasarEngine/Asset/Asset.h>
+
 namespace QuasarEngine
 {
 	class Texture;
@@ -26,5 +28,7 @@ namespace QuasarEngine
 
 		void ImportAsset();
 		void ImportAsset(std::filesystem::path path);
+
+		AssetType getAssetType(std::filesystem::path path);
 	};
 }

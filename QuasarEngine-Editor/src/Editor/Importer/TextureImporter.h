@@ -18,7 +18,9 @@ namespace QuasarEngine
 		{
 			size_t size;
 			unsigned char* data = Texture::LoadDataFromPath(path, &size);
+
 			TextureSpecification spec;
+			std::shared_ptr<Texture> texture = Texture::CreateTexture(path, spec);
 
 			std::ofstream file(out, std::ios::binary);
 
@@ -29,11 +31,13 @@ namespace QuasarEngine
 			};
 			file.write(reinterpret_cast<const char*>(&assetHeader), sizeof(assetHeader));
 
-			file.write(reinterpret_cast<const char*>(&spec), sizeof(TextureSpecification));
+			file.write(reinterpret_cast<const char*>(&texture->GetSpecification()), sizeof(TextureSpecification));
 
 			file.write(reinterpret_cast<const char*>(data), size);
 
 			file.close();
+
+			delete texture.get();
 		}
 
 		static std::shared_ptr<Texture> importTexture(const std::string& path) {

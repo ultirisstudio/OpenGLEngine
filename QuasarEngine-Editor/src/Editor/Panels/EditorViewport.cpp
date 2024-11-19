@@ -165,9 +165,10 @@ namespace QuasarEngine
 					}
 				}
 
-				glm::vec3 position, scale;
+				glm::vec3 position, scale, skew;
 				glm::quat rotationQuat;
-				glm::decompose(finalTransform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
+				glm::vec4 perspective;
+				glm::decompose(finalTransform, scale, rotationQuat, position, skew, perspective);
 				//glm::vec3 rotation = glm::eulerAngles(rotationQuat);
 				//glm::vec3 deltaRotation = rotation - tc.Rotation;
 

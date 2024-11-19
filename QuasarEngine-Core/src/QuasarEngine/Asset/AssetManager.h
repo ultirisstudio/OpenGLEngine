@@ -21,10 +21,10 @@ namespace QuasarEngine
 
 		bool IsAssetLoaded(std::string name) const;
 
-		template<typename T>
+		/*template<typename T>
 		static std::shared_ptr<T> GetAsset(std::string name)
 		{
 			return std::dynamic_pointer_cast<T>(Renderer::m_SceneData.m_AssetManager->GetAsset(name));
-		}
+		}*/
 	};
 }

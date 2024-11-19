@@ -15,5 +15,17 @@
 	#define DUCK_API
 #endif
 #else
-	#error DuckEngine only support Windows !
+	#ifdef PLATFORM_LINUX
+		#if DYNAMIC_LINK
+			#ifdef BUILD_DLL
+				#define DUCK_API __declspec(dllexport)
+			#else
+				#define DUCK_API __declspec(dllimport)
+			#endif
+		#else
+			#define DUCK_API
+		#endif
+	#else
+		#error QuasarEngine not support this OS !
+	#endif
 #endif

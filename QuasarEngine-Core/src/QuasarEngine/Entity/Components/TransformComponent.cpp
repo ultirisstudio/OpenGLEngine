@@ -72,7 +72,11 @@ namespace QuasarEngine
 
 		glm::vec3 position, scale;
 		glm::quat rotationQuat;
-		glm::decompose(transform, scale, rotationQuat, position, glm::vec3(), glm::vec4());
+
+		glm::vec3 skew;
+		glm::vec4 perspective;
+
+		glm::decompose(transform, scale, rotationQuat, position, skew, perspective);
 
 		glm::vec3 front = rotationQuat * glm::vec3(0.0f, 0.0f, -1.0f);
 

@@ -1,13 +1,19 @@
+include "./vendor/bin/premake/premake_customization/solution_items.lua"
 include "Dependencies.lua"
 
 workspace "QuasarEngine"
 	architecture "x86_64"
-    startproject "QuasarEngine-Editor"
+    	startproject "QuasarEngine-Editor"
 
 	configurations
 	{
 		"Debug",
 		"Release"
+	}
+
+	solution_items
+	{
+		".editorconfig"
 	}
 	
 	flags

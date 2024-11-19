@@ -14,7 +14,7 @@
 #include <QuasarEngine/Core/Application.h>
 #include <QuasarEngine/Renderer/Renderer.h>
 
-#include <Windows.h>
+//#include <Windows.h>
 
 namespace QuasarEngine
 {

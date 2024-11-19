@@ -6,8 +6,8 @@
 #include <ImGuizmo.h>
 
 //#define IMGUI_IMPL_API
-#include <exemples/imgui_impl_opengl3.h>
-#include <exemples/imgui_impl_glfw.h>
+#include <examples/imgui_impl_opengl3.h>
+#include <examples/imgui_impl_glfw.h>
 
 #include <QuasarEngine/Core/Application.h>
 
@@ -48,6 +48,7 @@ namespace QuasarEngine
 		}
 
 		ImGui::StyleColorsRealDark();
+		ImGui::StyleColorsDark();
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());

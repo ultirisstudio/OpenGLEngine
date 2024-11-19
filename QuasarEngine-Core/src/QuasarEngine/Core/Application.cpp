@@ -6,12 +6,16 @@
 #include "QuasarEngine/Renderer/Renderer.h"
 #include "QuasarEngine/Core/Input.h"
 
+#ifdef PLATFORM_WINDOWS
+
 #include <Windows.h>
 
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 1;
 	_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
+
+#endif
 
 namespace QuasarEngine
 {

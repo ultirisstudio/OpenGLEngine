@@ -6,8 +6,6 @@ project "Glad"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	defines { "_CRT_SECURE_NO_WARNINGS" }
-
 	files
 	{
 		"include/GLAD/glad.h",
@@ -21,6 +19,9 @@ project "Glad"
 	}
 
 	filter "system:windows"
+		systemversion "latest"
+		
+	filter "system:linux"
 		systemversion "latest"
 
 	filter "configurations:Debug"

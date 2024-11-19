@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <filesystem>
+#include <cstring>
 
 #include <zlib.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>

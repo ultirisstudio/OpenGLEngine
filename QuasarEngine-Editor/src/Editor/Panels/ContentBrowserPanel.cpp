@@ -126,7 +126,15 @@ namespace QuasarEngine
 			if (ImGui::BeginDragDropSource())
 			{
 				std::filesystem::path relativePath(path);
-				const wchar_t* itemPath = relativePath.c_str();
+				//const wchar_t* itemPath = relativePath.c_str();
+
+				std::string utf8_path = relativePath.string();
+
+				std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+				std::wstring wide_path = converter.from_bytes(utf8_path);
+
+				const wchar_t* itemPath = wide_path.c_str();
+
 				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
 				ImGui::EndDragDropSource();
 			}

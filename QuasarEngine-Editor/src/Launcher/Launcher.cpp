@@ -88,7 +88,8 @@ namespace QuasarEngine
 			}
 		}
 
-		ImGui::Begin("Create Project", false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
+		bool isOpen = false;
+		ImGui::Begin("Create Project", &isOpen, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
 
 		m_ProjectManager->CreateNewProject();
 
@@ -96,7 +97,7 @@ namespace QuasarEngine
 
 		ImGui::End();
 
-		ImGui::Begin("Project Viewer", false, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
+		ImGui::Begin("Project Viewer", &isOpen, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNavFocus);
 		if (config["recentProjects"])
 		{
 			for (auto project : config["recentProjects"])

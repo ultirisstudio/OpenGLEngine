@@ -165,7 +165,12 @@ namespace QuasarEngine {
 		m_SceneData.m_Shader->setUniform("uBrdfLUT", 2);
 
 		glm::vec3 position;
-		glm::decompose(camera.GetTransform(), glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
+		glm::vec3 scale;
+		glm::quat oriantation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+
+		glm::decompose(camera.GetTransform(), scale, oriantation, position, skew, perspective);
 		
 		m_SceneData.m_Shader->setUniform("uCameraPosition", position);
 

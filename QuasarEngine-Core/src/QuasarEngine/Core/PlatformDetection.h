@@ -22,7 +22,6 @@
 #error "Android is not supported!"
 #elif defined(__linux__)
 #define PLATFORM_LINUX
-#error "Linux is not supported!"
 #else
 #error "Unknown platform!"
 #endif

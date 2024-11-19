@@ -2,7 +2,7 @@
 #include "Math.h"
 
 namespace QuasarEngine::Math {
-	Frustum Math::CalculateFrustum(const glm::mat4& camera)
+	Frustum CalculateFrustum(const glm::mat4& camera)
 	{
 		Frustum result;
 		glm::vec4 base = { camera[0][3], camera[1][3], camera[2][3], camera[3][3] };

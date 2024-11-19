@@ -104,7 +104,12 @@ namespace QuasarEngine
 	bool Mesh::IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const
 	{
 		glm::vec3 position;
-		glm::decompose(modelMatrix, glm::vec3(), glm::quat(), position, glm::vec3(), glm::vec4());
+		glm::vec3 scale;
+		glm::quat oriantation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+
+		glm::decompose(modelMatrix, scale, oriantation, position, skew, perspective);
 		for (unsigned i = 0; i < std::size(frustum.planes); i++)
 		{
 			glm::vec3 positive = position + m_boundingBoxPosition;

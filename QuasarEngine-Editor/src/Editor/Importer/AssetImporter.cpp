@@ -36,23 +36,38 @@ namespace QuasarEngine
 
 		m_ImportFunctions[m_ValidExtention.at(0)] = &TextureImporter::importTexture;
 		m_ExportFunctions[m_ValidExtention.at(0)] = &TextureImporter::exportTexture;
+
+		m_ImportFunctions[m_ValidExtention.at(1)] = &TextureImporter::importTexture;
+		m_ExportFunctions[m_ValidExtention.at(1)] = &TextureImporter::exportTexture;
+
+		m_ImportFunctions[m_ValidExtention.at(2)] = &TextureImporter::importTexture;
+		m_ExportFunctions[m_ValidExtention.at(2)] = &TextureImporter::exportTexture;
 	}
 
 	void AssetImporter::ImportAsset()
 	{
-		std::optional<Utils::FileInfo> infos = Utils::openFile();
+		std::optional<std::vector<Utils::FileInfo>> infos = Utils::openFiles();
+		char* path = Utils::openFolder();
+
+		for (const auto& info : infos.value()) {
+			Q_INFO(info.selectedFile);
+		}
+
+		Q_INFO(path);
 
 		if (infos.has_value())
 		{
-			if (std::find(m_ValidExtention.begin(), m_ValidExtention.end(), infos.value().fileExtension) != m_ValidExtention.end())
+			for (const auto& info : infos.value())
 			{
-				ExportFunction::iterator it = m_ExportFunctions.find(infos.value().fileExtension);
-				if (it != m_ExportFunctions.end())
+				if (std::find(m_ValidExtention.begin(), m_ValidExtention.end(), info.fileExtension) != m_ValidExtention.end())
 				{
-					std::string out = std::string(m_ProjectPath + "\\Assets\\" + infos.value().fileName + ".qasset");
-					it->second(infos.value().filePath, out);
-					Log::log(Log::INFO, std::string(infos.value().selectedFile + " imported on " + out));
-					ImportAsset(out);
+					ExportFunction::iterator it = m_ExportFunctions.find(info.fileExtension);
+					if (it != m_ExportFunctions.end())
+					{
+						std::string out = std::string(std::string(path) + "\\" + info.fileName + ".qasset");
+						it->second(info.filePath, out);
+						Log::log(Log::INFO, std::string(info.selectedFile + " imported on " + out));
+					}
 				}
 			}
 		}

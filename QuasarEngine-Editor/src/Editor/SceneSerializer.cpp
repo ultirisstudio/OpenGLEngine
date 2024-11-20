@@ -424,9 +424,9 @@ namespace QuasarEngine
 					{
 						std::string albedoPath = assetPath + "\\" + hasAlbedo.as<std::string>();
 						spec.AlbedoTexture = albedoPath;
-						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(albedoPath))
+						if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(albedoPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager->CreateTexture(albedoPath, TextureConfigImporter::ImportTextureConfig(albedoPath));
+							Renderer::m_SceneData.m_AssetManager->loadAsset(albedoPath);
 						}
 					}
 
@@ -435,9 +435,9 @@ namespace QuasarEngine
 					{
 						std::string normalPath = assetPath + "\\" + hasNormal.as<std::string>();
 						spec.NormalTexture = normalPath;
-						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(normalPath))
+						if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(normalPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager->CreateTexture(normalPath, TextureConfigImporter::ImportTextureConfig(normalPath));
+							Renderer::m_SceneData.m_AssetManager->loadAsset(normalPath);
 						}
 					}
 
@@ -446,9 +446,9 @@ namespace QuasarEngine
 					{
 						std::string metallicPath = assetPath + "\\" + hasMetallic.as<std::string>();
 						spec.MetallicTexture = metallicPath;
-						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(metallicPath))
+						if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(metallicPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager->CreateTexture(metallicPath, TextureConfigImporter::ImportTextureConfig(metallicPath));
+							Renderer::m_SceneData.m_AssetManager->loadAsset(metallicPath);
 						}
 					}
 
@@ -457,9 +457,9 @@ namespace QuasarEngine
 					{
 						std::string roughnessPath = assetPath + "\\" + hasRoughness.as<std::string>();
 						spec.RoughnessTexture = roughnessPath;
-						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(roughnessPath))
+						if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(roughnessPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager->CreateTexture(roughnessPath, TextureConfigImporter::ImportTextureConfig(roughnessPath));
+							Renderer::m_SceneData.m_AssetManager->loadAsset(roughnessPath);
 						}
 					}
 
@@ -468,9 +468,9 @@ namespace QuasarEngine
 					{
 						std::string aoPath = assetPath + "\\" + hasAO.as<std::string>();
 						spec.AOTexture = aoPath;
-						if (!Renderer::m_SceneData.m_ResourceManager->GetTexture(aoPath))
+						if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(aoPath))
 						{
-							Renderer::m_SceneData.m_ResourceManager->CreateTexture(aoPath, TextureConfigImporter::ImportTextureConfig(aoPath));
+							Renderer::m_SceneData.m_AssetManager->loadAsset(aoPath);
 						}
 					}
 

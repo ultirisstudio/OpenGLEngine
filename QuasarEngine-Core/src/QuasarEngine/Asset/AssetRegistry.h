@@ -31,6 +31,11 @@ namespace QuasarEngine
 			}
 		}
 
+		void unregisterAsset(const std::string& id)
+		{
+			m_AssetRegistry.erase(id);
+		}
+
 		bool isAssetRegistred(const std::string& id)
 		{
 			auto it = m_AssetRegistry.find(id);

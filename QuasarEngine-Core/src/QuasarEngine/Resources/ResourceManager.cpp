@@ -8,8 +8,8 @@ namespace QuasarEngine
 {
 	ResourceManager::ResourceManager()
 	{
-		std::thread t(&ResourceManager::ResourceLoader, this);
-		t.detach();
+		//std::thread t(&ResourceManager::ResourceLoader, this);
+		//t.detach();
 	}
 
 	ResourceManager::~ResourceManager()
@@ -19,7 +19,7 @@ namespace QuasarEngine
 
 	void ResourceManager::Update(double dt)
 	{
-		m_Time += dt;
+		/*m_Time += dt;
 		if (m_Time >= 1.0) {
 			if (!m_LoadingTexturesQueue.empty())
 			{
@@ -35,10 +35,10 @@ namespace QuasarEngine
 			}
 
 			m_Time = 0;
-		}
+		}*/
 	}
 
-	void ResourceManager::ResourceLoader()
+	/*void ResourceManager::ResourceLoader()
 	{
 		while (true)
 		{
@@ -51,31 +51,31 @@ namespace QuasarEngine
 
 			m_LoadingTexturesQueue.push(infos);
 		}
-	}
+	}*/
 
 	void ResourceManager::Reset()
 	{
-		for (auto& texture : m_Textures)
+		/*for (auto& texture : m_Textures)
 		{
 			texture.second.reset();
-		}
+		}*/
 
 		for (auto& model : m_Models)
 		{
 			model.second.reset();
 		}
 
-		m_Textures.clear();
+		//m_Textures.clear();
 		m_Models.clear();
 	}
 
-	std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string& id)
+	/*std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string& id)
 	{
 		if (m_Textures.find(id) != m_Textures.cend())
 			return m_Textures.at(id);
 		else
 			return nullptr;
-	}
+	}*/
 
 	std::shared_ptr<Model> ResourceManager::GetModel(const std::string& id)
 	{
@@ -85,7 +85,7 @@ namespace QuasarEngine
 			return nullptr;
 	}
 
-	std::shared_ptr<Texture> ResourceManager::CreateTexture(const std::string& id, const TextureSpecification& specification)
+	/*std::shared_ptr<Texture> ResourceManager::CreateTexture(const std::string& id, const TextureSpecification& specification)
 	{
 		if (m_Textures.find(id) != m_Textures.cend())
 			return m_Textures.at(id);
@@ -101,7 +101,7 @@ namespace QuasarEngine
 
 		m_Textures[id] = std::move(texture);
 		return m_Textures[id];
-	}
+	}*/
 
 	std::shared_ptr<Model> ResourceManager::CreateModel(const std::string& id)
 	{
@@ -112,7 +112,7 @@ namespace QuasarEngine
 		return m_Models[id];
 	}
 
-	void ResourceManager::mt_CreateTexture(const std::string& id, const TextureSpecification& specification)
+	/*void ResourceManager::mt_CreateTexture(const std::string& id, const TextureSpecification& specification)
 	{
 		std::vector<std::string>::iterator it = std::find(m_WaitingTextures.begin(), m_WaitingTextures.end(), id);
 		if ((m_Textures.find(id) == m_Textures.cend()) && it == m_WaitingTextures.end())
@@ -135,5 +135,5 @@ namespace QuasarEngine
 		}
 
 		return nullptr;
-	}
+	}*/
 }

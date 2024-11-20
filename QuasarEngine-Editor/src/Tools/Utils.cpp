@@ -72,6 +72,45 @@ namespace QuasarEngine
         return getFileInfos(result);
     }
 
+    std::optional<std::vector<Utils::FileInfo>> Utils::openFiles()
+    {
+        char const* result = tinyfd_openFileDialog(
+            "Open File",
+            "",
+            0,
+            NULL,
+            NULL,
+            1
+        );
+
+        if (!result)
+        {
+            Q_ERROR("No file selected");
+            return {};
+        }
+
+        std::vector<std::string> paths;
+        std::stringstream ss(result);
+        std::string path;
+
+        while (std::getline(ss, path, '|')) {
+            paths.push_back(path);
+        }
+
+        std::vector<Utils::FileInfo> fileInfoResult;
+        fileInfoResult.reserve(paths.size());
+
+        for (const auto& path : paths) {
+			fileInfoResult.push_back(getFileInfos(path));
+		}
+
+		if (!fileInfoResult.empty()) {
+			return fileInfoResult;
+		}
+
+        return std::nullopt;
+    }
+
     std::optional<Utils::FileInfo> Utils::saveFile()
     {
         char const* lFilterPatterns[1] = { "*.scene" };

@@ -84,7 +84,7 @@ namespace QuasarEngine
 		return data;
 	}
 
-	Texture::Texture(const std::string& path, const TextureSpecification& specification) : m_Specification(specification)
+	Texture::Texture(const std::string& path, const TextureSpecification& specification) : m_ID(0), m_Specification(specification)
 	{
 		if (m_Specification.flip)
 		{
@@ -133,7 +133,7 @@ namespace QuasarEngine
 		stbi_image_free(data);
 	}
 
-	Texture::Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification) : m_Specification(specification)
+	Texture::Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification) : m_ID(0), m_Specification(specification)
 	{
 		if (m_Specification.flip)
 		{

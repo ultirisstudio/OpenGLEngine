@@ -3,7 +3,7 @@
 #include <iostream>
 #include <imgui.h>
 
-#include "../Importer/TextureConfigImporter.h"
+#include "../Importer/TextureImporter.h"
 
 #include <QuasarEngine/Renderer/Renderer.h>
 
@@ -11,7 +11,7 @@ namespace QuasarEngine
 {
 	TextureViewerPanel::TextureViewerPanel(std::filesystem::path path) : m_TexturePath(path)
 	{
-		m_Texture = Renderer::m_SceneData.m_ResourceManager->GetTexture(m_TexturePath.string());
+		m_Texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_TexturePath.string());
 		m_Specification = m_Texture->GetSpecification();
 	}
 
@@ -130,9 +130,18 @@ namespace QuasarEngine
 
 			if (ImGui::Button("Apply"))
 			{
-				m_Texture = Renderer::m_SceneData.m_ResourceManager->UpdateTexture(m_TexturePath.string(), m_Specification);
+				//m_Texture = Renderer::m_SceneData.m_ResourceManager->UpdateTexture(m_TexturePath.string(), m_Specification);
 
-				TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
+				Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
+
+				TextureImporter::updateTexture(m_TexturePath.string(), m_Specification);
+
+				std::shared_ptr<Texture> texture = TextureImporter::importTexture(m_TexturePath.string());
+				Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
+
+				m_Texture = texture;
+
+				//TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 			}
 
 			if (ImGui::Button("Close"))

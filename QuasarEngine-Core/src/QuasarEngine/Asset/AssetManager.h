@@ -26,6 +26,7 @@ namespace QuasarEngine
 		AssetType getAssetTypes(std::string id);
 
 		void loadAsset(std::string id);
+		void loadAsset(std::string id, std::shared_ptr<Asset> asset);
 		void unloadAsset(std::string id);
 
 		std::shared_ptr<Asset> getAsset(std::string id);

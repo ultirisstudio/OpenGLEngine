@@ -93,23 +93,38 @@ namespace QuasarEngine
 
 	void AssetManager::loadAsset(std::string id)
 	{
-		if (m_AssetRegistry->isAssetRegistred(id))
+		if (!m_AssetRegistry->isAssetRegistred(id))
 		{
-			AssetType type = m_AssetRegistry->getAssetType(id);
-
-			switch (type)
-			{
-			case AssetType::TEXTURE:
-				TextureSpecification spec;
-				m_LoadedAssets[id] = Texture::CreateTexture(id, spec);
-				break;
-			}
+			AssetType type = getAssetTypes(id);
+			m_AssetRegistry->registerAsset(id, type);
 		}
+
+		AssetType type = m_AssetRegistry->getAssetType(id);
+
+		switch (type)
+		{
+		case AssetType::TEXTURE:
+			TextureSpecification spec;
+			m_LoadedAssets[id] = Texture::CreateTexture(id, spec);
+			break;
+		}
+	}
+
+	void AssetManager::loadAsset(std::string id, std::shared_ptr<Asset> asset)
+	{
+		if (!m_AssetRegistry->isAssetRegistred(id))
+		{
+			m_AssetRegistry->registerAsset(id, asset->GetType());
+		}
+
+		if (!isAssetLoaded(id))
+			m_LoadedAssets[id] = asset;
 	}
 
 	void AssetManager::unloadAsset(std::string id)
 	{
-
+		m_LoadedAssets.erase(id);
+		m_AssetRegistry->unregisterAsset(id);
 	}
 
 	bool AssetManager::isAssetLoaded(std::string id) const

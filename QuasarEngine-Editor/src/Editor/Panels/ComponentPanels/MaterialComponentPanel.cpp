@@ -12,17 +12,14 @@ namespace QuasarEngine
 {
 	MaterialComponentPanel::MaterialComponentPanel()
 	{
-		if (Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png"))
+		if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded("Assets/Icons/no_texture.png"))
 		{
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->GetTexture("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>("Assets/Icons/no_texture.png");
 		}
 		else
 		{
-			TextureSpecification spec;
-			spec.flip = true;
-			spec.alpha = true;
-
-			m_NoTexture = Renderer::m_SceneData.m_ResourceManager->CreateTexture("Assets/Icons/no_texture.png", spec);
+			Renderer::m_SceneData.m_AssetManager->loadAsset("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>("Assets/Icons/no_texture.png");
 		}
 	}
 

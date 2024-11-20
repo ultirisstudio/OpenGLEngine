@@ -24,6 +24,7 @@ namespace QuasarEngine
 		static std::string getFileExtension(const std::string& filePath);
 
 		static std::optional<FileInfo> openFile();
+		static std::optional<std::vector<FileInfo>> openFiles();
 		static std::optional<FileInfo> saveFile();
 		static char* openFolder();
 

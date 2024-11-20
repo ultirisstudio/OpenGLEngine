@@ -67,21 +67,6 @@ namespace QuasarEngine
 
 		m_AssetImporter = std::make_unique<AssetImporter>(m_Specification.ProjectPath);
 
-		std::string path = m_Specification.ProjectPath + "\\Assets\\Textures\\Gore\\TCom_Gore_1K_albedo.png";
-
-		AssetType type = Renderer::m_SceneData.m_AssetManager->getAssetTypes(path);
-		Renderer::m_SceneData.m_AssetManager->registerAsset(path, type);
-		Renderer::m_SceneData.m_AssetManager->loadAsset(path);
-		m_TextureTest = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(path);
-
-		//std::string path = "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\mars.png";
-		//TextureSpecification specification;
-		//std::shared_ptr<Texture> texture = Texture::CreateTexture(path, specification);
-
-		//TextureImporter::exportTest(*texture, path, "C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\Textures\\blablabla.bla");
-
-		//m_TextureTest = TextureImporter::importTexture("C:\\Users\\rouff\\Documents\\Ultiris Projects\\CallOf\\Assets\\3d-modeling.qasset");
-
 		//////////////////////////////////////////////
 
 		/*mbedtls_aes_context aes;
@@ -377,12 +362,12 @@ namespace QuasarEngine
 		}
 		ImGui::End();
 
-		ImGui::Begin("Test");
+		/*ImGui::Begin("Test");
 		{
 			if (m_TextureTest)
 				ImGui::ImageButton((ImTextureID)m_TextureTest->GetID(), { 64, 64 }, { 0, 1 }, { 1, 0 });
 		}
-		ImGui::End();
+		ImGui::End();*/
 
 		if (m_optionMenu)
 		{

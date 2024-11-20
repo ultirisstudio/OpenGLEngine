@@ -16,7 +16,7 @@ namespace QuasarEngine
 		static void exportTexture(const std::string& path, const std::string& out)
 		{
 			size_t size;
-			unsigned char* data = Texture::LoadDataFromPath(path, &size);
+			std::unique_ptr<unsigned char[]> data(Texture::LoadDataFromPath(path, &size));
 
 			TextureSpecification spec;
 			std::shared_ptr<Texture> texture = Texture::CreateTexture(path, spec);
@@ -32,11 +32,38 @@ namespace QuasarEngine
 
 			file.write(reinterpret_cast<const char*>(&texture->GetSpecification()), sizeof(TextureSpecification));
 
-			file.write(reinterpret_cast<const char*>(data), size);
+			file.write(reinterpret_cast<const char*>(data.get()), size);
 
 			file.close();
+		}
 
-			delete texture.get();
+		static void updateTexture(const std::string& path, const TextureSpecification& spec)
+		{
+			std::ifstream in_file(path, std::ios::binary);
+
+			AssetHeader assetHeader;
+			in_file.read(reinterpret_cast<char*>(&assetHeader), sizeof(assetHeader));
+
+			TextureSpecification local_spec;
+			in_file.read(reinterpret_cast<char*>(&local_spec), sizeof(TextureSpecification));
+
+			size_t size = spec.width * spec.height * spec.channels;
+			unsigned char* data = new unsigned char[size];
+
+			in_file.read(reinterpret_cast<char*>(data), size);
+
+			in_file.close();
+
+			std::ofstream out_file(path, std::ios::binary);
+			if (!out_file.is_open()) {
+				return;
+			}
+
+			out_file.write(reinterpret_cast<const char*>(&assetHeader), sizeof(assetHeader));
+			out_file.write(reinterpret_cast<const char*>(&spec), sizeof(TextureSpecification));
+			out_file.write(reinterpret_cast<const char*>(data), size);
+
+			out_file.close();
 		}
 
 		static std::shared_ptr<Texture> importTexture(const std::string& path) {

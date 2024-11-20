@@ -55,8 +55,6 @@ namespace QuasarEngine
 
 		ImGui::Columns(columnCount, 0, false);
 
-		int loaded_resources = 0;
-
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = directoryEntry.path();
@@ -83,19 +81,24 @@ namespace QuasarEngine
 			{
 				icon = m_FileOBJIcon;
 			}
-			else if ((extension == "png" || extension == "jpg") && loaded_resources == 0)
+			else if ((extension == "png" || extension == "jpg"))
 			{
-				if (Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath))
+				if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 				{
-					icon = Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath);
+					icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
 				}
 				else
 				{
-					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
-
-					Renderer::m_SceneData.m_ResourceManager->mt_CreateTexture(itemPath, spec);
-
-					icon = m_FilePNGIcon;
+					Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath);
+					std::shared_ptr<Texture> texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+					if (texture)
+					{
+						icon = texture;
+					}
+					else
+					{
+						icon = m_FileOtherIcon;
+					}
 				}
 			}
 			else if (extension == "qasset")
@@ -106,16 +109,17 @@ namespace QuasarEngine
 					switch (type)
 					{
 					case AssetType::TEXTURE:
-						if (Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath))
+						if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 						{
-							icon = Renderer::m_SceneData.m_ResourceManager->GetTexture(itemPath);
+							icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
 						}
 						else
 						{
 							std::shared_ptr<Texture> texture = TextureImporter::importTexture(itemPath);
 							if (texture)
 							{
-								icon = Renderer::m_SceneData.m_ResourceManager->CreateTexture(itemPath, texture);
+								Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath, texture);
+								icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
 							}
 							else
 							{
@@ -145,7 +149,7 @@ namespace QuasarEngine
 
 			if (ImGui::BeginPopupContextItem())
 			{
-				if (extension == "png" || extension == "jpg")
+				if (extension == "png" || extension == "jpg" || extension == "qasset")
 				{
 					if (ImGui::MenuItem("Modify"))
 					{
@@ -184,7 +188,7 @@ namespace QuasarEngine
 			{
 				if (directoryEntry.is_directory())
 					m_CurrentDirectory /= path.filename();
-				else if (extension == "png" || extension == "jpg")
+				else if (extension == "png" || extension == "jpg" || extension == "qasset")
 				{
 					m_TextureViewerPanel = std::make_shared<TextureViewerPanel>(relativePath);
 				}

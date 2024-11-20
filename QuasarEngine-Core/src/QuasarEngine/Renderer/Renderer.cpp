@@ -70,6 +70,8 @@ namespace QuasarEngine {
 		m_DebugRenderData.m_DebugLineShader = Shader::Create(debugLineShaderFiles);
 
 		m_SceneData.m_AssetRegistry = std::make_unique<AssetRegistry>();
+
+		m_SceneData.m_AssetManager = std::make_unique<AssetManager>();
 	}
 
 	void Renderer::BeginScene(Scene& scene)

@@ -5,9 +5,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "AssetHeader.h"
-
 #include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Asset/AssetHeader.h>
 
 namespace QuasarEngine
 {

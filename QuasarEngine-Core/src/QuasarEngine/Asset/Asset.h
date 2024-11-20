@@ -9,6 +9,7 @@ namespace QuasarEngine
 		NONE = 0,
 		TEXTURE,
 		MODEL,
+		QASSET,
 		MESH
 	};
 

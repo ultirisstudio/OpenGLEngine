@@ -5,6 +5,7 @@
 #include <QuasarEngine/Scene/Scene.h>
 #include <QuasarEngine/Scene/BaseCamera.h>
 #include <QuasarEngine/Asset/AssetRegistry.h>
+#include <QuasarEngine/Asset/AssetManager.h>
 
 #include <QuasarEngine/Renderer/RenderCommand.h>
 
@@ -20,6 +21,7 @@ namespace QuasarEngine
 			Scene* m_Scene;
 			std::unique_ptr<ResourceManager> m_ResourceManager;
 			std::unique_ptr<AssetRegistry> m_AssetRegistry;
+			std::unique_ptr<AssetManager> m_AssetManager;
 
 			std::shared_ptr<Shader> m_Shader;
 		};

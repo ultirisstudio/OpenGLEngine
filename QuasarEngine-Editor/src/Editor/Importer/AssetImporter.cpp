@@ -4,12 +4,11 @@
 
 #include "Tools/Utils.h"
 
-#include "AssetHeader.h"
-
 #include <QuasarEngine/Core/Log.h>
 #include <QuasarEngine/Resources/Texture.h>
 #include <QuasarEngine/Renderer/Renderer.h>
 #include <QuasarEngine/Asset/Asset.h>
+#include <QuasarEngine/Asset/AssetHeader.h>
 
 namespace QuasarEngine
 {

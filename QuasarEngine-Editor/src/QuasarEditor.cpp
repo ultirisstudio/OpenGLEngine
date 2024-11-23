@@ -13,10 +13,14 @@ namespace QuasarEngine
 	public:
 		QuasarEditor(const ApplicationSpecification& spec) : Application(spec)
 		{
+			EditorSpecification editorSpec;
+			editorSpec.ProjectName = "Test";
+			editorSpec.ProjectPath = "/home/kurogenshi/Documents/Ultiris Projects/Test";
+			PushLayer(new Editor(editorSpec));
 
 			//Check if config.ultconf exists if it does then load the editor with the project name and path
 			//If it doesn't exist then load the launcher
-			if (std::filesystem::exists("config.ultconf"))
+			/*if (std::filesystem::exists("config.ultconf"))
 			{
 				YAML::Node config = YAML::LoadFile("config.ultconf");
 				if (config["projectName"] && config["projectPath"])
@@ -54,7 +58,7 @@ namespace QuasarEngine
 				fout.close();
 
 				PushLayer(new Launcher());
-			}
+			}*/
 		}
 
 		~QuasarEditor()

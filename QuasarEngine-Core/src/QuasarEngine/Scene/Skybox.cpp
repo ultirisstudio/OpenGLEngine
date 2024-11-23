@@ -65,7 +65,7 @@ namespace QuasarEngine
 		m_PrefilterShader = Shader::Create(prefilterShaderFiles);
 		m_BrdfShader = Shader::Create(brdfShaderFiles);
 
-		m_Model = Model::CreateModel("Assets\\Models\\cube.obj");
+		m_Model = Model::CreateModel("Assets/Models/cube.obj");
 
 		m_BackgroundShader->use();
 		m_BackgroundShader->setUniform("environmentMap", 0);
@@ -85,7 +85,7 @@ namespace QuasarEngine
 
 		stbi_set_flip_vertically_on_load(true);
 		int width, height, nrComponents;
-		float* data = stbi_loadf("Assets\\HDR\\kloofendal_43d_clear_puresky_4k.hdr", &width, &height, &nrComponents, 0);
+		float* data = stbi_loadf("Assets/HDR/kloofendal_43d_clear_puresky_4k.hdr", &width, &height, &nrComponents, 0);
 		if (data)
 		{
 			glGenTextures(1, &hdrTexture);

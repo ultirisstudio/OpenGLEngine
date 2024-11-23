@@ -9,7 +9,7 @@
 
 namespace QuasarEngine
 {
-	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory)
+	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath) : m_BaseDirectory(projectPath + "/Assets"), m_CurrentDirectory(m_BaseDirectory)
 	{
 		TextureSpecification spec;
 		spec.flip = true;
@@ -178,7 +178,7 @@ namespace QuasarEngine
 		const std::filesystem::path p = e.path();
 		const std::string s_path = p.string();
 
-		const size_t slash = s_path.find_last_of("/\\");
+		const size_t slash = s_path.find_last_of("/");
 		const std::string m_SelectedFile = s_path.substr(slash + 1);
 
 		const std::string extension = m_SelectedFile.substr(m_SelectedFile.find_last_of(".") + 1);

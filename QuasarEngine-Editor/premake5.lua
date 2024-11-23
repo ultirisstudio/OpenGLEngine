@@ -26,7 +26,12 @@ project "QuasarEngine-Editor"
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.zlib}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links
@@ -36,7 +41,12 @@ project "QuasarEngine-Editor"
 		"yaml-cpp",
 		"mbedtls",
 		"zlib",
-		"reactphysics3d"
+		"reactphysics3d",
+		"Glad",
+		"ImGui",
+		"ImGuizmo",
+		"GLFW",
+		"assimp"
 	}
 	
 	filter "system:windows"

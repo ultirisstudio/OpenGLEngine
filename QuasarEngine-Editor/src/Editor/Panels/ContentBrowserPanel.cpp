@@ -89,8 +89,10 @@ namespace QuasarEngine
 				}
 				else
 				{
-					Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath);
-					std::shared_ptr<Texture> texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
+					std::shared_ptr<Texture> texture = Texture::CreateTexture(itemPath, spec);
+					Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath, texture);
+
 					if (texture)
 					{
 						icon = texture;

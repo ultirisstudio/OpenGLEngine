@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 #include "../Importer/TextureImporter.h"
+#include "../Importer/TextureConfigImporter.h"
 
 #include <QuasarEngine/Renderer/Renderer.h>
 
@@ -130,18 +131,26 @@ namespace QuasarEngine
 
 			if (ImGui::Button("Apply"))
 			{
-				//m_Texture = Renderer::m_SceneData.m_ResourceManager->UpdateTexture(m_TexturePath.string(), m_Specification);
+				if (m_TexturePath.extension().string() == ".qasset")
+				{
+					Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
 
-				Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
+					TextureImporter::updateTexture(m_TexturePath.string(), m_Specification);
 
-				TextureImporter::updateTexture(m_TexturePath.string(), m_Specification);
+					std::shared_ptr<Texture> texture = TextureImporter::importTexture(m_TexturePath.string());
+					Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
 
-				std::shared_ptr<Texture> texture = TextureImporter::importTexture(m_TexturePath.string());
-				Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
+					m_Texture = texture;
+				}
+				else
+				{
+					Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
+					std::shared_ptr<Texture> texture = std::make_shared<Texture>(m_TexturePath.string(), m_Specification);
+					Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
+					TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 
-				m_Texture = texture;
-
-				//TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
+					m_Texture = texture;
+				}
 			}
 
 			if (ImGui::Button("Close"))

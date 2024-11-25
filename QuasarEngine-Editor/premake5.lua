@@ -18,35 +18,33 @@ project "QuasarEngine-Editor"
 		"src",
 		"%{IncludeDir.QuasarEngineCore}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.zlib}",
-		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.reactphysics3d}",
 		"%{IncludeDir.mbedtls}",
 		"%{IncludeDir.zlib}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.reactphysics3d}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"QuasarEngine-Core",
+		"GLFW",
 		"tinyfiledialogs",
 		"yaml-cpp",
 		"mbedtls",
 		"zlib",
-		"reactphysics3d",
-		"Glad",
 		"ImGui",
 		"ImGuizmo",
-		"GLFW",
-		"assimp"
+		"reactphysics3d",
+		"assimp",
+		"Glad"
 	}
 	
 	filter "system:windows"

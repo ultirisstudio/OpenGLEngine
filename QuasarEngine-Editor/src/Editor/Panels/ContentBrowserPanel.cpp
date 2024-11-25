@@ -62,9 +62,9 @@ namespace QuasarEngine
 			std::filesystem::path relativePath(path);
 			std::string itemPath = relativePath.string();
 
-			std::string extension = GetFileExtension(directoryEntry);
+			std::string extension = std::filesystem::path(directoryEntry).extension().string();
 
-			if (extension == "ultconf")
+			if (extension == ".ultconf")
 			{
 				continue;
 			}
@@ -73,15 +73,18 @@ namespace QuasarEngine
 
 			std::shared_ptr<Texture> icon;
 
+
+			AssetType fileType = Renderer::m_SceneData.m_AssetManager->getTypeFromExtention(extension);
+
 			if (directoryEntry.is_directory())
 			{
 				icon = m_DirectoryIcon;
 			}
-			else if (extension == "obj" || extension == "dae" || extension == "fbx" || extension == "glb" || extension == "gltf")
+			else if (fileType == AssetType::MESH)
 			{
 				icon = m_FileOBJIcon;
 			}
-			else if ((extension == "png" || extension == "jpg"))
+			else if (fileType == AssetType::TEXTURE)
 			{
 				if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 				{
@@ -103,7 +106,7 @@ namespace QuasarEngine
 					}
 				}
 			}
-			else if (extension == "qasset")
+			else if (fileType == AssetType::QASSET)
 			{
 				if (Renderer::m_SceneData.m_AssetRegistry->isAssetRegistred(itemPath))
 				{
@@ -136,8 +139,6 @@ namespace QuasarEngine
 				}
 				else
 				{
-					AssetType type = m_AssetImporter->getAssetType(itemPath);
-					Renderer::m_SceneData.m_AssetRegistry->registerAsset(itemPath, type);
 					icon = m_FileOtherIcon;
 				}
 			}
@@ -151,7 +152,7 @@ namespace QuasarEngine
 
 			if (ImGui::BeginPopupContextItem())
 			{
-				if (extension == "png" || extension == "jpg" || extension == "qasset")
+				if (Renderer::m_SceneData.m_AssetManager->getAssetType(directoryEntry.path().string()) == AssetType::TEXTURE)
 				{
 					if (ImGui::MenuItem("Modify"))
 					{
@@ -190,7 +191,7 @@ namespace QuasarEngine
 			{
 				if (directoryEntry.is_directory())
 					m_CurrentDirectory /= path.filename();
-				else if (extension == "png" || extension == "jpg" || extension == "qasset")
+				else if (Renderer::m_SceneData.m_AssetManager->getAssetType(directoryEntry.path().string()) == AssetType::TEXTURE)
 				{
 					m_TextureViewerPanel = std::make_shared<TextureViewerPanel>(relativePath);
 				}
@@ -208,18 +209,5 @@ namespace QuasarEngine
 		ImGui::Columns(1);
 
 		ImGui::End();
-	}
-
-	const std::string ContentBrowserPanel::GetFileExtension(std::filesystem::directory_entry e)
-	{
-		const std::filesystem::path p = e.path();
-		const std::string s_path = p.string();
-
-		const size_t slash = s_path.find_last_of("/\\");
-		const std::string m_SelectedFile = s_path.substr(slash + 1);
-
-		const std::string extension = m_SelectedFile.substr(m_SelectedFile.find_last_of(".") + 1);
-
-		return extension;
 	}
 }

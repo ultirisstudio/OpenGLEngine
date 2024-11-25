@@ -20,23 +20,53 @@ namespace QuasarEngine
 				ImGui::Separator();
 
 				if (cc.Primary) ImGui::Text("Is Primary");
-				if (ImGui::Button("Set to primary"))
+				else
 				{
-					for (auto e : sceneManager.GetActiveScene().GetAllEntitiesWith<CameraComponent>())
+					if (ImGui::Button("Set to primary"))
 					{
 						Entity primaryCameraEntity = sceneManager.GetSceneObject().GetPrimaryCameraEntity();
-						if (&primaryCameraEntity.GetComponent<CameraComponent>().GetCamera() != &cc.GetCamera())
+						if (primaryCameraEntity)
 						{
-							if (primaryCameraEntity.GetComponent<CameraComponent>().Primary == true)
+							if (&primaryCameraEntity.GetComponent<CameraComponent>().GetCamera() != &cc.GetCamera())
 							{
-								primaryCameraEntity.GetComponent<CameraComponent>().Primary = false;
-								cc.Primary = true;
+								if (primaryCameraEntity.GetComponent<CameraComponent>().Primary == true)
+								{
+									primaryCameraEntity.GetComponent<CameraComponent>().Primary = false;
+									cc.Primary = true;
+								}
 							}
+						}
+						else
+						{
+							cc.Primary = true;
 						}
 					}
 				}
 
-				ImGui::Separator();
+				const char* items[] = { "Perspective", "Orthographic" };
+				const char* current_item = cc.item_type;
+
+				if (ImGui::BeginCombo("##combocameratype", current_item))
+				{
+					for (int n = 0; n <= 1; n++)
+					{
+						bool is_selected = (current_item == items[n]);
+						if (ImGui::Selectable(items[n], is_selected))
+						{
+							if (items[n] == "Perspective")
+							{
+								cc.setType(CameraComponent::CameraType::PERSPECTIVE);
+							}
+							else if (items[n] == "Orthographic")
+							{
+								cc.setType(CameraComponent::CameraType::ORTHOGRAPHIC);
+							}
+						}
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
 
 				ImGui::Text("FOV: "); ImGui::SameLine();
 				float fov = cc.GetCamera().GetFov();

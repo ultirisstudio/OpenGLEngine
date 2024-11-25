@@ -10,4 +10,23 @@ namespace QuasarEngine
 	{
 		
 	}
+
+	void CameraComponent::setType(CameraType type)
+	{
+		switch (type)
+		{
+		case CameraType::PERSPECTIVE:
+			cameraType = CameraComponent::CameraType::PERSPECTIVE;
+			item_type = "Perspective";
+			break;
+		case CameraType::ORTHOGRAPHIC:
+			cameraType = CameraComponent::CameraType::ORTHOGRAPHIC;
+			item_type = "Orthographic";
+			break;
+		default:
+			cameraType = CameraComponent::CameraType::PERSPECTIVE;
+			item_type = "Perspective";
+			break;
+		}
+	}
 }

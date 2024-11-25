@@ -39,26 +39,10 @@ namespace QuasarEngine
 			return std::dynamic_pointer_cast<T>(getAsset(id));
 		}
 
-		static AssetType getAssetTypeFromString(const char* type)
-		{
-			if (strcmp(type, "Texture") == 0) return AssetType::TEXTURE;
-			if (strcmp(type, "Mesh") == 0) return AssetType::MESH;
-			if (strcmp(type, "Model") == 0) return AssetType::MODEL;
-			if (strcmp(type, "QAsset") == 0) return AssetType::QASSET;
-			return AssetType::NONE;
-		}
+		AssetType getTypeFromExtention(const std::string& str);
 
-		static std::string getStringFromAssetType(AssetType type)
-		{
-			switch (type)
-			{
-			case AssetType::TEXTURE: return "Texture";
-			case AssetType::MESH: return "Mesh";
-			case AssetType::MODEL: return "Model";
-			case AssetType::QASSET: return "QAsset";
-			}
+		static AssetType getAssetTypeFromString(const char* type);
 
-			return "None";
-		}
+		static std::string getStringFromAssetType(AssetType type);
 	};
 }

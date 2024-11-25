@@ -120,6 +120,38 @@ namespace QuasarEngine
 		return (m_LoadedAssets.find(id) != m_LoadedAssets.end());
 	}
 
+	AssetType AssetManager::getTypeFromExtention(const std::string& str)
+	{
+		if (std::find(m_ValidExtention.begin(), m_ValidExtention.end(), str) != m_ValidExtention.end())
+		{
+			return m_ExtentionAssetTypes[str];
+		}
+
+		return AssetType::NONE;
+	}
+
+	AssetType AssetManager::getAssetTypeFromString(const char* type)
+	{
+		if (strcmp(type, "Texture") == 0) return AssetType::TEXTURE;
+		if (strcmp(type, "Mesh") == 0) return AssetType::MESH;
+		if (strcmp(type, "Model") == 0) return AssetType::MODEL;
+		if (strcmp(type, "QAsset") == 0) return AssetType::QASSET;
+		return AssetType::NONE;
+	}
+
+	std::string AssetManager::getStringFromAssetType(AssetType type)
+	{
+		switch (type)
+		{
+		case AssetType::TEXTURE: return "Texture";
+		case AssetType::MESH: return "Mesh";
+		case AssetType::MODEL: return "Model";
+		case AssetType::QASSET: return "QAsset";
+		}
+
+		return "None";
+	}
+
 	std::shared_ptr<Asset> AssetManager::getAsset(std::string id)
 	{
 		if (!isAssetLoaded(id))

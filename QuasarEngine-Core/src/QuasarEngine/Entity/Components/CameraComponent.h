@@ -16,14 +16,7 @@ namespace QuasarEngine
 
 		bool Primary = false;
 
-		enum class CameraType
-		{
-			PERSPECTIVE = 0,
-			ORTHOGRAPHIC
-		};
-
 		const char* item_type = "Perspective";
-		CameraType cameraType = CameraType::PERSPECTIVE;
 
 		void setType(CameraType type);
 	};

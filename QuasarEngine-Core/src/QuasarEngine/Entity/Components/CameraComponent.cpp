@@ -6,9 +6,9 @@
 
 namespace QuasarEngine
 {
-	CameraComponent::CameraComponent() : m_Camera(std::make_unique<Camera>())
+	CameraComponent::CameraComponent()
 	{
-		
+		m_Camera = std::make_unique<Camera>();
 	}
 
 	void CameraComponent::setType(CameraType type)
@@ -16,16 +16,19 @@ namespace QuasarEngine
 		switch (type)
 		{
 		case CameraType::PERSPECTIVE:
-			cameraType = CameraComponent::CameraType::PERSPECTIVE;
 			item_type = "Perspective";
+			m_Camera->m_cameraType = CameraType::PERSPECTIVE;
+			m_Camera->updateProjectionMatrix();
 			break;
 		case CameraType::ORTHOGRAPHIC:
-			cameraType = CameraComponent::CameraType::ORTHOGRAPHIC;
 			item_type = "Orthographic";
+			m_Camera->m_cameraType = CameraType::ORTHOGRAPHIC;
+			m_Camera->updateProjectionMatrix();
 			break;
 		default:
-			cameraType = CameraComponent::CameraType::PERSPECTIVE;
 			item_type = "Perspective";
+			m_Camera->m_cameraType = CameraType::PERSPECTIVE;
+			m_Camera->updateProjectionMatrix();
 			break;
 		}
 	}

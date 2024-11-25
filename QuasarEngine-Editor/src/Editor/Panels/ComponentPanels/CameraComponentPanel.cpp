@@ -55,11 +55,11 @@ namespace QuasarEngine
 						{
 							if (items[n] == "Perspective")
 							{
-								cc.setType(CameraComponent::CameraType::PERSPECTIVE);
+								cc.setType(CameraType::PERSPECTIVE);
 							}
 							else if (items[n] == "Orthographic")
 							{
-								cc.setType(CameraComponent::CameraType::ORTHOGRAPHIC);
+								cc.setType(CameraType::ORTHOGRAPHIC);
 							}
 						}
 						if (is_selected)

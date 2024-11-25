@@ -23,6 +23,21 @@ namespace QuasarEngine
 		return m_projectionMatrix;
 	}
 
+	void Camera::updateProjectionMatrix()
+	{
+		switch (m_cameraType)
+		{
+		case CameraType::PERSPECTIVE:
+			m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
+			break;
+		case CameraType::ORTHOGRAPHIC:
+			m_projectionMatrix = glm::ortho(0.0f, 0.0f, m_ViewportSize.x, m_ViewportSize.y);
+			break;
+		default:
+			break;
+		}
+	}
+
 	glm::mat4 Camera::GetTransform()
 	{
 		return m_TransformComponent->GetGlobalTransform();
@@ -36,13 +51,15 @@ namespace QuasarEngine
 	void Camera::SetFov(float fov)
 	{
 		m_fov = fov;
-		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
+		
+		updateProjectionMatrix();
 	}
 
 	void Camera::OnResize(float width, float height)
 	{
 		m_ViewportSize.x = width;
 		m_ViewportSize.y = height;
-		m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
+		
+		updateProjectionMatrix();
 	}
 }

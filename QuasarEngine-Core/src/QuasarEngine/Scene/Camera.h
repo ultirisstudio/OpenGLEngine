@@ -10,6 +10,12 @@
 
 namespace QuasarEngine
 {
+	enum class CameraType
+	{
+		PERSPECTIVE = 0,
+		ORTHOGRAPHIC
+	};
+
 	class Camera : public BaseCamera
 	{
 	private:
@@ -18,6 +24,8 @@ namespace QuasarEngine
 		float m_minFov;
 		float m_maxFov;
 		float m_fov;
+
+		CameraType m_cameraType = CameraType::PERSPECTIVE;
 
 		glm::vec2 m_ViewportSize;
 
@@ -32,6 +40,8 @@ namespace QuasarEngine
 
 		const glm::mat4 getViewMatrix() const override;
 		const glm::mat4& getProjectionMatrix() const override;
+
+		void updateProjectionMatrix();
 
 		glm::mat4 GetTransform() override;
 

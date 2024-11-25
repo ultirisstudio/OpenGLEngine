@@ -1,5 +1,9 @@
 #pragma once
 
+#include <filesystem>
+#include <unordered_map>
+#include <bitset>
+
 #include <QuasarEngine.h>
 #include <QuasarEngine/Events/Event.h>
 #include <QuasarEngine/Events/KeyEvent.h>
@@ -19,8 +23,6 @@
 
 #include "SceneManager.h"
 
-#include <unordered_map>
-
 namespace QuasarEngine
 {
 	struct EditorSpecification
@@ -29,6 +31,11 @@ namespace QuasarEngine
 
 		std::string ProjectName;
 		std::string ProjectPath;
+	};
+
+	enum MenuType : uint32_t
+	{
+		OPTION_MENU = 0
 	};
 
 	class Editor : public Layer
@@ -40,7 +47,8 @@ namespace QuasarEngine
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnUpdate(double dt) override;
-		void OnImGuiRender() override;
+		void OnRender() override;
+		void OnGuiRender() override;
 		void OnEvent(Event& e) override;
 	private:
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
@@ -64,15 +72,21 @@ namespace QuasarEngine
 		std::shared_ptr<Texture> m_TextureTest;
 	private:
 		Chronometer m_Chronometer;
+	//private:
+		//bool m_scanAssetsPopup = false;
 	private:
 		bool m_optionMenu = false;
 		int m_optionTab = 0;
+
+		std::bitset<1> menu_state;
 
 		std::vector<unsigned int> m_ImGuiColor;
 		std::vector<const char*> m_ThemeName;
 		std::map<unsigned int, glm::vec4> m_ThemeColor;
 	private:
 		void CalculateLatency();
+
+		void setup_assets(const std::filesystem::path& chemin);
 
 		double last_time = Renderer::GetTime();
 		int nb_frame = 0;

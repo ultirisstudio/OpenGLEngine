@@ -35,6 +35,16 @@ namespace QuasarEngine
 		ApplicationCommandLineArgs CommandLineArgs;
 	};
 
+	struct ApplicationInfos
+	{
+		int app_nb_frame = 0;
+		int app_fps = 0;
+		int app_latency = 0;
+
+		//double imgui_render_latency = 0.0;
+		//double update_latency = 0.0;
+	};
+
 	class Application
 	{
 	public:
@@ -55,11 +65,15 @@ namespace QuasarEngine
 
 		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
 
+		const ApplicationInfos& GetAppInfos() const { return m_appInfos; }
+
 		void Close();
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnMouseMove(MouseMovedEvent& e);
+
+		void CalculPerformance();
 	private:
 		ApplicationSpecification m_Specification;
 
@@ -69,6 +83,10 @@ namespace QuasarEngine
 		float deltaTime = 0;
 		float lastFrame = 0;
 
+		bool m_can_calcul_latency = false;
+
+		ApplicationInfos m_appInfos;
+
 		static Application* s_Instance;
 
 		std::unique_ptr<Window> m_Window;
@@ -76,6 +94,7 @@ namespace QuasarEngine
 		LayerManager m_LayerManager;
 
 		double last_time = Renderer::GetTime();
+		double perf_last_time = Renderer::GetTime();
 	};
 
 	Application* CreateApplication(ApplicationCommandLineArgs args);

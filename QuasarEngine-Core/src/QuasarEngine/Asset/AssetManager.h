@@ -23,7 +23,7 @@ namespace QuasarEngine
 		bool isAssetRegistered(std::string id);
 		void registerAsset(std::string id, AssetType type);
 
-		AssetType getAssetTypes(std::string id);
+		AssetType getAssetType(std::string id);
 
 		void loadAsset(std::string id);
 		void loadAsset(std::string id, std::shared_ptr<Asset> asset);
@@ -37,6 +37,28 @@ namespace QuasarEngine
 		std::shared_ptr<T> getAsset(std::string id)
 		{
 			return std::dynamic_pointer_cast<T>(getAsset(id));
+		}
+
+		static AssetType getAssetTypeFromString(const char* type)
+		{
+			if (strcmp(type, "Texture") == 0) return AssetType::TEXTURE;
+			if (strcmp(type, "Mesh") == 0) return AssetType::MESH;
+			if (strcmp(type, "Model") == 0) return AssetType::MODEL;
+			if (strcmp(type, "QAsset") == 0) return AssetType::QASSET;
+			return AssetType::NONE;
+		}
+
+		static std::string getStringFromAssetType(AssetType type)
+		{
+			switch (type)
+			{
+			case AssetType::TEXTURE: return "Texture";
+			case AssetType::MESH: return "Mesh";
+			case AssetType::MODEL: return "Model";
+			case AssetType::QASSET: return "QAsset";
+			}
+
+			return "None";
 		}
 	};
 }

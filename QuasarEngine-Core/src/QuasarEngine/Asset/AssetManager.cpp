@@ -10,18 +10,6 @@
 
 namespace QuasarEngine
 {
-	namespace AssetManagerUtils
-	{
-		static AssetType getAssetTypeFromString(const char* type)
-		{
-			if (strcmp(type, "Texture") == 0) return AssetType::TEXTURE;
-			if (strcmp(type, "Mesh") == 0) return AssetType::MESH;
-			if (strcmp(type, "Model") == 0) return AssetType::MODEL;
-			if (strcmp(type, "QAsset") == 0) return AssetType::QASSET;
-			return AssetType::NONE;
-		}
-	}
-
 	AssetManager::AssetManager()
 	{
 		m_AssetRegistry = std::make_unique<AssetRegistry>();
@@ -57,7 +45,7 @@ namespace QuasarEngine
 		m_AssetRegistry->registerAsset(id, type);
 	}
 
-	AssetType AssetManager::getAssetTypes(std::string id)
+	AssetType AssetManager::getAssetType(std::string id)
 	{
 		if (m_AssetRegistry->isAssetRegistred(id))
 		{
@@ -79,7 +67,7 @@ namespace QuasarEngine
 
 					std::string type = assetHeader.assetType;
 
-					return AssetManagerUtils::getAssetTypeFromString(type.c_str());
+					return getAssetTypeFromString(type.c_str());
 				}
 				else
 				{
@@ -88,14 +76,14 @@ namespace QuasarEngine
 			}
 		}
 
-		return AssetType();
+		return AssetType::NONE;
 	}
 
 	void AssetManager::loadAsset(std::string id)
 	{
 		if (!m_AssetRegistry->isAssetRegistred(id))
 		{
-			AssetType type = getAssetTypes(id);
+			AssetType type = getAssetType(id);
 			m_AssetRegistry->registerAsset(id, type);
 		}
 

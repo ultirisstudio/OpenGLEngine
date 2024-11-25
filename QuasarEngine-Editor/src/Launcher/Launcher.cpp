@@ -26,7 +26,7 @@ namespace QuasarEngine
 
 	}
 
-	void Launcher::OnImGuiRender()
+	void Launcher::OnGuiRender()
 	{
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;

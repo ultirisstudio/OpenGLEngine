@@ -28,6 +28,13 @@ namespace QuasarEngine
 {
 	EntityPropertiePanel::EntityPropertiePanel()
 	{
+		std::string path = "Assets/Icons/no_texture.png";
+		TextureSpecification spec;
+		spec.alpha = true;
+		spec.flip = true;
+		std::shared_ptr<Texture> noTexture = Texture::CreateTexture(path, spec);
+		Renderer::m_SceneData.m_AssetManager->loadAsset(path, noTexture);
+
 		m_TransformComponentPanel = std::make_unique<TransformComponentPanel>();
 		m_CameraComponentPanel = std::make_unique<CameraComponentPanel>();
 		m_MeshComponentPanel = std::make_unique<MeshComponentPanel>();

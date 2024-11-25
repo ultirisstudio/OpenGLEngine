@@ -12,7 +12,8 @@ namespace QuasarEngine
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(double dt) {}
-		virtual void OnImGuiRender() {}
+		virtual void OnRender() {}
+		virtual void OnGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 	protected:
 		std::string m_Name;

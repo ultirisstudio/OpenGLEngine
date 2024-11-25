@@ -26,12 +26,12 @@
 
 namespace QuasarEngine
 {
-	std::vector<unsigned char> convert_to_unsigned_char(const std::vector<char>& original) {
+	/*std::vector<unsigned char> convert_to_unsigned_char(const std::vector<char>& original) {
 		std::vector<unsigned char> converted(original.size());
 		std::transform(original.begin(), original.end(), converted.begin(),
 			[](char c) { return static_cast<unsigned char>(c); });
 		return converted;
-	}
+	}*/
 
 	Editor::Editor(const EditorSpecification& spec)
 		: Layer("Editor"), m_Specification(spec),
@@ -66,6 +66,13 @@ namespace QuasarEngine
 		m_SceneManager = std::make_unique<SceneManager>(m_Specification.ProjectPath);
 
 		m_AssetImporter = std::make_unique<AssetImporter>(m_Specification.ProjectPath);
+
+		//m_scanAssetsPopup = true;
+
+		std::filesystem::path base_path = m_Specification.ProjectPath + "\\Assets";
+		setup_assets(base_path);
+
+		//m_scanAssetsPopup = false;
 
 		//////////////////////////////////////////////
 
@@ -115,6 +122,23 @@ namespace QuasarEngine
 		}*/
 	}
 
+	void Editor::setup_assets(const std::filesystem::path& chemin) {
+		for (const auto& entry : std::filesystem::directory_iterator(chemin)) {
+			if (entry.is_directory())
+			{
+				setup_assets(entry.path());
+			}
+			else
+			{
+				AssetType type = Renderer::m_SceneData.m_AssetManager->getAssetType(entry.path().string());
+				if (type != AssetType::NONE)
+				{
+					Renderer::m_SceneData.m_AssetManager->registerAsset(entry.path().string(), type);
+				}
+			}
+		}
+	}
+
 	void Editor::OnDetach()
 	{
 		PhysicEngine::Shutdown();
@@ -122,35 +146,37 @@ namespace QuasarEngine
 
 	void Editor::OnUpdate(double dt)
 	{
-		CalculateLatency();
+		//CalculateLatency();
 
-		double currentTime = Renderer::GetTime();
-		if (currentTime - update_last_time >= (1.0 / 120.0))
+		//double currentTime = Renderer::GetTime();
+		//if (currentTime - update_last_time >= (1.0 / 120.0))
+		//{
+
+		m_EditorCamera->Update();
+		m_SceneManager->update(dt);
+		m_EditorViewport->Update(*m_EditorCamera);
+
+		Renderer::m_SceneData.m_ResourceManager->Update(dt);
+
+		if (Input::IsKeyPressed(Key::LeftControl))
 		{
-			m_EditorCamera->Update();
-
-			m_SceneManager->update(dt);
-
-			m_EditorViewport->Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
-			m_EditorViewport->Update(*m_EditorCamera);
-
-			m_Viewport->Render(m_SceneManager->GetSceneObject());
-
-			Renderer::m_SceneData.m_ResourceManager->Update(dt);
-
-			if (Input::IsKeyPressed(Key::LeftControl))
+			if (Input::IsKeyPressed(Key::S))
 			{
-				if (Input::IsKeyPressed(Key::S))
-				{
-					m_SceneManager->SaveScene();
-				}
+				m_SceneManager->SaveScene();
 			}
-
-			update_last_time += (1.0 / 120.0);
 		}
+
+			//update_last_time += (1.0 / 120.0);
+		//}
 	}
 
-	void Editor::OnImGuiRender()
+	void Editor::OnRender()
+	{
+		m_EditorViewport->Render(m_SceneManager->GetActiveScene(), *m_EditorCamera);
+		m_Viewport->Render(m_SceneManager->GetSceneObject());
+	}
+
+	void Editor::OnGuiRender()
 	{
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -195,11 +221,11 @@ namespace QuasarEngine
 			bool imgui_ini_exist = std::filesystem::exists(std::filesystem::current_path().generic_string() + "/imgui.ini");
 			if (!imgui_ini_exist)
 			{
-				ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+				ImGui::DockBuilderRemoveNode(dockspace_id);
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
 
-				ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking windows into it.
+				ImGuiID dock_main_id = dockspace_id;
 				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.20f, nullptr, &dock_main_id);
 				ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.20f, nullptr, &dock_main_id);
 				ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, nullptr, &dock_main_id);
@@ -215,6 +241,27 @@ namespace QuasarEngine
 				ImGui::DockBuilderFinish(dockspace_id);
 			}
 		}
+
+		/*if (m_scanAssetsPopup)
+		{
+			ImGui::OpenPopup("ThePopup");
+
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("ThePopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::SetItemDefaultFocus();
+				ImGui::Text(std::string(m_scanAssetsPath + "\n\n").c_str());
+
+				//ImGui::Separator();
+
+				//if (ImGui::Button("OK")) {
+				//	ImGui::CloseCurrentPopup();
+				//	m_scanAssetsPopup = false;
+				//}
+				ImGui::EndPopup();
+			}
+		}*/
 
 		bool hasProject = true;
 
@@ -302,7 +349,8 @@ namespace QuasarEngine
 			{
 				if (ImGui::MenuItem("Preference"))
 				{
-					m_optionMenu = true;
+					//m_optionMenu = true;
+					menu_state.set(MenuType::OPTION_MENU);
 				}
 				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
 				//ImGui::MenuItem("Padding", NULL, &opt_padding);
@@ -312,55 +360,21 @@ namespace QuasarEngine
 			ImGui::EndMenuBar();
 		}
 
-		bool can_calcul_latency = false;
-		double latence_current_time = Renderer::GetTime();
-		if (latence_current_time - latence_last_time >= 1.0) {
-			can_calcul_latency = true;
-			latence_last_time += 1.0;
-		}
-
-		Chronometer chrono = Chronometer(true);
-
 		m_Viewport->OnImGuiRender(m_SceneManager->GetSceneObject());
-		if (can_calcul_latency) { viewportElapsedTime = chrono.getElapsedTime().milliseconds; }
-		chrono.restart();
-
 		m_EditorViewport->OnImGuiRender(*m_EditorCamera, *m_SceneManager, *m_SceneHierarchy);
-		if (can_calcul_latency) { editorViewportElapsedTime = chrono.getElapsedTime().milliseconds; }
-		chrono.restart();
-
 		m_EntityPropertiePanel->OnImGuiRender(*m_SceneManager, *m_SceneHierarchy);
-		if (can_calcul_latency) { entityPropertieElapsedTime = chrono.getElapsedTime().milliseconds; }
-		chrono.restart();
-
 		m_SceneHierarchy->OnImGuiRender(m_SceneManager->GetActiveScene());
-		if (can_calcul_latency) { sceneHierarchyElapsedTime = chrono.getElapsedTime().milliseconds; }
-		chrono.restart();
-
 		m_ContentBrowserPanel->OnImGuiRender();
-		if (can_calcul_latency) { contentBrowserElapsedTime = chrono.getElapsedTime().milliseconds; }
-		chrono.stop();
 
-		if (can_calcul_latency) { can_calcul_latency = false; }
-
-		ImGui::Begin("Statistiques");
+		/*ImGui::Begin("Statistiques");
 		{
-			std::string str = "Viewport: " + std::to_string(viewportElapsedTime) + " ms";
+			std::string str = "Imgui latency: " + std::to_string(Application::Get().GetAppInfos().imgui_render_latency) + " ms";
 			ImGui::Text(str.c_str());
 
-			str = "Editor Viewport: " + std::to_string(editorViewportElapsedTime) + " ms";
-			ImGui::Text(str.c_str());
-
-			str = "Entity Properties: " + std::to_string(entityPropertieElapsedTime) + " ms";
-			ImGui::Text(str.c_str());
-
-			str = "Scene Hierarchy: " + std::to_string(sceneHierarchyElapsedTime) + " ms";
-			ImGui::Text(str.c_str());
-
-			str = "Content Browser: " + std::to_string(contentBrowserElapsedTime) + " ms";
+			str = "Update latency: " + std::to_string(Application::Get().GetAppInfos().update_latency) + " ms";
 			ImGui::Text(str.c_str());
 		}
-		ImGui::End();
+		ImGui::End();*/
 
 		/*ImGui::Begin("Test");
 		{
@@ -369,10 +383,7 @@ namespace QuasarEngine
 		}
 		ImGui::End();*/
 
-		if (m_optionMenu)
-		{
-			OptionMenu();
-		}
+		OptionMenu();
 
 		ImGui::End();
 	}
@@ -465,73 +476,76 @@ namespace QuasarEngine
 
 	void Editor::OptionMenu()
 	{
-		ImGui::Begin("Preference");
+		if (menu_state[MenuType::OPTION_MENU])
 		{
-			ImGui::Columns(2);
-			ImGui::SetColumnOffset(1, 230);
-
-			if (ImGui::Button("Theme", ImVec2(230 - 15, 39)))
-				m_optionTab = 0;
-
-			if (ImGui::Button("Save", ImVec2(230 - 15, 39)))
+			ImGui::Begin("Preference");
 			{
-				YAML::Emitter out;
-				out << YAML::BeginMap;
-				for (int temp = 0; temp < m_ImGuiColor.size(); temp++)
+				ImGui::Columns(2);
+				ImGui::SetColumnOffset(1, 230);
+
+				if (ImGui::Button("Theme", ImVec2(230 - 15, 39)))
+					m_optionTab = 0;
+
+				if (ImGui::Button("Save", ImVec2(230 - 15, 39)))
 				{
-					out << m_ThemeName[temp] << YAML::BeginMap;
-					out << "x" << m_ThemeColor[m_ImGuiColor[temp]].x;
-					out << "y" << m_ThemeColor[m_ImGuiColor[temp]].y;
-					out << "z" << m_ThemeColor[m_ImGuiColor[temp]].z;
-					out << "w" << m_ThemeColor[m_ImGuiColor[temp]].w;
+					YAML::Emitter out;
+					out << YAML::BeginMap;
+					for (int temp = 0; temp < m_ImGuiColor.size(); temp++)
+					{
+						out << m_ThemeName[temp] << YAML::BeginMap;
+						out << "x" << m_ThemeColor[m_ImGuiColor[temp]].x;
+						out << "y" << m_ThemeColor[m_ImGuiColor[temp]].y;
+						out << "z" << m_ThemeColor[m_ImGuiColor[temp]].z;
+						out << "w" << m_ThemeColor[m_ImGuiColor[temp]].w;
+						out << YAML::EndMap;
+					}
 					out << YAML::EndMap;
+					std::ofstream fout(std::filesystem::current_path().generic_string() + "/theme.ini");
+					fout << out.c_str();
+					fout.close();
 				}
-				out << YAML::EndMap;
-				std::ofstream fout(std::filesystem::current_path().generic_string() + "/theme.ini");
-				fout << out.c_str();
-				fout.close();
+
+				if (ImGui::Button("Close", ImVec2(230 - 15, 39)))
+					menu_state.reset(MenuType::OPTION_MENU);
 			}
 
-			if (ImGui::Button("Close", ImVec2(230 - 15, 39)))
-				m_optionMenu = false;
+			ImGui::NextColumn();
+
+			{
+				if (ImGui::Button("Real Dark", ImVec2(230 - 70, 29)))
+					ImGui::StyleColorsRealDark();
+				ImGui::SameLine();
+				if (ImGui::Button("Dark", ImVec2(230 - 70, 29)))
+					ImGui::StyleColorsDark();
+				ImGui::SameLine();
+				if (ImGui::Button("Classic", ImVec2(230 - 70, 29)))
+					ImGui::StyleColorsClassic();
+				ImGui::SameLine();
+				if (ImGui::Button("Light", ImVec2(230 - 70, 29)))
+					ImGui::StyleColorsLight();
+
+				ImGuiStyle* style = &ImGui::GetStyle();
+				ImVec4* colors = style->Colors;
+
+				for (int temp1 = 0; temp1 < m_ImGuiColor.size(); temp1++)
+				{
+					m_ThemeColor[m_ImGuiColor[temp1]] = { colors[m_ImGuiColor[temp1]].x, colors[m_ImGuiColor[temp1]].y, colors[m_ImGuiColor[temp1]].z, colors[m_ImGuiColor[temp1]].w };
+				}
+
+				for (int temp2 = 0; temp2 < m_ImGuiColor.size(); temp2++)
+				{
+					std::string temp("##" + std::string(m_ThemeName[temp2]));
+					ImGui::Text(m_ThemeName[temp2]); ImGui::SameLine(); ImGui::ColorEdit4(temp.c_str(), glm::value_ptr(m_ThemeColor[m_ImGuiColor[temp2]]));
+				}
+
+				for (int temp3 = 0; temp3 < m_ImGuiColor.size(); temp3++)
+				{
+					colors[m_ImGuiColor[temp3]] = ImVec4(m_ThemeColor[m_ImGuiColor[temp3]].x, m_ThemeColor[m_ImGuiColor[temp3]].y, m_ThemeColor[m_ImGuiColor[temp3]].z, m_ThemeColor[m_ImGuiColor[temp3]].w);
+				}
+			}
+
+			ImGui::End();
 		}
-
-		ImGui::NextColumn();
-
-		{
-			if (ImGui::Button("Real Dark", ImVec2(230 - 70, 29)))
-				ImGui::StyleColorsRealDark();
-			ImGui::SameLine();
-			if (ImGui::Button("Dark", ImVec2(230 - 70, 29)))
-				ImGui::StyleColorsDark();
-			ImGui::SameLine();
-			if (ImGui::Button("Classic", ImVec2(230 - 70, 29)))
-				ImGui::StyleColorsClassic();
-			ImGui::SameLine();
-			if (ImGui::Button("Light", ImVec2(230 - 70, 29)))
-				ImGui::StyleColorsLight();
-
-			ImGuiStyle* style = &ImGui::GetStyle();
-			ImVec4* colors = style->Colors;
-
-			for (int temp1 = 0; temp1 < m_ImGuiColor.size(); temp1++)
-			{
-				m_ThemeColor[m_ImGuiColor[temp1]] = { colors[m_ImGuiColor[temp1]].x, colors[m_ImGuiColor[temp1]].y, colors[m_ImGuiColor[temp1]].z, colors[m_ImGuiColor[temp1]].w };
-			}
-
-			for (int temp2 = 0; temp2 < m_ImGuiColor.size(); temp2++)
-			{
-				std::string temp("##" + std::string(m_ThemeName[temp2]));
-				ImGui::Text(m_ThemeName[temp2]); ImGui::SameLine(); ImGui::ColorEdit4(temp.c_str(), glm::value_ptr(m_ThemeColor[m_ImGuiColor[temp2]]));
-			}
-
-			for (int temp3 = 0; temp3 < m_ImGuiColor.size(); temp3++)
-			{
-				colors[m_ImGuiColor[temp3]] = ImVec4(m_ThemeColor[m_ImGuiColor[temp3]].x, m_ThemeColor[m_ImGuiColor[temp3]].y, m_ThemeColor[m_ImGuiColor[temp3]].z, m_ThemeColor[m_ImGuiColor[temp3]].w);
-			}
-		}
-
-		ImGui::End();
 	}
 
 	void Editor::CalculateLatency()

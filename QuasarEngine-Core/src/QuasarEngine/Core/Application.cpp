@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "QuasarEngine/Renderer/Renderer.h"
 #include "QuasarEngine/Core/Input.h"
+#include "QuasarEngine/Tools/Chronometer.h"
 
 #include <Windows.h>
 
@@ -76,26 +77,60 @@ namespace QuasarEngine
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			if (!m_Minimized)
-			{
-				for (Layer* layer : m_LayerManager)
-					layer->OnUpdate(deltaTime);
-			}
+			//double currentTime = Renderer::GetTime();
+			//if (currentTime - last_time >= (1.0 / 120.0))
+			//{
+				//Chronometer chrono = Chronometer(false);
 
-			double currentTime = Renderer::GetTime();
-			if (currentTime - last_time >= (1.0 / 120.0))
-			{
+				if (!m_Minimized)
+				{
+					//if (m_can_calcul_latency) chrono.restart();
+
+					for (Layer* layer : m_LayerManager)
+					{
+						layer->OnUpdate(deltaTime);
+						layer->OnRender();
+					}
+
+					//if (m_can_calcul_latency) { m_appInfos.update_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
+				}
+
+				//if (m_can_calcul_latency) chrono.restart();
+
 				m_ImGuiLayer->Begin();
 				for (Layer* layer : m_LayerManager)
-					layer->OnImGuiRender();
+					layer->OnGuiRender();
 				m_ImGuiLayer->End();
 
-				//m_Window->OnUpdate();
+				//if (m_can_calcul_latency) { m_appInfos.imgui_render_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
+
+				//if (m_can_calcul_latency) { m_can_calcul_latency = false; chrono.stop(); }
+
 				m_Window->SwapBuffers();
 				m_Window->PollEvents();
 
-				last_time += (1.0 / 120.0);
-			}
+				//last_time += (1.0 / 120.0);
+			//}
+
+			CalculPerformance();
+		}
+	}
+
+	void Application::CalculPerformance()
+	{
+		double currentTime = Renderer::GetTime();
+		m_appInfos.app_nb_frame++;
+		if (currentTime - perf_last_time >= 1.0) {
+
+			m_appInfos.app_latency = (1000.0 / double(m_appInfos.app_nb_frame));
+			m_appInfos.app_fps = m_appInfos.app_nb_frame;
+			m_appInfos.app_nb_frame = 0;
+
+			//m_can_calcul_latency = true;
+
+			perf_last_time += 1.0;
+
+			m_Window->SetTitle("Quasar Editor [" + std::to_string(m_appInfos.app_fps) + ":" + std::to_string(m_appInfos.app_latency) + "]");
 		}
 	}
 

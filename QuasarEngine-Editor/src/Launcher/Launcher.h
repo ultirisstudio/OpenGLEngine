@@ -16,7 +16,7 @@ namespace QuasarEngine
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnUpdate(double dt) override;
-		void OnImGuiRender() override;
+		void OnGuiRender() override;
 		void OnEvent(Event& e) override;
 	private:
 		std::unique_ptr<ProjectManager> m_ProjectManager;

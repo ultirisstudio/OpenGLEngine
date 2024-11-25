@@ -45,7 +45,7 @@ namespace QuasarEngine
 		TextureWrap wrap_s = TextureWrap::REPEAT;
 		TextureWrap wrap_t = TextureWrap::REPEAT;
 
-		TextureFilter min_filter_param = TextureFilter::NEAREST;
+		TextureFilter min_filter_param = TextureFilter::NEAREST_MIPMAP_NEAREST;
 		TextureFilter mag_filter_param = TextureFilter::NEAREST;
 
 		uint32_t width = 0;

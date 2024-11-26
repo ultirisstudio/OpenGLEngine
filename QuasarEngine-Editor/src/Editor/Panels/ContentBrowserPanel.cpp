@@ -9,6 +9,8 @@
 #include <QuasarEngine/Renderer/Renderer.h>
 #include <QuasarEngine/Asset/Asset.h>
 
+#include <QuasarEngine/Core/Log.h>
+
 namespace QuasarEngine
 {
 	ContentBrowserPanel::ContentBrowserPanel(const std::string& projectPath, AssetImporter* importer) : m_BaseDirectory(projectPath + "\\Assets"), m_CurrentDirectory(m_BaseDirectory), m_AssetImporter(importer)
@@ -108,9 +110,9 @@ namespace QuasarEngine
 			}
 			else if (fileType == AssetType::QASSET)
 			{
-				if (Renderer::m_SceneData.m_AssetRegistry->isAssetRegistred(itemPath))
+				if (Renderer::m_SceneData.m_AssetManager->isAssetRegistered(itemPath))
 				{
-					AssetType type = Renderer::m_SceneData.m_AssetRegistry->getAssetType(itemPath);
+					AssetType type = Renderer::m_SceneData.m_AssetManager->getAssetType(itemPath);
 					switch (type)
 					{
 					case AssetType::TEXTURE:

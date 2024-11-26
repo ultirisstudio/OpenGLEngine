@@ -55,7 +55,7 @@ namespace QuasarEngine {
 
 		m_SceneData.m_Shader = Shader::Create(shaderFiles);
 
-		m_SceneData.m_ResourceManager = std::make_unique<ResourceManager>();
+		//m_SceneData.m_ResourceManager = std::make_unique<ResourceManager>();
 
 		ShaderFile debugTriangleShaderFiles;
 		debugTriangleShaderFiles.vertexShaderFile = "Assets/Shaders/debug_triangle.vert";
@@ -69,7 +69,7 @@ namespace QuasarEngine {
 
 		m_DebugRenderData.m_DebugLineShader = Shader::Create(debugLineShaderFiles);
 
-		m_SceneData.m_AssetRegistry = std::make_unique<AssetRegistry>();
+		//m_SceneData.m_AssetRegistry = std::make_unique<AssetRegistry>();
 
 		m_SceneData.m_AssetManager = std::make_unique<AssetManager>();
 	}
@@ -375,14 +375,19 @@ namespace QuasarEngine {
 	void Renderer::LoadModel(const std::string& path)
 	{
 		std::shared_ptr<Model> model;
-		if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
+		/*if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
 		{
 			model = Renderer::m_SceneData.m_ResourceManager->GetModel(path);
 		}
 		else
 		{
 			model = Renderer::m_SceneData.m_ResourceManager->CreateModel(path);
-		}
+		}*/
+
+		if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(path))
+			Renderer::m_SceneData.m_AssetManager->loadAsset(path);
+		
+		model = Renderer::m_SceneData.m_AssetManager->getAsset<Model>(path);
 
 		const size_t slash = path.find_last_of("/\\");
 		const std::string m_SelectedFile = path.substr(slash + 1);

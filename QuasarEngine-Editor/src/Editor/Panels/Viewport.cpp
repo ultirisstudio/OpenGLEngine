@@ -49,8 +49,8 @@ void QuasarEngine::Viewport::OnImGuiRender(SceneObject& sceneObject)
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		ImVec2 viewportPanelPos = ImGui::GetWindowPos();
 
-		sceneObject.GetPrimaryCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 		RenderCommand::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
+		sceneObject.GetPrimaryCamera().OnResize(viewportPanelSize.x, viewportPanelSize.y);
 
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{

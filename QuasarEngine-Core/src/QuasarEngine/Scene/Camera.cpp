@@ -28,11 +28,17 @@ namespace QuasarEngine
 		switch (m_cameraType)
 		{
 		case CameraType::PERSPECTIVE:
+		{
 			m_projectionMatrix = glm::perspective(glm::radians(GetFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
 			break;
+		}
 		case CameraType::ORTHOGRAPHIC:
-			m_projectionMatrix = glm::ortho(0.0f, 0.0f, m_ViewportSize.x, m_ViewportSize.y);
+		{
+			//m_projectionMatrix = glm::ortho(0.0f, m_ViewportSize.x, 0.0f, m_ViewportSize.y, 0.0f, 1000.0f);
+			m_projectionMatrix = glm::ortho(-m_ViewportSize.x/1200, m_ViewportSize.x / 1200, -m_ViewportSize.y / 1000, m_ViewportSize.y / 1000, 0.1f, 100.0f);
+			std::cout << m_ViewportSize.x << " " << m_ViewportSize.y << std::endl;
 			break;
+		}
 		default:
 			break;
 		}

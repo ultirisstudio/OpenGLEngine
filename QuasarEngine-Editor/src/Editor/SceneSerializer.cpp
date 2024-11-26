@@ -390,14 +390,10 @@ namespace QuasarEngine
 
 					Mesh* mesh;
 
-					if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
-					{
-						mesh = Renderer::m_SceneData.m_ResourceManager->GetModel(path)->GetMesh(name);
-					}
-					else
-					{
-						mesh = Renderer::m_SceneData.m_ResourceManager->CreateModel(path)->GetMesh(name);
-					}
+					if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(path))
+						Renderer::m_SceneData.m_AssetManager->loadAsset(path);
+
+					mesh = Renderer::m_SceneData.m_AssetManager->getAsset<Model>(path)->GetMesh(name);
 
 					auto& mc = deserializedEntity.AddComponent<MeshComponent>(name, mesh, path);
 				}

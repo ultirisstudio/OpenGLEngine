@@ -132,7 +132,7 @@ namespace QuasarEngine
 		printLog(std::string(message + "\n").c_str());
 	}
 
-	void Log::assert(bool condition, const char* file, int line, const std::string& message) {
+	void Log::check(bool condition, const char* file, int line, const std::string& message) {
 		if (!condition) {
 			printLogHeader(FATAL);
 			std::stringstream ss;

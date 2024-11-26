@@ -7,6 +7,7 @@
 
 #include <QuasarEngine/Asset/AssetHeader.h>
 #include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Model.h>
 
 namespace QuasarEngine
 {
@@ -91,10 +92,17 @@ namespace QuasarEngine
 
 		switch (type)
 		{
-		case AssetType::TEXTURE:
-			TextureSpecification spec;
-			m_LoadedAssets[id] = Texture::CreateTexture(id, spec);
-			break;
+			case AssetType::TEXTURE:
+			{
+				TextureSpecification spec;
+				m_LoadedAssets[id] = Texture::CreateTexture(id, spec);
+				break;
+			}
+			case AssetType::MESH:
+			{
+				m_LoadedAssets[id] = Model::CreateModel(id);
+				break;
+			}
 		}
 	}
 

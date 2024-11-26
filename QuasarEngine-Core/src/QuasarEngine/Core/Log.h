@@ -14,7 +14,7 @@ namespace QuasarEngine
 
 		static void LogAPIInfos(const char* vendor, const char* renderer, const char* version);
 		static void log(LogLevel level, const std::string& message);
-		static void assert(bool condition, const char* file, int line, const std::string& message);
+		static void check(bool condition, const char* file, int line, const std::string& message);
 
 	private:
 		Log() = delete;
@@ -28,7 +28,7 @@ namespace QuasarEngine
 		static std::string levelToString(LogLevel level);
 	};
 
-#define Q_ASSERT(condition, message) Log::assert(condition, __FILE__, __LINE__, message)
+#define Q_ASSERT(condition, message) Log::check(condition, __FILE__, __LINE__, message)
 
 #define Q_INFO(message) Log::log(Log::INFO, message)
 #define Q_WARNING(message) Log::log(Log::WARNING, message)

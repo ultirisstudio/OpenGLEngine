@@ -100,10 +100,10 @@ namespace QuasarEngine
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-		camera.OnResize(viewportPanelSize.x, viewportPanelSize.y);
-
 		if (m_EditorViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
+			//RenderCommand::SetViewport(0, 0, viewportPanelSize.x, viewportPanelSize.y);
+			camera.OnResize(viewportPanelSize.x, viewportPanelSize.y);
 			m_EditorFrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		}

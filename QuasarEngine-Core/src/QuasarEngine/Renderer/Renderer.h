@@ -19,8 +19,8 @@ namespace QuasarEngine
 		struct SceneData
 		{
 			Scene* m_Scene;
-			std::unique_ptr<ResourceManager> m_ResourceManager;
-			std::unique_ptr<AssetRegistry> m_AssetRegistry;
+			//std::unique_ptr<ResourceManager> m_ResourceManager;
+			//std::unique_ptr<AssetRegistry> m_AssetRegistry;
 			std::unique_ptr<AssetManager> m_AssetManager;
 
 			std::shared_ptr<Shader> m_Shader;

@@ -156,7 +156,7 @@ namespace QuasarEngine
 		m_SceneManager->update(dt);
 		m_EditorViewport->Update(*m_EditorCamera);
 
-		Renderer::m_SceneData.m_ResourceManager->Update(dt);
+		//Renderer::m_SceneData.m_ResourceManager->Update(dt);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{

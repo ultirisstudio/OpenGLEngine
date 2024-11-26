@@ -375,17 +375,11 @@ namespace QuasarEngine {
 	void Renderer::LoadModel(const std::string& path)
 	{
 		std::shared_ptr<Model> model;
-		/*if (Renderer::m_SceneData.m_ResourceManager->GetModel(path))
-		{
-			model = Renderer::m_SceneData.m_ResourceManager->GetModel(path);
-		}
-		else
-		{
-			model = Renderer::m_SceneData.m_ResourceManager->CreateModel(path);
-		}*/
 
 		if (!Renderer::m_SceneData.m_AssetManager->isAssetLoaded(path))
+		{
 			Renderer::m_SceneData.m_AssetManager->loadAsset(path);
+		}
 		
 		model = Renderer::m_SceneData.m_AssetManager->getAsset<Model>(path);
 

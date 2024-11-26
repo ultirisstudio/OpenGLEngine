@@ -6,8 +6,6 @@
 #include <fstream>
 
 #include <QuasarEngine/Asset/AssetHeader.h>
-#include <QuasarEngine/Resources/Texture.h>
-#include <QuasarEngine/Resources/Model.h>
 
 namespace QuasarEngine
 {
@@ -114,7 +112,7 @@ namespace QuasarEngine
 		}
 
 		if (!isAssetLoaded(id))
-			m_LoadedAssets[id] = asset;
+			m_LoadedAssets[id] = std::move(asset);
 	}
 
 	void AssetManager::unloadAsset(std::string id)

@@ -6,6 +6,9 @@
 #include "Asset.h"
 #include "AssetRegistry.h"
 
+#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Model.h>
+
 namespace QuasarEngine
 {
 	class AssetManager

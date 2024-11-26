@@ -1,11 +1,15 @@
 #pragma once
 
 #include <memory>
-#include <QuasarEngine/Resources/Texture.h>
+#include <string>
 
 namespace QuasarEngine
 {
 	class Entity;
+	class Material;
+
+	struct MaterialSpecification;
+	enum TextureType;
 
 	class MaterialComponentPanel
 	{
@@ -14,7 +18,5 @@ namespace QuasarEngine
 		~MaterialComponentPanel() = default;
 
 		void Render(Entity entity);
-	private:
-		std::shared_ptr<Texture> m_NoTexture;
 	};
 }

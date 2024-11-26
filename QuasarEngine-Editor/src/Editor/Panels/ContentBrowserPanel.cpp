@@ -98,9 +98,9 @@ namespace QuasarEngine
 					std::shared_ptr<Texture> texture = Texture::CreateTexture(itemPath, spec);
 					Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath, texture);
 
-					if (texture)
+					if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 					{
-						icon = texture;
+						icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
 					}
 					else
 					{

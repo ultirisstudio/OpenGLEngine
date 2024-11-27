@@ -1,10 +1,56 @@
 #include "qepch.h"
 #include "Math.h"
 
-namespace QuasarEngine::Math {
-	Frustum Math::CalculateFrustum(const glm::mat4& camera)
+#include <random>
+
+namespace QuasarEngine {
+	Math::Direction Math::AxisToDir(Axis axis, bool negative)
 	{
-		Frustum result;
+		return Math::Direction(axis * 2 + (negative ? 1 : 0));
+	}
+
+	Math::Direction Math::VectorToDir(glm::vec3 vec)
+	{
+		float max = vec[0];
+		int axis = 0;
+
+		for (int i = 1; i < AXIS_COUNT; i++)
+		{
+			float val = glm::abs(vec[i]);
+			if (val > max)
+			{
+				max = val;
+				axis = i;
+			}
+		}
+		return AxisToDir(Axis(axis), vec[axis] < 0.0f);
+	}
+
+	float Math::lerp(float a, float b, float x)
+	{
+		return a + x * (b - a);
+	}
+
+	float Math::dist(int x1, int y1, int x2, int y2)
+	{
+		return std::sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+
+	float Math::random(float min, float max)
+	{
+		return min + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (max - min);
+	}
+
+	float Math::random_float()
+	{
+		static std::default_random_engine e;
+		static std::uniform_real_distribution<> dis(-1, 1);
+		return dis(e);
+	}
+
+	Math::Frustum Math::CalculateFrustum(const glm::mat4& camera)
+	{
+		Math::Frustum result;
 		glm::vec4 base = { camera[0][3], camera[1][3], camera[2][3], camera[3][3] };
 
 		for (unsigned i = 0; i < DIRECTION_COUNT; i++)
@@ -24,7 +70,7 @@ namespace QuasarEngine::Math {
 		return result;
 	}
 
-	float MapRange(float value, float fromMin, float fromMax, float toMin, float toMax)
+	float Math::MapRange(float value, float fromMin, float fromMax, float toMin, float toMax)
 	{
 		return (((value - fromMin) * (toMax - toMin)) / (fromMax - fromMin)) + toMin;
 	}

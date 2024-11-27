@@ -22,6 +22,8 @@ namespace QuasarEngine
 
 		bool HasMesh() { return !(m_Mesh == nullptr); }
 
+		void ClearMesh();
+
 		void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
 	};
 }

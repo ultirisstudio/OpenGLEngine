@@ -55,8 +55,6 @@ namespace QuasarEngine {
 
 		m_SceneData.m_Shader = Shader::Create(shaderFiles);
 
-		//m_SceneData.m_ResourceManager = std::make_unique<ResourceManager>();
-
 		ShaderFile debugTriangleShaderFiles;
 		debugTriangleShaderFiles.vertexShaderFile = "Assets/Shaders/debug_triangle.vert";
 		debugTriangleShaderFiles.fragmentShaderFile = "Assets/Shaders/debug_triangle.frag";
@@ -68,8 +66,6 @@ namespace QuasarEngine {
 		debugLineShaderFiles.fragmentShaderFile = "Assets/Shaders/debug_line.frag";
 
 		m_DebugRenderData.m_DebugLineShader = Shader::Create(debugLineShaderFiles);
-
-		//m_SceneData.m_AssetRegistry = std::make_unique<AssetRegistry>();
 
 		m_SceneData.m_AssetManager = std::make_unique<AssetManager>();
 	}
@@ -91,7 +87,7 @@ namespace QuasarEngine {
 
 		// render degub stuff
 
-		std::vector<DebugLineVertex> lines;
+		/*std::vector<DebugLineVertex> lines;
 		std::vector<DebugTriangleVertex> triangles;
 
 		for (const reactphysics3d::DebugRenderer::DebugLine& line : PhysicEngine::GetDebugRenderer().getLines())
@@ -150,12 +146,12 @@ namespace QuasarEngine {
 
 		triangleMesh.draw();
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);*/
 
 		// Renderer
 
 		m_SceneData.m_Shader->use();
-
+		
 		glActiveTexture(GL_TEXTURE0);
 		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Shader->setUniform("uIrradianceMap", 0);
@@ -301,12 +297,16 @@ namespace QuasarEngine {
 				m_SceneData.m_Shader->setUniform("uMaterial.aoMap", nat);
 				nat++;
 
+				glEnable(GL_CULL_FACE);
+
 				entity.GetComponent<MeshComponent>().GetMesh().draw();
+
+				glDisable(GL_CULL_FACE);
 
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			if (entity.HasComponent<TerrainComponent>() && entity.GetComponent<TerrainComponent>().IsGenerated())
+			/*if (entity.HasComponent<TerrainComponent>() && entity.GetComponent<TerrainComponent>().IsGenerated())
 			{
 				if (entity.GetComponent<TerrainComponent>().m_PolygonMode)
 					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -336,7 +336,7 @@ namespace QuasarEngine {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 				m_SceneData.m_Shader->use();
-			}
+			}*/
 		}
 
 		m_SceneData.m_Shader->setUniform("uUseDirLight", dirLightCount);
@@ -347,7 +347,7 @@ namespace QuasarEngine {
 
 	void Renderer::RenderSkybox(BaseCamera& camera)
 	{
-		//glDisable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
 
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
@@ -363,8 +363,6 @@ namespace QuasarEngine {
 		m_SceneData.m_Scene->getSkybox().BindCubeMap();
 		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
-
-		//glEnable(GL_CULL_FACE);
 	}
 
 	void Renderer::EndScene()

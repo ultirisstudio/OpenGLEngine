@@ -13,6 +13,11 @@ namespace QuasarEngine
 		
 	}
 
+	void MeshComponent::ClearMesh()
+	{
+		m_Mesh->Clear();
+	}
+
 	void MeshComponent::GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode)
 	{
 		m_Mesh = new Mesh(vertices, indices, drawMode);

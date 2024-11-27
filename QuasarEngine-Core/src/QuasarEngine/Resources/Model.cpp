@@ -103,7 +103,8 @@ namespace QuasarEngine
 		//unsigned int nbAOTexture = material->GetTextureCount(aiTextureType_LIGHTMAP);
 		//std::cout << "AO Texture: " << nbAOTexture << std::endl;
 
-		return new Mesh(vertices, indices, mat);
+		//return new Mesh(vertices, indices, mat);
+		return new Mesh(vertices, indices);
 	}
 
 	void Model::loadNode(const aiNode* node, const aiScene* scene)

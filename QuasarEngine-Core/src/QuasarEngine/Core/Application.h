@@ -32,6 +32,7 @@ namespace QuasarEngine
 	{
 		std::string Name = "Quasar Application";
 		std::string WorkingDirectory;
+		bool EnableImGui = true;
 		ApplicationCommandLineArgs CommandLineArgs;
 	};
 

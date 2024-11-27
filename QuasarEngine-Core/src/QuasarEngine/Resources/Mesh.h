@@ -33,23 +33,29 @@ namespace QuasarEngine
 		glm::vec3 m_boundingBoxSize;
 		glm::vec3 m_boundingBoxPosition;
 
-		MaterialSpecification m_material;
+		bool m_meshGenerated = false;
+
+		//MaterialSpecification m_material;
 
 		void CalculateBoundingBoxSize(std::vector<Vertex> vertices);
 	public:
 		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode = DrawMode::TRIANGLES);
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode = DrawMode::TRIANGLES);
+		//Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode = DrawMode::TRIANGLES);
 		~Mesh();
 
 		void draw() const;
 
-		const MaterialSpecification& GetMaterial() const { return m_material; }
+		//const MaterialSpecification& GetMaterial() const { return m_material; }
 
 		void GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
 		glm::vec3 GetBoundingBoxSize() const { return m_boundingBoxSize; }
 
 		bool IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const;
+
+		bool IsMeshGenerated();
+
+		void Clear();
 
 		const size_t& GetVerticesCount() { return m_vertices.size(); }
 		const size_t& GetIndicesCount() { return m_indices.size(); }

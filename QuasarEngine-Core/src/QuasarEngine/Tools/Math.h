@@ -4,6 +4,15 @@
 #include <glm/glm.hpp>
 
 namespace QuasarEngine::Math {
+	enum Axis
+	{
+		AXIS_X,
+		AXIS_Y,
+		AXIS_Z,
+
+		AXIS_COUNT
+	};
+
 	enum Direction
 	{
 		DIRECTION_LEFT,
@@ -14,6 +23,17 @@ namespace QuasarEngine::Math {
 		DIRECTION_BACKWARD,
 
 		DIRECTION_COUNT
+	};
+
+	const glm::ivec2 surrounding[] = {
+		glm::ivec2(-1.0f, 0.0f),
+		glm::ivec2(1.0f,  0.0f),
+		glm::ivec2(0.0f,-1.0f),
+		glm::ivec2(0.0f, 1.0f),
+		glm::ivec2(-1.0f, 1.0f),
+		glm::ivec2(1.0f, 1.0f),
+		glm::ivec2(1.0f, -1.0f),
+		glm::ivec2(-1.0f, -1.0f),
 	};
 
 	const glm::vec3 directionVectors[DIRECTION_COUNT]
@@ -37,6 +57,13 @@ namespace QuasarEngine::Math {
 	};
 
 	float MapRange(float value, float fromMin, float fromMax, float toMin, float toMax);
+	float lerp(float a, float b, float x);
+	float dist(int x1, int y1, int x2, int y2);
+	float random(float min, float max);
+	float random_float();
+
+	Direction AxisToDir(Axis axis, bool negative);
+	Direction VectorToDir(glm::vec3 vec);
 
 	Frustum CalculateFrustum(const glm::mat4& camera);
 }

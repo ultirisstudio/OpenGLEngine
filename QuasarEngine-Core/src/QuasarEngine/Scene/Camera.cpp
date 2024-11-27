@@ -49,6 +49,12 @@ namespace QuasarEngine
 		return m_TransformComponent->GetGlobalTransform();
 	}
 
+	glm::vec3 Camera::GetFront()
+	{
+		glm::vec3 front = m_TransformComponent->Rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+		return glm::normalize(front);
+	}
+
 	float Camera::GetFov() const
 	{
 		return m_fov;

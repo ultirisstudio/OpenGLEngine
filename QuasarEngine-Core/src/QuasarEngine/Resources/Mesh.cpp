@@ -49,7 +49,7 @@ namespace QuasarEngine
 		GenerateMesh(vertices, indices);
 	}
 
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode) :
+	/*Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode) :
 		m_vao(0),
 		m_vbo(0),
 		m_ebo(0),
@@ -59,7 +59,7 @@ namespace QuasarEngine
 		m_material(material)
 	{
 		GenerateMesh(vertices, indices);
-	}
+	}*/
 
 	Mesh::~Mesh()
 	{
@@ -99,6 +99,8 @@ namespace QuasarEngine
 
 		m_vertices = std::move(vertices);
 		m_indices = std::move(indices);
+
+		m_meshGenerated = true;
 	}
 
 	bool Mesh::IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const
@@ -120,5 +122,16 @@ namespace QuasarEngine
 		}
 
 		return true;
+	}
+
+	bool Mesh::IsMeshGenerated()
+	{
+		return m_meshGenerated;
+	}
+
+	void Mesh::Clear()
+	{
+		m_vertices.clear();
+		m_indices.clear();
 	}
 }

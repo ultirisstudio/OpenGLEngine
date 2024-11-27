@@ -45,6 +45,8 @@ namespace QuasarEngine
 
 		glm::mat4 GetTransform() override;
 
+		glm::vec3 GetFront() override;
+
 		float GetFov() const;
 		void SetFov(float fov);
 

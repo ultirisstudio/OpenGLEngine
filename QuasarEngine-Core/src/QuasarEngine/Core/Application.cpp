@@ -97,10 +97,13 @@ namespace QuasarEngine
 
 				//if (m_can_calcul_latency) chrono.restart();
 
-				m_ImGuiLayer->Begin();
-				for (Layer* layer : m_LayerManager)
-					layer->OnGuiRender();
-				m_ImGuiLayer->End();
+				if (m_Specification.EnableImGui)
+				{
+					m_ImGuiLayer->Begin();
+					for (Layer* layer : m_LayerManager)
+						layer->OnGuiRender();
+					m_ImGuiLayer->End();
+				}
 
 				//if (m_can_calcul_latency) { m_appInfos.imgui_render_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
 
@@ -130,7 +133,7 @@ namespace QuasarEngine
 
 			perf_last_time += 1.0;
 
-			m_Window->SetTitle("Quasar Editor [" + std::to_string(m_appInfos.app_fps) + ":" + std::to_string(m_appInfos.app_latency) + "]");
+			m_Window->SetTitle(m_Specification.Name + " [" + std::to_string(m_appInfos.app_fps) + ":" + std::to_string(m_appInfos.app_latency) + "]");
 		}
 	}
 

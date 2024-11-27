@@ -52,6 +52,11 @@ namespace std {
         {
             return (uint32_t)uuid;
         }
+
+        bool operator()(const QuasarEngine::UUID& a, const QuasarEngine::UUID& b) const
+        {
+            return a == b;
+        }
     };
 
 }

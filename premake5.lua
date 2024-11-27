@@ -38,3 +38,7 @@ group ""
 group "Editor"
 	include "QuasarEngine-Editor"
 group ""
+
+group "Runtime"
+	include "QuasarEngine-Runtime"
+group ""

@@ -13,6 +13,8 @@ namespace QuasarEngine {
 
 		virtual void Init() override;
 		virtual void SwapBuffers() override;
+
+		virtual void SetCursorVisibility(bool visible) override;
 	private:
 		GLFWwindow* m_WindowHandle;
 	};

@@ -25,10 +25,8 @@ GameCamera::GameCamera() :
 	m_RotateSensitivity(0.1f),
 	m_TranslateSensitivity(0.1f),
 	m_WalkSensitivity(0.1f),
-	m_ScrollSensitivity(2.0f),
+	m_ScrollSensitivity(3.0f),
 
-	m_rotate(true),
-	m_translate(false),
 	m_MouseX(0.0f),
 	m_MouseY(0.0f)
 {
@@ -56,10 +54,8 @@ GameCamera::GameCamera(const glm::vec3& position) :
 	m_RotateSensitivity(0.1f),
 	m_TranslateSensitivity(0.1f),
 	m_WalkSensitivity(0.1f),
-	m_ScrollSensitivity(2.0f),
+	m_ScrollSensitivity(3.0f),
 
-	m_rotate(true),
-	m_translate(false),
 	m_MouseX(0.0f),
 	m_MouseY(0.0f)
 {
@@ -153,38 +149,15 @@ bool GameCamera::OnMouseMoved(QuasarEngine::MouseMovedEvent& e)
 	m_lastMousePos.x = static_cast<glm::uint>(e.GetX());
 	m_lastMousePos.y = static_cast<glm::uint>(e.GetY());
 
-	if (m_rotate)
-	{
-		if (m_pitch > 89.0f)
-			m_pitch = 89.0f;
-		if (m_pitch < -89.0f)
-			m_pitch = -89.0f;
+	m_yaw -= (offsetX * m_RotateSensitivity);
+	m_pitch += (offsetY * m_RotateSensitivity);
 
-		m_yaw -= (offsetX * m_RotateSensitivity);
-		m_pitch += (offsetY * m_RotateSensitivity);
-	}
+	m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
 
-	if (m_translate)
-	{
-		glm::mat4 translationMatrix(1.0f);
-		translationMatrix = glm::translate(translationMatrix, m_right * (-offsetX * m_TranslateSensitivity));
-		translationMatrix = glm::translate(translationMatrix, m_up * (offsetY * m_TranslateSensitivity));
-
-		m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
-	}
-
-	if (m_walk)
-	{
-		m_yaw -= (offsetX * m_RotateSensitivity);
-
-		glm::vec3 horizontalForward = glm::normalize(m_forward);
-		horizontalForward.y = 0.0f;
-
-		glm::mat4 translationMatrix(1.0f);
-		translationMatrix = glm::translate(translationMatrix, horizontalForward * (-offsetY * m_TranslateSensitivity));
-
-		m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
-	}
+	if (m_yaw < 0.0f)
+		m_yaw += 360.0f;
+	else if (m_yaw >= 360.0f)
+		m_yaw = std::fmod(m_yaw, 360.0f);
 
 	updateViewMatrix();
 	UpdateCameraVectors();
@@ -194,17 +167,8 @@ bool GameCamera::OnMouseMoved(QuasarEngine::MouseMovedEvent& e)
 
 bool GameCamera::OnMousePressed(QuasarEngine::MouseButtonPressedEvent& e)
 {
-	//Window::WindowData& data = *(Window::WindowData*)glfwGetWindowUserPointer(reinterpret_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()));
-
-	//m_lastMousePos.x = data.MousePos.x;
 	m_lastMousePos.x = QuasarEngine::Input::GetMouseX();
-	//m_lastMousePos.y = data.MousePos.y;
 	m_lastMousePos.y = QuasarEngine::Input::GetMouseY();
-
-	//m_walk = (e.GetMouseButton() == 0);
-	//m_rotate = (e.GetMouseButton() == 1);
-	//m_rotate = true;
-	m_translate = (e.GetMouseButton() == 2);
 
 	return false;
 }

@@ -41,6 +41,8 @@ namespace QuasarEngine {
 		void SetVSync(bool enabled);
 		bool IsVSync() const;
 
+		void SetCursorVisibility(bool visible);
+
 		inline virtual void* GetNativeWindow() const { return m_Window; }
 
 		void SetTitle(const std::string& title);

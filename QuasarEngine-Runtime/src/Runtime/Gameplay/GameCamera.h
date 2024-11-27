@@ -34,10 +34,6 @@ private:
 
 	bool m_canMove;
 
-	bool m_walk;
-	bool m_rotate;
-	bool m_translate;
-
 	float m_MouseX;
 	float m_MouseY;
 
@@ -61,6 +57,7 @@ public:
 	glm::vec3 GetPosition();
 
 	glm::mat4 GetTransform();
+
 	float getFov() const;
 	void setFov(float fov) { m_fov = fov; }
 

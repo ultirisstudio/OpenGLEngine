@@ -166,6 +166,11 @@ namespace QuasarEngine {
 		return m_Data.VSync;
 	}
 
+	void Window::SetCursorVisibility(bool visible)
+	{
+		m_Context->SetCursorVisibility(visible);
+	}
+
 	void Window::SetTitle(const std::string& title)
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());

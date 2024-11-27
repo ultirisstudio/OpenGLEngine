@@ -25,6 +25,8 @@ namespace QuasarEngine
 		PhysicEngine::Init();
 		Renderer::Init();
 
+		Application::Get().GetWindow().SetCursorVisibility(true);
+
 		m_ScreenQuad = std::make_unique<ScreenQuad>();
 		m_Scene = std::make_unique<Scene>();
 

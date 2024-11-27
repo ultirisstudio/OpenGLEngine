@@ -21,7 +21,8 @@ Player::Player()
 	//player.AddComponent<QuasarEngine::CameraComponent>().setType(QuasarEngine::CameraType::PERSPECTIVE);
 	//player.GetComponent<QuasarEngine::TransformComponent>().Position.y = 200;
 
-	m_Camera = std::make_unique<GameCamera>();
+	m_Camera = std::make_unique<GameCamera>(glm::vec3(0.0f, 200.0f, 0.0f));
+	m_Camera->setFov(60.0f);
 
 	//m_uuid = player.GetUUID();
 

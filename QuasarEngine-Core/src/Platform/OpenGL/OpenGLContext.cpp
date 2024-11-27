@@ -29,4 +29,11 @@ namespace QuasarEngine {
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
+	void OpenGLContext::SetCursorVisibility(bool visible)
+	{
+		if (visible)
+			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else
+			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
 }

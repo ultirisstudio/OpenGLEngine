@@ -22,6 +22,9 @@ namespace QuasarEngine
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
+			if (HasComponent<T>())
+				return GetComponent<T>();
+
 			T& component = m_Registry->GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			component.entt_entity = m_EntityHandle;
 			component.registry = m_Registry;

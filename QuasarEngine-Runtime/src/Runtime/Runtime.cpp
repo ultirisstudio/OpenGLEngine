@@ -10,6 +10,7 @@
 
 #include <QuasarEngine/Physic/PhysicEngine.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
+#include <QuasarEngine/Entity/Components/LightComponent.h>
 
 #include <QuasarEngine/Entity/Entity.h>
 
@@ -64,6 +65,17 @@ namespace QuasarEngine
 		std::cout << "ChunkManager: " << sizeof(ChunkManager) << std::endl;
 		std::cout << "Mesh: " << sizeof(Mesh) << std::endl;
 		std::cout << "VoxelType: " << sizeof(BlockType) << std::endl;
+
+		//Entity camera = m_Scene->CreateEntity("Light");
+		//auto& camera_component = camera.AddComponent<CameraComponent>();
+		//camera_component.GetCamera().Init(&camera.GetComponent<TransformComponent>());
+		//camera_component.Primary = true;
+
+		Entity light = m_Scene->CreateEntity("Light");
+		light.GetComponent<TransformComponent>().Rotation = { 20, 90, 45};
+		auto& light_component = light.AddComponent<LightComponent>();
+		light_component.SetType(QuasarEngine::LightComponent::LightType::DIRECTIONAL);
+		light_component.dir_power = 20.0f;
 	}
 
 	void Runtime::OnDetach()

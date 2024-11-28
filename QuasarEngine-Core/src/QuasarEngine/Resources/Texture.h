@@ -63,25 +63,19 @@ namespace QuasarEngine
 
 	class Texture : public Asset
 	{
-	private:
+	protected:
 		uint32_t m_ID;
 		TextureSpecification m_Specification;
 	public:
-		Texture(const std::string& path, const TextureSpecification& specification);
-		Texture(unsigned char* image_data, size_t size, const TextureSpecification& specification);
+		Texture(const TextureSpecification& specification);
 		~Texture();
-
-		static unsigned char* LoadDataFromPath(const std::string& path, size_t* file_size);
-
-		static std::shared_ptr<Texture> CreateTexture(const std::string& path, const TextureSpecification& specification);
-		static std::shared_ptr<Texture> CreateTexture(unsigned char* image_data, size_t size, const TextureSpecification& specification);
 
 		unsigned int GetID() const { return m_ID; }
 
 		const TextureSpecification& GetSpecification() const { return m_Specification; }
 
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 
 		static AssetType GetStaticType() { return AssetType::TEXTURE; }
 		virtual AssetType GetType() override { return GetStaticType(); }

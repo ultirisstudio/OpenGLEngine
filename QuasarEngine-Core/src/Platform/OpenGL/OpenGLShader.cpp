@@ -15,6 +15,7 @@ namespace QuasarEngine
 			return;
 
 		int activeUniforms = 0;
+
 		glGetProgramiv(m_id, GL_ACTIVE_UNIFORMS, &activeUniforms);
 
 		for (int i = 0; i < activeUniforms; ++i)
@@ -28,8 +29,6 @@ namespace QuasarEngine
 
 			std::string uniformName = name.substr(0, name.find('\0'));
 			unsigned int uniformLocation = glGetUniformLocation(m_id, uniformName.c_str());
-
-			//std::cout << uniformName << std::endl;
 
 			m_uniformLocations.insert({ uniformName, uniformLocation });
 		}

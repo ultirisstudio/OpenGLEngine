@@ -94,7 +94,7 @@ void Chunk::Generate(TerrainGenerator& generator)
 		}
 	}
 
-	std::vector<glm::ivec2> points;
+	/*std::vector<glm::ivec2> points;
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> tree(0, CHUNK_SIZE);
@@ -110,12 +110,12 @@ void Chunk::Generate(TerrainGenerator& generator)
 		glm::ivec2 hpos = glm::ivec2(m_Position.x, m_Position.z) + points[i];
 		int height = generator.GetHeight(hpos);
 		generator.GenerateTree(*this, pos.x, height, pos.y);
-	}
+	}*/
 }
 
 void Chunk::GenerateMesh()
 {
-	std::vector<QuasarEngine::Vertex> vertices;
+	std::vector<VoxelVertex> vertices;
 
 	for (int y = 0; y <= m_MaxHeight; y++)
 	{
@@ -137,60 +137,60 @@ void Chunk::GenerateMesh()
 					if (x == CHUNK_SIZE - 1 ? ChunkManager::GetInstance()->IsTransparent({ m_Position.x + x + 1, m_Position.y + y, m_Position.z + z }) == true : ChunkManager::GetInstance()->GetBlockInfos(m_Blocks.at(ToIndex({ x + 1, y, z })).GetType()).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(3),
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(3),
-							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(3),
-							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) } //, texCoords.at(3)
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(3),
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(3),
+							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(3),
+							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(3)
 							});
 					}
 
 					if (x == 0 ? ChunkManager::GetInstance()->IsTransparent({ m_Position.x + x - 1, m_Position.y + y, m_Position.z + z }) == true : ChunkManager::GetInstance()->GetBlockInfos(m_Blocks.at(ToIndex({ x - 1, y, z })).GetType()).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(2),
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(2),
-							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(2),
-							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) }//, texCoords.at(2)
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(2),
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(2),
+							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(2),
+							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(2)
 							});
 					}
 
 					if (z == CHUNK_SIZE - 1 ? ChunkManager::GetInstance()->IsTransparent({ m_Position.x + x, m_Position.y + y, m_Position.z + z + 1 }) == true : ChunkManager::GetInstance()->GetBlockInfos(m_Blocks.at(ToIndex({ x, y, z + 1 })).GetType()).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(4),
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(4),
-							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(4),
-							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) }//, texCoords.at(4)
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(4),
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(4),
+							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(4),
+							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, 0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(4)
 							});
 					}
 
 					if (z == 0 ? ChunkManager::GetInstance()->IsTransparent({ m_Position.x + x, m_Position.y + y, m_Position.z + z - 1 }) == true : ChunkManager::GetInstance()->GetBlockInfos(m_Blocks.at(ToIndex({ x, y, z - 1 })).GetType()).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(5),
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(5),
-							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(5),
-							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) }//, texCoords.at(5)
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(5),
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(5),
+							{ glm::vec3(-0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(5),
+							{ glm::vec3(0.5f + x + m_Position.x,  0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(5)
 							});
 					}
 
 					if (ChunkManager::GetInstance()->GetBlockInfos(GetBlockType({ x, y - 1, z })).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(1),
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(1),
-							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(1),
-							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f) }//, texCoords.at(1)
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(1),
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(1),
+							{ glm::vec3(0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(1),
+							{ glm::vec3(-0.5f + x + m_Position.x, -0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(1)
 							});
 					}
 
 					if (ChunkManager::GetInstance()->GetBlockInfos(GetBlockType({ x, y + 1, z })).IsTransparent() == true)
 					{
 						vertices.insert(vertices.end(), {
-							{ glm::vec3(-0.5f + x + m_Position.x, 0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, //texCoords.at(0),
-							{ glm::vec3(0.5f + x + m_Position.x, 0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, //texCoords.at(0),
-							{ glm::vec3(0.5f + x + m_Position.x, 0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, //texCoords.at(0),
-							{ glm::vec3(-0.5f + x + m_Position.x, 0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f) }//, texCoords.at(0)
+							{ glm::vec3(-0.5f + x + m_Position.x, 0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, texCoords.at(0),
+							{ glm::vec3(0.5f + x + m_Position.x, 0.5f + y + m_Position.y,  0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, texCoords.at(0),
+							{ glm::vec3(0.5f + x + m_Position.x, 0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f) }, texCoords.at(0),
+							{ glm::vec3(-0.5f + x + m_Position.x, 0.5f + y + m_Position.y, -0.5f + z + m_Position.z), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f) }, texCoords.at(0)
 							});
 					}
 				}

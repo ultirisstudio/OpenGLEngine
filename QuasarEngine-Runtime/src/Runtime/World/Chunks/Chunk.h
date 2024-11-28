@@ -20,7 +20,7 @@ struct VoxelVertex
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
-	int texture;
+	float texture;
 };
 
 class Chunk : public QuasarEngine::Component

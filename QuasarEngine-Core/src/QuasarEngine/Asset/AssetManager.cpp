@@ -6,6 +6,8 @@
 #include <fstream>
 
 #include <QuasarEngine/Asset/AssetHeader.h>
+#include <QuasarEngine/Resources/Texture2D.h>
+#include <QuasarEngine/Resources/Model.h>
 
 namespace QuasarEngine
 {
@@ -93,7 +95,7 @@ namespace QuasarEngine
 			case AssetType::TEXTURE:
 			{
 				TextureSpecification spec;
-				m_LoadedAssets[id] = Texture::CreateTexture(id, spec);
+				m_LoadedAssets[id] = Texture2D::CreateTexture2D(id, spec);
 				break;
 			}
 			case AssetType::MESH:

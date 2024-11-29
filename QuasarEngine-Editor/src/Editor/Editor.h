@@ -69,7 +69,7 @@ namespace QuasarEngine
 
 		std::unique_ptr<AssetImporter> m_AssetImporter;
 
-		std::shared_ptr<Texture> m_TextureTest;
+		std::shared_ptr<Texture2D> m_TextureTest;
 	private:
 		Chronometer m_Chronometer;
 	//private:

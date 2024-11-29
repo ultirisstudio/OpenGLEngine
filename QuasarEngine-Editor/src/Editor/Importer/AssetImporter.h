@@ -9,12 +9,12 @@
 
 namespace QuasarEngine
 {
-	class Texture;
+	class Texture2D;
 
 	class AssetImporter
 	{
 	private:
-		typedef std::unordered_map<std::string, std::function<std::shared_ptr<Texture>(const std::string&)>> ImportFunction;
+		typedef std::unordered_map<std::string, std::function<std::shared_ptr<Texture2D>(const std::string&)>> ImportFunction;
 		typedef std::unordered_map<std::string, std::function<void(const std::string&, const std::string&)>> ExportFunction;
 
 		ImportFunction m_ImportFunctions;

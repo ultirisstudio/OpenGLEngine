@@ -53,7 +53,7 @@ namespace QuasarEngine
 	{
 		Entity temp = m_SceneObject->GetScene().CreateEntity("UV Sphere");
 
-		std::vector<Vertex> vertices;
+		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
 
 		const unsigned int X_SEGMENTS = 64;
@@ -73,7 +73,7 @@ namespace QuasarEngine
 				float yPos = std::cos(ySegment * PI);
 				float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 
-				vertices.push_back({ glm::vec3(xPos, yPos, zPos), glm::vec3(xPos, yPos, zPos), glm::vec2(xSegment, ySegment) });
+				vertices.insert(vertices.end(), { xPos, yPos, zPos, xPos, yPos, zPos, xSegment, ySegment });
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace QuasarEngine
 
 		temp.AddComponent<MaterialComponent>();
 		temp.AddComponent<MeshRendererComponent>();
-		temp.AddComponent<MeshComponent>().GenerateMesh(vertices, indices, DrawMode::TRIANGLE_STRIP);
+		temp.AddComponent<MeshComponent>().GenerateMesh(vertices, indices, {}, DrawMode::TRIANGLE_STRIP);
 	}
 
 	void SceneManager::AddPlane()

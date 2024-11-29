@@ -4,7 +4,7 @@
 #include <optional>
 #include <glm/glm.hpp>
 
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 
 namespace QuasarEngine
 {
@@ -42,7 +42,7 @@ namespace QuasarEngine
 		~Material();
 
 		void SetTexture(TextureType type, std::string path);
-		Texture* GetTexture(TextureType type);
+		Texture2D* GetTexture(TextureType type);
 
 		bool HasTexture(TextureType type);
 

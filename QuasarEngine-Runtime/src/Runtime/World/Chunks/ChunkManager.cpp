@@ -17,16 +17,16 @@ ChunkManager::ChunkManager()
 	//m_Shader = std::make_unique<QuasarEngine::Shader>("Shaders/basic_vertex.glsl", "Shaders/basic_fragment.glsl");
 
 	std::vector<std::string> textures{
-		"Textures/dark_grass_block_top.png",	//1
-		"Textures/dark_grass_block_side.png",	//2
-		"Textures/dark_dirt.png",				//3
-		"Textures/dark_cobblestone.png",		//4
-		"Textures/stone.png",					//5
-		"Textures/log_1.png",					//6
-		"Textures/log_top.png",					//7
-		"Textures/leaves_test.png",				//8
-		"Textures/library_1.png",				//9
-		"Textures/library_2.png",				//10
+		"Assets/Textures/dark_grass_block_top.png",	//1
+		"Assets/Textures/dark_grass_block_side.png",	//2
+		"Assets/Textures/dark_dirt.png",				//3
+		"Assets/Textures/dark_cobblestone.png",		//4
+		"Assets/Textures/stone.png",					//5
+		"Assets/Textures/log_1.png",					//6
+		"Assets/Textures/log_top.png",					//7
+		"Assets/Textures/leaves_test.png",				//8
+		"Assets/Textures/library_1.png",				//9
+		"Assets/Textures/library_2.png",				//10
 	};
 
 	// UP, DOWN, LEFT, RIGHT, FRONT, BACK

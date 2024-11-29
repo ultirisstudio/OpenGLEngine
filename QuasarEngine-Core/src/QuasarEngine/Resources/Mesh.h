@@ -27,7 +27,8 @@ namespace QuasarEngine
 
 		DrawMode m_drawMode;
 
-		std::vector<Vertex> m_vertices;
+		//std::vector<Vertex> m_vertices;
+		std::vector<float> m_vertices;
 		std::vector<unsigned int> m_indices;
 
 		glm::vec3 m_boundingBoxSize;
@@ -37,9 +38,11 @@ namespace QuasarEngine
 
 		//MaterialSpecification m_material;
 
-		void CalculateBoundingBoxSize(std::vector<Vertex> vertices);
+		//void CalculateBoundingBoxSize(std::vector<Vertex> vertices);
+		void CalculateBoundingBoxSize(std::vector<float> vertices);
 	public:
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode = DrawMode::TRIANGLES);
+		Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::optional<BufferLayout> layout, DrawMode drawMode = DrawMode::TRIANGLES);
+		//Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode = DrawMode::TRIANGLES);
 		//Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode = DrawMode::TRIANGLES);
 		~Mesh();
 
@@ -47,7 +50,8 @@ namespace QuasarEngine
 
 		//const MaterialSpecification& GetMaterial() const { return m_material; }
 
-		void GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+		void GenerateMesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::optional<BufferLayout> layout);
+		//void GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
 		glm::vec3 GetBoundingBoxSize() const { return m_boundingBoxSize; }
 
@@ -60,7 +64,8 @@ namespace QuasarEngine
 		const size_t& GetVerticesCount() { return m_vertices.size(); }
 		const size_t& GetIndicesCount() { return m_indices.size(); }
 
-		const std::vector<Vertex>& GetVertices() const { return m_vertices; }
+		//const std::vector<Vertex>& GetVertices() const { return m_vertices; }
+		const std::vector<float>& GetVertices() const { return m_vertices; }
 		const std::vector<unsigned int>& GetIndices() const { return m_indices; }
 
 		static AssetType GetStaticType() { return AssetType::MESH; }

@@ -38,33 +38,33 @@ namespace QuasarEngine
 		}
 	}
 
-	Texture* Material::GetTexture(TextureType type)
+	Texture2D* Material::GetTexture(TextureType type)
 	{
 		switch (type)
 		{
 		case TextureType::Albedo:
 			if (HasTexture(type))
-				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_Specification.AlbedoTexture.value()).get();
+				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_Specification.AlbedoTexture.value()).get();
 			else
 				return nullptr;
 		case TextureType::Normal:
 			if (HasTexture(type))
-				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_Specification.NormalTexture.value()).get();
+				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_Specification.NormalTexture.value()).get();
 			else
 				return nullptr;
 		case TextureType::Metallic:
 			if (HasTexture(type))
-				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_Specification.MetallicTexture.value()).get();
+				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_Specification.MetallicTexture.value()).get();
 			else
 				return nullptr;
 		case TextureType::Roughness:
 			if (HasTexture(type))
-				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_Specification.RoughnessTexture.value()).get();
+				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_Specification.RoughnessTexture.value()).get();
 			else
 				return nullptr;
 		case TextureType::AO:
 			if (HasTexture(type))
-				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_Specification.AOTexture.value()).get();
+				return Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_Specification.AOTexture.value()).get();
 			else
 				return nullptr;
 		}

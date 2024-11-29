@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <QuasarEngine/Entity/Component.h>
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 #include <QuasarEngine/Shader/Shader.h>
 
 namespace QuasarEngine
@@ -11,7 +11,7 @@ namespace QuasarEngine
 	class TerrainComponent : public Component
 	{
 	private:
-		std::shared_ptr<Texture> m_HeightMapTexture;
+		std::shared_ptr<Texture2D> m_HeightMapTexture;
 		std::shared_ptr<Shader> m_Shader;
 
 		std::string m_HeightMapPath;
@@ -32,7 +32,7 @@ namespace QuasarEngine
 		void SetHeightMap(const std::string& path) { m_HeightMapPath = path; }
 
 		std::string GetHeightMapPath() { return m_HeightMapPath; }
-		Texture& GetHeightMapTexture() { return *m_HeightMapTexture; }
+		Texture2D& GetHeightMapTexture() { return *m_HeightMapTexture; }
 
 		Shader& GetShader();
 

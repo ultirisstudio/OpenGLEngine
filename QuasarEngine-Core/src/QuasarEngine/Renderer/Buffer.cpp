@@ -17,7 +17,7 @@ namespace QuasarEngine {
 		return nullptr;
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(Vertex* vertices, uint32_t size)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(const std::vector<float>& vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{

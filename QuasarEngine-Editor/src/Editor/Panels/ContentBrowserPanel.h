@@ -4,7 +4,7 @@
 
 #include "TextureViewerPanel.h"
 
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 #include "Editor/Importer/AssetImporter.h"
 
 namespace QuasarEngine
@@ -21,11 +21,11 @@ namespace QuasarEngine
 		std::filesystem::path m_BaseDirectory;
 		std::filesystem::path m_CurrentDirectory;
 
-		std::shared_ptr<Texture> m_DirectoryIcon;
-		std::shared_ptr<Texture> m_FilePNGIcon;
-		std::shared_ptr<Texture> m_FileJPGIcon;
-		std::shared_ptr<Texture> m_FileOBJIcon;
-		std::shared_ptr<Texture> m_FileOtherIcon;
+		std::shared_ptr<Texture2D> m_DirectoryIcon;
+		std::shared_ptr<Texture2D> m_FilePNGIcon;
+		std::shared_ptr<Texture2D> m_FileJPGIcon;
+		std::shared_ptr<Texture2D> m_FileOBJIcon;
+		std::shared_ptr<Texture2D> m_FileOtherIcon;
 
 		std::shared_ptr<TextureViewerPanel> m_TextureViewerPanel;
 

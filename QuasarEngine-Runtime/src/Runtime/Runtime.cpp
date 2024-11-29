@@ -11,6 +11,7 @@
 #include <QuasarEngine/Physic/PhysicEngine.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
 #include <QuasarEngine/Entity/Components/LightComponent.h>
+#include <QuasarEngine/Shader/Shader.h>
 
 #include <QuasarEngine/Entity/Entity.h>
 
@@ -25,6 +26,12 @@ namespace QuasarEngine
 	{
 		PhysicEngine::Init();
 		Renderer::Init();
+
+		ShaderFile shaderFiles;
+		shaderFiles.vertexShaderFile = "Assets/Shaders/pbr_shader.vert";
+		shaderFiles.fragmentShaderFile = "Assets/Shaders/pbr_shader.frag";
+
+		Renderer::m_SceneData.m_Shader = Shader::Create(shaderFiles);
 
 		Application::Get().GetWindow().SetCursorVisibility(true);
 

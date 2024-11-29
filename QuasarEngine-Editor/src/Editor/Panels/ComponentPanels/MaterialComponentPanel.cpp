@@ -7,7 +7,7 @@
 #include <QuasarEngine/Renderer/Renderer.h>
 #include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Entity/Components/MaterialComponent.h>
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 
 namespace QuasarEngine
 {
@@ -18,7 +18,7 @@ namespace QuasarEngine
 
 	void MaterialComponentPanel::Render(Entity entity)
 	{
-		unsigned int NO_ID = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>("Assets/Icons/no_texture.png")->GetID();
+		unsigned int NO_ID = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>("Assets/Icons/no_texture.png")->GetID();
 		if (entity.HasComponent<MaterialComponent>())
 		{
 			auto& mc = entity.GetComponent<MaterialComponent>();

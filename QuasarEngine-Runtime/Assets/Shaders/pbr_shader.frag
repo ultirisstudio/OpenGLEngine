@@ -6,6 +6,7 @@ layout(location = 1) out uint outEntityID;
 in vec2 fTextureCoordinates;
 in vec3 fWorldPos;
 in vec3 fNormal;
+flat in float fTextureIndice;
 
 uniform samplerCube uIrradianceMap;
 uniform samplerCube uPrefilterMap;
@@ -25,7 +26,7 @@ struct Material
     float roughness;
     float ao;
 
-    sampler2D albedoMap;
+    sampler2DArray albedoMap;
     sampler2D normalMap;
     sampler2D metallicMap;
     sampler2D roughnessMap;
@@ -189,7 +190,7 @@ void main()
     if (uMaterial.use_albedo_texture)
     {
         //albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
-        vec4 temp = texture(uMaterial.albedoMap, fTextureCoordinates);
+        vec4 temp = texture(uMaterial.albedoMap, vec3(fTextureCoordinates, index));
 
         if (temp.a < 0.5)
 		{

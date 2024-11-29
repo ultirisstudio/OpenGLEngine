@@ -13,12 +13,12 @@ namespace QuasarEngine
 	{
 		if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded("Assets/Icons/no_texture.png"))
 		{
-			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>("Assets/Icons/no_texture.png");
 		}
 		else
 		{
 			Renderer::m_SceneData.m_AssetManager->loadAsset("Assets/Icons/no_texture.png");
-			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>("Assets/Icons/no_texture.png");
+			m_NoTexture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>("Assets/Icons/no_texture.png");
 		}
 	}
 
@@ -43,14 +43,14 @@ namespace QuasarEngine
 
 				unsigned int id;
 
-				if (Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(tc.GetHeightMapPath()))
+				if (Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(tc.GetHeightMapPath()))
 				{
-					id = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(tc.GetHeightMapPath())->GetID();
+					id = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(tc.GetHeightMapPath())->GetID();
 				}
 				else
 				{
 					Renderer::m_SceneData.m_AssetManager->loadAsset(tc.GetHeightMapPath());
-					std::shared_ptr<Texture> texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(tc.GetHeightMapPath());
+					std::shared_ptr<Texture2D> texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(tc.GetHeightMapPath());
 					id = texture->GetID();
 				}
 

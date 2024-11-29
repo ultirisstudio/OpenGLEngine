@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 #include <QuasarEngine/Resources/Vertex.h>
 
@@ -98,6 +99,8 @@ namespace QuasarEngine {
 				offset += element.Size;
 				m_Stride += element.Size;
 			}
+
+			std::cout << m_Stride << std::endl;
 		}
 	private:
 		std::vector<BufferElement> m_Elements;
@@ -120,7 +123,7 @@ namespace QuasarEngine {
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
 		static std::shared_ptr<VertexBuffer> Create(uint32_t size);
-		static std::shared_ptr<VertexBuffer> Create(Vertex* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(const std::vector<float>& vertices, uint32_t size);
 	};
 
 	class IndexBuffer

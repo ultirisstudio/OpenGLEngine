@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 
 namespace QuasarEngine
 {
@@ -14,6 +14,6 @@ namespace QuasarEngine
 
 		void Render(Entity entity);
 	private:
-		std::shared_ptr<Texture> m_NoTexture;
+		std::shared_ptr<Texture2D> m_NoTexture;
 	};
 }

@@ -24,6 +24,7 @@ namespace QuasarEngine
 
 		void ClearMesh();
 
-		void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
+		//void GenerateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, DrawMode drawMode = DrawMode::TRIANGLES);
+		void GenerateMesh(std::vector<float>& vertices, std::vector<unsigned int>& indices, std::optional<BufferLayout> layout = {}, DrawMode drawMode = DrawMode::TRIANGLES);
 	};
 }

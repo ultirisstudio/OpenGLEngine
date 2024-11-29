@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 
 namespace QuasarEngine
 {
@@ -18,7 +18,7 @@ namespace QuasarEngine
 	private:
 		std::filesystem::path m_TexturePath;
 
-		std::shared_ptr<Texture> m_Texture;
+		std::shared_ptr<Texture2D> m_Texture;
 		TextureSpecification m_Specification;
 
 		bool m_IsOpen = true;

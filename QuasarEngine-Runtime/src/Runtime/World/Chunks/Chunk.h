@@ -15,14 +15,6 @@
 class ChunkManager;
 class TerrainGenerator;
 
-struct VoxelVertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
-	float texture;
-};
-
 class Chunk : public QuasarEngine::Component
 {
 public:

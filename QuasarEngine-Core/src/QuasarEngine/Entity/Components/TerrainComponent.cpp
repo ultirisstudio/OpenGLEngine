@@ -38,7 +38,7 @@ namespace QuasarEngine
 		TextureSpecification spec;
 		spec.min_filter_param = TextureFilter::LINEAR_MIPMAP_LINEAR;
 		spec.mag_filter_param = TextureFilter::LINEAR;
-		m_HeightMapTexture = std::make_shared<Texture>(m_HeightMapPath, spec);
+		m_HeightMapTexture = std::make_shared<Texture2D>(m_HeightMapPath, spec);
 
 		int width, height;
 		width = m_HeightMapTexture->GetSpecification().width;

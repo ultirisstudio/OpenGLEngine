@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <QuasarEngine/Resources/Texture.h>
+#include <QuasarEngine/Resources/Texture2D.h>
 #include <QuasarEngine/Asset/AssetHeader.h>
 
 namespace QuasarEngine
@@ -16,10 +16,10 @@ namespace QuasarEngine
 		static void exportTexture(const std::string& path, const std::string& out)
 		{
 			size_t size;
-			std::unique_ptr<unsigned char[]> data(Texture::LoadDataFromPath(path, &size));
+			std::unique_ptr<unsigned char[]> data(Texture2D::LoadDataFromPath(path, &size));
 
 			TextureSpecification spec;
-			std::shared_ptr<Texture> texture = Texture::CreateTexture(path, spec);
+			std::shared_ptr<Texture2D> texture = Texture2D::CreateTexture2D(path, spec);
 
 			std::ofstream file(out, std::ios::binary);
 
@@ -66,7 +66,7 @@ namespace QuasarEngine
 			out_file.close();
 		}
 
-		static std::shared_ptr<Texture> importTexture(const std::string& path) {
+		static std::shared_ptr<Texture2D> importTexture(const std::string& path) {
 			unsigned char* data;
 
 			std::ifstream file(path, std::ios::binary);
@@ -84,7 +84,7 @@ namespace QuasarEngine
 
 			file.close();
 
-			std::shared_ptr<Texture> texture = Texture::CreateTexture(data, size, spec);
+			std::shared_ptr<Texture2D> texture = Texture2D::CreateTexture2D(data, size, spec);
 
 			return texture;
 		}

@@ -32,7 +32,7 @@ namespace QuasarEngine
 		TextureSpecification spec;
 		spec.alpha = true;
 		spec.flip = true;
-		std::shared_ptr<Texture> noTexture = Texture::CreateTexture(path, spec);
+		std::shared_ptr<Texture2D> noTexture = Texture2D::CreateTexture2D(path, spec);
 		Renderer::m_SceneData.m_AssetManager->loadAsset(path, noTexture);
 
 		m_TransformComponentPanel = std::make_unique<TransformComponentPanel>();

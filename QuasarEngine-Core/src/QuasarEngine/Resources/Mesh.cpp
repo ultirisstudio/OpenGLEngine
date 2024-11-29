@@ -7,7 +7,7 @@
 
 namespace QuasarEngine
 {
-	void Mesh::CalculateBoundingBoxSize(std::vector<Vertex> vertices)
+	/*void Mesh::CalculateBoundingBoxSize(std::vector<Vertex> vertices)
 	{
 		float minX = std::numeric_limits<float>::max();
 		float minY = std::numeric_limits<float>::max();
@@ -36,9 +36,53 @@ namespace QuasarEngine
 
 		m_boundingBoxSize = glm::vec3(maxX - minX, maxY - minY, maxZ - minZ);
 		m_boundingBoxPosition = glm::vec3(minX, minY, minZ);
+	}*/
+
+	void Mesh::CalculateBoundingBoxSize(std::vector<float> vertices)
+	{
+		float minX = std::numeric_limits<float>::max();
+		float minY = std::numeric_limits<float>::max();
+		float minZ = std::numeric_limits<float>::max();
+
+		float maxX = std::numeric_limits<float>::min();
+		float maxY = std::numeric_limits<float>::min();
+		float maxZ = std::numeric_limits<float>::min();
+
+		uint32_t stride = m_vertexBuffer->GetLayout().GetStride();
+
+		for (int i = 0; i < vertices.size(); i += stride)
+		{
+			if (vertices[i + 0] < minX)
+				minX = vertices[i + 0];
+			if (vertices[i + 1] < minY)
+				minY = vertices[i + 1];
+			if (vertices[i + 2] < minZ)
+				minZ = vertices[i + 2];
+
+			if (vertices[i + 0] > maxX)
+				maxX = vertices[i + 0];
+			if (vertices[i + 1] > maxY)
+				maxY = vertices[i + 1];
+			if (vertices[i + 2] > maxZ)
+				maxZ = vertices[i + 2];
+		}
+
+		m_boundingBoxSize = glm::vec3(maxX - minX, maxY - minY, maxZ - minZ);
+		m_boundingBoxPosition = glm::vec3(minX, minY, minZ);
 	}
 
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode) :
+	Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::optional<BufferLayout> layout, DrawMode drawMode) :
+		m_vao(0),
+		m_vbo(0),
+		m_ebo(0),
+		m_drawMode(drawMode),
+		m_vertices(),
+		m_indices()
+	{
+		GenerateMesh(vertices, indices, layout);
+	}
+
+	/*Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, DrawMode drawMode) :
 		m_vao(0),
 		m_vbo(0),
 		m_ebo(0),
@@ -47,7 +91,7 @@ namespace QuasarEngine
 		m_indices()
 	{
 		GenerateMesh(vertices, indices);
-	}
+	}*/
 
 	/*Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const MaterialSpecification& material, DrawMode drawMode) :
 		m_vao(0),
@@ -80,7 +124,38 @@ namespace QuasarEngine
 			RenderCommand::DrawElements(m_drawMode, count);
 	}
 
-	void Mesh::GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+	void Mesh::GenerateMesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::optional<BufferLayout> layout)
+	{
+		m_vertexArray = VertexArray::Create();
+
+		if (layout.has_value())
+		{
+			m_vertexBuffer = VertexBuffer::Create(vertices, vertices.size() * layout.value().GetStride());
+			m_vertexBuffer->SetLayout(layout.value());
+		}
+		else
+		{
+			m_vertexBuffer = VertexBuffer::Create(vertices, vertices.size() * 32);
+			m_vertexBuffer->SetLayout({
+				{ ShaderDataType::Vec3, "vPosition"				},
+				{ ShaderDataType::Vec3, "vNormal"				},
+				{ ShaderDataType::Vec2, "vTextureCoordinates"	}
+			});
+		}		
+		m_vertexArray->AddVertexBuffer(m_vertexBuffer);
+
+		std::shared_ptr<IndexBuffer> indexBuffer = IndexBuffer::Create(indices.data(), indices.size());
+		m_vertexArray->SetIndexBuffer(indexBuffer);
+
+		m_vertices = std::move(vertices);
+		m_indices = std::move(indices);
+
+		//CalculateBoundingBoxSize(vertices);
+
+		m_meshGenerated = true;
+	}
+
+	/*void Mesh::GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 	{
 		CalculateBoundingBoxSize(vertices);
 
@@ -101,7 +176,7 @@ namespace QuasarEngine
 		m_indices = std::move(indices);
 
 		m_meshGenerated = true;
-	}
+	}*/
 
 	bool Mesh::IsVisible(const Math::Frustum& frustum, const glm::mat4& modelMatrix) const
 	{

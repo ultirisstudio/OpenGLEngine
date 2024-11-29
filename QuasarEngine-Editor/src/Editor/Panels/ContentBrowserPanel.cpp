@@ -19,11 +19,11 @@ namespace QuasarEngine
 		spec.flip = true;
 		spec.alpha = true;
 
-		m_DirectoryIcon = Texture::CreateTexture("Assets/Icons/texture_dossier.png", spec);
-		m_FilePNGIcon = Texture::CreateTexture("Assets/Icons/texture_png.png", spec);
-		m_FileJPGIcon = Texture::CreateTexture("Assets/Icons/texture_jpg.png", spec);
-		m_FileOBJIcon = Texture::CreateTexture("Assets/Icons/texture_obj.png", spec);
-		m_FileOtherIcon = Texture::CreateTexture("Assets/Icons/texture_texte.png", spec);
+		m_DirectoryIcon = Texture2D::CreateTexture2D("Assets/Icons/texture_dossier.png", spec);
+		m_FilePNGIcon = Texture2D::CreateTexture2D("Assets/Icons/texture_png.png", spec);
+		m_FileJPGIcon = Texture2D::CreateTexture2D("Assets/Icons/texture_jpg.png", spec);
+		m_FileOBJIcon = Texture2D::CreateTexture2D("Assets/Icons/texture_obj.png", spec);
+		m_FileOtherIcon = Texture2D::CreateTexture2D("Assets/Icons/texture_texte.png", spec);
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()
@@ -73,7 +73,7 @@ namespace QuasarEngine
 
 			ImGui::PushID(filenameString.c_str());
 
-			std::shared_ptr<Texture> icon;
+			std::shared_ptr<Texture2D> icon;
 
 
 			AssetType fileType = Renderer::m_SceneData.m_AssetManager->getTypeFromExtention(extension);
@@ -90,17 +90,17 @@ namespace QuasarEngine
 			{
 				if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 				{
-					icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+					icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(itemPath);
 				}
 				else
 				{
 					TextureSpecification spec = TextureConfigImporter::ImportTextureConfig(itemPath);
-					std::shared_ptr<Texture> texture = Texture::CreateTexture(itemPath, spec);
+					std::shared_ptr<Texture2D> texture = Texture2D::CreateTexture2D(itemPath, spec);
 					Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath, texture);
 
 					if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 					{
-						icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+						icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(itemPath);
 					}
 					else
 					{
@@ -118,15 +118,15 @@ namespace QuasarEngine
 					case AssetType::TEXTURE:
 						if (Renderer::m_SceneData.m_AssetManager->isAssetLoaded(itemPath))
 						{
-							icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+							icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(itemPath);
 						}
 						else
 						{
-							std::shared_ptr<Texture> texture = TextureImporter::importTexture(itemPath);
+							std::shared_ptr<Texture2D> texture = TextureImporter::importTexture(itemPath);
 							if (texture)
 							{
 								Renderer::m_SceneData.m_AssetManager->loadAsset(itemPath, texture);
-								icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(itemPath);
+								icon = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(itemPath);
 							}
 							else
 							{

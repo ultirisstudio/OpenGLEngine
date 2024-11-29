@@ -40,9 +40,10 @@ namespace QuasarEngine
         float* vertices = new float[nbVertices * 3];
         for (int v = 0; v < nbVertices; v++)
         {
-            vertices[v * 3] = mc.GetMesh().GetVertices()[v].position.x;
-            vertices[v * 3 + 1] = mc.GetMesh().GetVertices()[v].position.y;
-            vertices[v * 3 + 2] = mc.GetMesh().GetVertices()[v].position.z;
+            //TODO : MODIFY
+            //vertices[v * 3] = mc.GetMesh().GetVertices()[v].position.x;
+            //vertices[v * 3 + 1] = mc.GetMesh().GetVertices()[v].position.y;
+            //vertices[v * 3 + 2] = mc.GetMesh().GetVertices()[v].position.z;
         }
 
         int* indices = new int[nbIndices];
@@ -115,9 +116,10 @@ namespace QuasarEngine
         float* vertices = new float[nbVertices * 3];
         for (int i = 0; i < nbVertices; i++)
         {
-			vertices[i * 3] = mc.GetMesh().GetVertices()[i].position.x;
-			vertices[i * 3 + 1] = mc.GetMesh().GetVertices()[i].position.y;
-			vertices[i * 3 + 2] = mc.GetMesh().GetVertices()[i].position.z;
+            //TODO : MODIFY
+			//vertices[i * 3] = mc.GetMesh().GetVertices()[i].position.x;
+			//vertices[i * 3 + 1] = mc.GetMesh().GetVertices()[i].position.y;
+			//vertices[i * 3 + 2] = mc.GetMesh().GetVertices()[i].position.z;
 		}
 
         /*float* normals = new float[nbVertices * 3];

@@ -12,7 +12,7 @@ namespace QuasarEngine
 {
 	TextureViewerPanel::TextureViewerPanel(std::filesystem::path path) : m_TexturePath(path)
 	{
-		m_Texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture>(m_TexturePath.string());
+		m_Texture = Renderer::m_SceneData.m_AssetManager->getAsset<Texture2D>(m_TexturePath.string());
 		m_Specification = m_Texture->GetSpecification();
 	}
 
@@ -137,7 +137,7 @@ namespace QuasarEngine
 
 					TextureImporter::updateTexture(m_TexturePath.string(), m_Specification);
 
-					std::shared_ptr<Texture> texture = TextureImporter::importTexture(m_TexturePath.string());
+					std::shared_ptr<Texture2D> texture = TextureImporter::importTexture(m_TexturePath.string());
 					Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
 
 					m_Texture = texture;
@@ -145,7 +145,7 @@ namespace QuasarEngine
 				else
 				{
 					Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
-					std::shared_ptr<Texture> texture = std::make_shared<Texture>(m_TexturePath.string(), m_Specification);
+					std::shared_ptr<Texture2D> texture = std::make_shared<Texture2D>(m_TexturePath.string(), m_Specification);
 					Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
 					TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 

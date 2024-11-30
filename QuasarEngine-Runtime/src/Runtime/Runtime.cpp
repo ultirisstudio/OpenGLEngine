@@ -78,16 +78,16 @@ namespace QuasarEngine
 		//camera_component.GetCamera().Init(&camera.GetComponent<TransformComponent>());
 		//camera_component.Primary = true;
 
-		Entity light = m_Scene->CreateEntity("Light");
+		/*Entity light = m_Scene->CreateEntity("Light");
 		light.GetComponent<TransformComponent>().Rotation = { 20, 90, 45};
 		auto& light_component = light.AddComponent<LightComponent>();
 		light_component.SetType(QuasarEngine::LightComponent::LightType::DIRECTIONAL);
-		light_component.dir_power = 30.0f;
+		light_component.dir_power = 30.0f;*/
 
-		/*Entity player_light = m_Scene->CreateEntity("PlayerLight");
+		Entity player_light = m_Scene->CreateEntity("PlayerLight");
 		auto& player_light_component = player_light.AddComponent<LightComponent>();
 		player_light_component.SetType(QuasarEngine::LightComponent::LightType::POINT);
-		player_light_component.point_power = 30.0f;*/
+		player_light_component.point_power = 30.0f;
 	}
 
 	void Runtime::OnDetach()

@@ -59,8 +59,8 @@ void Player::Update(float dt)
         }
     }
 
-	//QuasarEngine::Entity light = QuasarEngine::Renderer::m_SceneData.m_Scene->FindEntityByName("PlayerLight");
-	//light.GetComponent<QuasarEngine::TransformComponent>().Position = m_Camera->GetPosition();
+	QuasarEngine::Entity light = QuasarEngine::Renderer::m_SceneData.m_Scene->FindEntityByName("PlayerLight");
+	light.GetComponent<QuasarEngine::TransformComponent>().Position = m_Camera->GetPosition();
 
     //m_Camera->ProcessMouseMovement(-InputManager::GetInstance()->GetDeltaMouse().x, InputManager::GetInstance()->GetDeltaMouse().y);
 

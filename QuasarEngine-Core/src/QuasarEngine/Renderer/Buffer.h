@@ -99,8 +99,6 @@ namespace QuasarEngine {
 				offset += element.Size;
 				m_Stride += element.Size;
 			}
-
-			std::cout << m_Stride << std::endl;
 		}
 	private:
 		std::vector<BufferElement> m_Elements;

@@ -24,7 +24,7 @@ GameCamera::GameCamera() :
 
 	m_RotateSensitivity(0.1f),
 	m_TranslateSensitivity(0.1f),
-	m_WalkSensitivity(0.1f),
+	m_WalkSensitivity(0.4f),
 	m_ScrollSensitivity(3.0f),
 
 	m_MouseX(0.0f),
@@ -53,7 +53,7 @@ GameCamera::GameCamera(const glm::vec3& position) :
 
 	m_RotateSensitivity(0.1f),
 	m_TranslateSensitivity(0.1f),
-	m_WalkSensitivity(0.1f),
+	m_WalkSensitivity(0.4f),
 	m_ScrollSensitivity(3.0f),
 
 	m_MouseX(0.0f),
@@ -116,16 +116,34 @@ void GameCamera::UpdateCameraVectors()
 
 void GameCamera::Update()
 {
-	m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100000.0f);
+	if (QuasarEngine::Input::IsKeyPressed(QuasarEngine::Key::W))
+	{
+		glm::mat4 translationMatrix(1.0f);
+		translationMatrix = glm::translate(translationMatrix, m_target * (1 * m_WalkSensitivity));
 
-	updateViewMatrix();
-	UpdateCameraVectors();
+		m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
+
+		updateViewMatrix();
+		UpdateCameraVectors();
+	}
+
+	if (QuasarEngine::Input::IsKeyPressed(QuasarEngine::Key::S))
+	{
+		glm::mat4 translationMatrix(1.0f);
+		translationMatrix = glm::translate(translationMatrix, m_target * (-1 * m_WalkSensitivity));
+
+		m_position = (translationMatrix * glm::vec4(m_position, 1.0f));
+
+		updateViewMatrix();
+		UpdateCameraVectors();
+	}
 }
 
 void GameCamera::OnResize(float width, float height)
 {
 	m_ViewportSize.x = width;
 	m_ViewportSize.y = height;
+	m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100000.0f);
 	QuasarEngine::RenderCommand::SetViewport(0, 0, static_cast<int>(width), static_cast<int>(height));
 }
 

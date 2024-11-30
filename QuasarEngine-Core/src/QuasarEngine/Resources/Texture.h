@@ -13,9 +13,13 @@ namespace QuasarEngine
 	{
 		RED = 0,
 		RGB,
+		RGB8,
 		RGBA,
+		RGBA8,
 		SRGB,
+		SRGB8,
 		SRGBA,
+		SRGB8A8,
 	};
 
 	enum class TextureWrap : uint8_t

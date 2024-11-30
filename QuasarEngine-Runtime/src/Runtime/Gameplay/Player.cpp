@@ -6,6 +6,7 @@
 #include <QuasarEngine/Core/MouseCodes.h>
 #include <QuasarEngine/Core/KeyCodes.h>
 #include <QuasarEngine/Renderer/Renderer.h>
+#include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Scene/Scene.h>
 #include <QuasarEngine/Entity/Components/CameraComponent.h>
 #include <QuasarEngine/Entity/Components/TransformComponent.h>
@@ -57,6 +58,9 @@ void Player::Update(float dt)
             ChunkManager::GetInstance()->SetBlock(raycast.block.first + glm::ivec3(QuasarEngine::Math::directionVectors[raycast.normal]), BlockType(scroll));
         }
     }
+
+	//QuasarEngine::Entity light = QuasarEngine::Renderer::m_SceneData.m_Scene->FindEntityByName("PlayerLight");
+	//light.GetComponent<QuasarEngine::TransformComponent>().Position = m_Camera->GetPosition();
 
     //m_Camera->ProcessMouseMovement(-InputManager::GetInstance()->GetDeltaMouse().x, InputManager::GetInstance()->GetDeltaMouse().y);
 

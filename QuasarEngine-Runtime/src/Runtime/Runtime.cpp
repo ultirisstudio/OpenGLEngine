@@ -27,11 +27,11 @@ namespace QuasarEngine
 		PhysicEngine::Init();
 		Renderer::Init();
 
-		ShaderFile shaderFiles;
+		/*ShaderFile shaderFiles;
 		shaderFiles.vertexShaderFile = "Assets/Shaders/pbr_shader.vert";
 		shaderFiles.fragmentShaderFile = "Assets/Shaders/pbr_shader.frag";
 
-		Renderer::m_SceneData.m_Shader = Shader::Create(shaderFiles);
+		Renderer::m_SceneData.m_Shader = Shader::Create(shaderFiles);*/
 
 		Application::Get().GetWindow().SetCursorVisibility(true);
 
@@ -82,7 +82,12 @@ namespace QuasarEngine
 		light.GetComponent<TransformComponent>().Rotation = { 20, 90, 45};
 		auto& light_component = light.AddComponent<LightComponent>();
 		light_component.SetType(QuasarEngine::LightComponent::LightType::DIRECTIONAL);
-		light_component.dir_power = 20.0f;
+		light_component.dir_power = 30.0f;
+
+		/*Entity player_light = m_Scene->CreateEntity("PlayerLight");
+		auto& player_light_component = player_light.AddComponent<LightComponent>();
+		player_light_component.SetType(QuasarEngine::LightComponent::LightType::POINT);
+		player_light_component.point_power = 30.0f;*/
 	}
 
 	void Runtime::OnDetach()

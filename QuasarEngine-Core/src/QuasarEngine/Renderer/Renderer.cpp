@@ -250,7 +250,7 @@ namespace QuasarEngine {
 				if (hasAlbedo)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					Texture2D* albedo = material.GetTexture(TextureType::Albedo);
+					Texture* albedo = material.GetTexture(TextureType::Albedo);
 					if (albedo)
 						albedo->Bind();
 				}
@@ -260,7 +260,7 @@ namespace QuasarEngine {
 				if (hasNormal)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					Texture2D* normal = material.GetTexture(TextureType::Normal);
+					Texture* normal = material.GetTexture(TextureType::Normal);
 					if (normal)
 						normal->Bind();
 				}
@@ -270,7 +270,7 @@ namespace QuasarEngine {
 				if (hasMetallic)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					Texture2D* metallic = material.GetTexture(TextureType::Metallic);
+					Texture* metallic = material.GetTexture(TextureType::Metallic);
 					if (metallic)
 						metallic->Bind();
 				}
@@ -280,7 +280,7 @@ namespace QuasarEngine {
 				if (hasRoughness)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					Texture2D* roughness = material.GetTexture(TextureType::Roughness);
+					Texture* roughness = material.GetTexture(TextureType::Roughness);
 					if (roughness)
 						roughness->Bind();
 				}
@@ -290,7 +290,7 @@ namespace QuasarEngine {
 				if (hasAO)
 				{
 					glActiveTexture(GL_TEXTURE0 + nat);
-					Texture2D* ao = material.GetTexture(TextureType::AO);
+					Texture* ao = material.GetTexture(TextureType::AO);
 					if (ao)
 						ao->Bind();
 				}

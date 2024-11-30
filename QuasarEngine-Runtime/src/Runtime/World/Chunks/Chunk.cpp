@@ -94,7 +94,7 @@ void Chunk::Generate(TerrainGenerator& generator)
 		}
 	}
 
-	/*std::vector<glm::ivec2> points;
+	std::vector<glm::ivec2> points;
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> tree(0, CHUNK_SIZE);
@@ -110,7 +110,7 @@ void Chunk::Generate(TerrainGenerator& generator)
 		glm::ivec2 hpos = glm::ivec2(m_Position.x, m_Position.z) + points[i];
 		int height = generator.GetHeight(hpos);
 		generator.GenerateTree(*this, pos.x, height, pos.y);
-	}*/
+	}
 }
 
 void Chunk::GenerateMesh()

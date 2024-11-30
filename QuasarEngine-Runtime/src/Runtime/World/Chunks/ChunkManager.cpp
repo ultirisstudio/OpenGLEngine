@@ -51,6 +51,8 @@ ChunkManager::ChunkManager()
 	//m_Textures = std::make_unique<TextureArray>(textures);
 
 	QuasarEngine::TextureSpecification spec;
+	spec.gamma = true;
+	spec.alpha = true;
 	std::shared_ptr<QuasarEngine::TextureArray> textureArray = QuasarEngine::TextureArray::CreateTextureArray(textures, spec);
 
 	QuasarEngine::Renderer::m_SceneData.m_AssetManager->loadAsset("textures", textureArray);
@@ -119,7 +121,7 @@ void ChunkManager::AddChunk(const glm::ivec3& position)
 		QuasarEngine::Entity chunk = QuasarEngine::Renderer::m_SceneData.m_Scene->CreateEntity(name);
 		chunk.AddComponent<QuasarEngine::MeshComponent>();
 		chunk.AddComponent<QuasarEngine::MaterialComponent>();
-		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "Assets/Textures/dark_grass_block_top.png");
+		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "textures");
 		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetRoughness() = 0.0f;
 		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetMetallic() = 0.0f;
 		chunk.AddComponent<QuasarEngine::MeshRendererComponent>();
@@ -142,7 +144,7 @@ void ChunkManager::AddChunk(const glm::ivec3& position)
 			QuasarEngine::Entity chunk = QuasarEngine::Renderer::m_SceneData.m_Scene->CreateEntity(name);
 			chunk.AddComponent<QuasarEngine::MeshComponent>();
 			chunk.AddComponent<QuasarEngine::MaterialComponent>();
-			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "Assets/Textures/dark_grass_block_top.png");
+			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "textures");
 			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetRoughness() = 0.0f;
 			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetMetallic() = 0.0f;
 			chunk.AddComponent<QuasarEngine::MeshRendererComponent>();

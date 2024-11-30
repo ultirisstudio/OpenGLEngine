@@ -1,4 +1,4 @@
-#version 440 core
+#version 450 core
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out uint outEntityID;
@@ -187,9 +187,11 @@ void main()
     float ao = uMaterial.ao;
     vec3 N = normalize(fNormal).xyz;
 
+    int index = int(fTextureIndice) - 1;
+
     if (uMaterial.use_albedo_texture)
     {
-        //albedo = pow(texture(uMaterial.albedoMap, fTextureCoordinates).rgb, vec3(2.2));
+        //albedo = pow(texture(uMaterial.albedoMap, vec3(fTextureCoordinates, index)).rgb, vec3(2.2));
         vec4 temp = texture(uMaterial.albedoMap, vec3(fTextureCoordinates, index));
 
         if (temp.a < 0.5)

@@ -42,7 +42,7 @@ namespace QuasarEngine
 		~Material();
 
 		void SetTexture(TextureType type, std::string path);
-		Texture2D* GetTexture(TextureType type);
+		Texture* GetTexture(TextureType type);
 
 		bool HasTexture(TextureType type);
 

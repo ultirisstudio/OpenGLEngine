@@ -77,8 +77,6 @@ namespace QuasarEngine {
 
 	void Renderer::Render(BaseCamera& camera)
 	{
-		// view and projection matrices
-
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
 
@@ -213,22 +211,21 @@ namespace QuasarEngine {
 				if (!entity.GetComponent<MeshRendererComponent>().m_Rendered)
 					continue;
 
-				// Calculate if object is on the frustum
 				Math::Frustum frustum = Math::CalculateFrustum(camera.getProjectionMatrix() * camera.getViewMatrix());
 
-				//if (!entity.GetComponent<MeshComponent>().GetMesh().IsVisible(frustum, transform))
-					//continue;
+				if (!entity.GetComponent<MeshComponent>().GetMesh().IsVisible(frustum, transform))
+					continue;
 
 				//entityDraw++;
 
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-				Material& material = entity.GetComponent<MaterialComponent>().GetMaterial();
-
 				m_SceneData.m_Shader->setUniform("uModel", transform);
 				m_SceneData.m_Shader->setUniform("uView", viewMatrix);
 				m_SceneData.m_Shader->setUniform("uProjection", projectionMatrix);
 				m_SceneData.m_Shader->setUniform("uNormalMatrix", glm::transpose(glm::inverse(glm::mat3(transform))));
+
+				Material& material = entity.GetComponent<MaterialComponent>().GetMaterial();
 
 				m_SceneData.m_Shader->setUniform("uMaterial.albedoColor", material.GetAlbedo());
 				m_SceneData.m_Shader->setUniform("uMaterial.metallic", material.GetMetallic());

@@ -150,7 +150,7 @@ namespace QuasarEngine
 		m_vertices = std::move(vertices);
 		m_indices = std::move(indices);
 
-		//CalculateBoundingBoxSize(vertices);
+		CalculateBoundingBoxSize(m_vertices);
 
 		m_meshGenerated = true;
 	}

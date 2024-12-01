@@ -53,6 +53,13 @@ namespace QuasarEngine
 
 	void Scene::DestroyEntity(Entity entity)
 	{
+		if (entity.HasComponent<HierarchyComponent>())
+		{
+			auto& hierarchy = entity.GetComponent<HierarchyComponent>();
+			for (auto child : hierarchy.m_Childrens)
+				DestroyEntity(GetEntityByUUID(child));
+		}
+
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry->DestroyEntity(entity);
 	}
@@ -129,5 +136,6 @@ namespace QuasarEngine
 	void Scene::ClearEntities()
 	{
 		m_EntityMap.clear();
+		m_Registry->ClearRegistry();
 	}
 }

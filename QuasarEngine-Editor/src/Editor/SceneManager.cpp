@@ -136,6 +136,7 @@ namespace QuasarEngine
 		{
 			PhysicEngine::Reload();
 
+			m_SceneObject->GetScene().ClearEntities();
 			m_SceneObject->CreateScene();
 			SceneSerializer serializer(*m_SceneObject, m_AssetPath);
 			serializer.Deserialize(fileInfos.value().filePath);
@@ -146,6 +147,7 @@ namespace QuasarEngine
 	{
 		PhysicEngine::Reload();
 
+		m_SceneObject->GetScene().ClearEntities();
 		m_SceneObject->CreateScene();
 
 		Renderer::BeginScene(m_SceneObject->GetScene());

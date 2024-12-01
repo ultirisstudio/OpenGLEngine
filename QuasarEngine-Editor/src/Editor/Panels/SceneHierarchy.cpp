@@ -46,13 +46,9 @@ namespace QuasarEngine
 
 	void SceneHierarchy::OnDrawEntityNode(Scene& scene, Entity entity)
 	{
-		UUID id;
-		if (m_SelectedEntity)
-			id = m_SelectedEntity.GetUUID();
-		else
-			id = 0;
+		uint32_t selected_entity_id = m_SelectedEntity ? m_SelectedEntity.GetUUID() : 0;
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen | ((id == entity.GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ((entity.GetComponent<HierarchyComponent>().m_Childrens.size() != 0 ) ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen | ((selected_entity_id == entity.GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ((entity.GetComponent<HierarchyComponent>().m_Childrens.size() != 0) ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity.GetUUID(), flags, entity.GetName().data());
 		ImGui::PopStyleVar();
@@ -112,14 +108,17 @@ namespace QuasarEngine
 		}
 		if (opened)
 		{
-			std::vector<UUID> childrens = entity.GetComponent<HierarchyComponent>().m_Childrens;
-
-			if (childrens.size() != 0)
+			if (entity.HasComponent<HierarchyComponent>())
 			{
-				for (UUID child : childrens)
+				std::vector<UUID> childrens = entity.GetComponent<HierarchyComponent>().m_Childrens;
+
+				if (childrens.size() != 0)
 				{
-					Entity childEntity = scene.GetEntityByUUID(child);
-					OnDrawEntityNode(scene, childEntity);
+					for (UUID child : childrens)
+					{
+						Entity childEntity = scene.GetEntityByUUID(child);
+						OnDrawEntityNode(scene, childEntity);
+					}
 				}
 			}
 

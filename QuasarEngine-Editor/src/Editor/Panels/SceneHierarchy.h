@@ -14,6 +14,6 @@ namespace QuasarEngine
 
 		Entity m_SelectedEntity;
 	private:
-		void OnDrawEntityNode(Scene& scene, Entity entity);
+		void OnDrawEntityNode(Scene& scene, Entity entity, int count);
 	};
 }

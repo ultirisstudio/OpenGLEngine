@@ -88,7 +88,8 @@ namespace QuasarEngine
 		Entity player_light = m_Scene->CreateEntity("PlayerLight");
 		auto& player_light_component = player_light.AddComponent<LightComponent>();
 		player_light_component.SetType(QuasarEngine::LightComponent::LightType::POINT);
-		player_light_component.point_power = 40.0f;
+		player_light_component.point_power = 60.0f;
+		player_light_component.point_attenuation = 0.2f;
 	}
 
 	void Runtime::OnDetach()

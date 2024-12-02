@@ -1,6 +1,7 @@
 #include "SceneHierarchy.h"
 
-#include "imgui.h"
+#include <imgui.h>
+#include <imgui_internal.h>
 
 #include <QuasarEngine/Core/UUID.h>
 #include <QuasarEngine/Entity/Components/HierarchyComponent.h>
@@ -17,7 +18,7 @@ namespace QuasarEngine
 	{
 		ImGui::Begin("Scene");
 
-		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
+		//ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 1);
 
 		for (auto e : scene.GetAllEntitiesWith<IDComponent>())
 		{
@@ -25,10 +26,10 @@ namespace QuasarEngine
 			if (entity.GetComponent<HierarchyComponent>().m_Parent != UUID::Null())
 				continue;
 
-			OnDrawEntityNode(scene, entity);
+			OnDrawEntityNode(scene, entity, 0);
 		}
 
-		ImGui::PopStyleVar();
+		//ImGui::PopStyleVar();
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -44,15 +45,41 @@ namespace QuasarEngine
 		ImGui::End();
 	}
 
-	void SceneHierarchy::OnDrawEntityNode(Scene& scene, Entity entity)
+	void SceneHierarchy::OnDrawEntityNode(Scene& scene, Entity entity, int count)
 	{
-		uint32_t selected_entity_id = m_SelectedEntity ? m_SelectedEntity.GetUUID() : 0;
+		ImGui::PushID(entity.GetName().c_str());
+
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 10, 0 });
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, 40);
+
+		if (ImGui::Button("X")) {}
+
+		ImGui::PopStyleVar(1);
+
+		ImGui::NextColumn();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ float(100 * count), 0 });
+
+		uint32_t selected_entity_id = m_SelectedEntity ? m_SelectedEntity.GetUUID() : 0;
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen | ((selected_entity_id == entity.GetUUID()) ? ImGuiTreeNodeFlags_Selected : 0) | ((entity.GetComponent<HierarchyComponent>().m_Childrens.size() != 0) ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity.GetUUID(), flags, entity.GetName().data());
-		ImGui::PopStyleVar();
-		ImGui::PushID(entity.GetName().c_str());
+		if (ImGui::IsItemClicked())
+		{
+			m_SelectedEntity = entity;
+		}
+
+		//ImGui::NextColumn();
+
+		//ImGui::Text(entity.GetUUID().ToString().c_str());
+
+		ImGui::PopStyleVar(2);
+
+		ImGui::Columns(1);
+
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Delete Object")) {
@@ -61,11 +88,7 @@ namespace QuasarEngine
 			}
 			ImGui::EndPopup();
 		}
-		ImGui::PopID();
-		if (ImGui::IsItemClicked())
-		{
-			m_SelectedEntity = entity;
-		}
+
 		if (ImGui::BeginDragDropSource()) {
 			ImGui::Text(entity.GetName().c_str());
 			std::string entityID_str = std::to_string(entity.GetUUID());
@@ -82,7 +105,7 @@ namespace QuasarEngine
 				std::string entityID_str(ws.begin(), ws.end());
 
 				UUID entityID = std::stoull(entityID_str);
-				
+
 				Entity sourceEntity = scene.GetEntityByUUID(entityID);
 				if (sourceEntity)
 				{
@@ -106,8 +129,13 @@ namespace QuasarEngine
 			}
 			ImGui::EndDragDropTarget();
 		}
+
+		ImGui::PopID();
+
 		if (opened)
 		{
+			ImGui::TreePop();
+
 			if (entity.HasComponent<HierarchyComponent>())
 			{
 				std::vector<UUID> childrens = entity.GetComponent<HierarchyComponent>().m_Childrens;
@@ -117,12 +145,10 @@ namespace QuasarEngine
 					for (UUID child : childrens)
 					{
 						Entity childEntity = scene.GetEntityByUUID(child);
-						OnDrawEntityNode(scene, childEntity);
+						OnDrawEntityNode(scene, childEntity, count++);
 					}
 				}
 			}
-
-			ImGui::TreePop();
 		}
 	}
 }

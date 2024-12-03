@@ -5,6 +5,8 @@
 #include "QuasarEngine/Events/MouseEvent.h"
 #include "QuasarEngine/Events/KeyEvent.h"
 
+#include "QuasarEngine/Renderer/Renderer.h"
+
 #include <GLFW/glfw3.h>
 
 namespace QuasarEngine {
@@ -24,6 +26,9 @@ namespace QuasarEngine {
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
+
+		if (Renderer::GetAPI() == RendererAPI::API::DirectX)
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 

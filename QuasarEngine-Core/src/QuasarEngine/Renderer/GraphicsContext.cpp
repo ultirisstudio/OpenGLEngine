@@ -3,6 +3,7 @@
 
 #include "QuasarEngine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLContext.h"
+#include "Platform/DirectX/DirectXContext.h"
 
 namespace QuasarEngine {
 
@@ -12,6 +13,7 @@ namespace QuasarEngine {
 		{
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_unique<OpenGLContext>(static_cast<GLFWwindow*>(window));
+		case RendererAPI::API::DirectX:  return std::make_unique<DirectXContext>(static_cast<GLFWwindow*>(window));
 		}
 
 		return nullptr;

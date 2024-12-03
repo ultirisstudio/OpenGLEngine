@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QuasarEngine/Renderer/Buffer.h>
-#include <QuasarEngine/Resources/Vertex.h>
 
 namespace QuasarEngine
 {

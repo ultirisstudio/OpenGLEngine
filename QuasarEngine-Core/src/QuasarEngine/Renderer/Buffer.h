@@ -5,8 +5,6 @@
 #include <memory>
 #include <iostream>
 
-#include <QuasarEngine/Resources/Vertex.h>
-
 namespace QuasarEngine {
 
 	enum class ShaderDataType

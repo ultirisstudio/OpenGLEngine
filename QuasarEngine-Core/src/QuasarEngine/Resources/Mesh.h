@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include <QuasarEngine/Resources/Vertex.h>
 #include <QuasarEngine/Asset/Asset.h>
 #include <QuasarEngine/Resources/Materials/Material.h>
 

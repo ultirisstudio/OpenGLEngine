@@ -26,8 +26,8 @@ namespace QuasarEngine
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetVSync(false);
 
-		m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);
+		m_ImGuiLayer = ImGuiLayer::Create();
+		PushOverlay(m_ImGuiLayer.get());
 	}
 
 	Application::~Application()

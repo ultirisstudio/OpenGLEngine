@@ -12,7 +12,7 @@ namespace QuasarEngine {
 	public:
 		enum class API
 		{
-			None = 0, OpenGL = 1
+			None = 0, OpenGL = 1, DirectX = 2
 		};
 	public:
 		virtual ~RendererAPI() = default;

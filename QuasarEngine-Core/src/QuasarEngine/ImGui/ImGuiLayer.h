@@ -7,13 +7,14 @@ namespace QuasarEngine
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer();
-		~ImGuiLayer();
+		virtual ~ImGuiLayer() = default;
 
-		virtual void OnAttach();
-		virtual void OnDetach();
+		virtual void OnAttach() = 0;
+		virtual void OnDetach() = 0;
 
-		void Begin();
-		void End();
+		virtual void Begin() = 0;
+		virtual void End() = 0;
+
+		static std::unique_ptr<ImGuiLayer> Create();
 	};
 }

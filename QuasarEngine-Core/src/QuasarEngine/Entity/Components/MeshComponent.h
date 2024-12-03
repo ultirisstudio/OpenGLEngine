@@ -2,7 +2,6 @@
 
 #include <QuasarEngine/Entity/Component.h>
 #include <QuasarEngine/Resources/Mesh.h>
-#include <QuasarEngine/Resources/Vertex.h>
 
 namespace QuasarEngine
 {

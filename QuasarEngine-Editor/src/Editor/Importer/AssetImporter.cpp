@@ -66,7 +66,7 @@ namespace QuasarEngine
 					{
 						std::string out = std::string(std::string(path) + "\\" + info.fileName + ".qasset");
 						it->second(info.filePath, out);
-						Log::log(Log::INFO, std::string(info.selectedFile + " imported on " + out));
+						Log::log(Log::QE_INFO, std::string(info.selectedFile + " imported on " + out));
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 #include "Viewport.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include <QuasarEngine/Core/Application.h>
 
@@ -59,7 +59,7 @@ void QuasarEngine::Viewport::OnImGuiRender(SceneObject& sceneObject)
 		}
 
 		uint32_t textureID = m_ViewportFrameBuffer->GetColorAttachment(0);
-		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image((ImTextureID)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	}
 
 	ImGui::End();

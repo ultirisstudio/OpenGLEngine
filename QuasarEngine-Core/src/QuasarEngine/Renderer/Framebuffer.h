@@ -40,37 +40,27 @@ namespace QuasarEngine
     class Framebuffer
     {
     public:
-        Framebuffer(const FramebufferSpecification& spec);
-        ~Framebuffer();
+        virtual ~Framebuffer() = default;
 
-        uint32_t GetColorAttachment(uint32_t index) const;
-        uint32_t GetDepthAttachment() const;
+        virtual uint32_t GetColorAttachment(uint32_t index) const = 0;
+        virtual uint32_t GetDepthAttachment() const = 0;
 
-        uint32_t GetID() const;
+        virtual uint32_t GetID() const = 0;
 
-        const FramebufferSpecification& getSpecification() const { return m_Specification; }
+        virtual const FramebufferSpecification& getSpecification() const = 0;
 
-        int ReadPixel(uint32_t attachmentIndex, int x, int y);
+        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
 
-        void ClearAttachment(uint32_t attachmentIndex, int value);
+        virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
-        void Resize(uint32_t width, uint32_t height);
-        void Invalidate();
+        virtual void Resize(uint32_t width, uint32_t height) = 0;
+        virtual void Invalidate() = 0;
 
-        void Bind() const;
-        void Unbind() const;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-        void BindColorAttachment(uint32_t index = 0) const;
+        virtual void BindColorAttachment(uint32_t index = 0) const = 0;
 
         static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);
-    private:
-        uint32_t m_ID;
-        FramebufferSpecification m_Specification;
-
-        std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-        FramebufferTextureSpecification m_DepthAttachmentSpecification;
-
-        std::vector<uint32_t> m_ColorAttachments;
-        uint32_t m_DepthAttachment = 0;
     };
 }

@@ -71,8 +71,8 @@ namespace QuasarEngine
 		uint32_t m_ID;
 		TextureSpecification m_Specification;
 	public:
-		Texture(const TextureSpecification& specification);
-		~Texture();
+		explicit Texture(const TextureSpecification& specification);
+		virtual ~Texture() = default;
 
 		unsigned int GetID() const { return m_ID; }
 

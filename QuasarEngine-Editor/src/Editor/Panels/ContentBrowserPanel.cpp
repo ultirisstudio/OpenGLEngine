@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 #include "Editor/Importer/TextureConfigImporter.h"
 #include "Editor/Importer/TextureImporter.h"
 
@@ -150,7 +150,7 @@ namespace QuasarEngine
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			ImGui::ImageButton("##icon_texture", (ImTextureID)icon->GetID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
 
 			if (ImGui::BeginPopupContextItem())
 			{

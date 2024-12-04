@@ -8,8 +8,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
+#include <imgui/imgui.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
 
 #include <QuasarEngine/Core/Application.h>
 #include <QuasarEngine/Renderer/Renderer.h>

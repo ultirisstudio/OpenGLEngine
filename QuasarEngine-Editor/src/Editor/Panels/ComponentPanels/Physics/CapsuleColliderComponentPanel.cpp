@@ -1,6 +1,6 @@
 #include "CapsuleColliderComponentPanel.h"
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #include <QuasarEngine/Entity/Entity.h>
 #include <QuasarEngine/Entity/Components/Physics/CapsuleColliderComponent.h>

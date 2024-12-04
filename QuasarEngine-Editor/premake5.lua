@@ -33,10 +33,13 @@ project "QuasarEngine-Editor"
 	{
 		"QuasarEngine-Core",
 		"tinyfiledialogs",
+		"ImGui",
+		"ImGuizmo",
 		"yaml-cpp",
 		"mbedtls",
 		"zlib",
-		"reactphysics3d"
+		"reactphysics3d",
+		"d3d11.lib"
 	}
 	
 	filter "system:windows"

@@ -32,14 +32,14 @@
 
 namespace QuasarEngine
 {
-	std::string Log::levelToString(LogLevel level)
+	std::string Log::levelToString(QE_LogLevel level)
 	{
 		switch (level)
 		{
-			case INFO: return "INFO";
-			case WARNING: return "WARNING";
-			case ERROR: return "ERROR";
-			case FATAL: return "FATAL";
+			case QE_INFO: return "INFO";
+			case QE_WARNING: return "WARNING";
+			case QE_ERROR: return "ERROR";
+			case QE_FATAL: return "FATAL";
 			default: return "UNKNOWN";
 		}
 	}
@@ -126,7 +126,7 @@ namespace QuasarEngine
 		// END BOTTOM //
 	}
 
-	void Log::log(LogLevel level, const std::string& message)
+	void Log::log(QE_LogLevel level, const std::string& message)
 	{
 		printLogHeader(level);
 		printLog(std::string(message + "\n").c_str());
@@ -134,7 +134,7 @@ namespace QuasarEngine
 
 	void Log::check(bool condition, const char* file, int line, const std::string& message) {
 		if (!condition) {
-			printLogHeader(FATAL);
+			printLogHeader(QE_FATAL);
 			std::stringstream ss;
 			ss << message << " from: " << std::filesystem::path(file).filename().string() << " on line : " << line;
 			printLog(ss.str().c_str());
@@ -142,7 +142,7 @@ namespace QuasarEngine
 		}
 	}
 
-	void Log::printLogHeader(LogLevel level)
+	void Log::printLogHeader(QE_LogLevel level)
 	{
 		std::time_t now = std::time(nullptr);
 		std::tm* time = std::localtime(&now);

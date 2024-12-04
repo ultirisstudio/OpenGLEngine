@@ -1,7 +1,10 @@
 #include "SceneHierarchy.h"
 
-#include <imgui.h>
-#include <imgui_internal.h>
+#define IMGUI_IMPL_API
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
+#define GL_SILENCE_DEPRECATION
 
 #include <QuasarEngine/Core/UUID.h>
 #include <QuasarEngine/Entity/Components/HierarchyComponent.h>

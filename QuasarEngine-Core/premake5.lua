@@ -44,7 +44,6 @@ project "QuasarEngine-Core"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE"
 	}
 
@@ -58,6 +57,7 @@ project "QuasarEngine-Core"
 		"reactphysics3d",
 		"mbedtls",
 		"opengl32.lib",
+		"d3d11.lib",
 		
 		"%{Library.Vulkan}" --,
 		-- "%{Library.VulkanUtils}"

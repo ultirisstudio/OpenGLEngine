@@ -1,6 +1,6 @@
 #include "TerrainComponentPanel.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <filesystem>
 
 #include <QuasarEngine/Renderer/Renderer.h>
@@ -54,7 +54,7 @@ namespace QuasarEngine
 					id = texture->GetID();
 				}
 
-				ImGui::ImageButton((ImTextureID)id, {64.0f, 64.0f}, {0, 1}, {1, 0});
+				ImGui::ImageButton("##height_map_texture", (ImTextureID)id, {64.0f, 64.0f}, {0, 1}, {1, 0});
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))

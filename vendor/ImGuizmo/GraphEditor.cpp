@@ -1,5 +1,5 @@
 // https://github.com/CedricGuillemet/ImGuizmo
-// v 1.89 WIP
+// v1.91.3 WIP
 //
 // The MIT License(MIT)
 //
@@ -24,9 +24,9 @@
 // SOFTWARE.
 //
 
-#include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include <math.h>
 #include <vector>
 #include <float.h>
@@ -186,8 +186,8 @@ static void DisplayLinks(Delegate& delegate,
         if (options.mDisplayLinksAsCurves)
         {
             // curves
-             drawList->AddBezierCurve(p1, p1 + ImVec2(50, 0) * factor, p2 + ImVec2(-50, 0) * factor, p2, 0xFF000000, options.mLineThickness * 1.5f * factor);
-             drawList->AddBezierCurve(p1, p1 + ImVec2(50, 0) * factor, p2 + ImVec2(-50, 0) * factor, p2, col, options.mLineThickness * 1.5f * factor);
+             drawList->AddBezierCubic(p1, p1 + ImVec2(50, 0) * factor, p2 + ImVec2(-50, 0) * factor, p2, 0xFF000000, options.mLineThickness * 1.5f * factor);
+             drawList->AddBezierCubic(p1, p1 + ImVec2(50, 0) * factor, p2 + ImVec2(-50, 0) * factor, p2, col, options.mLineThickness * 1.5f * factor);
              /*
             ImVec2 p10 = p1 + ImVec2(20.f * factor, 0.f);
             ImVec2 p20 = p2 - ImVec2(20.f * factor, 0.f);
@@ -311,7 +311,7 @@ static void HandleQuadSelection(Delegate& delegate, ImDrawList* drawList, const 
 
             nodeOperation = NO_None;
             ImRect selectionRect(bmin, bmax);
-            for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+            for (unsigned int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
                 const auto node = delegate.GetNode(nodeIndex);
                 ImVec2 nodeRectangleMin = offset + node.mRect.Min * factor;
@@ -469,7 +469,7 @@ static bool HandleConnections(ImDrawList* drawList,
 
                     if (!alreadyExisting)
                     {
-                        for (int linkIndex = 0; linkIndex < linkCount; linkIndex++)
+                        for (unsigned int linkIndex = 0; linkIndex < linkCount; linkIndex++)
                         {
                             const auto link = delegate.GetLink(linkIndex);
                             if (link.mOutputNodeIndex == nl.mOutputNodeIndex && link.mOutputSlotIndex == nl.mOutputSlotIndex)
@@ -497,7 +497,7 @@ static bool HandleConnections(ImDrawList* drawList,
                 if (editingInput)
                 {
                     // remove existing link
-                    for (int linkIndex = 0; linkIndex < linkCount; linkIndex++)
+                    for (unsigned int linkIndex = 0; linkIndex < linkCount; linkIndex++)
                     {
                         const auto link = delegate.GetLink(linkIndex);
                         if (link.mOutputNodeIndex == nodeIndex && link.mOutputSlotIndex == closestConn)
@@ -631,7 +631,7 @@ static bool DrawNode(ImDrawList* drawList,
                       nodeRectangleMax,
                       currentSelectedNode ? options.mSelectedNodeBorderColor : options.mNodeBorderColor,
                       options.mRounding,
-                      ImDrawCornerFlags_All,
+                      ImDrawFlags_RoundCornersAll,
                       currentSelectedNode ? options.mBorderSelectionThickness : options.mBorderThickness);
 
     ImVec2 imgPos = nodeRectangleMin + ImVec2(14, 25);
@@ -757,7 +757,7 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
     const float ratioX = viewSize.x / nodesSize.x;
     const float factor = ImMin(ImMin(ratioY, ratioX), 1.f);
 
-    drawList->AddRectFilled(minScreen, maxScreen, IM_COL32(30, 30, 30, 200), 3, ImDrawCornerFlags_All);
+    drawList->AddRectFilled(minScreen, maxScreen, IM_COL32(30, 30, 30, 200), 3, ImDrawFlags_RoundCornersAll);
 
     for (NodeIndex nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
     {
@@ -773,18 +773,18 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
         rect.Max *= factor;
         rect.Max += middleScreen;
 
-        drawList->AddRectFilled(rect.Min, rect.Max, nodeTemplate.mBackgroundColor, 1, ImDrawCornerFlags_All);
+        drawList->AddRectFilled(rect.Min, rect.Max, nodeTemplate.mBackgroundColor, 1, ImDrawFlags_RoundCornersAll);
         if (node.mSelected)
         {
-            drawList->AddRect(rect.Min, rect.Max, options.mSelectedNodeBorderColor, 1, ImDrawCornerFlags_All);
+            drawList->AddRect(rect.Min, rect.Max, options.mSelectedNodeBorderColor, 1, ImDrawFlags_RoundCornersAll);
         }
     }
 
     // add view
     ImVec2 viewMinScreen = (viewMin - middleWorld) * factor + middleScreen;
     ImVec2 viewMaxScreen = (viewMax - middleWorld) * factor + middleScreen;
-    drawList->AddRectFilled(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 32), 1, ImDrawCornerFlags_All);
-    drawList->AddRect(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 128), 1, ImDrawCornerFlags_All);
+    drawList->AddRectFilled(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 32), 1, ImDrawFlags_RoundCornersAll);
+    drawList->AddRect(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 128), 1, ImDrawFlags_RoundCornersAll);
     
     ImGuiIO& io = ImGui::GetIO();
     const bool mouseInMinimap = ImRect(minScreen, maxScreen).Contains(io.MousePos);
@@ -837,7 +837,7 @@ void Show(Delegate& delegate, const Options& options, ViewState& viewState, bool
     captureOffset = viewState.mPosition * viewState.mFactor;
 
     //ImGui::InvisibleButton("GraphEditorButton", canvasSize);
-    ImGui::BeginChildFrame(71711, canvasSize);
+    ImGui::BeginChild(71711, canvasSize, ImGuiChildFlags_FrameStyle);
 
     ImGui::SetCursorPos(windowPos);
     ImGui::BeginGroup();
@@ -1030,7 +1030,7 @@ void Show(Delegate& delegate, const Options& options, ViewState& viewState, bool
     ImGui::PopStyleColor(1);
     ImGui::PopStyleVar(2);
     ImGui::EndGroup();
-    ImGui::EndChildFrame();
+    ImGui::EndChild();
 
     ImGui::PopStyleVar(3);
     

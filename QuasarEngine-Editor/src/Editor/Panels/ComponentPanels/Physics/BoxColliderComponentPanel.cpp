@@ -1,6 +1,6 @@
 #include "BoxColliderComponentPanel.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <QuasarEngine/Entity/Entity.h>

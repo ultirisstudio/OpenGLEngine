@@ -2,12 +2,12 @@
 #include "OpenGLImGuiLayer.h"
 
 #include <GLFW/glfw3.h>
-#include <imgui.h>
+
+#include <imgui/imgui.h>
 #include <ImGuizmo.h>
 
-//#define IMGUI_IMPL_API
-#include <exemples/imgui_impl_opengl3.h>
-#include <exemples/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
 
 #include <QuasarEngine/Core/Application.h>
 
@@ -32,7 +32,7 @@ namespace QuasarEngine
 		io.Fonts->AddFontFromFileTTF("Assets/Fonts/Monocraft.ttf", fontSize);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/Monocraft.ttf", fontSize);
 
-		ImGui::StyleColorsDark();
+		ImGui::StyleColorsRealDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -40,8 +40,6 @@ namespace QuasarEngine
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
-
-		ImGui::StyleColorsRealDark();
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());

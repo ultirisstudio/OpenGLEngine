@@ -6,8 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include "ImGuizmo.h"
 
 #include "QuasarEngine/Core/MouseCodes.h"
@@ -67,59 +67,8 @@ namespace QuasarEngine
 
 		m_AssetImporter = std::make_unique<AssetImporter>(m_Specification.ProjectPath);
 
-		//m_scanAssetsPopup = true;
-
 		std::filesystem::path base_path = m_Specification.ProjectPath + "\\Assets";
 		setup_assets(base_path);
-
-		//m_scanAssetsPopup = false;
-
-		//////////////////////////////////////////////
-
-		/*mbedtls_aes_context aes;
-		mbedtls_aes_context aes2;
-
-		unsigned char key[16] = "itzkbgulrcsjmnv";
-
-		unsigned char eiv[16] = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
-		unsigned char div[16] = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
-
-		unsigned char input[128] = "Julien";
-		unsigned char output[128];
-		unsigned char output2[128];
-
-		size_t input_len = 40;
-		size_t output_len = 0;
-
-		mbedtls_aes_setkey_enc(&aes, key, 256);
-		mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, 48, eiv, input, output);
-
-		std::cout << output << std::endl;
-
-		mbedtls_aes_setkey_dec(&aes2, key, 256);
-		mbedtls_aes_crypt_cbc(&aes2, MBEDTLS_AES_DECRYPT, 48, div, output, output2);
-
-		std::cout << output2 << std::endl;*/
-
-		/////////////////////////////////////////
-
-		/*std::vector<std::filesystem::path> ressources;
-		ressources.push_back("Assets\\Textures\\diffuse.png");
-		//ressources.push_back("Assets\\Textures\\specular.png");
-		//ressources.push_back("Assets\\Textures\\OTskLEus.jpg");
-		//ressources.push_back("Assets\\Textures\\YgK4ozkE.png");
-		//ressources.push_back("Assets\\Models\\BackPack.obj");
-		Export::CreatePakFile(ressources, "Test/ressources.pak", true);
-
-		std::unordered_map<std::string, std::vector<char>> loaded_ressources = Export::LoadAllResourcesFromPak("Test/ressources.pak");
-
-		for (auto& [key, value] : loaded_ressources) {
-			std::cout << key << std::endl;
-
-			std::vector<unsigned char> uData = convert_to_unsigned_char(value);
-
-			m_TextureTest = Texture::CreateTexture(uData, false);
-		}*/
 	}
 
 	void Editor::setup_assets(const std::filesystem::path& chemin) {
@@ -146,17 +95,9 @@ namespace QuasarEngine
 
 	void Editor::OnUpdate(double dt)
 	{
-		//CalculateLatency();
-
-		//double currentTime = Renderer::GetTime();
-		//if (currentTime - update_last_time >= (1.0 / 120.0))
-		//{
-
 		m_EditorCamera->Update();
 		m_SceneManager->update(dt);
 		m_EditorViewport->Update(*m_EditorCamera);
-
-		//Renderer::m_SceneData.m_ResourceManager->Update(dt);
 
 		if (Input::IsKeyPressed(Key::LeftControl))
 		{
@@ -165,9 +106,6 @@ namespace QuasarEngine
 				m_SceneManager->SaveScene();
 			}
 		}
-
-			//update_last_time += (1.0 / 120.0);
-		//}
 	}
 
 	void Editor::OnRender()
@@ -187,8 +125,8 @@ namespace QuasarEngine
 		if (opt_fullscreen)
 		{
 			ImGuiViewport* viewport = ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(viewport->GetWorkPos());
-			ImGui::SetNextWindowSize(viewport->GetWorkSize());
+			ImGui::SetNextWindowPos(viewport->WorkPos);
+			ImGui::SetNextWindowSize(viewport->WorkSize);
 			ImGui::SetNextWindowViewport(viewport->ID);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);

@@ -1,6 +1,6 @@
 #include "EditorViewport.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <ImGuizmo.h>
 
 #include "../Editor.h"
@@ -108,7 +108,7 @@ namespace QuasarEngine
 			m_EditorViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		}
 		uint32_t textureID = m_EditorFrameBuffer->GetColorAttachment(0);
-		ImGui::Image((void*)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image((ImTextureID)textureID, ImVec2{ m_EditorViewportSize.x, m_EditorViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		ImVec2 minBound = ImGui::GetWindowPos();
 		minBound.x += viewportOffset.x;

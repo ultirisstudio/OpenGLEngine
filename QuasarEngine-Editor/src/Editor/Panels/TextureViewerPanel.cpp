@@ -1,7 +1,7 @@
 #include "TextureViewerPanel.h"
 
 #include <iostream>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include "../Importer/TextureImporter.h"
 #include "../Importer/TextureConfigImporter.h"
@@ -25,7 +25,7 @@ namespace QuasarEngine
 
 		if (m_Texture)
 		{
-			ImGui::Image((void*)m_Texture->GetID(), ImVec2{ 512, 512 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+			ImGui::Image((ImTextureID)m_Texture->GetID(), ImVec2{ 512, 512 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		}
 		else
 		{
@@ -145,7 +145,7 @@ namespace QuasarEngine
 				else
 				{
 					Renderer::m_SceneData.m_AssetManager->unloadAsset(m_TexturePath.string());
-					std::shared_ptr<Texture2D> texture = std::make_shared<Texture2D>(m_TexturePath.string(), m_Specification);
+					std::shared_ptr<Texture2D> texture = Texture2D::CreateTexture2D(m_TexturePath.string(), m_Specification);
 					Renderer::m_SceneData.m_AssetManager->loadAsset(m_TexturePath.string(), texture);
 					TextureConfigImporter::ExportTextureConfig(m_TexturePath, m_Specification);
 

@@ -1,6 +1,6 @@
 #include "MaterialComponentPanel.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <filesystem>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -50,7 +50,7 @@ namespace QuasarEngine
 
 					id = hasAlbedoTexture ? mc.GetMaterial().GetTexture(TextureType::Albedo)->GetID() : NO_ID;
 
-					ImGui::ImageButton((ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+					ImGui::ImageButton("##albedo_texture", (ImTextureID)id, {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
 					if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -103,7 +103,7 @@ namespace QuasarEngine
 
 					id = hasNormalTexture ? mc.GetMaterial().GetTexture(TextureType::Normal)->GetID() : NO_ID;
 
-					ImGui::ImageButton((ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+					ImGui::ImageButton("##normal_texture", (ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 					if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -151,7 +151,7 @@ namespace QuasarEngine
 
 					id = hasMetallicTexture ? mc.GetMaterial().GetTexture(TextureType::Metallic)->GetID() : NO_ID;
 
-					ImGui::ImageButton((ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+					ImGui::ImageButton("##metallic_texture", (ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 					if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -204,7 +204,7 @@ namespace QuasarEngine
 
 					id = hasRoughnessTexture ? mc.GetMaterial().GetTexture(TextureType::Roughness)->GetID() : NO_ID;
 
-					ImGui::ImageButton((ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+					ImGui::ImageButton("##roughness_texture", (ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 					if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -257,7 +257,7 @@ namespace QuasarEngine
 
 					id = hasAOTexture ? mc.GetMaterial().GetTexture(TextureType::AO)->GetID() : NO_ID;
 
-					ImGui::ImageButton((ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+					ImGui::ImageButton("##ao_texture", (ImTextureID)id, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 					if (ImGui::BeginDragDropTarget())
 					{
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))

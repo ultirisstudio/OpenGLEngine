@@ -13,8 +13,14 @@
 
 namespace QuasarEngine
 {
-	OpenGLImGuiLayer::OpenGLImGuiLayer() : Layer("ImGuiLayer")
+	OpenGLImGuiLayer::OpenGLImGuiLayer() : ImGuiLayer("ImGuiLayer")
 	{
+
+	}
+
+	OpenGLImGuiLayer::~OpenGLImGuiLayer()
+	{
+
 	}
 
 	void OpenGLImGuiLayer::OnAttach()

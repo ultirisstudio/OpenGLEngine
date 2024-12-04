@@ -7,6 +7,11 @@
 
 namespace QuasarEngine
 {
+	ImGuiLayer::ImGuiLayer(const std::string& name) : Layer(name)
+	{
+
+	}
+
 	std::unique_ptr<ImGuiLayer> ImGuiLayer::Create()
 	{
 		switch (Renderer::GetAPI())

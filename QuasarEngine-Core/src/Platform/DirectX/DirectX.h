@@ -23,8 +23,14 @@ namespace QuasarEngine
 
 		static void Init(GLFWwindow* window);
 
+		static void Clear();
+
 		static bool CreateDeviceD3D(GLFWwindow* window);
 
 		static void CreateRenderTarget();
+
+		static void CleanupRenderTarget();
+
+		static void CleanupDeviceD3D();
 	};
 }

@@ -90,6 +90,8 @@ namespace QuasarEngine
 		
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(1);
+
+		glBindVertexArray(0);
 	}
 	void TerrainComponent::Draw()
 	{
@@ -97,6 +99,9 @@ namespace QuasarEngine
 			return;
 
 		glBindVertexArray(terrainVAO);
+
 		glDrawArrays(GL_PATCHES, 0, 4 * rez * rez);
+
+		glBindVertexArray(0);
 	}
 }

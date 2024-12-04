@@ -5,8 +5,8 @@ namespace QuasarEngine
 {
 	LayerManager::~LayerManager()
 	{
-		for (Layer* layer : m_Layers)
-			delete layer;
+		//for (Layer* layer : m_Layers)
+			//delete layer;
 	}
 
 	void LayerManager::PushLayer(Layer* layer)

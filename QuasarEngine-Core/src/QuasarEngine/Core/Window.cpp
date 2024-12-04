@@ -27,8 +27,10 @@ namespace QuasarEngine {
 			s_GLFWInitialized = true;
 		}
 
-		if (Renderer::GetAPI() == RendererAPI::API::DirectX)
+		if (RendererAPI::GetAPI() == RendererAPI::API::DirectX)
+		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		}
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
@@ -142,7 +144,7 @@ namespace QuasarEngine {
 
 	void Window::SwapBuffers()
 	{
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void Window::Shutdown()
@@ -150,18 +152,9 @@ namespace QuasarEngine {
 		glfwDestroyWindow(m_Window);
 	}
 
-	/*void Window::OnUpdate()
-	{
-		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
-	}*/
-
 	void Window::SetVSync(bool enabled)
 	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
+		m_Context->SetVSync(enabled);
 
 		m_Data.VSync = enabled;
 	}

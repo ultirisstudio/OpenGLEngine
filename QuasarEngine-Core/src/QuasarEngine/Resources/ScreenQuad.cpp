@@ -39,6 +39,8 @@ namespace QuasarEngine
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*)(2 * sizeof(float)));
+
+        glBindVertexArray(0);
     }
 
     ScreenQuad::~ScreenQuad()
@@ -56,7 +58,10 @@ namespace QuasarEngine
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindVertexArray(m_vao);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        glBindVertexArray(0);
 
         glEnable(GL_DEPTH_TEST);
     }

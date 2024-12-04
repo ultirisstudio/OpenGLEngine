@@ -7,6 +7,7 @@ namespace QuasarEngine
 	class ImGuiLayer : public Layer
 	{
 	public:
+		explicit ImGuiLayer(const std::string& name);
 		virtual ~ImGuiLayer() = default;
 
 		virtual void OnAttach() = 0;

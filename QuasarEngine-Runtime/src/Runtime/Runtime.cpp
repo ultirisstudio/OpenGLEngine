@@ -4,8 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include "ImGuizmo.h"
 
 #include <QuasarEngine/Physic/PhysicEngine.h>
@@ -20,21 +20,15 @@ namespace QuasarEngine
 {
 	Runtime::Runtime() : Layer("Runtime")
 	{
-		Application::Get().MaximizeWindow(true);
+		//Application::Get().MaximizeWindow(true);
 	}
 
 	void Runtime::OnAttach()
 	{
-		PhysicEngine::Init();
-		Renderer::Init();
+		//PhysicEngine::Init();
+		//Renderer::Init();
 
-		/*ShaderFile shaderFiles;
-		shaderFiles.vertexShaderFile = "Assets/Shaders/pbr_shader.vert";
-		shaderFiles.fragmentShaderFile = "Assets/Shaders/pbr_shader.frag";
-
-		Renderer::m_SceneData.m_Shader = Shader::Create(shaderFiles);*/
-
-		Application::Get().GetWindow().SetCursorVisibility(true);
+		/*Application::Get().GetWindow().SetCursorVisibility(true);
 
 		m_ScreenQuad = std::make_unique<ScreenQuad>();
 		m_Scene = std::make_unique<Scene>();
@@ -46,11 +40,6 @@ namespace QuasarEngine
 		shaderfile.fragmentShaderFile = "Assets/Shaders/ScreenQuad.frag";
 		m_ScreenQuadShader = Shader::Create(shaderfile);
 		m_ScreenQuadShader->setUniform("screenTexture", 0);
-
-		//Entity camera = m_Scene->CreateEntity("Camera");
-		//auto& camera_component = camera.AddComponent<CameraComponent>();
-		//camera_component.GetCamera().Init(&camera.GetComponent<TransformComponent>());
-		//camera_component.Primary = true;
 
 		FramebufferSpecification spec;
 		spec.Width = Application::Get().GetWindow().GetWidth();
@@ -65,19 +54,13 @@ namespace QuasarEngine
 		m_ChunkManager = std::make_unique<ChunkManager>();
 		m_Player = std::make_unique<Player>();
 
-		//m_Scene->GetEntityByUUID(m_Player->GetUUID()).GetComponent<CameraComponent>().GetCamera().OnResize(m_ApplicationSize.x, m_ApplicationSize.y);
 		m_Player->GetCamera().OnResize(m_ApplicationSize.x, m_ApplicationSize.y);
 
 		std::cout << "Voxel: " << sizeof(Block) << std::endl;
 		std::cout << "Chunk: " << sizeof(Chunk) << std::endl;
 		std::cout << "ChunkManager: " << sizeof(ChunkManager) << std::endl;
 		std::cout << "Mesh: " << sizeof(Mesh) << std::endl;
-		std::cout << "VoxelType: " << sizeof(BlockType) << std::endl;
-
-		//Entity camera = m_Scene->CreateEntity("Light");
-		//auto& camera_component = camera.AddComponent<CameraComponent>();
-		//camera_component.GetCamera().Init(&camera.GetComponent<TransformComponent>());
-		//camera_component.Primary = true;
+		std::cout << "VoxelType: " << sizeof(BlockType) << std::endl;*/
 
 		/*Entity light = m_Scene->CreateEntity("Light");
 		light.GetComponent<TransformComponent>().Rotation = { 20, 90, 45};
@@ -85,30 +68,30 @@ namespace QuasarEngine
 		light_component.SetType(QuasarEngine::LightComponent::LightType::DIRECTIONAL);
 		light_component.dir_power = 30.0f;*/
 
-		Entity player_light = m_Scene->CreateEntity("PlayerLight");
+		/*Entity player_light = m_Scene->CreateEntity("PlayerLight");
 		auto& player_light_component = player_light.AddComponent<LightComponent>();
 		player_light_component.SetType(QuasarEngine::LightComponent::LightType::POINT);
 		player_light_component.point_power = 60.0f;
-		player_light_component.point_attenuation = 0.2f;
+		player_light_component.point_attenuation = 0.2f;*/
 	}
 
 	void Runtime::OnDetach()
 	{
-		PhysicEngine::Shutdown();
+		//PhysicEngine::Shutdown();
 	}
 
 	void Runtime::OnUpdate(double dt)
 	{
-		m_Player->Update(dt);
+		//m_Player->Update(dt);
 
-		m_Player->GetCamera().Update();
+		//m_Player->GetCamera().Update();
 
-		m_ChunkManager->UpdateChunk(m_Player->GetPosition(), dt);
+		//m_ChunkManager->UpdateChunk(m_Player->GetPosition(), dt);
 	}
 
 	void Runtime::OnRender()
 	{
-		m_FrameBuffer->Bind();
+		/*m_FrameBuffer->Bind();
 
 		RenderCommand::Clear();
 		RenderCommand::ClearColor(glm::vec4(0.1f, 0.5f, .9f, 1.0f));
@@ -134,7 +117,7 @@ namespace QuasarEngine
 
 		m_ScreenQuadShader->use();
 		m_FrameBuffer->BindColorAttachment(0);
-		m_ScreenQuad->Draw();
+		m_ScreenQuad->Draw();*/
 	}
 
 	void Runtime::OnGuiRender()
@@ -148,6 +131,6 @@ namespace QuasarEngine
 
 	void Runtime::OnEvent(Event& e)
 	{
-		m_Player->GetCamera().OnEvent(e);
+		//m_Player->GetCamera().OnEvent(e);
 	}
 }

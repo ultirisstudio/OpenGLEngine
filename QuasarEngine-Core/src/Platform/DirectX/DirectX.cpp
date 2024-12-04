@@ -16,6 +16,11 @@ namespace QuasarEngine
 		CreateDeviceD3D(window);
 	}
 
+    void DirectX::Clear()
+    {
+        CleanupDeviceD3D();
+    }
+
 	bool DirectX::CreateDeviceD3D(GLFWwindow* window)
 	{
         DXGI_SWAP_CHAIN_DESC sd;
@@ -54,5 +59,18 @@ namespace QuasarEngine
         DirectX::m_DirectXData.pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
         DirectX::m_DirectXData.pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &DirectX::m_DirectXData.mainRenderTargetView);
         pBackBuffer->Release();
+    }
+
+    void DirectX::CleanupRenderTarget()
+    {
+        if (DirectX::m_DirectXData.mainRenderTargetView) { DirectX::m_DirectXData.mainRenderTargetView->Release(); DirectX::m_DirectXData.mainRenderTargetView = nullptr; }
+    }
+
+    void DirectX::CleanupDeviceD3D()
+    {
+        CleanupRenderTarget();
+        if (DirectX::m_DirectXData.pSwapChain) { DirectX::m_DirectXData.pSwapChain->Release(); DirectX::m_DirectXData.pSwapChain = nullptr; }
+        if (DirectX::m_DirectXData.pd3dDeviceContext) { DirectX::m_DirectXData.pd3dDeviceContext->Release(); DirectX::m_DirectXData.pd3dDeviceContext = nullptr; }
+        if (DirectX::m_DirectXData.pd3dDevice) { DirectX::m_DirectXData.pd3dDevice->Release(); DirectX::m_DirectXData.pd3dDevice = nullptr; }
     }
 }

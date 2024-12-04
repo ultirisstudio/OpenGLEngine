@@ -4,10 +4,11 @@
 
 namespace QuasarEngine
 {
-	class OpenGLImGuiLayer : public ImGuiLayer, public Layer
+	class OpenGLImGuiLayer : public ImGuiLayer
 	{
 	public:
 		OpenGLImGuiLayer();
+		~OpenGLImGuiLayer() override;
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

@@ -7,8 +7,6 @@
 
 #include "DirectX.h"
 
-#include <d3d11.h>
-
 namespace QuasarEngine
 {
 	DirectXContext::DirectXContext(GLFWwindow* windowHandle)
@@ -19,8 +17,6 @@ namespace QuasarEngine
 
 	void DirectXContext::Init()
 	{
-		glfwMakeContextCurrent(m_WindowHandle);
-
 		DirectX::Init(m_WindowHandle);
 
 		//Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
@@ -28,7 +24,12 @@ namespace QuasarEngine
 
 	void DirectXContext::SwapBuffers()
 	{
-		glfwSwapBuffers(m_WindowHandle);
+		
+	}
+
+	void DirectXContext::SetVSync(bool enabled)
+	{
+
 	}
 
 	void DirectXContext::SetCursorVisibility(bool visible)

@@ -24,7 +24,7 @@ namespace QuasarEngine
 		ApplicationSpecification spec;
 		spec.Name = "Runtime";
 		spec.CommandLineArgs = args;
-		spec.EnableImGui = false;
+		spec.EnableImGui = true;
 
 		return new RuntimeApplication(spec);
 	}

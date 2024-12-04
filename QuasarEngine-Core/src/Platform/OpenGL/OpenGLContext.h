@@ -11,10 +11,12 @@ namespace QuasarEngine {
 	public:
 		OpenGLContext(GLFWwindow* windowHandle);
 
-		virtual void Init() override;
-		virtual void SwapBuffers() override;
+		void Init() override;
+		void SwapBuffers() override;
 
-		virtual void SetCursorVisibility(bool visible) override;
+		void SetVSync(bool enabled) override;
+
+		void SetCursorVisibility(bool visible) override;
 	private:
 		GLFWwindow* m_WindowHandle;
 	};

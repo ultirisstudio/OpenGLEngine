@@ -340,6 +340,8 @@ namespace QuasarEngine {
 		m_SceneData.m_Shader->setUniform("uUsePointLight", pointLightCount);
 
 		//std::cout << entityDraw << "/" << totalEntity << std::endl;
+
+		m_SceneData.m_Shader->unuse();
 	}
 
 	void Renderer::RenderSkybox(BaseCamera& camera)
@@ -360,6 +362,8 @@ namespace QuasarEngine {
 		m_SceneData.m_Scene->getSkybox().BindCubeMap();
 		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
 		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
+
+		m_SceneData.m_Scene->getSkybox().GetShader()->unuse();
 	}
 
 	void Renderer::EndScene()

@@ -36,5 +36,7 @@ namespace QuasarEngine
 		glBindVertexArray(m_vao);
 
 		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_vertices.size()));
+
+		glBindVertexArray(0);
 	}
 }

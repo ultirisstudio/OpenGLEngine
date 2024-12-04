@@ -52,5 +52,6 @@ namespace QuasarEngine
 		virtual void setUniform(const std::string& name, const std::vector<glm::mat4>& value) const = 0;
 
 		virtual void use() const = 0;
+		virtual void unuse() const = 0;
 	};
 }

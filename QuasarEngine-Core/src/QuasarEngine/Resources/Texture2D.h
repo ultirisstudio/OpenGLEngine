@@ -7,7 +7,6 @@ namespace QuasarEngine
 	class Texture2D : public Texture
 	{
 	public:
-		Texture2D();
 		explicit Texture2D(const TextureSpecification& spec);
 		virtual ~Texture2D() = default;
 

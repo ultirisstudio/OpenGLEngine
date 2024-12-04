@@ -29,6 +29,14 @@ namespace QuasarEngine {
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
+	void OpenGLContext::SetVSync(bool enabled)
+	{
+		if (enabled)
+			glfwSwapInterval(1);
+		else
+			glfwSwapInterval(0);
+	}
+
 	void OpenGLContext::SetCursorVisibility(bool visible)
 	{
 		if (visible)

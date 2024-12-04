@@ -8,6 +8,7 @@ namespace QuasarEngine
 	{
 	public:
 		DirectXImGuiLayer();
+		~DirectXImGuiLayer() override;
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

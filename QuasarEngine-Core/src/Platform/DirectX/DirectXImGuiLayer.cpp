@@ -18,8 +18,13 @@
 
 namespace QuasarEngine
 {
-	DirectXImGuiLayer::DirectXImGuiLayer() : Layer("ImGuiLayer")
+	DirectXImGuiLayer::DirectXImGuiLayer() : ImGuiLayer("ImGuiLayer")
 	{
+	}
+
+	DirectXImGuiLayer::~DirectXImGuiLayer()
+	{
+		DirectX::Clear();
 	}
 
 	void DirectXImGuiLayer::OnAttach()

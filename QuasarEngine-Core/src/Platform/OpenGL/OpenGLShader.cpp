@@ -326,4 +326,9 @@ namespace QuasarEngine
 	{
 		glUseProgram(m_id);
 	}
+
+	void OpenGLShader::unuse() const
+	{
+		glUseProgram(0);
+	}
 }

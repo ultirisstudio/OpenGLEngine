@@ -1,9 +1,6 @@
 #pragma once
 
-struct ID3D11Device;
-struct ID3D11DeviceContext;
-struct IDXGISwapChain;
-struct ID3D11RenderTargetView;
+#include <d3d11.h>
 
 struct GLFWwindow;
 
@@ -14,23 +11,19 @@ namespace QuasarEngine
 	public:
 		struct DirectXData
 		{
-			ID3D11Device* pd3dDevice;
-			ID3D11DeviceContext* pd3dDeviceContext;
-			IDXGISwapChain* pSwapChain;
-			ID3D11RenderTargetView* mainRenderTargetView;
+			HWND hwnd;
+
+			ID3D11Device* pd3dDevice = nullptr;
+			ID3D11DeviceContext* pd3dDeviceContext = nullptr;
+			IDXGISwapChain* pSwapChain = nullptr;
+			ID3D11RenderTargetView* mainRenderTargetView = nullptr;
 		};
 		static DirectXData m_DirectXData;
 
 		static void Init(GLFWwindow* window);
 
-		static void Clear();
+		static bool CreateDeviceAndSwapChain();
 
-		static bool CreateDeviceD3D(GLFWwindow* window);
-
-		static void CreateRenderTarget();
-
-		static void CleanupRenderTarget();
-
-		static void CleanupDeviceD3D();
+		static void EndFrame();
 	};
 }

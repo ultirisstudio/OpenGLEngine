@@ -30,6 +30,8 @@ namespace QuasarEngine
 			std::string uniformName = name.substr(0, name.find('\0'));
 			unsigned int uniformLocation = glGetUniformLocation(m_id, uniformName.c_str());
 
+			//std::cout << "Name: " << uniformName << " at " << uniformLocation << "\n";
+
 			m_uniformLocations.insert({ uniformName, uniformLocation });
 		}
 	}

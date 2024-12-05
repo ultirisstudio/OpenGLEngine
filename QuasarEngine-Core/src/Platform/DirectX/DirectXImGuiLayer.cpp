@@ -24,7 +24,7 @@ namespace QuasarEngine
 
 	DirectXImGuiLayer::~DirectXImGuiLayer()
 	{
-		DirectX::Clear();
+		
 	}
 
 	void DirectXImGuiLayer::OnAttach()
@@ -82,12 +82,12 @@ namespace QuasarEngine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+		DirectX::EndFrame();
+
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
+			//ImGui::RenderPlatformWindowsDefault();
 		}
 	}
 }

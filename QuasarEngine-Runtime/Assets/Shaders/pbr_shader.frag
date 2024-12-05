@@ -27,7 +27,7 @@ struct Material
     float ao;
 
     sampler2DArray albedoMap;
-    sampler2D normalMap;
+    sampler2DArray normalMap;
     sampler2D metallicMap;
     sampler2D roughnessMap;
     sampler2D aoMap;
@@ -68,7 +68,8 @@ const float PI = 3.14159265359;
 
 vec3 getNormalFromMap()
 {
-    vec3 tangentNormal = texture(uMaterial.normalMap, fTextureCoordinates).xyz * 2.0 - 1.0;
+    int index = int(fTextureIndice) - 1;
+    vec3 tangentNormal = texture(uMaterial.normalMap, vec3(fTextureCoordinates, index)).xyz * 2.0 - 1.0;
 
     vec3 Q1  = dFdx(fWorldPos);
     vec3 Q2  = dFdy(fWorldPos);

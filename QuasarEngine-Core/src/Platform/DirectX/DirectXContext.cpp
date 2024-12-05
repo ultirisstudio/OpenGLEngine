@@ -24,7 +24,7 @@ namespace QuasarEngine
 
 	void DirectXContext::SwapBuffers()
 	{
-		
+		DirectX::EndFrame();
 	}
 
 	void DirectXContext::SetVSync(bool enabled)

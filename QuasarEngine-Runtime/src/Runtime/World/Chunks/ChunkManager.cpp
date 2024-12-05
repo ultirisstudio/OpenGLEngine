@@ -16,17 +16,30 @@ ChunkManager::ChunkManager()
 	m_Generator = std::make_unique<TerrainGenerator>();
 	//m_Shader = std::make_unique<QuasarEngine::Shader>("Shaders/basic_vertex.glsl", "Shaders/basic_fragment.glsl");
 
-	std::vector<std::string> textures{
-		"Assets/Textures/dark_grass_block_top.png",	//1
+	std::vector<std::string> textures {
+		"Assets/Textures/dark_grass_block_top.png",		//1
 		"Assets/Textures/dark_grass_block_side.png",	//2
 		"Assets/Textures/dark_dirt.png",				//3
-		"Assets/Textures/dark_cobblestone.png",		//4
+		"Assets/Textures/dark_cobblestone.png",			//4
 		"Assets/Textures/stone.png",					//5
 		"Assets/Textures/log_1.png",					//6
 		"Assets/Textures/log_top.png",					//7
 		"Assets/Textures/leaves_test.png",				//8
 		"Assets/Textures/library_1.png",				//9
 		"Assets/Textures/library_2.png",				//10
+	};
+
+	std::vector<std::string> normal_textures {
+		"Assets/Textures/dark_grass_block_top_normal.png",
+		"Assets/Textures/dark_grass_block_side_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
+		"Assets/Textures/dark_dirt_normal.png",
 	};
 
 	// UP, DOWN, LEFT, RIGHT, FRONT, BACK
@@ -55,7 +68,11 @@ ChunkManager::ChunkManager()
 	spec.alpha = true;
 	std::shared_ptr<QuasarEngine::TextureArray> textureArray = QuasarEngine::TextureArray::CreateTextureArray(textures, spec);
 
+	QuasarEngine::TextureSpecification n_spec;
+	std::shared_ptr<QuasarEngine::TextureArray> normalTextureArray = QuasarEngine::TextureArray::CreateTextureArray(normal_textures, n_spec);
+
 	QuasarEngine::Renderer::m_SceneData.m_AssetManager->loadAsset("textures", textureArray);
+	QuasarEngine::Renderer::m_SceneData.m_AssetManager->loadAsset("normal_textures", normalTextureArray);
 }
 
 void ChunkManager::SetBlock(const glm::ivec3& position, BlockType voxel)
@@ -122,6 +139,7 @@ void ChunkManager::AddChunk(const glm::ivec3& position)
 		chunk.AddComponent<QuasarEngine::MeshComponent>();
 		chunk.AddComponent<QuasarEngine::MaterialComponent>();
 		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "textures");
+		//chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Normal, "normal_textures");
 		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetRoughness() = 0.0f;
 		chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetMetallic() = 0.0f;
 		chunk.AddComponent<QuasarEngine::MeshRendererComponent>();
@@ -145,6 +163,7 @@ void ChunkManager::AddChunk(const glm::ivec3& position)
 			chunk.AddComponent<QuasarEngine::MeshComponent>();
 			chunk.AddComponent<QuasarEngine::MaterialComponent>();
 			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Albedo, "textures");
+			//chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().SetTexture(QuasarEngine::TextureType::Normal, "normal_textures");
 			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetRoughness() = 0.0f;
 			chunk.GetComponent<QuasarEngine::MaterialComponent>().GetMaterial().GetMetallic() = 0.0f;
 			chunk.AddComponent<QuasarEngine::MeshRendererComponent>();

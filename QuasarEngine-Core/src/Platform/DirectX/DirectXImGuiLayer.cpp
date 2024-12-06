@@ -82,12 +82,10 @@ namespace QuasarEngine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		DirectX::EndFrame();
-
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
-			//ImGui::RenderPlatformWindowsDefault();
+			ImGui::RenderPlatformWindowsDefault();
 		}
 	}
 }

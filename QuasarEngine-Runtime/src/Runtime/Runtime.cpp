@@ -20,12 +20,14 @@ namespace QuasarEngine
 {
 	Runtime::Runtime() : Layer("Runtime")
 	{
-		Application::Get().MaximizeWindow(true);
+		//Application::Get().MaximizeWindow(true);
 	}
 
 	void Runtime::OnAttach()
 	{
-		PhysicEngine::Init();
+		RenderCommand::Init();
+
+		/*PhysicEngine::Init();
 		Renderer::Init();
 
 		Application::Get().GetWindow().SetCursorVisibility(true);
@@ -62,41 +64,43 @@ namespace QuasarEngine
 		std::cout << "Mesh: " << sizeof(Mesh) << std::endl;
 		std::cout << "VoxelType: " << sizeof(BlockType) << std::endl;
 
-		/*Entity light = m_Scene->CreateEntity("Light");
+		Entity light = m_Scene->CreateEntity("Light");
 		light.GetComponent<TransformComponent>().Rotation = { 20, 90, 45};
 		auto& light_component = light.AddComponent<LightComponent>();
 		light_component.SetType(QuasarEngine::LightComponent::LightType::DIRECTIONAL);
 		light_component.dir_power = 30.0f;*/
 
-		Entity player_light = m_Scene->CreateEntity("PlayerLight");
+		/*Entity player_light = m_Scene->CreateEntity("PlayerLight");
 		auto& player_light_component = player_light.AddComponent<LightComponent>();
 		player_light_component.SetType(QuasarEngine::LightComponent::LightType::POINT);
 		player_light_component.point_power = 60.0f;
-		player_light_component.point_attenuation = 0.2f;
+		player_light_component.point_attenuation = 0.2f;*/
 	}
 
 	void Runtime::OnDetach()
 	{
-		PhysicEngine::Shutdown();
+		//PhysicEngine::Shutdown();
 	}
 
 	void Runtime::OnUpdate(double dt)
 	{
-		m_Player->Update(dt);
+		/*m_Player->Update(dt);
 
 		m_Player->GetCamera().Update();
 
-		m_ChunkManager->UpdateChunk(m_Player->GetPosition(), dt);
+		m_ChunkManager->UpdateChunk(m_Player->GetPosition(), dt);*/
 	}
 
 	void Runtime::OnRender()
 	{
-		m_FrameBuffer->Bind();
+		//m_FrameBuffer->Bind();
 
 		RenderCommand::Clear();
 		RenderCommand::ClearColor(glm::vec4(0.1f, 0.5f, .9f, 1.0f));
 
-		Renderer::BeginScene(*m_Scene);
+		RenderCommand::SetViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+
+		/*Renderer::BeginScene(*m_Scene);
 		Renderer::Render(m_Player->GetCamera());
 		Renderer::RenderSkybox(m_Player->GetCamera());
 		Renderer::EndScene();
@@ -117,16 +121,159 @@ namespace QuasarEngine
 
 		m_ScreenQuadShader->use();
 		m_FrameBuffer->BindColorAttachment(0);
-		m_ScreenQuad->Draw();
+		m_ScreenQuad->Draw();*/
 	}
 
 	void Runtime::OnGuiRender()
 	{
-		
+		/*static bool dockspaceOpen = true;
+		static bool opt_fullscreen = true;
+		static bool opt_padding = false;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		if (opt_fullscreen)
+		{
+			ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->WorkPos);
+			ImGui::SetNextWindowSize(viewport->WorkSize);
+			ImGui::SetNextWindowViewport(viewport->ID);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		}
+		else
+		{
+			dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+		}
+
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		if (!opt_padding)
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace", &dockspaceOpen, window_flags);
+		if (!opt_padding)
+			ImGui::PopStyleVar();
+
+		if (opt_fullscreen)
+			ImGui::PopStyleVar(2);
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		bool hasProject = true;
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Project"))
+			{
+				if (ImGui::MenuItem("Quit"))
+					QuasarEngine::Application::Get().Close();
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Asset"))
+			{
+				if (ImGui::MenuItem("Import"))
+				{
+					
+				}
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Scene", hasProject))
+			{
+				if (ImGui::MenuItem("New scene"))
+				{
+					
+				}
+
+				if (ImGui::MenuItem("Save scene"))
+				{
+					
+				}
+
+				if (ImGui::MenuItem("Load scene"))
+				{
+					
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Script", hasProject))
+			{
+				if (ImGui::MenuItem("Build"))
+				{
+					
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Runtime", hasProject))
+			{
+				if (ImGui::MenuItem("Start scene"))
+				{
+					
+				}
+				if (ImGui::MenuItem("Stop scene"))
+				{
+					
+
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Create", hasProject))
+			{
+				if (ImGui::MenuItem("Create new GameObject"))
+				{
+					
+				}
+
+				if (ImGui::MenuItem("Create new Cube")) {};
+				if (ImGui::MenuItem("Create new Sphere")) {};
+				if (ImGui::MenuItem("Create new UV Sphere")) {};
+				if (ImGui::MenuItem("Create new Plane")) {};
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Options"))
+			{
+				if (ImGui::MenuItem("Preference"))
+				{
+					
+				}
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::Begin("Test");
+		{
+			
+		}
+		ImGui::End();
+
+		ImGui::End();*/
+
+		ImGui::Begin("Test");
+		{
+
+		}
+		ImGui::End();
 	}
 
 	void Runtime::OnEvent(Event& e)
 	{
-		m_Player->GetCamera().OnEvent(e);
+		//m_Player->GetCamera().OnEvent(e);
 	}
 }

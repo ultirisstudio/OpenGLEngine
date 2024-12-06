@@ -143,7 +143,7 @@ void GameCamera::OnResize(float width, float height)
 {
 	m_ViewportSize.x = width;
 	m_ViewportSize.y = height;
-	m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100000.0f);
+	m_projectionMatrix = glm::perspective(glm::radians(getFov()), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 1000.0f);
 	QuasarEngine::RenderCommand::SetViewport(0, 0, static_cast<int>(width), static_cast<int>(height));
 }
 

@@ -27,6 +27,11 @@ namespace QuasarEngine {
 			s_RendererAPI->Clear();
 		}
 
+		static void SetDepthText(bool enabled)
+		{
+			s_RendererAPI->SetDepthTest(enabled);
+		}
+
 		static void DrawArrays(DrawMode drawMode, uint32_t size)
 		{
 			s_RendererAPI->DrawArrays(drawMode, size);

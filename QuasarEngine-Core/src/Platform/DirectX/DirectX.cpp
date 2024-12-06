@@ -50,6 +50,21 @@ namespace QuasarEngine
             &DirectX::m_DirectXData.pd3dDeviceContext
         );
 
+        CreateRenderTarget();
+
+        return true;
+	}
+
+    void DirectX::CleanupRenderTarget()
+    {
+        ID3D11Texture2D* pBackBuffer;
+        DirectX::m_DirectXData.pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+        DirectX::m_DirectXData.pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &DirectX::m_DirectXData.mainRenderTargetView);
+        pBackBuffer->Release();
+    }
+
+    void DirectX::CreateRenderTarget()
+    {
         ID3D11Resource* pBackBuffer = nullptr;
         DirectX::m_DirectXData.pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer));
 
@@ -60,12 +75,10 @@ namespace QuasarEngine
         );
 
         pBackBuffer->Release();
-
-        return true;
-	}
+    }
 
     void DirectX::EndFrame()
     {
-        DirectX::m_DirectXData.pSwapChain->Present(1u, 0u);
+        DirectX::m_DirectXData.pSwapChain->Present(0u, 0u);
     }
 }

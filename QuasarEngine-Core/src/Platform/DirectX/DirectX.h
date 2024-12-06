@@ -24,6 +24,10 @@ namespace QuasarEngine
 
 		static bool CreateDeviceAndSwapChain();
 
+		static void CleanupRenderTarget();
+
+		static void CreateRenderTarget();
+
 		static void EndFrame();
 	};
 }

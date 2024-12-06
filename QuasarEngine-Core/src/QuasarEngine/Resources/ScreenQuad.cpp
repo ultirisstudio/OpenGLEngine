@@ -1,68 +1,55 @@
 #include "qepch.h"
 #include "ScreenQuad.h"
 
-#include <glad/glad.h>
+#include <QuasarEngine/Renderer/Renderer.h>
 
 namespace QuasarEngine
 {
-    ScreenQuad::ScreenQuad() :
-        m_vao(0),
-        m_vbo(0),
-        m_ebo(0)
+    ScreenQuad::ScreenQuad()
     {
-        float vertices[] = {
+        std::vector<float> vertices = {
             -1.0f, -1.0f,  0.0f, 0.0f,
              1.0f, -1.0f,  1.0f, 0.0f,
              1.0f,  1.0f,  1.0f, 1.0f,
             -1.0f,  1.0f,  0.0f, 1.0f
         };
 
-        unsigned int indices[] = {
+        std::vector<unsigned int> indices = {
             0, 1, 2,
             0, 2, 3
         };
 
-        glGenVertexArrays(1, &m_vao);
-        glGenBuffers(1, &m_vbo);
-        glGenBuffers(1, &m_ebo);
+        m_vertexArray = VertexArray::Create();
 
-        glBindVertexArray(m_vao);
+        m_vertexBuffer = VertexBuffer::Create(vertices, vertices.size() * sizeof(float));
+        m_vertexBuffer->SetLayout({
+            { ShaderDataType::Vec2, "aPos"				},
+            { ShaderDataType::Vec2, "aTexCoords"		}
+        });
+        m_vertexArray->AddVertexBuffer(m_vertexBuffer);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*)(0));
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*)(2 * sizeof(float)));
-
-        glBindVertexArray(0);
+        std::shared_ptr<IndexBuffer> indexBuffer = IndexBuffer::Create(indices.data(), indices.size());
+        m_vertexArray->SetIndexBuffer(indexBuffer);
     }
 
     ScreenQuad::~ScreenQuad()
     {
-        glDeleteVertexArrays(1, &m_vao);
-        glDeleteBuffers(1, &m_vbo);
-        glDeleteBuffers(1, &m_ebo);
+        
     }
 
     void ScreenQuad::Draw() const
     {
-        glDisable(GL_DEPTH_TEST);
+        RenderCommand::SetDepthText(false);
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        RenderCommand::ClearColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        RenderCommand::Clear();
 
-        glBindVertexArray(m_vao);
+        m_vertexArray->Bind();
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        uint32_t count = m_vertexArray->GetIndexBuffer()->GetCount();
 
-        glBindVertexArray(0);
+        RenderCommand::DrawElements(DrawMode::TRIANGLES, count);
 
-        glEnable(GL_DEPTH_TEST);
+        RenderCommand::SetDepthText(true);
     }
 }

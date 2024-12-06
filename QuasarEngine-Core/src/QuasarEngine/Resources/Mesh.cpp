@@ -7,37 +7,6 @@
 
 namespace QuasarEngine
 {
-	/*void Mesh::CalculateBoundingBoxSize(std::vector<Vertex> vertices)
-	{
-		float minX = std::numeric_limits<float>::max();
-		float minY = std::numeric_limits<float>::max();
-		float minZ = std::numeric_limits<float>::max();
-
-		float maxX = std::numeric_limits<float>::min();
-		float maxY = std::numeric_limits<float>::min();
-		float maxZ = std::numeric_limits<float>::min();
-
-		for (const auto& vertex : vertices)
-		{
-			if (vertex.position.x < minX)
-				minX = vertex.position.x;
-			if (vertex.position.y < minY)
-				minY = vertex.position.y;
-			if (vertex.position.z < minZ)
-				minZ = vertex.position.z;
-
-			if (vertex.position.x > maxX)
-				maxX = vertex.position.x;
-			if (vertex.position.y > maxY)
-				maxY = vertex.position.y;
-			if (vertex.position.z > maxZ)
-				maxZ = vertex.position.z;
-		}
-
-		m_boundingBoxSize = glm::vec3(maxX - minX, maxY - minY, maxZ - minZ);
-		m_boundingBoxPosition = glm::vec3(minX, minY, minZ);
-	}*/
-
 	void Mesh::CalculateBoundingBoxSize(std::vector<float> vertices)
 	{
 		float minX = std::numeric_limits<float>::max();
@@ -72,9 +41,6 @@ namespace QuasarEngine
 	}
 
 	Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::optional<BufferLayout> layout, DrawMode drawMode) :
-		m_vao(0),
-		m_vbo(0),
-		m_ebo(0),
 		m_drawMode(drawMode),
 		m_vertices(),
 		m_indices()
@@ -135,7 +101,7 @@ namespace QuasarEngine
 		}
 		else
 		{
-			m_vertexBuffer = VertexBuffer::Create(vertices, vertices.size() * 32);
+			m_vertexBuffer = VertexBuffer::Create(vertices, vertices.size() * sizeof(float));
 			m_vertexBuffer->SetLayout({
 				{ ShaderDataType::Vec3, "vPosition"				},
 				{ ShaderDataType::Vec3, "vNormal"				},

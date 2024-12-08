@@ -33,7 +33,7 @@ namespace QuasarEngine
         sd.OutputWindow = DirectX::m_DirectXData.hwnd;
         sd.Windowed = TRUE;
         sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-        sd.Flags = 0;
+        sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; //swapchain->SetFullscreenState(FALSE, NULL);
 
         HRESULT res = D3D11CreateDeviceAndSwapChain(
             nullptr,
@@ -75,6 +75,18 @@ namespace QuasarEngine
         );
 
         pBackBuffer->Release();
+
+        DirectX::m_DirectXData.pd3dDeviceContext->OMSetRenderTargets(1, &DirectX::m_DirectXData.mainRenderTargetView, nullptr);
+
+        D3D11_VIEWPORT viewport;
+        ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+        viewport.TopLeftX = 0;
+        viewport.TopLeftY = 0;
+        viewport.Width = 800;
+        viewport.Height = 600;
+
+        DirectX::m_DirectXData.pd3dDeviceContext->RSSetViewports(1, &viewport);
     }
 
     void DirectX::EndFrame()

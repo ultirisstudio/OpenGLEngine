@@ -32,7 +32,6 @@ namespace QuasarEngine
 
 	void DirectXRendererAPI::ClearColor(const glm::vec4& color)
 	{
-		DirectX::m_DirectXData.pd3dDeviceContext->OMSetRenderTargets(1, &DirectX::m_DirectXData.mainRenderTargetView, nullptr);
 		const float clear_color_with_alpha[4] = { color.x, color.y, color.z, color.w };
 		DirectX::m_DirectXData.pd3dDeviceContext->ClearRenderTargetView(DirectX::m_DirectXData.mainRenderTargetView, clear_color_with_alpha);
 	}

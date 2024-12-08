@@ -98,7 +98,7 @@ namespace QuasarEngine
 		RenderCommand::Clear();
 		RenderCommand::ClearColor(glm::vec4(0.1f, 0.5f, .9f, 1.0f));
 
-		RenderCommand::SetViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		//RenderCommand::SetViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 
 		/*Renderer::BeginScene(*m_Scene);
 		Renderer::Render(m_Player->GetCamera());

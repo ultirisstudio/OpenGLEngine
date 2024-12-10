@@ -6,7 +6,7 @@
 #include <imgui/imgui.h>
 #include <ImGuizmo.h>
 
-#include "DirectX.h"
+#include "DirectXRenderer.h"
 
 #include <backends/imgui_impl_dx11.h>
 #include <backends/imgui_impl_glfw.h>
@@ -55,7 +55,7 @@ namespace QuasarEngine
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 		ImGui_ImplGlfw_InitForOther(window, true);
-		ImGui_ImplDX11_Init(DirectX::m_DirectXData.pd3dDevice, DirectX::m_DirectXData.pd3dDeviceContext);
+		ImGui_ImplDX11_Init(DirectXRenderer::m_DirectXData.pd3dDevice, DirectXRenderer::m_DirectXData.pd3dDeviceContext);
 	}
 
 	void DirectXImGuiLayer::OnDetach()

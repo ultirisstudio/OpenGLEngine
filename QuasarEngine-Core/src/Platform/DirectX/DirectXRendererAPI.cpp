@@ -3,7 +3,7 @@
 
 #include "QuasarEngine/Renderer/DrawMode.h"
 
-#include "DirectX.h"
+#include "DirectXRenderer.h"
 
 #include <d3d11.h>
 
@@ -33,7 +33,7 @@ namespace QuasarEngine
 	void DirectXRendererAPI::ClearColor(const glm::vec4& color)
 	{
 		const float clear_color_with_alpha[4] = { color.x, color.y, color.z, color.w };
-		DirectX::m_DirectXData.pd3dDeviceContext->ClearRenderTargetView(DirectX::m_DirectXData.mainRenderTargetView, clear_color_with_alpha);
+		DirectXRenderer::m_DirectXData.pd3dDeviceContext->ClearRenderTargetView(DirectXRenderer::m_DirectXData.mainRenderTargetView, clear_color_with_alpha);
 	}
 
 	void DirectXRendererAPI::Clear()

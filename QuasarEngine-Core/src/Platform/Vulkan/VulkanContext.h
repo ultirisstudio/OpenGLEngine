@@ -1,0 +1,25 @@
+#pragma once
+
+#include "QuasarEngine/Renderer/GraphicsContext.h"
+
+struct GLFWwindow;
+
+namespace QuasarEngine {
+
+	class VulkanContext : public GraphicsContext
+	{
+	public:
+		VulkanContext(GLFWwindow* windowHandle);
+
+		void Init() override;
+
+		void BeginFrame() override;
+		void EndFrame() override;
+
+		void SetVSync(bool enabled) override;
+		void SetCursorVisibility(bool visible) override;
+	private:
+		GLFWwindow* m_WindowHandle;
+	};
+
+}

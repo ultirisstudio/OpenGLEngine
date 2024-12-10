@@ -1,5 +1,5 @@
 #include "qepch.h"
-#include "Platform/DirectX/DirectXRendererAPI.h"
+#include "DirectXRendererAPI.h"
 
 #include "QuasarEngine/Renderer/DrawMode.h"
 

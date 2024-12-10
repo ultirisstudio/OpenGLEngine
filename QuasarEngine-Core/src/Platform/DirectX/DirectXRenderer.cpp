@@ -1,5 +1,5 @@
 #include "qepch.h"
-#include "DirectX.h"
+#include "DirectXRenderer.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3.h>
@@ -7,16 +7,16 @@
 
 namespace QuasarEngine
 {
-	DirectX::DirectXData DirectX::m_DirectXData = DirectX::DirectXData();
+    DirectXRenderer::DirectXData DirectXRenderer::m_DirectXData = DirectXRenderer::DirectXData();
 
-	void DirectX::Init(GLFWwindow* window)
+	void DirectXRenderer::Init(GLFWwindow* window)
 	{
-        DirectX::m_DirectXData.hwnd = glfwGetWin32Window(window);
+        DirectXRenderer::m_DirectXData.hwnd = glfwGetWin32Window(window);
 
         CreateDeviceAndSwapChain();
 	}
 
-	bool DirectX::CreateDeviceAndSwapChain()
+	bool DirectXRenderer::CreateDeviceAndSwapChain()
 	{
         DXGI_SWAP_CHAIN_DESC sd = {};
         sd.BufferDesc.Width = 0;
@@ -30,7 +30,7 @@ namespace QuasarEngine
         sd.SampleDesc.Quality = 0;
         sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         sd.BufferCount = 1;
-        sd.OutputWindow = DirectX::m_DirectXData.hwnd;
+        sd.OutputWindow = DirectXRenderer::m_DirectXData.hwnd;
         sd.Windowed = TRUE;
         sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; //swapchain->SetFullscreenState(FALSE, NULL);
@@ -44,10 +44,10 @@ namespace QuasarEngine
             0,
             D3D11_SDK_VERSION,
             &sd,
-            &DirectX::m_DirectXData.pSwapChain,
-            &DirectX::m_DirectXData.pd3dDevice,
+            &DirectXRenderer::m_DirectXData.pSwapChain,
+            &DirectXRenderer::m_DirectXData.pd3dDevice,
             nullptr,
-            &DirectX::m_DirectXData.pd3dDeviceContext
+            &DirectXRenderer::m_DirectXData.pd3dDeviceContext
         );
 
         CreateRenderTarget();
@@ -55,28 +55,28 @@ namespace QuasarEngine
         return true;
 	}
 
-    void DirectX::CleanupRenderTarget()
+    void DirectXRenderer::CleanupRenderTarget()
     {
         ID3D11Texture2D* pBackBuffer;
-        DirectX::m_DirectXData.pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-        DirectX::m_DirectXData.pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &DirectX::m_DirectXData.mainRenderTargetView);
+        DirectXRenderer::m_DirectXData.pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+        DirectXRenderer::m_DirectXData.pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &DirectXRenderer::m_DirectXData.mainRenderTargetView);
         pBackBuffer->Release();
     }
 
-    void DirectX::CreateRenderTarget()
+    void DirectXRenderer::CreateRenderTarget()
     {
         ID3D11Resource* pBackBuffer = nullptr;
-        DirectX::m_DirectXData.pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer));
+        DirectXRenderer::m_DirectXData.pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer));
 
-        DirectX::m_DirectXData.pd3dDevice->CreateRenderTargetView(
+        DirectXRenderer::m_DirectXData.pd3dDevice->CreateRenderTargetView(
             pBackBuffer,
             nullptr,
-            &DirectX::m_DirectXData.mainRenderTargetView
+            &DirectXRenderer::m_DirectXData.mainRenderTargetView
         );
 
         pBackBuffer->Release();
 
-        DirectX::m_DirectXData.pd3dDeviceContext->OMSetRenderTargets(1, &DirectX::m_DirectXData.mainRenderTargetView, nullptr);
+        DirectXRenderer::m_DirectXData.pd3dDeviceContext->OMSetRenderTargets(1, &DirectXRenderer::m_DirectXData.mainRenderTargetView, nullptr);
 
         D3D11_VIEWPORT viewport;
         ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
@@ -86,11 +86,11 @@ namespace QuasarEngine
         viewport.Width = 800;
         viewport.Height = 600;
 
-        DirectX::m_DirectXData.pd3dDeviceContext->RSSetViewports(1, &viewport);
+        DirectXRenderer::m_DirectXData.pd3dDeviceContext->RSSetViewports(1, &viewport);
     }
 
-    void DirectX::EndFrame()
+    void DirectXRenderer::EndFrame()
     {
-        DirectX::m_DirectXData.pSwapChain->Present(0u, 0u);
+        DirectXRenderer::m_DirectXData.pSwapChain->Present(0u, 0u);
     }
 }

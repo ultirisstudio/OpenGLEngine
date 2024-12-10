@@ -6,7 +6,7 @@ struct GLFWwindow;
 
 namespace QuasarEngine
 {
-	class DirectX
+	class DirectXRenderer
 	{
 	public:
 		struct DirectXData

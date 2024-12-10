@@ -1,5 +1,5 @@
 #include "qepch.h"
-#include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "OpenGLRendererAPI.h"
 
 #include <iostream>
 #include <string>

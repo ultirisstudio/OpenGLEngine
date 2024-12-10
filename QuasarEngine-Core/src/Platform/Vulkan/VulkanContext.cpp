@@ -1,43 +1,38 @@
 #include "qepch.h"
-#include "DirectXContext.h"
+#include "VulkanContext.h"
 
 #include <GLFW/glfw3.h>
 
 #include "QuasarEngine/Core/Log.h"
 
-#include "DirectXRenderer.h"
-
 namespace QuasarEngine
 {
-	DirectXContext::DirectXContext(GLFWwindow* windowHandle)
-		: m_WindowHandle(windowHandle)
+	VulkanContext::VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 	{
 		
 	}
 
-	void DirectXContext::Init()
+	void VulkanContext::Init()
 	{
-		DirectXRenderer::Init(m_WindowHandle);
-
 		//Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 	}
 
-	void DirectXContext::BeginFrame()
+	void VulkanContext::BeginFrame()
 	{
 
 	}
 
-	void DirectXContext::EndFrame()
+	void VulkanContext::EndFrame()
 	{
-		DirectXRenderer::EndFrame();
+		
 	}
 
-	void DirectXContext::SetVSync(bool enabled)
+	void VulkanContext::SetVSync(bool enabled)
 	{
 
 	}
 
-	void DirectXContext::SetCursorVisibility(bool visible)
+	void VulkanContext::SetCursorVisibility(bool visible)
 	{
 		if (visible)
 			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

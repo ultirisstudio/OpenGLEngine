@@ -34,11 +34,6 @@ namespace QuasarEngine
 		Renderer::LoadModel(file);
 	}
 
-	void SceneManager::AddGLTFGameObject(const std::string& file)
-	{
-		Renderer::LoadGLTFModel(file);
-	}
-
 	void SceneManager::AddCube()
 	{
 		Renderer::LoadModel("Assets/Models/cube.obj");

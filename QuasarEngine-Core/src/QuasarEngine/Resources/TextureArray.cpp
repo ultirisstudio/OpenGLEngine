@@ -129,8 +129,9 @@ namespace QuasarEngine
 		return std::make_shared<TextureArray>(paths, specification);
 	}
 
-	void TextureArray::Bind() const
+	void TextureArray::Bind(int index) const
 	{
+		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
 	}
 

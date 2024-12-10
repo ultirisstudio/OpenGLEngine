@@ -80,39 +80,42 @@ namespace QuasarEngine
 			//double currentTime = Renderer::GetTime();
 			//if (currentTime - last_time >= (1.0 / 120.0))
 			//{
-				//Chronometer chrono = Chronometer(false);
+			//Chronometer chrono = Chronometer(false);
 
-				if (!m_Minimized)
-				{
-					//if (m_can_calcul_latency) chrono.restart();
+			m_Window->BeginFrame();
 
-					for (Layer* layer : m_LayerManager)
-					{
-						layer->OnUpdate(deltaTime);
-						layer->OnRender();
-					}
-
-					//if (m_can_calcul_latency) { m_appInfos.update_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
-				}
-
+			if (!m_Minimized)
+			{
 				//if (m_can_calcul_latency) chrono.restart();
 
-				if (m_Specification.EnableImGui)
+				for (Layer* layer : m_LayerManager)
 				{
-					m_ImGuiLayer->Begin();
-					for (Layer* layer : m_LayerManager)
-						layer->OnGuiRender();
-					m_ImGuiLayer->End();
+					layer->OnUpdate(deltaTime);
+					layer->OnRender();
 				}
 
-				//if (m_can_calcul_latency) { m_appInfos.imgui_render_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
+				//if (m_can_calcul_latency) { m_appInfos.update_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
+			}
 
-				//if (m_can_calcul_latency) { m_can_calcul_latency = false; chrono.stop(); }
+			//if (m_can_calcul_latency) chrono.restart();
 
-				m_Window->SwapBuffers();
-				m_Window->PollEvents();
+			if (m_Specification.EnableImGui)
+			{
+				m_ImGuiLayer->Begin();
+				for (Layer* layer : m_LayerManager)
+					layer->OnGuiRender();
+				m_ImGuiLayer->End();
+			}
 
-				//last_time += (1.0 / 120.0);
+			//if (m_can_calcul_latency) { m_appInfos.imgui_render_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }
+
+			//if (m_can_calcul_latency) { m_can_calcul_latency = false; chrono.stop(); }
+
+			m_Window->EndFrame();
+
+			m_Window->PollEvents();
+
+			//last_time += (1.0 / 120.0);
 			//}
 
 			CalculPerformance();

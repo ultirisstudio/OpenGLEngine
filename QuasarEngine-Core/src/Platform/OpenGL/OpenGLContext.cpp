@@ -24,7 +24,11 @@ namespace QuasarEngine {
 		Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 	}
 
-	void OpenGLContext::SwapBuffers()
+	void OpenGLContext::BeginFrame()
+	{
+	}
+
+	void OpenGLContext::EndFrame()
 	{
 		glfwSwapBuffers(m_WindowHandle);
 	}

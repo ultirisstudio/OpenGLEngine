@@ -11,7 +11,7 @@ namespace QuasarEngine
 		OpenGLTexture2D(unsigned char* image_data, size_t size, const TextureSpecification& specification);
 		~OpenGLTexture2D() override;
 
-		void Bind() const override;
+		void Bind(int index) const override;
 		void Unbind() const override;
 	};
 }

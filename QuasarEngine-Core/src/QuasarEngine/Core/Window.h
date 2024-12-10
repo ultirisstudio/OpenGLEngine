@@ -31,9 +31,10 @@ namespace QuasarEngine {
 		Window();
 		virtual ~Window();
 
-		//void OnUpdate();
 		void PollEvents();
-		void SwapBuffers();
+
+		void BeginFrame();
+		void EndFrame();
 
 		inline unsigned int GetWidth() const { return m_Data.Width; }
 		inline unsigned int GetHeight() const { return m_Data.Height; }

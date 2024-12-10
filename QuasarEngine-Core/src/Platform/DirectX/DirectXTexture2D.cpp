@@ -19,7 +19,7 @@ namespace QuasarEngine
 		
 	}
 
-	void DirectXTexture2D::Bind() const
+	void DirectXTexture2D::Bind(int index) const
 	{
 		
 	}

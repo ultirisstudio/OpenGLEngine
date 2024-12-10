@@ -173,8 +173,9 @@ namespace QuasarEngine
 		glDeleteTextures(1, &m_ID);
 	}
 
-	void OpenGLTexture2D::Bind() const
+	void OpenGLTexture2D::Bind(int index) const
 	{
+		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 	}
 

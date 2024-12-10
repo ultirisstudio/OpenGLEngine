@@ -2,6 +2,7 @@
 #include <QuasarEngine/Resources/Debug/DebugLineMesh.h>
 
 #include <glad/glad.h>
+// TODO : remove glad
 
 namespace QuasarEngine
 {

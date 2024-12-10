@@ -19,7 +19,6 @@ namespace QuasarEngine
 		SceneObject& GetSceneObject() { return *m_SceneObject; }
 
 		void AddGameObject(const std::string& file);
-		void AddGLTFGameObject(const std::string& file);
 
 		void AddCube();
 		void AddSphere();

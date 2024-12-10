@@ -15,7 +15,7 @@ namespace QuasarEngine
 
 		static std::shared_ptr<TextureArray> CreateTextureArray(const std::vector<std::string>& paths, const TextureSpecification& specification);
 
-		virtual void Bind() const override;
+		virtual void Bind(int index = 0) const override;
 		virtual void Unbind() const override;
 	};
 }

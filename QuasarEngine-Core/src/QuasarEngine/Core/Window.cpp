@@ -142,9 +142,14 @@ namespace QuasarEngine {
 		glfwPollEvents();
 	}
 
-	void Window::SwapBuffers()
+	void Window::BeginFrame()
 	{
-		m_Context->SwapBuffers();
+		m_Context->BeginFrame();
+	}
+
+	void Window::EndFrame()
+	{
+		m_Context->EndFrame();
 	}
 
 	void Window::Shutdown()

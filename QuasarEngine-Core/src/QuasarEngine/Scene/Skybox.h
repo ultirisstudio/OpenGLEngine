@@ -33,15 +33,17 @@ namespace QuasarEngine
 	public:
 		Skybox();
 
-		void BindCubeMap();
+		//void BindCubeMap();
 
-		void BindIrradianceMap();
+		void BindIrradianceMap(int index = 0);
 
-		void BindPrefilterMap();
+		void BindPrefilterMap(int index = 0);
 
-		void BindBrdfLUT();
+		void BindBrdfLUT(int index = 0);
 
-		std::shared_ptr<Shader> GetShader()
+		void DrawSkybox(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
+
+		/*std::shared_ptr<Shader> GetShader()
 		{
 			return m_BackgroundShader;
 		}
@@ -49,7 +51,7 @@ namespace QuasarEngine
 		Model* GetModel()
 		{
 			return m_Model.get();
-		}
+		}*/
 	};
 }
 

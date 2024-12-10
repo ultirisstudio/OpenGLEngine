@@ -12,7 +12,7 @@ namespace QuasarEngine
 
 		static unsigned char* LoadDataFromPath(const std::string& path, size_t* file_size);
 
-		void Bind() const override {};
+		void Bind(int index = 0) const override {};
 		void Unbind() const override {};
 
 		static std::shared_ptr<Texture2D> CreateTexture2D(const std::string& path, const TextureSpecification& specification);

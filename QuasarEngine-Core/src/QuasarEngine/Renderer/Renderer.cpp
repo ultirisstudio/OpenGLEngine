@@ -3,7 +3,6 @@
 #include <fstream>
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -19,14 +18,7 @@
 #include <QuasarEngine/Resources/Model.h>
 #include <QuasarEngine/Resources/Mesh.h>
 
-#include <QuasarEngine/Entity/Components/IDComponent.h>
-#include <QuasarEngine/Entity/Components/HierarchyComponent.h>
-#include <QuasarEngine/Entity/Components/TransformComponent.h>
-#include <QuasarEngine/Entity/Components/MeshRendererComponent.h>
-#include <QuasarEngine/Entity/Components/MeshComponent.h>
-#include <QuasarEngine/Entity/Components/MaterialComponent.h>
-#include <QuasarEngine/Entity/Components/LightComponent.h>
-#include <QuasarEngine/Entity/Components/TerrainComponent.h>
+#include <QuasarEngine/Entity/AllComponents.h>
 
 #include <QuasarEngine/Tools/Math.h>
 
@@ -35,11 +27,6 @@
 
 #include <QuasarEngine/Resources/Debug/DebugLineMesh.h>
 #include <QuasarEngine/Resources/Debug/DebugTriangleMesh.h>
-
-#define TINYGLTF_IMPLEMENTATION
-#define TINYGLTF_NO_STB_IMAGE_WRITE
-#define STB_IMAGE_IMPLEMENTATION
-#include <tiny_gltf.h>
 
 namespace QuasarEngine {
 	Renderer::SceneData Renderer::m_SceneData = Renderer::SceneData();
@@ -150,16 +137,16 @@ namespace QuasarEngine {
 
 		m_SceneData.m_Shader->use();
 		
-		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
+		//glActiveTexture(GL_TEXTURE0);
+		m_SceneData.m_Scene->getSkybox().BindIrradianceMap(0);
 		m_SceneData.m_Shader->setUniform("uIrradianceMap", 0);
 
-		glActiveTexture(GL_TEXTURE1);
-		m_SceneData.m_Scene->getSkybox().BindPrefilterMap();
+		//glActiveTexture(GL_TEXTURE1);
+		m_SceneData.m_Scene->getSkybox().BindPrefilterMap(1);
 		m_SceneData.m_Shader->setUniform("uPrefilterMap", 1);
 
-		glActiveTexture(GL_TEXTURE2);
-		m_SceneData.m_Scene->getSkybox().BindBrdfLUT();
+		//glActiveTexture(GL_TEXTURE2);
+		m_SceneData.m_Scene->getSkybox().BindBrdfLUT(2);
 		m_SceneData.m_Shader->setUniform("uBrdfLUT", 2);
 
 		glm::vec3 position;
@@ -246,59 +233,59 @@ namespace QuasarEngine {
 
 				if (hasAlbedo)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* albedo = material.GetTexture(TextureType::Albedo);
 					if (albedo)
-						albedo->Bind();
+						albedo->Bind(nat);
 				}
 				m_SceneData.m_Shader->setUniform("uMaterial.albedoMap", nat);
 				nat++;
 
 				if (hasNormal)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* normal = material.GetTexture(TextureType::Normal);
 					if (normal)
-						normal->Bind();
+						normal->Bind(nat);
 				}
 				m_SceneData.m_Shader->setUniform("uMaterial.normalMap", nat);
 				nat++;
 
 				if (hasMetallic)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* metallic = material.GetTexture(TextureType::Metallic);
 					if (metallic)
-						metallic->Bind();
+						metallic->Bind(nat);
 				}
 				m_SceneData.m_Shader->setUniform("uMaterial.metallicMap", nat);
 				nat++;
 
 				if (hasRoughness)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* roughness = material.GetTexture(TextureType::Roughness);
 					if (roughness)
-						roughness->Bind();
+						roughness->Bind(nat);
 				}
 				m_SceneData.m_Shader->setUniform("uMaterial.roughnessMap", nat);
 				nat++;
 
 				if (hasAO)
 				{
-					glActiveTexture(GL_TEXTURE0 + nat);
+					//glActiveTexture(GL_TEXTURE0 + nat);
 					Texture* ao = material.GetTexture(TextureType::AO);
 					if (ao)
-						ao->Bind();
+						ao->Bind(nat);
 				}
 				m_SceneData.m_Shader->setUniform("uMaterial.aoMap", nat);
 				nat++;
 
-				glEnable(GL_CULL_FACE);
+				//glEnable(GL_CULL_FACE);
 
 				entity.GetComponent<MeshComponent>().GetMesh().draw();
 
-				glDisable(GL_CULL_FACE);
+				//glDisable(GL_CULL_FACE);
 
 				//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
@@ -346,24 +333,7 @@ namespace QuasarEngine {
 
 	void Renderer::RenderSkybox(BaseCamera& camera)
 	{
-		glDisable(GL_CULL_FACE);
-
-		glm::mat4 viewMatrix;
-		glm::mat4 projectionMatrix;
-
-		viewMatrix = camera.getViewMatrix();
-		projectionMatrix = camera.getProjectionMatrix();
-
-		m_SceneData.m_Scene->getSkybox().GetShader()->use();
-		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("projection", projectionMatrix);
-		m_SceneData.m_Scene->getSkybox().GetShader()->setUniform("view", viewMatrix);
-
-		glActiveTexture(GL_TEXTURE0);
-		m_SceneData.m_Scene->getSkybox().BindCubeMap();
-		//m_SceneData.m_Scene->getSkybox().BindIrradianceMap();
-		m_SceneData.m_Scene->getSkybox().GetModel()->draw();
-
-		m_SceneData.m_Scene->getSkybox().GetShader()->unuse();
+		m_SceneData.m_Scene->getSkybox().DrawSkybox(camera.getViewMatrix(), camera.getProjectionMatrix());
 	}
 
 	void Renderer::EndScene()
@@ -432,54 +402,6 @@ namespace QuasarEngine {
 			child.AddComponent<MaterialComponent>(material);
 
 			entity.GetComponent<HierarchyComponent>().AddChild(entity.GetUUID(), child.GetUUID());
-		}
-	}
-
-	void Renderer::LoadGLTFModel(const std::string& path)
-	{
-		tinygltf::Model model;
-		tinygltf::TinyGLTF loader;
-		std::string err;
-		std::string warn;
-
-		bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, path);
-
-		if (!warn.empty()) {
-			printf("Warn: %s\n", warn.c_str());
-		}
-
-		if (!err.empty()) {
-			printf("Err: %s\n", err.c_str());
-		}
-
-		if (!ret) {
-			printf("Failed to parse glTF\n");
-		}
-
-		std::cout << "Meshes: " << std::endl;
-		for (auto mesh : model.meshes)
-		{
-			std::cout << mesh.name << std::endl;
-		}
-		std::cout << "\n";
-
-		std::cout << "Materials: " << std::endl;
-		for (auto material : model.materials)
-		{
-			std::cout << material.name << std::endl;
-			
-			for (auto value : material.values)
-			{
-				std::cout << value.first << std::endl;
-				std::cout << value.second.string_value << std::endl;
-			}
-		}
-		std::cout << "\n";
-
-		std::cout << "Textures: " << std::endl;
-		for (auto texture : model.textures)
-		{
-			std::cout << texture.name << std::endl;
 		}
 	}
 

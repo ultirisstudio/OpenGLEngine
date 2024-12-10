@@ -260,23 +260,45 @@ namespace QuasarEngine
 
 		//glEnable(GL_CULL_FACE);
 	}
-	void Skybox::BindCubeMap()
+
+	/*void Skybox::BindCubeMap()
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-	}
+	}*/
 
-	void Skybox::BindIrradianceMap()
+	void Skybox::BindIrradianceMap(int index)
 	{
+		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 	}
 
-	void Skybox::BindPrefilterMap()
+	void Skybox::BindPrefilterMap(int index)
 	{
+		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
 	}
 
-	void Skybox::BindBrdfLUT()
+	void Skybox::BindBrdfLUT(int index)
 	{
+		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+	}
+
+	void Skybox::DrawSkybox(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+	{
+		glDisable(GL_CULL_FACE);
+
+		m_BackgroundShader->use();
+		m_BackgroundShader->setUniform("projection", projectionMatrix);
+		m_BackgroundShader->setUniform("view", viewMatrix);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+		m_Model->draw();
+
+		m_BackgroundShader->unuse();
+
+		glEnable(GL_CULL_FACE);
 	}
 }

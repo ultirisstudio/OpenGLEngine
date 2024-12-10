@@ -11,7 +11,7 @@ namespace QuasarEngine
 		DirectXTexture2D(unsigned char* image_data, size_t size, const TextureSpecification& specification);
 		~DirectXTexture2D() override;
 
-		void Bind() const override;
+		void Bind(int index) const override;
 		void Unbind() const override;
 	};
 }

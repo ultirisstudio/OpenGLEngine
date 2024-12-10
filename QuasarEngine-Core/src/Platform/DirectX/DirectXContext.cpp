@@ -22,7 +22,12 @@ namespace QuasarEngine
 		//Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 	}
 
-	void DirectXContext::SwapBuffers()
+	void DirectXContext::BeginFrame()
+	{
+
+	}
+
+	void DirectXContext::EndFrame()
 	{
 		DirectX::EndFrame();
 	}

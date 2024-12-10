@@ -78,7 +78,7 @@ namespace QuasarEngine
 
 		const TextureSpecification& GetSpecification() const { return m_Specification; }
 
-		virtual void Bind() const = 0;
+		virtual void Bind(int index = 0) const = 0;
 		virtual void Unbind() const = 0;
 
 		static AssetType GetStaticType() { return AssetType::TEXTURE; }

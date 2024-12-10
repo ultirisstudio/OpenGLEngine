@@ -19,32 +19,28 @@
 
 namespace QuasarEngine
 {
-    VulkanRenderer::VulkanData VulkanRenderer::m_VulkanData = VulkanRenderer::VulkanData();
+    VulkanRenderer::VulkanData VulkanRenderer::VulkanRenderer::m_VulkanData.m_VulkanData = VulkanRenderer::VulkanData();
 
 	void VulkanRenderer::Init(GLFWwindow* window)
 	{
-        
-	}
-
-	Vulkan::Vulkan(GLFWwindow* window) : m_window(window), m_instance(VK_NULL_HANDLE), m_callback(VK_NULL_HANDLE), m_physicalDevice(VK_NULL_HANDLE)
-	{
 		initVulkan();
 
-		glfwSetWindowUserPointer(m_window, this);
-		glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
+		VulkanRenderer::VulkanRenderer::m_VulkanData.m_VulkanData.VulkanRenderer::m_VulkanData.m_instance = (VK_NULL_HANDLE);
+		VulkanRenderer::VulkanRenderer::m_VulkanData.m_VulkanData.VulkanRenderer::m_VulkanData.m_callback = (VK_NULL_HANDLE);
+		VulkanRenderer::VulkanRenderer::m_VulkanData.m_VulkanData.VulkanRenderer::m_VulkanData.m_physicalDevice = (VK_NULL_HANDLE)
 	}
 
-	Vulkan::~Vulkan()
+	void VulkanRenderer::Destroy()
 	{
 		cleanup();
 	}
 
-	void Vulkan::drawFrame()
+	void VulkanRenderer::DrawFrame()
 	{
-		vkWaitForFences(m_device, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
+		vkWaitForFences(VulkanRenderer::m_VulkanData.m_device, 1, &VulkanRenderer::m_VulkanData.m_inFlightFences[VulkanRenderer::m_VulkanData.m_currentFrame], VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex;
-		VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_swapChain, UINT64_MAX, VulkanRenderer::m_VulkanData.m_imageAvailableSemaphores[VulkanRenderer::m_VulkanData.m_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
@@ -56,48 +52,48 @@ namespace QuasarEngine
 			log("Failed to acquire swap chain image!", MESSAGE_TYPE::ERROR);
 		}
 
-		if (m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
-			vkWaitForFences(m_device, 1, &m_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+		if (VulkanRenderer::m_VulkanData.m_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
+			vkWaitForFences(VulkanRenderer::m_VulkanData.m_device, 1, &VulkanRenderer::m_VulkanData.m_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 		}
-		m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentFrame];
+		VulkanRenderer::m_VulkanData.m_imagesInFlight[imageIndex] = VulkanRenderer::m_VulkanData.m_inFlightFences[VulkanRenderer::m_VulkanData.m_currentFrame];
 
-		vkResetCommandBuffer(m_commandBuffers[imageIndex], /*VkCommandBufferResetFlagBits*/ 0);
-		recordCommandBuffer(m_commandBuffers[imageIndex], imageIndex);
+		vkResetCommandBuffer(VulkanRenderer::m_VulkanData.m_commandBuffers[imageIndex], /*VkCommandBufferResetFlagBits*/ 0);
+		recordCommandBuffer(VulkanRenderer::m_VulkanData.m_commandBuffers[imageIndex], imageIndex);
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphores[m_currentFrame] };
+		VkSemaphore waitSemaphores[] = { VulkanRenderer::m_VulkanData.m_imageAvailableSemaphores[VulkanRenderer::m_VulkanData.m_currentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &m_commandBuffers[imageIndex];
+		submitInfo.pCommandBuffers = &VulkanRenderer::m_VulkanData.m_commandBuffers[imageIndex];
 
-		VkSemaphore signalSemaphores[] = { m_renderFinishedSemaphores[m_currentFrame] };
+		VkSemaphore signalSemaphores[] = { VulkanRenderer::m_VulkanData.m_renderFinishedSemaphores[VulkanRenderer::m_VulkanData.m_currentFrame] };
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
+		vkResetFences(VulkanRenderer::m_VulkanData.m_device, 1, &VulkanRenderer::m_VulkanData.m_inFlightFences[VulkanRenderer::m_VulkanData.m_currentFrame]);
 
-		if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]) != VK_SUCCESS)
+		if (vkQueueSubmit(VulkanRenderer::m_VulkanData.m_graphicsQueue, 1, &submitInfo, VulkanRenderer::m_VulkanData.m_inFlightFences[VulkanRenderer::m_VulkanData.m_currentFrame]) != VK_SUCCESS)
 			log("Failed to submit draw command buffer!", MESSAGE_TYPE::ERROR);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
-		VkSwapchainKHR swapChains[] = { m_swapChain };
+		VkSwapchainKHR swapChains[] = { VulkanRenderer::m_VulkanData.m_swapChain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
 		presentInfo.pImageIndices = &imageIndex;
 
-		result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
+		result = vkQueuePresentKHR(VulkanRenderer::m_VulkanData.m_presentQueue, &presentInfo);
 
-		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_framebufferResized)
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || VulkanRenderer::m_VulkanData.m_framebufferResized)
 		{
-			m_framebufferResized = false;
+			VulkanRenderer::m_VulkanData.m_framebufferResized = false;
 			recreateSwapChain();
 		}
 		else if (result != VK_SUCCESS)
@@ -105,10 +101,10 @@ namespace QuasarEngine
 			log("Failed to present swap chain image!", MESSAGE_TYPE::ERROR);
 		}
 
-		m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+		VulkanRenderer::m_VulkanData.m_currentFrame = (VulkanRenderer::m_VulkanData.m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
-	void Vulkan::initVulkan()
+	void VulkanRenderer::initVulkan()
 	{
 		createInstance();
 		setupDebugMessenger();
@@ -127,34 +123,34 @@ namespace QuasarEngine
 		createSyncObjects();
 	}
 
-	void Vulkan::cleanup()
+	void VulkanRenderer::cleanup()
 	{
 		cleanupSwapChain();
 
-		vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
-		vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
+		vkDestroyBuffer(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_indexBuffer, nullptr);
+		vkFreeMemory(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_indexBufferMemory, nullptr);
 
-		vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
-		vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
+		vkDestroyBuffer(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_vertexBuffer, nullptr);
+		vkFreeMemory(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_vertexBufferMemory, nullptr);
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroySemaphore(m_device, m_renderFinishedSemaphores[i], nullptr);
-			vkDestroySemaphore(m_device, m_imageAvailableSemaphores[i], nullptr);
-			vkDestroyFence(m_device, m_inFlightFences[i], nullptr);
+			vkDestroySemaphore(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_inFlightFences[i], nullptr);
 		}
 
-		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+		vkDestroyCommandPool(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_commandPool, nullptr);
 
-		vkDestroyDevice(m_device, nullptr);
+		vkDestroyDevice(VulkanRenderer::m_VulkanData.m_device, nullptr);
 
 		if (enableValidationLayers)
-			DestroyDebugUtilsMessengerEXT(m_instance, m_callback, nullptr);
+			DestroyDebugUtilsMessengerEXT(VulkanRenderer::m_VulkanData.m_instance, VulkanRenderer::m_VulkanData.m_callback, nullptr);
 
-		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
-		vkDestroyInstance(m_instance, nullptr);
+		vkDestroySurfaceKHR(VulkanRenderer::m_VulkanData.m_instance, VulkanRenderer::m_VulkanData.m_surface, nullptr);
+		vkDestroyInstance(VulkanRenderer::m_VulkanData.m_instance, nullptr);
 	}
 
-	void Vulkan::createInstance()
+	void VulkanRenderer::createInstance()
 	{
 		if (enableValidationLayers && !checkValidationLayerSupport())
 			log("Validation layers requested, but not available!", MESSAGE_TYPE::ERROR);
@@ -191,7 +187,7 @@ namespace QuasarEngine
 			createInfo.pNext = nullptr;
 		}
 
-		if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
+		if (vkCreateInstance(&createInfo, nullptr, &VulkanRenderer::m_VulkanData.m_instance) != VK_SUCCESS)
 			log("Failed to create Vulkan instance!", MESSAGE_TYPE::ERROR);
 		else
 			log("Vulkan instance created successfully", MESSAGE_TYPE::INFO);
@@ -211,20 +207,20 @@ namespace QuasarEngine
 		}
 	}
 
-	void Vulkan::setupDebugMessenger() {
+	void VulkanRenderer::setupDebugMessenger() {
 		if (!enableValidationLayers) return;
 
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		populateDebugMessengerCreateInfo(createInfo);
 
-		if (CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_callback) != VK_SUCCESS)
+		if (CreateDebugUtilsMessengerEXT(VulkanRenderer::m_VulkanData.m_instance, &createInfo, nullptr, &VulkanRenderer::m_VulkanData.m_callback) != VK_SUCCESS)
 			log("Failed to set up debug messenger!", MESSAGE_TYPE::ERROR);
 	}
 
-	void Vulkan::pickPhysicalDevice()
+	void VulkanRenderer::pickPhysicalDevice()
 	{
 		uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(VulkanRenderer::m_VulkanData.m_instance, &deviceCount, nullptr);
 
 		if (deviceCount == 0)
 			log("Failed to find GPUs with Vulkan support!", MESSAGE_TYPE::ERROR);
@@ -232,7 +228,7 @@ namespace QuasarEngine
 			log("GPUs with Vulkan support found", MESSAGE_TYPE::INFO);
 
 		std::vector<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
+		vkEnumeratePhysicalDevices(VulkanRenderer::m_VulkanData.m_instance, &deviceCount, devices.data());
 
 		VkPhysicalDeviceProperties deviceProperties;
 		for (int i = 0; i < deviceCount; i++)
@@ -251,8 +247,8 @@ namespace QuasarEngine
 
 		if (deviceCount == 1)
 		{
-			m_physicalDevice = devices[0];
-			vkGetPhysicalDeviceProperties(m_physicalDevice, &deviceProperties);
+			VulkanRenderer::m_VulkanData.m_physicalDevice = devices[0];
+			vkGetPhysicalDeviceProperties(VulkanRenderer::m_VulkanData.m_physicalDevice, &deviceProperties);
 		}
 		else
 		{
@@ -263,12 +259,12 @@ namespace QuasarEngine
 				std::cin >> deviceIndex;
 			} while (!isDeviceSuitable(devices[deviceIndex]));
 
-			m_physicalDevice = devices[deviceIndex];
-			vkGetPhysicalDeviceProperties(m_physicalDevice, &deviceProperties);
+			VulkanRenderer::m_VulkanData.m_physicalDevice = devices[deviceIndex];
+			vkGetPhysicalDeviceProperties(VulkanRenderer::m_VulkanData.m_physicalDevice, &deviceProperties);
 		}
 
 
-		if (m_physicalDevice == VK_NULL_HANDLE)
+		if (VulkanRenderer::m_VulkanData.m_physicalDevice == VK_NULL_HANDLE)
 			log("Failed to select GPU!", MESSAGE_TYPE::ERROR);
 		else
 		{
@@ -278,9 +274,9 @@ namespace QuasarEngine
 		}
 	}
 
-	void Vulkan::createLogicalDevice()
+	void VulkanRenderer::createLogicalDevice()
 	{
-		QueueFamilyIndices indices = findQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices indices = findQueueFamilies(VulkanRenderer::m_VulkanData.m_physicalDevice);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -313,26 +309,26 @@ namespace QuasarEngine
 			createInfo.enabledLayerCount = 0;
 		}
 
-		if (vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device) != VK_SUCCESS)
+		if (vkCreateDevice(VulkanRenderer::m_VulkanData.m_physicalDevice, &createInfo, nullptr, &VulkanRenderer::m_VulkanData.m_device) != VK_SUCCESS)
 			log("Failed to create logical device!", MESSAGE_TYPE::ERROR);
 		else
 			log("Logical device created successfully", MESSAGE_TYPE::INFO);
 
-		vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
-		vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentQueue);
+		vkGetDeviceQueue(VulkanRenderer::m_VulkanData.m_device, indices.graphicsFamily.value(), 0, &VulkanRenderer::m_VulkanData.m_graphicsQueue);
+		vkGetDeviceQueue(VulkanRenderer::m_VulkanData.m_device, indices.presentFamily.value(), 0, &VulkanRenderer::m_VulkanData.m_presentQueue);
 	}
 
-	void Vulkan::createSurface()
+	void VulkanRenderer::createSurface()
 	{
-		if (glfwCreateWindowSurface(m_instance, m_window, nullptr, &m_surface) != VK_SUCCESS)
+		if (glfwCreateWindowSurface(VulkanRenderer::m_VulkanData.m_instance, VulkanRenderer::m_VulkanData.m_window, nullptr, &VulkanRenderer::m_VulkanData.m_surface) != VK_SUCCESS)
 			log("Failed to create window surface!", MESSAGE_TYPE::ERROR);
 		else
 			log("Window surface created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createSwapChain()
+	void VulkanRenderer::createSwapChain()
 	{
-		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(m_physicalDevice);
+		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(VulkanRenderer::m_VulkanData.m_physicalDevice);
 
 		VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 		VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -346,7 +342,7 @@ namespace QuasarEngine
 
 		VkSwapchainCreateInfoKHR createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.surface = m_surface;
+		createInfo.surface = VulkanRenderer::m_VulkanData.m_surface;
 		createInfo.minImageCount = imageCount;
 		createInfo.imageFormat = surfaceFormat.format;
 		createInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -354,7 +350,7 @@ namespace QuasarEngine
 		createInfo.imageArrayLayers = 1;
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		QueueFamilyIndices indices = findQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices indices = findQueueFamilies(VulkanRenderer::m_VulkanData.m_physicalDevice);
 		uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 		if (indices.graphicsFamily != indices.presentFamily) {
@@ -374,30 +370,30 @@ namespace QuasarEngine
 		createInfo.clipped = VK_TRUE;
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-		if (vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(VulkanRenderer::m_VulkanData.m_device, &createInfo, nullptr, &VulkanRenderer::m_VulkanData.m_swapChain) != VK_SUCCESS)
 			log("Failed to create swap chain!", MESSAGE_TYPE::ERROR);
 		else
 			log("Swap chain created successfully", MESSAGE_TYPE::INFO);
 
-		vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, nullptr);
-		m_swapChainImages.resize(imageCount);
-		vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, m_swapChainImages.data());
+		vkGetSwapchainImagesKHR(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_swapChain, &imageCount, nullptr);
+		VulkanRenderer::m_VulkanData.m_swapChainImages.resize(imageCount);
+		vkGetSwapchainImagesKHR(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_swapChain, &imageCount, VulkanRenderer::m_VulkanData.m_swapChainImages.data());
 
-		m_swapChainImageFormat = surfaceFormat.format;
-		m_swapChainExtent = extent;
+		VulkanRenderer::m_VulkanData.m_swapChainImageFormat = surfaceFormat.format;
+		VulkanRenderer::m_VulkanData.m_swapChainExtent = extent;
 	}
 
-	void Vulkan::createImageViews()
+	void VulkanRenderer::createImageViews()
 	{
-		m_swapChainImageViews.resize(m_swapChainImages.size());
+		VulkanRenderer::m_VulkanData.m_swapChainImageViews.resize(VulkanRenderer::m_VulkanData.m_swapChainImages.size());
 
-		for (size_t i = 0; i < m_swapChainImages.size(); i++)
+		for (size_t i = 0; i < VulkanRenderer::m_VulkanData.m_swapChainImages.size(); i++)
 		{
 			VkImageViewCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			createInfo.image = m_swapChainImages[i];
+			createInfo.image = VulkanRenderer::m_VulkanData.m_swapChainImages[i];
 			createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			createInfo.format = m_swapChainImageFormat;
+			createInfo.format = VulkanRenderer::m_VulkanData.m_swapChainImageFormat;
 			createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 			createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 			createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -408,17 +404,17 @@ namespace QuasarEngine
 			createInfo.subresourceRange.baseArrayLayer = 0;
 			createInfo.subresourceRange.layerCount = 1;
 
-			if (vkCreateImageView(m_device, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS)
+			if (vkCreateImageView(VulkanRenderer::m_VulkanData.m_device, &createInfo, nullptr, &VulkanRenderer::m_VulkanData.m_swapChainImageViews[i]) != VK_SUCCESS)
 				log("Failed to create image views!", MESSAGE_TYPE::ERROR);
 		}
 
 		log("Image views created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createRenderPass()
+	void VulkanRenderer::createRenderPass()
 	{
 		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = m_swapChainImageFormat;
+		colorAttachment.format = VulkanRenderer::m_VulkanData.m_swapChainImageFormat;
 		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -453,30 +449,30 @@ namespace QuasarEngine
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS)
+		if (vkCreateRenderPass(VulkanRenderer::m_VulkanData.m_device, &renderPassInfo, nullptr, &VulkanRenderer::m_VulkanData.m_renderPass) != VK_SUCCESS)
 			log("Failed to create render pass!", MESSAGE_TYPE::ERROR);
 		else
 			log("Render pass created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createGraphicsPipeline()
+	void VulkanRenderer::createGraphicsPipeline()
 	{
 		auto vertShaderCode = readFile("Shaders/simple_shader.vert.spv");
 		auto fragShaderCode = readFile("Shaders/simple_shader.frag.spv");
 
-		m_vertShaderModule = createShaderModule(vertShaderCode);
-		m_fragShaderModule = createShaderModule(fragShaderCode);
+		VulkanRenderer::m_VulkanData.m_vertShaderModule = createShaderModule(vertShaderCode);
+		VulkanRenderer::m_VulkanData.m_fragShaderModule = createShaderModule(fragShaderCode);
 
 		VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
 		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-		vertShaderStageInfo.module = m_vertShaderModule;
+		vertShaderStageInfo.module = VulkanRenderer::m_VulkanData.m_vertShaderModule;
 		vertShaderStageInfo.pName = "main";
 
 		VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		fragShaderStageInfo.module = m_fragShaderModule;
+		fragShaderStageInfo.module = VulkanRenderer::m_VulkanData.m_fragShaderModule;
 		fragShaderStageInfo.pName = "main";
 
 		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
@@ -547,7 +543,7 @@ namespace QuasarEngine
 		pipelineLayoutInfo.setLayoutCount = 0;
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-		if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(VulkanRenderer::m_VulkanData.m_device, &pipelineLayoutInfo, nullptr, &VulkanRenderer::m_VulkanData.m_pipelineLayout) != VK_SUCCESS)
 			log("Failed to create pipeline layout", MESSAGE_TYPE::ERROR);
 		else
 			log("Pipeline layout created successfully", MESSAGE_TYPE::INFO);
@@ -563,61 +559,61 @@ namespace QuasarEngine
 		pipelineInfo.pMultisampleState = &multisampling;
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
-		pipelineInfo.layout = m_pipelineLayout;
-		pipelineInfo.renderPass = m_renderPass;
+		pipelineInfo.layout = VulkanRenderer::m_VulkanData.m_pipelineLayout;
+		pipelineInfo.renderPass = VulkanRenderer::m_VulkanData.m_renderPass;
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(VulkanRenderer::m_VulkanData.m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &VulkanRenderer::m_VulkanData.m_graphicsPipeline) != VK_SUCCESS)
 			log("Failed to create graphics pipeline", MESSAGE_TYPE::ERROR);
 		else
 			log("Graphics pipeline created successfully", MESSAGE_TYPE::INFO);
 
 
-		vkDestroyShaderModule(m_device, m_fragShaderModule, nullptr);
-		vkDestroyShaderModule(m_device, m_vertShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_fragShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_vertShaderModule, nullptr);
 	}
 
-	void Vulkan::createFramebuffers()
+	void VulkanRenderer::createFramebuffers()
 	{
-		m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
+		VulkanRenderer::m_VulkanData.m_swapChainFramebuffers.resize(VulkanRenderer::m_VulkanData.m_swapChainImageViews.size());
 
-		for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
+		for (size_t i = 0; i < VulkanRenderer::m_VulkanData.m_swapChainImageViews.size(); i++) {
 			VkImageView attachments[] = {
-				m_swapChainImageViews[i]
+				VulkanRenderer::m_VulkanData.m_swapChainImageViews[i]
 			};
 			VkFramebufferCreateInfo framebufferInfo{};
 			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			framebufferInfo.renderPass = m_renderPass;
+			framebufferInfo.renderPass = VulkanRenderer::m_VulkanData.m_renderPass;
 			framebufferInfo.attachmentCount = 1;
 			framebufferInfo.pAttachments = attachments;
-			framebufferInfo.width = m_swapChainExtent.width;
-			framebufferInfo.height = m_swapChainExtent.height;
+			framebufferInfo.width = VulkanRenderer::m_VulkanData.m_swapChainExtent.width;
+			framebufferInfo.height = VulkanRenderer::m_VulkanData.m_swapChainExtent.height;
 			framebufferInfo.layers = 1;
 
-			if (vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]) != VK_SUCCESS)
+			if (vkCreateFramebuffer(VulkanRenderer::m_VulkanData.m_device, &framebufferInfo, nullptr, &VulkanRenderer::m_VulkanData.m_swapChainFramebuffers[i]) != VK_SUCCESS)
 				log("Failed to create framebuffer", MESSAGE_TYPE::ERROR);
 		}
 
 		log("Framebuffers created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createCommandPool()
+	void VulkanRenderer::createCommandPool()
 	{
-		QueueFamilyIndices queueFamilyIndices = findQueueFamilies(m_physicalDevice);
+		QueueFamilyIndices queueFamilyIndices = findQueueFamilies(VulkanRenderer::m_VulkanData.m_physicalDevice);
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-		if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS)
+		if (vkCreateCommandPool(VulkanRenderer::m_VulkanData.m_device, &poolInfo, nullptr, &VulkanRenderer::m_VulkanData.m_commandPool) != VK_SUCCESS)
 			log("Failed to create command pool", MESSAGE_TYPE::ERROR);
 		else
 			log("Command pool created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createVertexBuffer()
+	void VulkanRenderer::createVertexBuffer()
 	{
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
@@ -626,21 +622,21 @@ namespace QuasarEngine
 		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 		void* data;
-		vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, vertices.data(), (size_t)bufferSize);
-		vkUnmapMemory(m_device, stagingBufferMemory);
+		vkUnmapMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory);
 
-		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, m_vertexBufferMemory);
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VulkanRenderer::m_VulkanData.m_vertexBuffer, VulkanRenderer::m_VulkanData.m_vertexBufferMemory);
 
-		copyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+		copyBuffer(stagingBuffer, VulkanRenderer::m_VulkanData.m_vertexBuffer, bufferSize);
 
-		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
-		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+		vkDestroyBuffer(VulkanRenderer::m_VulkanData.m_device, stagingBuffer, nullptr);
+		vkFreeMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory, nullptr);
 
 		log("Vertex buffer memory bound successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createIndexBuffer()
+	void VulkanRenderer::createIndexBuffer()
 	{
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
@@ -650,37 +646,37 @@ namespace QuasarEngine
 		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 		void* data;
-		vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, indices.data(), (size_t)bufferSize);
-		vkUnmapMemory(m_device, stagingBufferMemory);
+		vkUnmapMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory);
 
-		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory);
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VulkanRenderer::m_VulkanData.m_indexBuffer, VulkanRenderer::m_VulkanData.m_indexBufferMemory);
 
-		copyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
+		copyBuffer(stagingBuffer, VulkanRenderer::m_VulkanData.m_indexBuffer, bufferSize);
 
-		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
-		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+		vkDestroyBuffer(VulkanRenderer::m_VulkanData.m_device, stagingBuffer, nullptr);
+		vkFreeMemory(VulkanRenderer::m_VulkanData.m_device, stagingBufferMemory, nullptr);
 
 		log("Index buffer memory bound successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::createCommandBuffers()
+	void VulkanRenderer::createCommandBuffers()
 	{
-		m_commandBuffers.resize(m_swapChainFramebuffers.size());
+		VulkanRenderer::m_VulkanData.m_commandBuffers.resize(VulkanRenderer::m_VulkanData.m_swapChainFramebuffers.size());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = m_commandPool;
+		allocInfo.commandPool = VulkanRenderer::m_VulkanData.m_commandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = (uint32_t)m_commandBuffers.size();
+		allocInfo.commandBufferCount = (uint32_t)VulkanRenderer::m_VulkanData.m_commandBuffers.size();
 
-		if (vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(VulkanRenderer::m_VulkanData.m_device, &allocInfo, VulkanRenderer::m_VulkanData.m_commandBuffers.data()) != VK_SUCCESS)
 			log("Failed to allocate command buffers", MESSAGE_TYPE::ERROR);
 		else
 			log("Command buffers allocated successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+	void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -691,10 +687,10 @@ namespace QuasarEngine
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_renderPass;
-		renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
+		renderPassInfo.renderPass = VulkanRenderer::m_VulkanData.m_renderPass;
+		renderPassInfo.framebuffer = VulkanRenderer::m_VulkanData.m_swapChainFramebuffers[imageIndex];
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = m_swapChainExtent;
+		renderPassInfo.renderArea.extent = VulkanRenderer::m_VulkanData.m_swapChainExtent;
 
 		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 		renderPassInfo.clearValueCount = 1;
@@ -702,28 +698,28 @@ namespace QuasarEngine
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanRenderer::m_VulkanData.m_graphicsPipeline);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)m_swapChainExtent.width;
-		viewport.height = (float)m_swapChainExtent.height;
+		viewport.width = (float)VulkanRenderer::m_VulkanData.m_swapChainExtent.width;
+		viewport.height = (float)VulkanRenderer::m_VulkanData.m_swapChainExtent.height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = m_swapChainExtent;
+		scissor.extent = VulkanRenderer::m_VulkanData.m_swapChainExtent;
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-		VkBuffer vertexBuffers[] = { m_vertexBuffer };
+		VkBuffer vertexBuffers[] = { VulkanRenderer::m_VulkanData.m_vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindIndexBuffer(commandBuffer, VulkanRenderer::m_VulkanData.m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-		//if (m_wireframe)
+		//if (VulkanRenderer::m_VulkanData.m_wireframe)
 			//vkCmdSetLineWidth(commandBuffer, 2.0f);
 
 		if (indices.size() == 0)
@@ -737,10 +733,10 @@ namespace QuasarEngine
 			log("Failed to record command buffer", MESSAGE_TYPE::ERROR);
 	}
 
-	uint32_t Vulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);
+		vkGetPhysicalDeviceMemoryProperties(VulkanRenderer::m_VulkanData.m_physicalDevice, &memProperties);
 
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
 			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
@@ -751,12 +747,12 @@ namespace QuasarEngine
 		return 0;
 	}
 
-	void Vulkan::createSyncObjects()
+	void VulkanRenderer::createSyncObjects()
 	{
-		m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-		m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-		m_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-		m_imagesInFlight.resize(m_swapChainImages.size(), VK_NULL_HANDLE);
+		VulkanRenderer::m_VulkanData.m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		VulkanRenderer::m_VulkanData.m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		VulkanRenderer::m_VulkanData.m_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+		VulkanRenderer::m_VulkanData.m_imagesInFlight.resize(VulkanRenderer::m_VulkanData.m_swapChainImages.size(), VK_NULL_HANDLE);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -767,25 +763,25 @@ namespace QuasarEngine
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			if (vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
-				vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]) != VK_SUCCESS)
+			if (vkCreateSemaphore(VulkanRenderer::m_VulkanData.m_device, &semaphoreInfo, nullptr, &VulkanRenderer::m_VulkanData.m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(VulkanRenderer::m_VulkanData.m_device, &semaphoreInfo, nullptr, &VulkanRenderer::m_VulkanData.m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
+				vkCreateFence(VulkanRenderer::m_VulkanData.m_device, &fenceInfo, nullptr, &VulkanRenderer::m_VulkanData.m_inFlightFences[i]) != VK_SUCCESS)
 				log("failed to create synchronization objects for a frame!", MESSAGE_TYPE::ERROR);
 		}
 
 		log("Synchronization objects created successfully", MESSAGE_TYPE::INFO);
 	}
 
-	void Vulkan::recreateSwapChain()
+	void VulkanRenderer::recreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(m_window, &width, &height);
+		glfwGetFramebufferSize(VulkanRenderer::m_VulkanData.m_window, &width, &height);
 		while (width == 0 || height == 0) {
-			glfwGetFramebufferSize(m_window, &width, &height);
+			glfwGetFramebufferSize(VulkanRenderer::m_VulkanData.m_window, &width, &height);
 			glfwWaitEvents();
 		}
 
-		vkDeviceWaitIdle(m_device);
+		vkDeviceWaitIdle(VulkanRenderer::m_VulkanData.m_device);
 
 		cleanupSwapChain();
 
@@ -797,26 +793,26 @@ namespace QuasarEngine
 		createCommandBuffers();
 	}
 
-	void Vulkan::cleanupSwapChain()
+	void VulkanRenderer::cleanupSwapChain()
 	{
-		for (auto framebuffer : m_swapChainFramebuffers) {
-			vkDestroyFramebuffer(m_device, framebuffer, nullptr);
+		for (auto framebuffer : VulkanRenderer::m_VulkanData.m_swapChainFramebuffers) {
+			vkDestroyFramebuffer(VulkanRenderer::m_VulkanData.m_device, framebuffer, nullptr);
 		}
 
-		vkFreeCommandBuffers(m_device, m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
+		vkFreeCommandBuffers(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_commandPool, static_cast<uint32_t>(VulkanRenderer::m_VulkanData.m_commandBuffers.size()), VulkanRenderer::m_VulkanData.m_commandBuffers.data());
 
-		vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
-		vkDestroyRenderPass(m_device, m_renderPass, nullptr);
+		vkDestroyPipeline(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_graphicsPipeline, nullptr);
+		vkDestroyPipelineLayout(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_pipelineLayout, nullptr);
+		vkDestroyRenderPass(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_renderPass, nullptr);
 
-		for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
-			vkDestroyImageView(m_device, m_swapChainImageViews[i], nullptr);
+		for (size_t i = 0; i < VulkanRenderer::m_VulkanData.m_swapChainImageViews.size(); i++) {
+			vkDestroyImageView(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_swapChainImageViews[i], nullptr);
 		}
 
-		vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+		vkDestroySwapchainKHR(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_swapChain, nullptr);
 	}
 
-	void Vulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -824,37 +820,37 @@ namespace QuasarEngine
 		bufferInfo.usage = usage;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+		if (vkCreateBuffer(VulkanRenderer::m_VulkanData.m_device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
 			log("Failed to create vertex buffer", MESSAGE_TYPE::ERROR);
 		else
 			log("Vertex buffer created successfully", MESSAGE_TYPE::INFO);
 
 		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(m_device, buffer, &memRequirements);
+		vkGetBufferMemoryRequirements(VulkanRenderer::m_VulkanData.m_device, buffer, &memRequirements);
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-		if (vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+		if (vkAllocateMemory(VulkanRenderer::m_VulkanData.m_device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
 			log("Failed to allocate vertex buffer memory", MESSAGE_TYPE::ERROR);
 		else
 			log("Vertex buffer memory allocated successfully", MESSAGE_TYPE::INFO);
 
-		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
+		vkBindBufferMemory(VulkanRenderer::m_VulkanData.m_device, buffer, bufferMemory, 0);
 	}
 
-	void Vulkan::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+	void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = m_commandPool;
+		allocInfo.commandPool = VulkanRenderer::m_VulkanData.m_commandPool;
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(m_device, &allocInfo, &commandBuffer);
+		vkAllocateCommandBuffers(VulkanRenderer::m_VulkanData.m_device, &allocInfo, &commandBuffer);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -873,13 +869,13 @@ namespace QuasarEngine
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &commandBuffer;
 
-		vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(m_graphicsQueue);
+		vkQueueSubmit(VulkanRenderer::m_VulkanData.m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(VulkanRenderer::m_VulkanData.m_graphicsQueue);
 
-		vkFreeCommandBuffers(m_device, m_commandPool, 1, &commandBuffer);
+		vkFreeCommandBuffers(VulkanRenderer::m_VulkanData.m_device, VulkanRenderer::m_VulkanData.m_commandPool, 1, &commandBuffer);
 	}
 
-	bool Vulkan::checkValidationLayerSupport()
+	bool VulkanRenderer::checkValidationLayerSupport()
 	{
 		uint32_t layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -905,7 +901,7 @@ namespace QuasarEngine
 		return true;
 	}
 
-	bool Vulkan::isDeviceSuitable(VkPhysicalDevice device)
+	bool VulkanRenderer::isDeviceSuitable(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices = findQueueFamilies(device);
 
@@ -921,7 +917,7 @@ namespace QuasarEngine
 		return indices.isComplete() && extensionsSupported && swapChainAdequate;
 	}
 
-	bool Vulkan::checkDeviceExtensionSupport(VkPhysicalDevice device)
+	bool VulkanRenderer::checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
 		uint32_t extensionCount;
 		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -938,7 +934,7 @@ namespace QuasarEngine
 		return requiredExtensions.empty();
 	}
 
-	std::vector<const char*> Vulkan::getRequiredExtensions()
+	std::vector<const char*> VulkanRenderer::getRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
@@ -953,7 +949,7 @@ namespace QuasarEngine
 		return extensions;
 	}
 
-	QueueFamilyIndices Vulkan::findQueueFamilies(VkPhysicalDevice device)
+	QueueFamilyIndices VulkanRenderer::findQueueFamilies(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices;
 
@@ -966,7 +962,7 @@ namespace QuasarEngine
 		int i = 0;
 		for (const auto& queueFamily : queueFamilies) {
 			VkBool32 presentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_surface, &presentSupport);
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanRenderer::m_VulkanData.m_surface, &presentSupport);
 
 			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
@@ -989,32 +985,32 @@ namespace QuasarEngine
 		return indices;
 	}
 
-	SwapChainSupportDetails Vulkan::querySwapChainSupport(VkPhysicalDevice device)
+	SwapChainSupportDetails VulkanRenderer::querySwapChainSupport(VkPhysicalDevice device)
 	{
 		SwapChainSupportDetails details;
 
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_surface, &details.capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, VulkanRenderer::m_VulkanData.m_surface, &details.capabilities);
 
 		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanRenderer::m_VulkanData.m_surface, &formatCount, nullptr);
 
 		if (formatCount != 0) {
 			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &formatCount, details.formats.data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanRenderer::m_VulkanData.m_surface, &formatCount, details.formats.data());
 		}
 
 		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanRenderer::m_VulkanData.m_surface, &presentModeCount, nullptr);
 
 		if (presentModeCount != 0) {
 			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_surface, &presentModeCount, details.presentModes.data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanRenderer::m_VulkanData.m_surface, &presentModeCount, details.presentModes.data());
 		}
 
 		return details;
 	}
 
-	VkSurfaceFormatKHR Vulkan::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+	VkSurfaceFormatKHR VulkanRenderer::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
 	{
 		for (const auto& availableFormat : availableFormats) {
 			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -1025,7 +1021,7 @@ namespace QuasarEngine
 		return availableFormats[0];
 	}
 
-	VkPresentModeKHR Vulkan::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+	VkPresentModeKHR VulkanRenderer::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 	{
 		for (const auto& availablePresentMode : availablePresentModes) {
 			if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -1036,14 +1032,14 @@ namespace QuasarEngine
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 
-	VkExtent2D Vulkan::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+	VkExtent2D VulkanRenderer::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 			return capabilities.currentExtent;
 		}
 		else {
 			int width, height;
-			glfwGetFramebufferSize(m_window, &width, &height);
+			glfwGetFramebufferSize(VulkanRenderer::m_VulkanData.m_window, &width, &height);
 
 			VkExtent2D actualExtent = {
 				static_cast<uint32_t>(width),
@@ -1057,7 +1053,7 @@ namespace QuasarEngine
 		}
 	}
 
-	VkShaderModule Vulkan::createShaderModule(const std::vector<char>& code)
+	VkShaderModule VulkanRenderer::createShaderModule(const std::vector<char>& code)
 	{
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -1065,13 +1061,13 @@ namespace QuasarEngine
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule;
-		if (vkCreateShaderModule(m_device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+		if (vkCreateShaderModule(VulkanRenderer::m_VulkanData.m_device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
 			log("Failed to create shader module!", MESSAGE_TYPE::ERROR);
 
 		return shaderModule;
 	}
 
-	void Vulkan::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+	void VulkanRenderer::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 	{
 		createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -1080,7 +1076,7 @@ namespace QuasarEngine
 		createInfo.pfnUserCallback = debugCallback;
 	}
 
-	std::vector<char> Vulkan::readFile(const std::string& filename)
+	std::vector<char> VulkanRenderer::readFile(const std::string& filename)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
@@ -1101,7 +1097,7 @@ namespace QuasarEngine
 		return buffer;
 	}
 
-	void Vulkan::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT callback, const VkAllocationCallbacks* pAllocator)
+	void VulkanRenderer::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT callback, const VkAllocationCallbacks* pAllocator)
 	{
 		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
 		if (func != nullptr) {
@@ -1109,13 +1105,12 @@ namespace QuasarEngine
 		}
 	}
 
-	void Vulkan::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+	void VulkanRenderer::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
-		auto app = reinterpret_cast<Vulkan*>(glfwGetWindowUserPointer(window));
-		app->m_framebufferResized = true;
+		VulkanRenderer::VulkanRenderer::m_VulkanData.m_framebufferResized = true;
 	}
 
-	VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanRenderer::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 	{
 		std::clog << RESET << "[";
 		std::clog << YELLOW << "VALIDATION LAYER" << RESET;
@@ -1124,7 +1119,7 @@ namespace QuasarEngine
 		return VK_FALSE;
 	}
 
-	VkResult Vulkan::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pCallback)
+	VkResult VulkanRenderer::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pCallback)
 	{
 		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 		if (func != nullptr) {
@@ -1135,7 +1130,7 @@ namespace QuasarEngine
 		}
 	}
 
-	void Vulkan::log(const std::string& message, MESSAGE_TYPE type)
+	void VulkanRenderer::log(const std::string& message, MESSAGE_TYPE type)
 	{
 		std::stringstream ss;
 

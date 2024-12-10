@@ -79,6 +79,7 @@ namespace QuasarEngine
 		static VulkanData m_VulkanData;
 
 		static void Init(GLFWwindow* window);
+		static void Destroy();
 
 		static void DrawFrame();
 	private:

@@ -154,12 +154,18 @@ namespace QuasarEngine {
 
 	void Window::Shutdown()
 	{
+		m_Context->Destroy();
+
 		glfwDestroyWindow(m_Window);
+		glfwTerminate();
 	}
 
 	void Window::SetVSync(bool enabled)
 	{
-		m_Context->SetVSync(enabled);
+		//if (enabled)
+			//glfwSwapInterval(1);
+		//else
+			//glfwSwapInterval(0);
 
 		m_Data.VSync = enabled;
 	}
@@ -171,7 +177,10 @@ namespace QuasarEngine {
 
 	void Window::SetCursorVisibility(bool visible)
 	{
-		m_Context->SetCursorVisibility(visible);
+		if (visible)
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
 	void Window::SetTitle(const std::string& title)

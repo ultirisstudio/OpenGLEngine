@@ -129,7 +129,7 @@ namespace QuasarEngine
 	void Log::log(QE_LogLevel level, const std::string& message)
 	{
 		printLogHeader(level);
-		printLog(std::string(message + "\n").c_str());
+		std::cout << std::string(message + "\n").c_str();
 	}
 
 	void Log::check(bool condition, const char* file, int line, const std::string& message) {
@@ -150,14 +150,9 @@ namespace QuasarEngine
 		ss << std::put_time(time, "[%Y-%m-%d %H:%M:%S]");
 		ss << " [" << levelToString(level) << "] ";
 
-		const char* str = ss.str().c_str();
+		std::string str = ss.str();
 
-		int i = 0;
-		while (str[i] != '\0')
-		{
-			std::cout << YELLOW << str[i] << RESET;
-			i++;
-		}
+		std::cout << YELLOW << str << RESET;
 	}
 
 	void Log::printInfos(const char* title, const char* info)

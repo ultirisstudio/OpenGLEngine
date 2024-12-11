@@ -46,41 +46,42 @@ namespace QuasarEngine
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		Application& app = Application::Get();
+		/*Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
-		ImGui_ImplGlfw_InitForOther(window, true);
-		//ImGui_ImplDX11_Init(DirectX::m_DirectXData.pd3dDevice, DirectX::m_DirectXData.pd3dDeviceContext);
+		ImGui_ImplGlfw_InitForVulkan(window, true);
+		ImGui_ImplVulkan_InitInfo infos;
+		ImGui_ImplVulkan_Init(&infos);*/
 	}
 
 	void VulkanImGuiLayer::OnDetach()
 	{
-		//ImGui_ImplDX11_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
+		/*ImGui_ImplVulkan_Shutdown();
+		ImGui_ImplGlfw_Shutdown();*/
 		ImGui::DestroyContext();
 	}
 
 	void VulkanImGuiLayer::Begin()
 	{
-		//ImGui_ImplDX11_NewFrame();
+		/*ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		ImGuizmo::BeginFrame();
+		ImGuizmo::BeginFrame();*/
 	}
 
 	void VulkanImGuiLayer::End()
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		/*ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		ImGui::Render();
-		//ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-		}
+		}*/
 	}
 }

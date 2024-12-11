@@ -4,6 +4,7 @@
 #include "QuasarEngine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLImGuiLayer.h"
 #include "Platform/DirectX/DirectXImGuiLayer.h"
+#include "Platform/Vulkan/VulkanImGuiLayer.h"
 
 namespace QuasarEngine
 {
@@ -19,6 +20,7 @@ namespace QuasarEngine
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_unique<OpenGLImGuiLayer>();
 		case RendererAPI::API::DirectX:  return std::make_unique<DirectXImGuiLayer>();
+		case RendererAPI::API::Vulkan:  return std::make_unique<VulkanImGuiLayer>();
 		}
 
 		return nullptr;

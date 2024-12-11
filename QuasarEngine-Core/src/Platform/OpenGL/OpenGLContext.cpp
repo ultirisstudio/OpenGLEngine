@@ -24,28 +24,21 @@ namespace QuasarEngine {
 		Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
 	}
 
+	void OpenGLContext::Destroy()
+	{
+		
+	}
+
 	void OpenGLContext::BeginFrame()
+	{
+	}
+
+	void OpenGLContext::DrawFrame()
 	{
 	}
 
 	void OpenGLContext::EndFrame()
 	{
 		glfwSwapBuffers(m_WindowHandle);
-	}
-
-	void OpenGLContext::SetVSync(bool enabled)
-	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
-	}
-
-	void OpenGLContext::SetCursorVisibility(bool visible)
-	{
-		if (visible)
-			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		else
-			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 }

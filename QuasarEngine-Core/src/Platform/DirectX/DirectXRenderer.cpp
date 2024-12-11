@@ -16,6 +16,11 @@ namespace QuasarEngine
         CreateDeviceAndSwapChain();
 	}
 
+    void DirectXRenderer::Destroy()
+    {
+
+    }
+
 	bool DirectXRenderer::CreateDeviceAndSwapChain()
 	{
         DXGI_SWAP_CHAIN_DESC sd = {};

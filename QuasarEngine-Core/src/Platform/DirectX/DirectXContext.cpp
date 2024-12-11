@@ -18,8 +18,11 @@ namespace QuasarEngine
 	void DirectXContext::Init()
 	{
 		DirectXRenderer::Init(m_WindowHandle);
+	}
 
-		//Log::LogAPIInfos((char*)glGetString(GL_VENDOR), (char*)glGetString(GL_RENDERER), (char*)glGetString(GL_VERSION));
+	void DirectXContext::Destroy()
+	{
+		DirectXRenderer::Destroy();
 	}
 
 	void DirectXContext::BeginFrame()
@@ -27,21 +30,13 @@ namespace QuasarEngine
 
 	}
 
+	void DirectXContext::DrawFrame()
+	{
+
+	}
+
 	void DirectXContext::EndFrame()
 	{
 		DirectXRenderer::EndFrame();
-	}
-
-	void DirectXContext::SetVSync(bool enabled)
-	{
-
-	}
-
-	void DirectXContext::SetCursorVisibility(bool visible)
-	{
-		if (visible)
-			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		else
-			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 }

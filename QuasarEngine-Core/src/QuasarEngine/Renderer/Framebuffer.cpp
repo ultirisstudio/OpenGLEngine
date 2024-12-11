@@ -3,6 +3,8 @@
 
 #include <QuasarEngine/Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLFramebuffer.h>
+#include <Platform/DirectX/DirectXFramebuffer.h>
+#include <Platform/Vulkan/VulkanFramebuffer.h>
 
 namespace QuasarEngine
 {
@@ -12,7 +14,8 @@ namespace QuasarEngine
 		{
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLFramebuffer>(spec);
-		case RendererAPI::API::DirectX:  return nullptr;
+		case RendererAPI::API::DirectX:  return std::make_shared<DirectXFramebuffer>(spec);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanFramebuffer>(spec);
 		}
 
 		return nullptr;

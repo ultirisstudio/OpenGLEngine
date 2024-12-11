@@ -34,4 +34,10 @@ namespace QuasarEngine
 #define Q_WARNING(message) Log::log(Log::QE_WARNING, message)
 #define Q_ERROR(message) Log::log(Log::QE_ERROR, message)
 #define Q_FATAL(message) Log::log(Log::QE_FATAL, message)
+
+#if defined(DEBUG)
+	#define Q_DEBUG(message) Log::log(Log::QE_INFO, message)
+#else
+	#define Q_DEBUG(message)
+#endif
 }

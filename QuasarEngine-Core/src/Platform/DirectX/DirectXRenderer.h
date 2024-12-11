@@ -22,6 +22,8 @@ namespace QuasarEngine
 
 		static void Init(GLFWwindow* window);
 
+		static void Destroy();
+
 		static bool CreateDeviceAndSwapChain();
 
 		static void CleanupRenderTarget();

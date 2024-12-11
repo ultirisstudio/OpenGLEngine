@@ -3,6 +3,8 @@
 #include "QuasarEngine/Renderer/Renderer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/DirectX/DirectXBuffer.h"
+#include "Platform/Vulkan/VulkanBuffer.h"
 
 namespace QuasarEngine {
 
@@ -12,6 +14,8 @@ namespace QuasarEngine {
 		{
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
+		case RendererAPI::API::DirectX:  return std::make_shared<DirectXVertexBuffer>(size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanVertexBuffer>(size);
 		}
 
 		return nullptr;
@@ -23,6 +27,8 @@ namespace QuasarEngine {
 		{
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+		case RendererAPI::API::DirectX:  return std::make_shared<DirectXVertexBuffer>(vertices, size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanVertexBuffer>(vertices, size);
 		}
 
 		return nullptr;
@@ -34,6 +40,8 @@ namespace QuasarEngine {
 		{
 		case RendererAPI::API::None:    return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
+		case RendererAPI::API::DirectX:  return std::make_shared<DirectXIndexBuffer>(indices, size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanIndexBuffer>(indices, size);
 		}
 
 		return nullptr;

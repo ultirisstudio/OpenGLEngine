@@ -89,6 +89,8 @@ namespace QuasarEngine
 			return;
 		}
 
+		Q_INFO("Vulkan device created successfully");
+
 		Q_INFO("Vulkan context initialized successfully");
 	}
 

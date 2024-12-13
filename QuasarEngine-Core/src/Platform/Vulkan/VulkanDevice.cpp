@@ -15,7 +15,7 @@ namespace QuasarEngine
 			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	void VulkanDevice::DestroyDevice()
@@ -41,9 +41,9 @@ namespace QuasarEngine
 		{
 			std::stringstream state;
 			if (IsDeviceSuitable(physical_devices[i]))
-				state << "\\033[32m" << "Suitable" << "\\033[0m";
+				state << "\033[32m" << "Suitable" << "\033[0m";
 			else
-				state << "\\033[31m" << "Not suitable" << "\\033[0m";
+				state << "\033[31m" << "Not suitable" << "\033[0m";
 
 			vkGetPhysicalDeviceProperties(physical_devices[i], &device_properties);
 			std::stringstream ss;
@@ -71,13 +71,19 @@ namespace QuasarEngine
 
 
 		if (VulkanDevice::m_VulkanDevice.physicalDevice == VK_NULL_HANDLE)
+		{
 			Q_ERROR("Failed to select GPU!");
+			return false;
+		}
 		else
 		{
 			std::stringstream ss;
 			ss << device_properties.deviceName << " is selected!";
 			Q_INFO(ss.str());
+			return true;
 		}
+
+		return false;
 	}
 
 	bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
@@ -105,7 +111,7 @@ namespace QuasarEngine
 		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
 		std::set<std::string> requiredExtensions;
-		requiredExtensions.insert("VK_KHR_SWAPCHAIN_EXTENSION_NAME");
+		requiredExtensions.insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 		for (const auto& extension : availableExtensions) {
 			requiredExtensions.erase(extension.extensionName);
@@ -175,8 +181,3 @@ namespace QuasarEngine
 		return details;
 	}
 }
-
-const std::vector<const char*> deviceExtensions = {
-	VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
-

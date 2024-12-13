@@ -27,7 +27,7 @@ namespace QuasarEngine {
 			s_GLFWInitialized = true;
 		}
 
-		if (RendererAPI::GetAPI() == RendererAPI::API::DirectX)
+		if (RendererAPI::GetAPI() == RendererAPI::API::DirectX || RendererAPI::GetAPI() == RendererAPI::API::Vulkan)
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}

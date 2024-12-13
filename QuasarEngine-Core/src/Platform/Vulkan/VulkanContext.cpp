@@ -81,6 +81,8 @@ namespace QuasarEngine
 		Q_DEBUG("Vulkan debug messenger created successfully");
 #endif
 
+		CreateSurface();
+
 		if (!VulkanDevice::CreateDevice())
 		{
 			Q_ERROR("Failed to create Vulkan device");
@@ -92,12 +94,14 @@ namespace QuasarEngine
 
 	void VulkanContext::Destroy()
 	{
+#if defined(_DEBUG)
 		Q_DEBUG("Destroying Vulkan debugger...");
 		if (VulkanContext::m_VulkanContext.debugMessenger)
 		{
 			PFN_vkDestroyDebugUtilsMessengerEXT func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(VulkanContext::m_VulkanContext.instance, "vkDestroyDebugUtilsMessengerEXT"));
 			func(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.debugMessenger, VulkanContext::m_VulkanContext.allocator);
 		}
+#endif
 
 		Q_DEBUG("Destroying Vulkan instance...");
 		vkDestroyInstance(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.allocator);
@@ -138,5 +142,12 @@ namespace QuasarEngine
 #endif
 
 		return extensions;
+	}
+
+	void VulkanContext::CreateSurface()
+	{
+		VK_CHECK(glfwCreateWindowSurface(VulkanContext::m_VulkanContext.instance, m_WindowHandle, nullptr, &VulkanContext::m_VulkanContext.surface));
+
+		Q_INFO("Window surface created successfully");
 	}
 }

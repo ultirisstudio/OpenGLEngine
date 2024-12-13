@@ -14,6 +14,8 @@ namespace QuasarEngine
 #if defined(_DEBUG)
 		VkDebugUtilsMessengerEXT debugMessenger;
 #endif
+
+		VkSurfaceKHR surface;
 	};
 
 	struct vulkanDevice

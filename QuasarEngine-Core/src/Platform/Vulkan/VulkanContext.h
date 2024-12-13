@@ -9,7 +9,7 @@ struct GLFWwindow;
 namespace QuasarEngine {
 
 	class VulkanContext : public GraphicsContext
-	{		
+	{
 	public:
 		static vulkanContext m_VulkanContext;
 
@@ -25,6 +25,7 @@ namespace QuasarEngine {
 	private:
 		static std::vector<const char*> getRequiredExtensions();
 
+		void CreateSurface();
 	private:
 		GLFWwindow* m_WindowHandle;
 	};

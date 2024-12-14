@@ -13,6 +13,11 @@ namespace QuasarEngine
         Invalidate();
     }
 
+    DirectXFramebuffer::~DirectXFramebuffer()
+    {
+
+    }
+
     void DirectXFramebuffer::Invalidate() {
         
     }

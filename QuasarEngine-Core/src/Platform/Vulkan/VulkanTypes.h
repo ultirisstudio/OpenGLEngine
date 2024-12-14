@@ -22,10 +22,14 @@ namespace QuasarEngine
 	{
 		VkPhysicalDevice physicalDevice;
 		VkDevice logicalDevice;
+
+		VkQueue graphicsQueue;
+		VkQueue presentQueue;
+		VkQueue transferQueue;
 	};
 
 #define VK_CHECK(expr)										\
 {															\
-	Q_ASSERT(expr == VK_SUCCESS, "Vulkan error: " + expr);	\
+	Q_ASSERT(expr == VK_SUCCESS, "Vulkan error");			\
 }
 }

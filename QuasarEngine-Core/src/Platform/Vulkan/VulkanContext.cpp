@@ -45,7 +45,7 @@ namespace QuasarEngine
 
 		VK_CHECK(vkCreateInstance(&create_info, VulkanContext::m_VulkanContext.allocator, &VulkanContext::m_VulkanContext.instance));
 
-		Q_INFO("Vulkan instance created successfully");
+		Q_DEBUG("Vulkan instance created successfully");
 
 #if defined(DEBUG)
 		uint32_t log_severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -61,7 +61,7 @@ namespace QuasarEngine
 					Q_DEBUG(pCallbackData->pMessage);
 					break;
 				case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-					Q_INFO(pCallbackData->pMessage);
+					Q_DEBUG(pCallbackData->pMessage);
 					break;
 				case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
 					Q_WARNING(pCallbackData->pMessage);
@@ -89,9 +89,9 @@ namespace QuasarEngine
 			return;
 		}
 
-		Q_INFO("Vulkan device created successfully");
+		Q_DEBUG("Vulkan device created successfully");
 
-		Q_INFO("Vulkan context initialized successfully");
+		Q_DEBUG("Vulkan context initialized successfully");
 	}
 
 	void VulkanContext::Destroy()
@@ -104,7 +104,10 @@ namespace QuasarEngine
 			func(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.debugMessenger, VulkanContext::m_VulkanContext.allocator);
 		}
 #endif
+		VulkanDevice::DestroyDevice();
 
+		Q_DEBUG("Destroying Vulkan surface...");
+		vkDestroySurfaceKHR(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.surface, nullptr);
 		Q_DEBUG("Destroying Vulkan instance...");
 		vkDestroyInstance(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.allocator);
 	}
@@ -150,6 +153,6 @@ namespace QuasarEngine
 	{
 		VK_CHECK(glfwCreateWindowSurface(VulkanContext::m_VulkanContext.instance, m_WindowHandle, nullptr, &VulkanContext::m_VulkanContext.surface));
 
-		Q_INFO("Window surface created successfully");
+		Q_DEBUG("Window surface created successfully");
 	}
 }

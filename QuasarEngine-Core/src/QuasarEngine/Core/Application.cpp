@@ -26,8 +26,8 @@ namespace QuasarEngine
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetVSync(false);
 
-		//m_ImGuiLayer = ImGuiLayer::Create();
-		//PushOverlay(m_ImGuiLayer.get());
+		m_ImGuiLayer = ImGuiLayer::Create();
+		PushOverlay(m_ImGuiLayer.get());
 	}
 
 	Application::~Application()
@@ -101,10 +101,10 @@ namespace QuasarEngine
 
 			if (m_Specification.EnableImGui)
 			{
-				//m_ImGuiLayer->Begin();
-				//for (Layer* layer : m_LayerManager)
-				//	layer->OnGuiRender();
-				//m_ImGuiLayer->End();
+				m_ImGuiLayer->Begin();
+				for (Layer* layer : m_LayerManager)
+					layer->OnGuiRender();
+				m_ImGuiLayer->End();
 			}
 
 			//if (m_can_calcul_latency) { m_appInfos.imgui_render_latency = chrono.getElapsedTime().milliseconds; chrono.restart(); }

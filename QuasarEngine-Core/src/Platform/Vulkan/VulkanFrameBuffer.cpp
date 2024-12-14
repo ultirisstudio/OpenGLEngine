@@ -7,6 +7,11 @@ namespace QuasarEngine
         Invalidate();
     }
 
+    VulkanFramebuffer::~VulkanFramebuffer()
+    {
+
+    }
+
     void VulkanFramebuffer::Invalidate() {
         
     }

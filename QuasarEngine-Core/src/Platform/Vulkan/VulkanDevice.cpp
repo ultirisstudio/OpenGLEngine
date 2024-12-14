@@ -15,12 +15,64 @@ namespace QuasarEngine
 			return false;
 		}
 
+		Q_DEBUG("Creating logical device...");
+
+		QueueFamilyIndices indices = FindQueueFamilies(VulkanDevice::m_VulkanDevice.physicalDevice);
+
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+
+		float queuePriority = 1.0f;
+		for (uint32_t queueFamily : uniqueQueueFamilies) {
+			VkDeviceQueueCreateInfo queueCreateInfo { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+			queueCreateInfo.queueFamilyIndex = queueFamily;
+			queueCreateInfo.queueCount = 1;
+			queueCreateInfo.pQueuePriorities = &queuePriority;
+			queueCreateInfo.flags = 0;
+			queueCreateInfo.pNext = 0;
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
+
+		VkPhysicalDeviceFeatures deviceFeatures{};
+		deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+		VkDeviceCreateInfo createInfo { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
+		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+		createInfo.pQueueCreateInfos = queueCreateInfos.data();
+		createInfo.pEnabledFeatures = &deviceFeatures;
+		createInfo.enabledExtensionCount = 1;
+		const char* extension_names = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+		createInfo.ppEnabledExtensionNames = &extension_names;
+
+		createInfo.enabledLayerCount = 0;
+		createInfo.ppEnabledLayerNames = 0;
+
+		VK_CHECK(vkCreateDevice(VulkanDevice::m_VulkanDevice.physicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &VulkanDevice::m_VulkanDevice.logicalDevice))
+		
+		Q_DEBUG("Logical device created successfully");
+
+		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.graphicsFamily.value(), 0, &VulkanDevice::m_VulkanDevice.graphicsQueue);
+		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.presentFamily.value(), 0, &VulkanDevice::m_VulkanDevice.presentQueue);
+		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.transferFamily.value(), 0, &VulkanDevice::m_VulkanDevice.transferQueue);
+
 		return true;
 	}
 
 	void VulkanDevice::DestroyDevice()
 	{
+		Q_DEBUG("Destroying Vulkan device...");
 
+		VulkanDevice::m_VulkanDevice.graphicsQueue = 0;
+		VulkanDevice::m_VulkanDevice.presentQueue = 0;
+		VulkanDevice::m_VulkanDevice.transferQueue = 0;
+
+		if (VulkanDevice::m_VulkanDevice.logicalDevice)
+		{
+			vkDestroyDevice(VulkanDevice::m_VulkanDevice.logicalDevice, VulkanContext::m_VulkanContext.allocator);
+			VulkanDevice::m_VulkanDevice.logicalDevice = 0;
+		}
+
+		VulkanDevice::m_VulkanDevice.physicalDevice = 0;
 	}
 
 	bool VulkanDevice::SelectPhysicalDevice()
@@ -34,7 +86,7 @@ namespace QuasarEngine
 		}
 
 		std::vector<VkPhysicalDevice> physical_devices(physical_device_count);
-		VK_CHECK(vkEnumeratePhysicalDevices(VulkanContext::m_VulkanContext.instance, &physical_device_count, physical_devices.data()));;
+		VK_CHECK(vkEnumeratePhysicalDevices(VulkanContext::m_VulkanContext.instance, &physical_device_count, physical_devices.data()));
 
 		VkPhysicalDeviceProperties device_properties;
 		for (uint32_t i = 0; i < physical_device_count; i++)
@@ -48,7 +100,7 @@ namespace QuasarEngine
 			vkGetPhysicalDeviceProperties(physical_devices[i], &device_properties);
 			std::stringstream ss;
 			ss << "Device #" << i << ": " << device_properties.deviceName << " (" << state.str() << ")";
-			Q_INFO(ss.str());
+			Q_DEBUG(ss.str());
 		}
 
 		if (physical_device_count == 1)
@@ -79,7 +131,7 @@ namespace QuasarEngine
 		{
 			std::stringstream ss;
 			ss << device_properties.deviceName << " is selected!";
-			Q_INFO(ss.str());
+			Q_DEBUG(ss.str());
 			return true;
 		}
 
@@ -138,6 +190,11 @@ namespace QuasarEngine
 			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
 				indices.graphicsFamily = i;
+			}
+
+			if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT)
+			{
+				indices.transferFamily = i;
 			}
 
 			if (presentSupport)

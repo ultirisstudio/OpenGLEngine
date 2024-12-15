@@ -17,7 +17,7 @@ namespace QuasarEngine
 
 		Q_DEBUG("Creating logical device...");
 
-		QueueFamilyIndices indices = FindQueueFamilies(VulkanDevice::m_VulkanDevice.physicalDevice);
+		QueueFamilyIndices indices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -47,13 +47,13 @@ namespace QuasarEngine
 		createInfo.enabledLayerCount = 0;
 		createInfo.ppEnabledLayerNames = 0;
 
-		VK_CHECK(vkCreateDevice(VulkanDevice::m_VulkanDevice.physicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &VulkanDevice::m_VulkanDevice.logicalDevice))
+		VK_CHECK(vkCreateDevice(m_VulkanDevice.physicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &m_VulkanDevice.logicalDevice))
 		
 		Q_DEBUG("Logical device created successfully");
 
-		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.graphicsFamily.value(), 0, &VulkanDevice::m_VulkanDevice.graphicsQueue);
-		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.presentFamily.value(), 0, &VulkanDevice::m_VulkanDevice.presentQueue);
-		vkGetDeviceQueue(VulkanDevice::m_VulkanDevice.logicalDevice, indices.transferFamily.value(), 0, &VulkanDevice::m_VulkanDevice.transferQueue);
+		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.graphicsFamily.value(), 0, &m_VulkanDevice.graphicsQueue);
+		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.presentFamily.value(), 0, &m_VulkanDevice.presentQueue);
+		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.transferFamily.value(), 0, &m_VulkanDevice.transferQueue);
 
 		return true;
 	}
@@ -62,17 +62,17 @@ namespace QuasarEngine
 	{
 		Q_DEBUG("Destroying Vulkan device...");
 
-		VulkanDevice::m_VulkanDevice.graphicsQueue = 0;
-		VulkanDevice::m_VulkanDevice.presentQueue = 0;
-		VulkanDevice::m_VulkanDevice.transferQueue = 0;
+		m_VulkanDevice.graphicsQueue = 0;
+		m_VulkanDevice.presentQueue = 0;
+		m_VulkanDevice.transferQueue = 0;
 
-		if (VulkanDevice::m_VulkanDevice.logicalDevice)
+		if (m_VulkanDevice.logicalDevice)
 		{
-			vkDestroyDevice(VulkanDevice::m_VulkanDevice.logicalDevice, VulkanContext::m_VulkanContext.allocator);
-			VulkanDevice::m_VulkanDevice.logicalDevice = 0;
+			vkDestroyDevice(m_VulkanDevice.logicalDevice, VulkanContext::m_VulkanContext.allocator);
+			m_VulkanDevice.logicalDevice = 0;
 		}
 
-		VulkanDevice::m_VulkanDevice.physicalDevice = 0;
+		m_VulkanDevice.physicalDevice = 0;
 	}
 
 	bool VulkanDevice::SelectPhysicalDevice()
@@ -105,8 +105,8 @@ namespace QuasarEngine
 
 		if (physical_device_count == 1)
 		{
-			VulkanDevice::m_VulkanDevice.physicalDevice = physical_devices[0];
-			vkGetPhysicalDeviceProperties(VulkanDevice::m_VulkanDevice.physicalDevice, &device_properties);
+			m_VulkanDevice.physicalDevice = physical_devices[0];
+			vkGetPhysicalDeviceProperties(m_VulkanDevice.physicalDevice, &device_properties);
 		}
 		else
 		{
@@ -117,12 +117,15 @@ namespace QuasarEngine
 				std::cin >> device_index;
 			} while (!IsDeviceSuitable(physical_devices[device_index]));
 
-			VulkanDevice::m_VulkanDevice.physicalDevice = physical_devices[device_index];
-			vkGetPhysicalDeviceProperties(VulkanDevice::m_VulkanDevice.physicalDevice, &device_properties);
+			m_VulkanDevice.physicalDevice = physical_devices[device_index];
+			vkGetPhysicalDeviceProperties(m_VulkanDevice.physicalDevice, &device_properties);
+
+			m_VulkanDevice.swapchainSupport = QuerySwapChainSupport(m_VulkanDevice.physicalDevice);
+			m_VulkanDevice.queueFamilyIndices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
 		}
 
 
-		if (VulkanDevice::m_VulkanDevice.physicalDevice == VK_NULL_HANDLE)
+		if (m_VulkanDevice.physicalDevice == VK_NULL_HANDLE)
 		{
 			Q_ERROR("Failed to select GPU!");
 			return false;
@@ -172,7 +175,7 @@ namespace QuasarEngine
 		return requiredExtensions.empty();
 	}
 
-	VulkanDevice::QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
+	QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices;
 
@@ -213,7 +216,7 @@ namespace QuasarEngine
 		return indices;
 	}
 
-	VulkanDevice::SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
+	SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
 	{
 		SwapChainSupportDetails details;
 
@@ -236,5 +239,31 @@ namespace QuasarEngine
 		}
 
 		return details;
+	}
+
+	bool VulkanDevice::CheckDepthFormat()
+	{
+		const uint64_t candidate_count = 3;
+		VkFormat candidates[3] = { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT };
+
+		uint8_t flags = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		for (uint64_t i = 0; i < candidate_count; i++)
+		{
+			VkFormatProperties props;
+			vkGetPhysicalDeviceFormatProperties(m_VulkanDevice.physicalDevice, candidates[i], &props);
+
+			if ((props.linearTilingFeatures & flags) == flags)
+			{
+				m_VulkanDevice.depthFormat = candidates[i];
+				return true;
+			}
+			else if ((props.optimalTilingFeatures & flags) == flags)
+			{
+				m_VulkanDevice.depthFormat = candidates[i];
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

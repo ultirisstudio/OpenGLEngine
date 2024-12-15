@@ -4,10 +4,13 @@
 #include <GLFW/glfw3.h>
 
 #include "VulkanDevice.h"
+#include "VulkanSwapchain.h"
 
 namespace QuasarEngine
 {
 	vulkanContext VulkanContext::m_VulkanContext = vulkanContext();
+
+	int32_t FindMemoryIndex(uint32_t typeFilter, uint32_t propertyFlags);
 
 	VulkanContext::VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 	{
@@ -16,6 +19,8 @@ namespace QuasarEngine
 
 	void VulkanContext::Init()
 	{
+		VulkanContext::m_VulkanContext.findMemoryIndex = FindMemoryIndex;
+
 		VulkanContext::m_VulkanContext.allocator = 0;
 
 		VkApplicationInfo app_info = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
@@ -91,6 +96,8 @@ namespace QuasarEngine
 
 		Q_DEBUG("Vulkan device created successfully");
 
+		VulkanSwapchain::CreateSwapchain(m_VulkanContext.framebufferWidth, m_VulkanContext.framebufferHeight);
+
 		Q_DEBUG("Vulkan context initialized successfully");
 	}
 
@@ -154,5 +161,23 @@ namespace QuasarEngine
 		VK_CHECK(glfwCreateWindowSurface(VulkanContext::m_VulkanContext.instance, m_WindowHandle, nullptr, &VulkanContext::m_VulkanContext.surface));
 
 		Q_DEBUG("Window surface created successfully");
+	}
+
+	
+	int32_t FindMemoryIndex(uint32_t typeFilter, uint32_t propertyFlags)
+	{
+		VkPhysicalDeviceMemoryProperties memory_properties;
+		vkGetPhysicalDeviceMemoryProperties(VulkanDevice::m_VulkanDevice.physicalDevice, &memory_properties);
+
+		for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++)
+		{
+			if ((typeFilter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & propertyFlags) == propertyFlags)
+			{
+				return i;
+			}
+		}
+
+		Q_WARNING("Unable to find suitable memory type !");
+		return -1;
 	}
 }

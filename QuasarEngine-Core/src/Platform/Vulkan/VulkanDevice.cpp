@@ -119,11 +119,7 @@ namespace QuasarEngine
 
 			m_VulkanDevice.physicalDevice = physical_devices[device_index];
 			vkGetPhysicalDeviceProperties(m_VulkanDevice.physicalDevice, &device_properties);
-
-			m_VulkanDevice.swapchainSupport = QuerySwapChainSupport(m_VulkanDevice.physicalDevice);
-			m_VulkanDevice.queueFamilyIndices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
 		}
-
 
 		if (m_VulkanDevice.physicalDevice == VK_NULL_HANDLE)
 		{
@@ -135,6 +131,10 @@ namespace QuasarEngine
 			std::stringstream ss;
 			ss << device_properties.deviceName << " is selected!";
 			Q_DEBUG(ss.str());
+
+			m_VulkanDevice.swapchainSupport = QuerySwapChainSupport(m_VulkanDevice.physicalDevice);
+			m_VulkanDevice.queueFamilyIndices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
+
 			return true;
 		}
 

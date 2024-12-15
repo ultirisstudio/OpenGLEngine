@@ -6,21 +6,37 @@ namespace QuasarEngine {
 
 	class VulkanDevice
 	{
+	private:
+		struct vulkanDevice
+		{
+			VkPhysicalDevice physicalDevice;
+			VkDevice logicalDevice;
+
+			SwapChainSupportDetails swapchainSupport;
+
+			VkQueue graphicsQueue;
+			VkQueue presentQueue;
+			VkQueue transferQueue;
+
+			QueueFamilyIndices queueFamilyIndices;
+
+			VkFormat depthFormat;
+		};
+		vulkanDevice m_device;
+
 	public:
-		static vulkanDevice m_VulkanDevice;
+		bool CreateDevice();
+		void DestroyDevice();
 
-		static bool CreateDevice();
-		static void DestroyDevice();
+		bool CheckDepthFormat();
 
-
-		static SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-		static bool CheckDepthFormat();
+		vulkanDevice& GetDevice() { return m_device; }
 
 	private:
-		static bool SelectPhysicalDevice();
-		static bool IsDeviceSuitable(VkPhysicalDevice device);
-		static bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+		bool SelectPhysicalDevice();
+		bool IsDeviceSuitable(VkPhysicalDevice device);
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 
-		static QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 	};
 }

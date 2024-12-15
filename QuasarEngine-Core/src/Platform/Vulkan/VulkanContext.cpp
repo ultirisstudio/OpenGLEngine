@@ -88,7 +88,8 @@ namespace QuasarEngine
 
 		CreateSurface();
 
-		if (!VulkanDevice::CreateDevice())
+		m_VulkanContext.device = std::make_unique<VulkanDevice>();
+		if (!m_VulkanContext.device->CreateDevice())
 		{
 			Q_ERROR("Failed to create Vulkan device");
 			return;
@@ -96,7 +97,8 @@ namespace QuasarEngine
 
 		Q_DEBUG("Vulkan device created successfully");
 
-		VulkanSwapchain::CreateSwapchain(m_VulkanContext.framebufferWidth, m_VulkanContext.framebufferHeight);
+		m_VulkanContext.swapchain = std::make_unique<VulkanSwapchain>();
+		m_VulkanContext.swapchain->CreateSwapchain(m_VulkanContext.framebufferWidth, m_VulkanContext.framebufferHeight);
 
 		Q_DEBUG("Vulkan context initialized successfully");
 	}
@@ -111,7 +113,7 @@ namespace QuasarEngine
 			func(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.debugMessenger, VulkanContext::m_VulkanContext.allocator);
 		}
 #endif
-		VulkanDevice::DestroyDevice();
+		m_VulkanContext.device->DestroyDevice();
 
 		Q_DEBUG("Destroying Vulkan surface...");
 		vkDestroySurfaceKHR(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.surface, nullptr);
@@ -167,7 +169,7 @@ namespace QuasarEngine
 	int32_t FindMemoryIndex(uint32_t typeFilter, uint32_t propertyFlags)
 	{
 		VkPhysicalDeviceMemoryProperties memory_properties;
-		vkGetPhysicalDeviceMemoryProperties(VulkanDevice::m_VulkanDevice.physicalDevice, &memory_properties);
+		vkGetPhysicalDeviceMemoryProperties(VulkanContext::m_VulkanContext.device->GetDevice().physicalDevice, &memory_properties);
 
 		for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++)
 		{

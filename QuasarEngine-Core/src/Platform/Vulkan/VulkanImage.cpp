@@ -25,10 +25,10 @@ namespace QuasarEngine
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		VK_CHECK(vkCreateImage(VulkanDevice::m_VulkanDevice.logicalDevice, &imageInfo, VulkanContext::m_VulkanContext.allocator, &outImage->handle));
+		VK_CHECK(vkCreateImage(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, &imageInfo, VulkanContext::m_VulkanContext.allocator, &outImage->handle));
 	
 		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(VulkanDevice::m_VulkanDevice.logicalDevice, outImage->handle, &memRequirements);
+		vkGetImageMemoryRequirements(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, outImage->handle, &memRequirements);
 
 		int32_t memoryTypeIndex = VulkanContext::m_VulkanContext.findMemoryIndex(memRequirements.memoryTypeBits, memoryFlags);
 		if (memoryTypeIndex == -1)
@@ -41,9 +41,9 @@ namespace QuasarEngine
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = memoryTypeIndex;
 
-		VK_CHECK(vkAllocateMemory(VulkanDevice::m_VulkanDevice.logicalDevice, &allocInfo, VulkanContext::m_VulkanContext.allocator, &outImage->memory));
+		VK_CHECK(vkAllocateMemory(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, &allocInfo, VulkanContext::m_VulkanContext.allocator, &outImage->memory));
 
-		VK_CHECK(vkBindImageMemory(VulkanDevice::m_VulkanDevice.logicalDevice, outImage->handle, outImage->memory, 0));
+		VK_CHECK(vkBindImageMemory(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, outImage->handle, outImage->memory, 0));
 
 		if (createView)
 		{
@@ -65,13 +65,13 @@ namespace QuasarEngine
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
-		VK_CHECK(vkCreateImageView(VulkanDevice::m_VulkanDevice.logicalDevice, &viewInfo, VulkanContext::m_VulkanContext.allocator, &image->view))
+		VK_CHECK(vkCreateImageView(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, &viewInfo, VulkanContext::m_VulkanContext.allocator, &image->view))
 	}
 
 	void VulkanImage::DestroyImage(vulkanImage* image)
 	{
-		vkDestroyImageView(VulkanDevice::m_VulkanDevice.logicalDevice, image->view, VulkanContext::m_VulkanContext.allocator);
-		vkFreeMemory(VulkanDevice::m_VulkanDevice.logicalDevice, image->memory, VulkanContext::m_VulkanContext.allocator);
-		vkDestroyImage(VulkanDevice::m_VulkanDevice.logicalDevice, image->handle, VulkanContext::m_VulkanContext.allocator);
+		vkDestroyImageView(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, image->view, VulkanContext::m_VulkanContext.allocator);
+		vkFreeMemory(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, image->memory, VulkanContext::m_VulkanContext.allocator);
+		vkDestroyImage(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, image->handle, VulkanContext::m_VulkanContext.allocator);
 	}
 }

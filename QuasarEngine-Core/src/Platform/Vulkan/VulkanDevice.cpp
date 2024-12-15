@@ -1,13 +1,14 @@
 #include "qepch.h"
+
+
 #include "VulkanDevice.h"
 #include "VulkanContext.h"
+#include "VulkanSwapchain.h"
 
 #include <set>
 
 namespace QuasarEngine
-{
-	vulkanDevice VulkanDevice::m_VulkanDevice = vulkanDevice();
-	
+{	
 	bool VulkanDevice::CreateDevice()
 	{
 		if (!SelectPhysicalDevice())
@@ -17,7 +18,7 @@ namespace QuasarEngine
 
 		Q_DEBUG("Creating logical device...");
 
-		QueueFamilyIndices indices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
+		QueueFamilyIndices indices = FindQueueFamilies(m_device.physicalDevice);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -47,13 +48,13 @@ namespace QuasarEngine
 		createInfo.enabledLayerCount = 0;
 		createInfo.ppEnabledLayerNames = 0;
 
-		VK_CHECK(vkCreateDevice(m_VulkanDevice.physicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &m_VulkanDevice.logicalDevice))
+		VK_CHECK(vkCreateDevice(m_device.physicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &m_device.logicalDevice))
 		
 		Q_DEBUG("Logical device created successfully");
 
-		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.graphicsFamily.value(), 0, &m_VulkanDevice.graphicsQueue);
-		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.presentFamily.value(), 0, &m_VulkanDevice.presentQueue);
-		vkGetDeviceQueue(m_VulkanDevice.logicalDevice, indices.transferFamily.value(), 0, &m_VulkanDevice.transferQueue);
+		vkGetDeviceQueue(m_device.logicalDevice, indices.graphicsFamily.value(), 0, &m_device.graphicsQueue);
+		vkGetDeviceQueue(m_device.logicalDevice, indices.presentFamily.value(), 0, &m_device.presentQueue);
+		vkGetDeviceQueue(m_device.logicalDevice, indices.transferFamily.value(), 0, &m_device.transferQueue);
 
 		return true;
 	}
@@ -62,17 +63,17 @@ namespace QuasarEngine
 	{
 		Q_DEBUG("Destroying Vulkan device...");
 
-		m_VulkanDevice.graphicsQueue = 0;
-		m_VulkanDevice.presentQueue = 0;
-		m_VulkanDevice.transferQueue = 0;
+		m_device.graphicsQueue = 0;
+		m_device.presentQueue = 0;
+		m_device.transferQueue = 0;
 
-		if (m_VulkanDevice.logicalDevice)
+		if (m_device.logicalDevice)
 		{
-			vkDestroyDevice(m_VulkanDevice.logicalDevice, VulkanContext::m_VulkanContext.allocator);
-			m_VulkanDevice.logicalDevice = 0;
+			vkDestroyDevice(m_device.logicalDevice, VulkanContext::m_VulkanContext.allocator);
+			m_device.logicalDevice = 0;
 		}
 
-		m_VulkanDevice.physicalDevice = 0;
+		m_device.physicalDevice = 0;
 	}
 
 	bool VulkanDevice::SelectPhysicalDevice()
@@ -105,8 +106,8 @@ namespace QuasarEngine
 
 		if (physical_device_count == 1)
 		{
-			m_VulkanDevice.physicalDevice = physical_devices[0];
-			vkGetPhysicalDeviceProperties(m_VulkanDevice.physicalDevice, &device_properties);
+			m_device.physicalDevice = physical_devices[0];
+			vkGetPhysicalDeviceProperties(m_device.physicalDevice, &device_properties);
 		}
 		else
 		{
@@ -117,11 +118,11 @@ namespace QuasarEngine
 				std::cin >> device_index;
 			} while (!IsDeviceSuitable(physical_devices[device_index]));
 
-			m_VulkanDevice.physicalDevice = physical_devices[device_index];
-			vkGetPhysicalDeviceProperties(m_VulkanDevice.physicalDevice, &device_properties);
+			m_device.physicalDevice = physical_devices[device_index];
+			vkGetPhysicalDeviceProperties(m_device.physicalDevice, &device_properties);
 		}
 
-		if (m_VulkanDevice.physicalDevice == VK_NULL_HANDLE)
+		if (m_device.physicalDevice == VK_NULL_HANDLE)
 		{
 			Q_ERROR("Failed to select GPU!");
 			return false;
@@ -132,8 +133,8 @@ namespace QuasarEngine
 			ss << device_properties.deviceName << " is selected!";
 			Q_DEBUG(ss.str());
 
-			m_VulkanDevice.swapchainSupport = QuerySwapChainSupport(m_VulkanDevice.physicalDevice);
-			m_VulkanDevice.queueFamilyIndices = FindQueueFamilies(m_VulkanDevice.physicalDevice);
+			m_device.swapchainSupport = VulkanSwapchain::QuerySwapchainSupport(m_device.physicalDevice);
+			m_device.queueFamilyIndices = FindQueueFamilies(m_device.physicalDevice);
 
 			return true;
 		}
@@ -150,7 +151,7 @@ namespace QuasarEngine
 		bool swapChainAdequate = false;
 		if (extensionsSupported)
 		{
-			SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
+			SwapChainSupportDetails swapChainSupport = VulkanSwapchain::QuerySwapchainSupport(device);
 			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}
 
@@ -216,31 +217,6 @@ namespace QuasarEngine
 		return indices;
 	}
 
-	SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
-	{
-		SwapChainSupportDetails details;
-
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, VulkanContext::m_VulkanContext.surface, &details.capabilities);
-
-		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::m_VulkanContext.surface, &formatCount, nullptr);
-
-		if (formatCount != 0) {
-			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::m_VulkanContext.surface, &formatCount, details.formats.data());
-		}
-
-		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanContext::m_VulkanContext.surface, &presentModeCount, nullptr);
-
-		if (presentModeCount != 0) {
-			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanContext::m_VulkanContext.surface, &presentModeCount, details.presentModes.data());
-		}
-
-		return details;
-	}
-
 	bool VulkanDevice::CheckDepthFormat()
 	{
 		const uint64_t candidate_count = 3;
@@ -250,16 +226,16 @@ namespace QuasarEngine
 		for (uint64_t i = 0; i < candidate_count; i++)
 		{
 			VkFormatProperties props;
-			vkGetPhysicalDeviceFormatProperties(m_VulkanDevice.physicalDevice, candidates[i], &props);
+			vkGetPhysicalDeviceFormatProperties(m_device.physicalDevice, candidates[i], &props);
 
 			if ((props.linearTilingFeatures & flags) == flags)
 			{
-				m_VulkanDevice.depthFormat = candidates[i];
+				m_device.depthFormat = candidates[i];
 				return true;
 			}
 			else if ((props.optimalTilingFeatures & flags) == flags)
 			{
-				m_VulkanDevice.depthFormat = candidates[i];
+				m_device.depthFormat = candidates[i];
 				return true;
 			}
 		}

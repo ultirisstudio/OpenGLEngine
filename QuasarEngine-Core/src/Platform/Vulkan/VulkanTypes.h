@@ -3,11 +3,15 @@
 #include <vulkan/vulkan.h>
 
 #include <optional>
+#include <memory>
 
 #include <QuasarEngine/Core/Log.h>
 
 namespace QuasarEngine
 {
+	class VulkanSwapchain;
+	class VulkanDevice;
+
 	struct vulkanContext
 	{
 		uint32_t framebufferWidth;
@@ -16,11 +20,15 @@ namespace QuasarEngine
 		VkInstance instance;
 		VkAllocationCallbacks* allocator;
 
+		VkSurfaceKHR surface;
+
 #if defined(_DEBUG)
 		VkDebugUtilsMessengerEXT debugMessenger;
 #endif
 
-		VkSurfaceKHR surface;
+		std::unique_ptr<VulkanDevice> device;
+
+		std::unique_ptr<VulkanSwapchain> swapchain;
 
 		uint32_t imageIndex;
 		uint32_t currentFrame;
@@ -47,22 +55,6 @@ namespace QuasarEngine
 		std::vector<VkPresentModeKHR> presentModes;
 	};
 
-	struct vulkanDevice
-	{
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
-
-		SwapChainSupportDetails swapchainSupport;
-
-		VkQueue graphicsQueue;
-		VkQueue presentQueue;
-		VkQueue transferQueue;
-
-		QueueFamilyIndices queueFamilyIndices;
-
-		VkFormat depthFormat;
-	};
-
 	struct vulkanImage
 	{
 		VkImage handle;
@@ -70,17 +62,6 @@ namespace QuasarEngine
 		VkImageView view;
 		uint32_t width;
 		uint32_t height;
-	};
-
-	struct vulkanSwapchain
-	{
-		VkSurfaceFormatKHR imageFormat;
-		uint8_t maxFramesInFlight;
-		VkSwapchainKHR handle;
-		std::vector<VkImage> images;
-		std::vector<VkImageView> views;
-
-		vulkanImage depthAttachment;
 	};
 
 #define VK_CHECK(expr)										\

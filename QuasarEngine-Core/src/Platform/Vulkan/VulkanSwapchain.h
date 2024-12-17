@@ -2,8 +2,12 @@
 
 #include "VulkanTypes.h"
 
+#include "VulkanImage.h"
+
 namespace QuasarEngine
 {
+	class VulkanImage;
+
 	class VulkanSwapchain
 	{
 	private:
@@ -15,7 +19,7 @@ namespace QuasarEngine
 			std::vector<VkImage> images;
 			std::vector<VkImageView> views;
 
-			vulkanImage depthAttachment;
+			std::unique_ptr<VulkanImage> depthAttachment;
 		};
 		vulkanSwapchain m_swapchain;
 

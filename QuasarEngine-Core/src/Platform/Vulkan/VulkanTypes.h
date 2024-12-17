@@ -11,6 +11,7 @@ namespace QuasarEngine
 {
 	class VulkanSwapchain;
 	class VulkanDevice;
+	class VulkanImage;
 
 	struct vulkanContext
 	{
@@ -22,9 +23,7 @@ namespace QuasarEngine
 
 		VkSurfaceKHR surface;
 
-#if defined(_DEBUG)
 		VkDebugUtilsMessengerEXT debugMessenger;
-#endif
 
 		std::unique_ptr<VulkanDevice> device;
 
@@ -53,15 +52,6 @@ namespace QuasarEngine
 		VkSurfaceCapabilitiesKHR capabilities;
 		std::vector<VkSurfaceFormatKHR> formats;
 		std::vector<VkPresentModeKHR> presentModes;
-	};
-
-	struct vulkanImage
-	{
-		VkImage handle;
-		VkDeviceMemory memory;
-		VkImageView view;
-		uint32_t width;
-		uint32_t height;
 	};
 
 #define VK_CHECK(expr)										\

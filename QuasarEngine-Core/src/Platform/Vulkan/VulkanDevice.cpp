@@ -61,8 +61,6 @@ namespace QuasarEngine
 
 	void VulkanDevice::DestroyDevice()
 	{
-		Q_DEBUG("Destroying Vulkan device...");
-
 		m_device.graphicsQueue = 0;
 		m_device.presentQueue = 0;
 		m_device.transferQueue = 0;

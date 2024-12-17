@@ -105,18 +105,22 @@ namespace QuasarEngine
 
 	void VulkanContext::Destroy()
 	{
-#if defined(_DEBUG)
+		Q_DEBUG("Destroying Vulkan swapchain...");
+		m_VulkanContext.swapchain->DestroySwapchain();
+
+		Q_DEBUG("Destroying Vulkan device...");
+		m_VulkanContext.device->DestroyDevice();
+
+		Q_DEBUG("Destroying Vulkan surface...");
+		vkDestroySurfaceKHR(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.surface, nullptr);
+
 		Q_DEBUG("Destroying Vulkan debugger...");
 		if (VulkanContext::m_VulkanContext.debugMessenger)
 		{
 			PFN_vkDestroyDebugUtilsMessengerEXT func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(VulkanContext::m_VulkanContext.instance, "vkDestroyDebugUtilsMessengerEXT"));
 			func(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.debugMessenger, VulkanContext::m_VulkanContext.allocator);
 		}
-#endif
-		m_VulkanContext.device->DestroyDevice();
 
-		Q_DEBUG("Destroying Vulkan surface...");
-		vkDestroySurfaceKHR(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.surface, nullptr);
 		Q_DEBUG("Destroying Vulkan instance...");
 		vkDestroyInstance(VulkanContext::m_VulkanContext.instance, VulkanContext::m_VulkanContext.allocator);
 	}

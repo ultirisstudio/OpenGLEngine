@@ -115,8 +115,6 @@ namespace QuasarEngine
 
 		m_swapchain.depthAttachment = std::make_unique<VulkanImage>();
 		m_swapchain.depthAttachment->CreateImage(VK_IMAGE_TYPE_2D, swapchainExtent.width, swapchainExtent.height, VulkanContext::m_VulkanContext.device->GetDevice().depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, true, VK_IMAGE_ASPECT_DEPTH_BIT);
-
-		Q_DEBUG("Swapchain created");
 	}
 
 	void VulkanSwapchain::RecreateSwapchain(uint32_t width, uint32_t height)

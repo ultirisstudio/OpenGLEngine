@@ -5,6 +5,8 @@
 
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
+#include "VulkanRenderPass.h"
+#include "VulkanCommandBuffer.h"
 
 namespace QuasarEngine
 {
@@ -99,12 +101,51 @@ namespace QuasarEngine
 
 		m_VulkanContext.swapchain = std::make_unique<VulkanSwapchain>();
 		m_VulkanContext.swapchain->CreateSwapchain(m_VulkanContext.framebufferWidth, m_VulkanContext.framebufferHeight);
+		
+		Q_DEBUG("Vulkan swapchain created successfully");
+
+		m_VulkanContext.mainRenderPass = std::make_unique<VulkanRenderPass>();
+		m_VulkanContext.mainRenderPass->CreateRenderPass(0, 0, m_VulkanContext.framebufferWidth, m_VulkanContext.framebufferHeight, 0.0f, 0.0f, 0.2f, 1.0f, 1.0f, 0);
+
+		Q_DEBUG("Vulkan renderPass created successfully");
+
+		m_VulkanContext.graphicsCommandBuffer.clear();
+		m_VulkanContext.graphicsCommandBuffer.reserve(m_VulkanContext.swapchain->GetSwapchain().images.size());
+		for (uint32_t i = 0; i < m_VulkanContext.swapchain->GetSwapchain().images.size(); i++)
+		{
+			m_VulkanContext.graphicsCommandBuffer.push_back(std::make_unique<VulkanCommandBuffer>());
+		}
+
+		for (uint32_t i = 0; i < m_VulkanContext.swapchain->GetSwapchain().images.size(); i++)
+		{
+			if (m_VulkanContext.graphicsCommandBuffer[i]->GetCommandBuffer().handle)
+			{
+				m_VulkanContext.graphicsCommandBuffer[i]->Free(m_VulkanContext.device->GetDevice().graphicsCommandPool);
+			}
+
+			m_VulkanContext.graphicsCommandBuffer[i]->Allocate(m_VulkanContext.device->GetDevice().graphicsCommandPool, true);
+		}
+
+		Q_DEBUG("Vulkan command buffers created successfully");
 
 		Q_DEBUG("Vulkan context initialized successfully");
 	}
 
 	void VulkanContext::Destroy()
 	{
+		Q_DEBUG("Destroying Vulkan command buffers...");
+		for (uint32_t i = 0; i < m_VulkanContext.graphicsCommandBuffer.size(); i++)
+		{
+			if (m_VulkanContext.graphicsCommandBuffer[i]->GetCommandBuffer().handle)
+			{
+				m_VulkanContext.graphicsCommandBuffer[i]->Free(m_VulkanContext.device->GetDevice().graphicsCommandPool);
+				m_VulkanContext.graphicsCommandBuffer[i]->GetCommandBuffer().handle = 0;
+			}
+		}
+
+		Q_DEBUG("Destroying Vulkan renderpass...");
+		m_VulkanContext.mainRenderPass->DestroyRenderPass();
+
 		Q_DEBUG("Destroying Vulkan swapchain...");
 		m_VulkanContext.swapchain->DestroySwapchain();
 

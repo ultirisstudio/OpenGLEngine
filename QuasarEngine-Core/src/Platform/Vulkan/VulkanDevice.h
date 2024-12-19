@@ -18,6 +18,8 @@ namespace QuasarEngine {
 			VkQueue presentQueue;
 			VkQueue transferQueue;
 
+			VkCommandPool graphicsCommandPool;
+
 			QueueFamilyIndices queueFamilyIndices;
 
 			VkFormat depthFormat;

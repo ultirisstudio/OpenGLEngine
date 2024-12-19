@@ -1,11 +1,21 @@
 #pragma once
 
+#include "VulkanTypes.h"
+
 #include <QuasarEngine/Renderer/Framebuffer.h>
 
 namespace QuasarEngine
 {
 	class VulkanFramebuffer : public Framebuffer
 	{
+    private:
+        struct vulkanFramebuffer
+        {
+            VkFramebuffer handle;
+            std::vector<VkImageView> attachments;
+            VkRenderPass* renderPass;
+        };
+        vulkanFramebuffer m_framebuffer;
     public:
         VulkanFramebuffer(const FramebufferSpecification& spec);
         ~VulkanFramebuffer();
@@ -29,13 +39,6 @@ namespace QuasarEngine
 
         void BindColorAttachment(uint32_t index = 0) const override;
     private:
-        uint32_t m_ID;
         FramebufferSpecification m_Specification;
-
-        std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-        FramebufferTextureSpecification m_DepthAttachmentSpecification;
-
-        std::vector<uint32_t> m_ColorAttachments;
-        uint32_t m_DepthAttachment = 0;
 	};
 }

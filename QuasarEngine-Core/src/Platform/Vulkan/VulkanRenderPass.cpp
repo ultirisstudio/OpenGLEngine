@@ -81,18 +81,46 @@ namespace QuasarEngine
 		createInfo.pNext = 0;
 		createInfo.flags = 0;
 
-		VK_CHECK(vkCreateRenderPass(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, m_renderPass.handle));
+		VK_CHECK(vkCreateRenderPass(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, &createInfo, VulkanContext::m_VulkanContext.allocator, &m_renderPass.handle));
 	}
 
 	void VulkanRenderPass::DestroyRenderPass()
 	{
+		if (m_renderPass.handle)
+		{
+			vkDestroyRenderPass(VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice, m_renderPass.handle, VulkanContext::m_VulkanContext.allocator);
+			m_renderPass.handle = 0;
+		}
 	}
 
 	void VulkanRenderPass::Begin()
 	{
+		VkRenderPassBeginInfo beginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+		beginInfo.renderPass = m_renderPass.handle;
+		beginInfo.framebuffer = m_framebuffer;
+		beginInfo.renderArea.offset.x = m_renderPass.x;
+		beginInfo.renderArea.offset.y = m_renderPass.y;
+		beginInfo.renderArea.extent.width = m_renderPass.w;
+		beginInfo.renderArea.extent.height = m_renderPass.h;
+
+		VkClearValue clearValues[2];
+		clearValues[0].color.float32[0] = m_renderPass.r;
+		clearValues[0].color.float32[1] = m_renderPass.g;
+		clearValues[0].color.float32[2] = m_renderPass.b;
+		clearValues[0].color.float32[3] = m_renderPass.a;
+		clearValues[0].depthStencil.depth = m_renderPass.depth;
+		clearValues[0].depthStencil.stencil = m_renderPass.stencil;
+
+		beginInfo.clearValueCount = 2;
+		beginInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_commandBuffer.handle, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		m_commandBuffer.state = COMMAND_BUFFER_STATE_IN_RENDER_PASS;
 	}
 
 	void VulkanRenderPass::End()
 	{
+		vkCmdEndRenderPass(m_commandBuffer.handle);
+		m_commandBuffer.state = COMMAND_BUFFER_STATE_RECORDING;
 	}
 }

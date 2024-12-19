@@ -56,6 +56,14 @@ namespace QuasarEngine
 		vkGetDeviceQueue(m_device.logicalDevice, indices.presentFamily.value(), 0, &m_device.presentQueue);
 		vkGetDeviceQueue(m_device.logicalDevice, indices.transferFamily.value(), 0, &m_device.transferQueue);
 
+		VkCommandPoolCreateInfo poolInfo { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
+		poolInfo.queueFamilyIndex = indices.graphicsFamily.value();
+		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+		VK_CHECK(vkCreateCommandPool(m_device.logicalDevice, &poolInfo, VulkanContext::m_VulkanContext.allocator, &m_device.graphicsCommandPool));
+
+		Q_DEBUG("Command pool created successfully");
+
 		return true;
 	}
 
@@ -64,6 +72,12 @@ namespace QuasarEngine
 		m_device.graphicsQueue = 0;
 		m_device.presentQueue = 0;
 		m_device.transferQueue = 0;
+
+		if (m_device.graphicsCommandPool)
+		{
+			vkDestroyCommandPool(m_device.logicalDevice, m_device.graphicsCommandPool, VulkanContext::m_VulkanContext.allocator);
+			m_device.graphicsCommandPool = 0;
+		}
 
 		if (m_device.logicalDevice)
 		{

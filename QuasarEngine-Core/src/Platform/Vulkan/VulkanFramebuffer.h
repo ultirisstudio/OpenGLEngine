@@ -6,6 +6,8 @@
 
 namespace QuasarEngine
 {
+    class VulkanRenderPass;
+
 	class VulkanFramebuffer : public Framebuffer
 	{
     private:
@@ -13,7 +15,7 @@ namespace QuasarEngine
         {
             VkFramebuffer handle;
             std::vector<VkImageView> attachments;
-            VkRenderPass* renderPass;
+            VulkanRenderPass* renderPass;
         };
         vulkanFramebuffer m_framebuffer;
     public:

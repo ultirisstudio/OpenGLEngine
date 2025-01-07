@@ -42,7 +42,6 @@ namespace QuasarEngine
     void VulkanFramebuffer::Invalidate()
     {
         VkFramebufferCreateInfo framebufferInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
-        framebufferInfo.renderPass = *m_framebuffer.renderPass;
     }
 
     void VulkanFramebuffer::Resize(uint32_t width, uint32_t height) {

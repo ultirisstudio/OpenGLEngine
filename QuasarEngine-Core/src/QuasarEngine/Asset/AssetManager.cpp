@@ -64,9 +64,10 @@ namespace QuasarEngine
 					AssetHeader assetHeader;
 					file.read(reinterpret_cast<char*>(&assetHeader), sizeof(assetHeader));
 
+					std::string type = assetHeader.assetType;
+
 					file.close();
 
-					std::string type = assetHeader.assetType;
 
 					return getAssetTypeFromString(type.c_str());
 				}

@@ -10,6 +10,8 @@
 #include <backends/imgui_impl_glfw.h>
 
 #include <QuasarEngine/Core/Application.h>
+#include <Platform/Vulkan/VulkanContext.h>
+#include <Platform/Vulkan/VulkanDevice.h>
 
 namespace QuasarEngine
 {
@@ -51,6 +53,18 @@ namespace QuasarEngine
 
 		ImGui_ImplGlfw_InitForVulkan(window, true);
 		ImGui_ImplVulkan_InitInfo infos;
+		infos.Instance = VulkanContext::m_VulkanContext.instance;
+		infos.PhysicalDevice = VulkanContext::m_VulkanContext.device->GetDevice().physicalDevice;
+		infos.Device = VulkanContext::m_VulkanContext.device->GetDevice().logicalDevice;
+		infos.QueueFamily = VulkanContext::m_VulkanContext.device->GetDevice().queueFamilyIndices.graphicsFamily.value();
+		infos.Queue = VulkanContext::m_VulkanContext.device->GetDevice().graphicsQueue;
+		infos.PipelineCache = VK_NULL_HANDLE;
+		//infos.DescriptorPool = VulkanContext::m_VulkanContext.;
+		infos.Allocator = nullptr;
+		infos.MinImageCount = 2;
+		//infos.ImageCount = VulkanContext::m_VulkanContext.dev;
+		infos.CheckVkResultFn = nullptr;
+
 		ImGui_ImplVulkan_Init(&infos);*/
 	}
 

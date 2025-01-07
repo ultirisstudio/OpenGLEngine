@@ -34,9 +34,16 @@ namespace QuasarEngine
 		}
 		case CameraType::ORTHOGRAPHIC:
 		{
-			//m_projectionMatrix = glm::ortho(0.0f, m_ViewportSize.x, 0.0f, m_ViewportSize.y, 0.0f, 1000.0f);
-			m_projectionMatrix = glm::ortho(-m_ViewportSize.x/1200, m_ViewportSize.x / 1200, -m_ViewportSize.y / 1000, m_ViewportSize.y / 1000, 0.1f, 100.0f);
-			std::cout << m_ViewportSize.x << " " << m_ViewportSize.y << std::endl;
+			float aspect_ratio = m_ViewportSize.x / m_ViewportSize.y;
+
+			if (aspect_ratio > 1.7778) {
+				float half_height = m_ViewportSize.y / 1080.0f / 2.0f;
+				m_projectionMatrix = glm::ortho(-half_height * aspect_ratio, half_height * aspect_ratio, -half_height, half_height, 0.1f, 100.0f);
+			}
+			else {
+				float half_width = m_ViewportSize.x / 1920.0f / 2.0f;
+				m_projectionMatrix = glm::ortho(-half_width, half_width, -half_width / aspect_ratio, half_width / aspect_ratio, 0.1f, 100.0f);
+			}
 			break;
 		}
 		default:
